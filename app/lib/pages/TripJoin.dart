@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'TripCreate.dart';
-
-class TripAdd extends StatelessWidget {
+class TripJoin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +11,7 @@ class TripAdd extends StatelessWidget {
               ElevatedButton(
                 child: Text("Neue Freizeit erstellen"),
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => TripCreate()));
+                  print("Höhö");
                 },
               ),
               ElevatedButton(
