@@ -12,6 +12,10 @@
 #Firebase related
 android/app/google-services.json
 
+#Android app signin
+android/app/jufa_key.jks
+android/key.properties
+
 # IntelliJ related
 *.iml
 *.ipr

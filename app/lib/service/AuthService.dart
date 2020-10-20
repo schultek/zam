@@ -14,9 +14,15 @@ class AuthService {
           UserCredential user = await FirebaseAuth.instance.signInWithCredential(credential);
           print("Juhu");
         },
-        verificationFailed: null,
-        codeSent: null,
-        codeAutoRetrievalTimeout: null
+        verificationFailed: (FirebaseAuthException exception) {
+          print(exception.message);
+        },
+        codeSent: (String verificationId, int resendToken) {
+          print("SENT");
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          print("TIMEOUT");
+        }
     );
 
 
