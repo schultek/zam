@@ -16,12 +16,6 @@ class TripAdd extends StatelessWidget {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => TripCreate()));
                 },
               ),
-              ElevatedButton(
-                child: Text("Freizeit beitreten"),
-                onPressed: () {
-                  print("Hähä");
-                },
-              ),
             ]),
       ),
     );

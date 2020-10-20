@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'pages/TripAdd.dart';
+import 'pages/NoTrip.dart';
 import 'pages/TripHome.dart';
+import 'service/AuthService.dart';
 
 void main() {
+
+  if (AuthService.getUser() == null) {
+    AuthService.signIn("015225125923");
+  }
+
+
   runApp(MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
