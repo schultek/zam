@@ -1,17 +1,37 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 
-class AuthService {
+class AuthService with ChangeNotifier {
+  User user;
+  String userRole;
+
+  static AuthService instance;
+  AuthService() {
+    instance = this;
+    updateUser();
+  }
+
+  void updateUser() async {
+    user = FirebaseAuth.instance.currentUser;
+
+    var result = await getUser().getIdTokenResult();
+    userRole = result.claims["role"];
+
+    instance.notifyListeners();
+  }
 
   static User getUser() {
     return FirebaseAuth.instance.currentUser;
   }
 
   static Future<void> signIn(String phoneNumber, void Function(String verificationId) onSent, void Function() onCompleted) async {
-
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          await FirebaseAuth.instance.signInWithCredential(credential);
+          await getUser().linkWithCredential(credential);
+          if (instance != null) {
+            instance.updateUser();
+          }
           onCompleted();
         },
         verificationFailed: (FirebaseAuthException exception) {
@@ -22,27 +42,34 @@ class AuthService {
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           print("TIMEOUT");
-        }
-    );
-
-
-  }
-
-  static Stream<User> getUserStream() {
-    return FirebaseAuth.instance.authStateChanges();
+        });
   }
 
   static void verifyCode(String code, String verificationId) async {
     PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code);
-    await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
+    await getUser().linkWithCredential(phoneAuthCredential);
+    if (instance != null) {
+      instance.updateUser();
+    }
   }
 
   static Future<void> createAnonymousUser() async {
     await FirebaseAuth.instance.signInAnonymously();
+    if (instance != null) {
+      instance.updateUser();
+    }
   }
 
-  static Future<bool> hasRole(String role) async {
-    var result = await getUser().getIdTokenResult();
-    return result.claims["role"] == role;
+  static Future<void> refreshUser() async {
+    await AuthService.getUser().getIdTokenResult(true);
+    if (instance != null) {
+      instance.updateUser();
+    }
   }
+}
+
+class UserRoles {
+  static const Organizer = "organizer";
+  static const Leader = "leader";
+  static const Participant = "participant";
 }

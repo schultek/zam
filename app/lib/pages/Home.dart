@@ -7,7 +7,7 @@ class Home extends StatelessWidget {
   final bool tripExists = false;
   @override
   Widget build(BuildContext context) {
-    if(tripExists) {
+    if (tripExists) {
       return TripHome();
     } else {
       return NoTrip();

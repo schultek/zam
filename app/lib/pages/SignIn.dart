@@ -1,22 +1,6 @@
 import 'package:flutter/material.dart';
 import '../service/AuthService.dart';
 
-class SignIn extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          child: Text("Jetzt registrieren"),
-          onPressed: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => EnterPhoneNumber()));
-          },
-        ),
-      ),
-    );
-  }
-}
-
 class EnterPhoneNumber extends StatelessWidget {
   String phoneNumber = "";
   @override
@@ -44,7 +28,7 @@ class EnterPhoneNumber extends StatelessWidget {
               AuthService.signIn(phoneNumber, (String verificatonId) {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => EnterCode(verificatonId)));
               }, () {
-                Navigator.of(context).popUntil((_) => false);
+                Navigator.of(context).popUntil((route) => route.isFirst);
               });
             },
           ),
@@ -63,10 +47,12 @@ class EnterCode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 50),
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 50),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               Text("Bitte gebe hier den Code aus der SMS ein"),
               TextField(
                 decoration: InputDecoration(
@@ -83,11 +69,13 @@ class EnterCode extends StatelessWidget {
                 child: Text("Bestätigen"),
                 onPressed: () async {
                   await AuthService.verifyCode(code, verificationId);
-                  Navigator.of(context).popUntil((_) => false);
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
-            ]),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

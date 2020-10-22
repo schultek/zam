@@ -4,10 +4,8 @@ import 'AuthService.dart';
 import 'DynamicLinkService.dart';
 
 class AppService {
-
-  static Future<void> initApp () async {
+  static Future<void> initApp() async {
     await Firebase.initializeApp();
-
 
     if (AuthService.getUser() == null) {
       await AuthService.createAnonymousUser();
@@ -17,6 +15,5 @@ class AppService {
     print(organizerLink);
 
     DynamicLinkService.handleDynamicLinks();
-
   }
 }

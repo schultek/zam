@@ -1,6 +1,6 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:jufa/service/AuthService.dart';
 
-import 'AuthService.dart';
 import 'BackendService.dart';
 
 class DynamicLinkService {
@@ -12,27 +12,24 @@ class DynamicLinkService {
     final Uri dynamicUrl = await parameters.buildUrl();
     return dynamicUrl.toString();
   }
+
   static void handleDynamicLinks() async {
     var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
       _handleDynamicLink(link);
     }
 
-    FirebaseDynamicLinks.instance.onLink(
-      onSuccess: (PendingDynamicLinkData link) async {
-        _handleDynamicLink(link);
-      }
-    );
+    FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData link) async {
+      _handleDynamicLink(link);
+    });
   }
-  static void _handleDynamicLink(PendingDynamicLinkData link) async {
 
+  static void _handleDynamicLink(PendingDynamicLinkData link) async {
     var queryParameters = link.link.queryParameters;
     if (queryParameters.containsKey("isOrganizer")) {
       if (queryParameters["isOrganizer"] == "yes") {
-        await BackendService.updateUserRole("organizer");
+        await BackendService.updateUserRole(UserRoles.Organizer);
       }
     }
-
-    await AuthService.getUser().reload();
   }
 }
