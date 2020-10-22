@@ -1,8 +1,15 @@
 import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+export const updateUserRole = functions.https.onCall((data, context) => {
+
+  if (!context.auth) {
+    throw new functions.https.HttpsError('failed-precondition', 'The function must be called ' +
+        'while authenticated.');
+  }
+
+  const role = data.role; // "organizer" | "leader" | "participant"
+  const uid = context.auth.uid;
+
+  return admin.auth().setCustomUserClaims(uid, {role: role});
+});
