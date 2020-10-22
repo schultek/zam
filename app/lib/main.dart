@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:jufa/service/DynamicLinkService.dart';
 
 import 'pages/Home.dart';
 import 'pages/SignIn.dart';
+import 'service/AppService.dart';
 import 'service/AuthService.dart';
 
 void main() {
@@ -13,7 +15,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Firebase.initializeApp();
 
     return MaterialApp(
       title: 'Jufa',
@@ -22,8 +23,8 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: FutureBuilder(
-          future: Firebase.initializeApp(),
-          builder: (BuildContext context, AsyncSnapshot<FirebaseApp> snapshot) {
+          future: AppService.initApp(),
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return StreamBuilder<User>(
                 stream: AuthService.getUserStream(),

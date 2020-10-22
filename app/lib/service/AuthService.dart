@@ -36,4 +36,13 @@ class AuthService {
     PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code);
     await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
   }
+
+  static Future<void> createAnonymousUser() async {
+    await FirebaseAuth.instance.signInAnonymously();
+  }
+
+  static Future<bool> hasRole(String role) async {
+    var result = await getUser().getIdTokenResult();
+    return result.claims["role"] == role;
+  }
 }
