@@ -14,6 +14,9 @@ class DynamicLinkService {
   }
 
   static void handleDynamicLinks() async {
+    // TODO: remove this line
+    print(await DynamicLinkService.createOrganizerLink());
+
     var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
       _handleDynamicLink(link);

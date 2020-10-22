@@ -11,8 +11,9 @@ class AppService {
       await AuthService.createAnonymousUser();
     }
 
-    String organizerLink = await DynamicLinkService.createOrganizerLink();
-    print(organizerLink);
+    if (AuthService.instance != null) {
+      await AuthService.instance.updateAll();
+    }
 
     DynamicLinkService.handleDynamicLinks();
   }

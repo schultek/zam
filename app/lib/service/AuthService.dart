@@ -8,15 +8,23 @@ class AuthService with ChangeNotifier {
   static AuthService instance;
   AuthService() {
     instance = this;
-    updateUser();
   }
 
-  void updateUser() async {
+  void updateUser() {
     user = FirebaseAuth.instance.currentUser;
+    instance.notifyListeners();
+  }
 
-    var result = await getUser().getIdTokenResult();
+  Future<void> updateUserRole() async {
+    var result = await getUser().getIdTokenResult(true);
     userRole = result.claims["role"];
+    instance.notifyListeners();
+  }
 
+  Future<void> updateAll() async {
+    user = FirebaseAuth.instance.currentUser;
+    var result = await getUser().getIdTokenResult(true);
+    userRole = result.claims["role"];
     instance.notifyListeners();
   }
 
@@ -55,16 +63,6 @@ class AuthService with ChangeNotifier {
 
   static Future<void> createAnonymousUser() async {
     await FirebaseAuth.instance.signInAnonymously();
-    if (instance != null) {
-      instance.updateUser();
-    }
-  }
-
-  static Future<void> refreshUser() async {
-    await AuthService.getUser().getIdTokenResult(true);
-    if (instance != null) {
-      instance.updateUser();
-    }
   }
 }
 

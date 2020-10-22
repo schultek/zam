@@ -8,6 +8,8 @@ class BackendService {
     await callable.call(<String, dynamic>{
       "role": role,
     });
-    await AuthService.refreshUser();
+    if (AuthService.instance != null) {
+      await AuthService.instance.updateUserRole();
+    }
   }
 }
