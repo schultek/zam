@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'TripCreate.dart';
 
-class TripAdd extends StatelessWidget {
+class NoTrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

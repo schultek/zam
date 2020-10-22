@@ -6,19 +6,19 @@ class AuthService {
     return FirebaseAuth.instance.currentUser;
   }
 
-  static void signIn(String phoneNumber) async {
+  static Future<void> signIn(String phoneNumber, void Function(String verificationId) onSent, void Function() onCompleted) async {
 
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          UserCredential user = await FirebaseAuth.instance.signInWithCredential(credential);
-          print("Juhu");
+          await FirebaseAuth.instance.signInWithCredential(credential);
+          onCompleted();
         },
         verificationFailed: (FirebaseAuthException exception) {
           print(exception.message);
         },
         codeSent: (String verificationId, int resendToken) {
-          print("SENT");
+          onSent(verificationId);
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           print("TIMEOUT");
@@ -28,4 +28,12 @@ class AuthService {
 
   }
 
+  static Stream<User> getUserStream() {
+    return FirebaseAuth.instance.authStateChanges();
+  }
+
+  static void verifyCode(String code, String verificationId) async {
+    PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code);
+    await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
+  }
 }
