@@ -13,6 +13,15 @@ class DynamicLinkService {
     return dynamicUrl.toString();
   }
 
+  static Future<String> createParticipantLink(String tripId) async {
+    var parameters = DynamicLinkParameters(
+        uriPrefix: "https://jufa.page.link",
+        androidParameters: AndroidParameters(packageName: "de.schultek.jufa"),
+        link: Uri.parse("https://jufa20.web.app/?isParticipant=yes&tripId=$tripId"));
+    final ShortDynamicLink dynamicUrl = await parameters.buildShortLink();
+    return dynamicUrl.shortUrl.toString();
+  }
+
   static void handleDynamicLinks() async {
     // TODO: remove this line
     print(await DynamicLinkService.createOrganizerLink());
