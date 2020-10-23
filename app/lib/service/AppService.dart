@@ -1,20 +1,28 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import '../models/Trip.dart';
+
 import 'AuthService.dart';
+import 'DatabaseService.dart';
 import 'DynamicLinkService.dart';
 
 class AppService {
-  static Future<void> initApp() async {
+  static Future<User> initApp() async {
     await Firebase.initializeApp();
 
-    if (AuthService.getUser() == null) {
-      await AuthService.createAnonymousUser();
+    User user = await AuthService.getInitialUser();
+
+    if (user == null) {
+      var userCredentials = await AuthService.createAnonymousUser();
+      user = userCredentials.user;
     }
 
-    if (AuthService.instance != null) {
-      await AuthService.instance.updateAll();
-    }
+    List<Trip> tripsForUser = await DatabaseService.getTripsForUser(user);
+    print(tripsForUser);
 
     DynamicLinkService.handleDynamicLinks();
+
+    return user;
   }
 }
