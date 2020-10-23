@@ -4,6 +4,10 @@ import 'package:jufa/service/DynamicLinkService.dart';
 import 'package:share/share.dart';
 
 class TripHome extends StatelessWidget {
+  final Trip trip;
+
+  TripHome(this.trip);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -10,22 +10,22 @@ class AuthService with ChangeNotifier {
     instance = this;
   }
 
-  void updateUser() {
-    user = FirebaseAuth.instance.currentUser;
-    instance.notifyListeners();
+  void updateUser(User user) {
+    this.user = user;
+    this.notifyListeners();
   }
 
   Future<void> updateUserRole() async {
     var result = await getUser().getIdTokenResult(true);
     userRole = result.claims["role"];
-    instance.notifyListeners();
+    this.notifyListeners();
   }
 
-  Future<void> updateAll() async {
-    user = FirebaseAuth.instance.currentUser;
-    var result = await getUser().getIdTokenResult(true);
+  Future<void> updateAll(User user) async {
+    this.user = user;
+    var result = await user.getIdTokenResult(true);
     userRole = result.claims["role"];
-    instance.notifyListeners();
+    this.notifyListeners();
   }
 
   static User getUser() {
@@ -36,9 +36,9 @@ class AuthService with ChangeNotifier {
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          await getUser().linkWithCredential(credential);
+          var userCredential = await getUser().linkWithCredential(credential);
           if (instance != null) {
-            instance.updateUser();
+            instance.updateUser(userCredential.user);
           }
           onCompleted();
         },
@@ -55,14 +55,18 @@ class AuthService with ChangeNotifier {
 
   static void verifyCode(String code, String verificationId) async {
     PhoneAuthCredential phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code);
-    await getUser().linkWithCredential(phoneAuthCredential);
+    var userCredential = await getUser().linkWithCredential(phoneAuthCredential);
     if (instance != null) {
-      instance.updateUser();
+      instance.updateUser(userCredential.user);
     }
   }
 
-  static Future<void> createAnonymousUser() async {
-    await FirebaseAuth.instance.signInAnonymously();
+  static Future<UserCredential> createAnonymousUser() {
+    return FirebaseAuth.instance.signInAnonymously();
+  }
+
+  static Future<User> getInitialUser() {
+    return FirebaseAuth.instance.userChanges().first;
   }
 }
 
