@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../service/DatabaseService.dart';
 
 class TripCreate extends StatelessWidget {
   String tripName;
@@ -15,7 +18,7 @@ class TripCreate extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: "Freizeit-Name",
                 ),
-                onSubmitted: (text) {
+                onChanged: (text) {
                   tripName = text;
                 },
               ),
@@ -24,8 +27,10 @@ class TripCreate extends StatelessWidget {
               ),
               ElevatedButton(
                 child: Text("Erstellen"),
-                onPressed: () {
-                  print(tripName);
+                onPressed: () async {
+                  DocumentReference doc = await DatabaseService.createNewTrip(tripName);
+                  Provider.of<DatabaseService>(context, listen: false).updateTrip(doc.id);
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
             ],
