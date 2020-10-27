@@ -35,7 +35,16 @@ class MyApp extends StatelessWidget {
                 }
               });
             } else {
-              return Container();
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: Theme.of(context).primaryColor,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white)
+                  ),
+                ),
+              );
             }
           }),
     );
