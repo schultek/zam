@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/AppState.dart';
 import '../service/AuthService.dart';
 
 class EnterPhoneNumber extends StatelessWidget {
@@ -27,7 +30,8 @@ class EnterPhoneNumber extends StatelessWidget {
             onPressed: () {
               AuthService.signIn(phoneNumber, (String verificatonId) {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => EnterCode(verificatonId)));
-              }, () {
+              }, (User user) {
+                Provider.of<AppState>(context, listen: false).updateUser(user);
                 Navigator.of(context).popUntil((route) => route.isFirst);
               });
             },
@@ -68,7 +72,8 @@ class EnterCode extends StatelessWidget {
               ElevatedButton(
                 child: Text("Bestätigen"),
                 onPressed: () async {
-                  await AuthService.verifyCode(code, verificationId);
+                  var user = await AuthService.verifyCode(code, verificationId);
+                  Provider.of<AppState>(context, listen: false).updateUser(user);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
