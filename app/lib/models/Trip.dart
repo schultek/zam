@@ -9,9 +9,9 @@ class Trip {
   Trip(this.id, this.name, this.users);
 
   factory Trip.fromDocument(DocumentSnapshot document) {
-    Map<String, Map<String, dynamic>> firebaseUsers = document.get("users");
+    Map<String, dynamic> firebaseUsers = document.get("users");
     Map<String, TripUser> users = {};
-    for(MapEntry<String, Map<String, dynamic>> user in firebaseUsers.entries) {
+    for(MapEntry<String, dynamic> user in firebaseUsers.entries) {
       users[user.key] = TripUser.fromMap(user.value);
     }
     return Trip(document.id, document.get("name"), users);
