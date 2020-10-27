@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jufa/providers/AppState.dart';
 import 'package:provider/provider.dart';
 import '../service/AuthService.dart';
 
@@ -10,14 +11,14 @@ class NoTrip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Consumer<AuthService>(
-          builder: (BuildContext context, AuthService service, _) {
+        child: Consumer<AppState>(
+          builder: (BuildContext context, AppState state, _) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("Du hast noch keine Freizeit"),
-                service.userRole == UserRoles.Organizer
-                    ? service.user.isAnonymous
+                state.canCreateTrips
+                    ? state.user.isAnonymous
                         ? ElevatedButton(
                             child: Text("Jetzt registrieren"),
                             onPressed: () {
