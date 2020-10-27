@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.done) {
               return Consumer<AppState>(builder: (BuildContext context, AppState state, _) {
                 if (state.trips.isNotEmpty) {
-                  return TripHome(state.trips.first, "");
+                  return TripHome(state.trips.first);
                 } else {
                   return NoTrip();
                 }

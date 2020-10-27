@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jufa/service/AuthService.dart';
 
 class Trip {
   String name;
@@ -8,11 +9,16 @@ class Trip {
   Trip(this.id, this.name, this.users);
 
   factory Trip.fromDocument(DocumentSnapshot document) {
-    Map<String, TripUser> users;
-    for(var user in document.get("users").entries) {
-      users["userId"]
+    Map<String, Map<String, dynamic>> firebaseUsers = document.get("users");
+    Map<String, TripUser> users = {};
+    for(MapEntry<String, Map<String, dynamic>> user in firebaseUsers.entries) {
+      users[user.key] = TripUser.fromMap(user.value);
     }
-    return Trip(document.id, document.get("name"),);
+    return Trip(document.id, document.get("name"), users);
+  }
+
+  String getUserRole() {
+    return this.users[AuthService.getUser().uid].role;
   }
 }
 

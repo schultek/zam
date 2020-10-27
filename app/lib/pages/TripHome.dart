@@ -6,12 +6,14 @@ import 'package:share/share.dart';
 
 class TripHome extends StatelessWidget {
   final Trip trip;
-  final String userRole;
 
-  TripHome(this.trip, this.userRole);
+  TripHome(this.trip);
 
   @override
   Widget build(BuildContext context) {
+
+    String userRole = trip.getUserRole();
+
     return Scaffold(
       body: Column(
         children: [
