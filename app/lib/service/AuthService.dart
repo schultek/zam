@@ -36,7 +36,17 @@ class AuthService with ChangeNotifier {
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
-          var userCredential = await getUser().linkWithCredential(credential);
+          var userCredential;
+          try {
+            userCredential = await getUser().linkWithCredential(credential);
+          } on FirebaseAuthException catch (exception) {
+            print(exception.code);
+            if (exception.code == "credential-already-in-use") {
+              userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+            } else {
+              throw exception;
+            }
+          }
           if (instance != null) {
             instance.updateUser(userCredential.user);
           }

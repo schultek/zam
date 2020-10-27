@@ -18,9 +18,6 @@ class AppService {
       user = userCredentials.user;
     }
 
-    List<Trip> tripsForUser = await DatabaseService.getTripsForUser(user);
-    print(tripsForUser);
-
     DynamicLinkService.handleDynamicLinks();
 
     return user;

@@ -12,4 +12,11 @@ class BackendService {
       await AuthService.instance.updateUserRole();
     }
   }
+
+  static Future<void> addUserToTrip(String tripId) async{
+    HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: "addUserToTrip");
+    await callable.call(<String, dynamic>{
+      "tripId": tripId,
+    });
+  }
 }
