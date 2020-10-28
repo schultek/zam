@@ -18,28 +18,36 @@ class TripHome extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: Column(children: [
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
             Text(trip.name, style: Theme.of(context).textTheme.headline5),
-            Container(height: 10),
-            GridView.count(
+            Container(height: 20),
+            Expanded(
+                child: GridView.count(
               primary: false,
               padding: const EdgeInsets.all(20),
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+              crossAxisSpacing: 20,
+              mainAxisSpacing: 20,
               crossAxisCount: 2,
               children: <Widget>[
-                userRole == UserRoles.Organizer
-                    ? GestureDetector(
-                        child: Container(
-                          child: Text("UserManagementModule"),
-                        ),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserManagementModule(trip)));
-                        })
-                    : Container(),
-                Text(userRole),
+                GestureDetector(
+                  child: Container(
+                    height: 100,
+                    color: Colors.white,
+                    child: Center(child: Text("UserManagement")),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserManagementModule(trip)));
+                  },
+                ),
+                Container(
+                    height: 100,
+                    color: Colors.white,
+                    padding: EdgeInsets.all(10),
+                    child: Center(
+                      child: Text(userRole),
+                    )),
               ],
-            ),
+            )),
           ]),
         ),
       ),
