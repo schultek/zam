@@ -24,10 +24,12 @@ class Trip {
 
 class TripUser {
   String role;
+  String nickname;
 
-  TripUser(this.role);
+  TripUser(this.role, this.nickname);
 
   factory TripUser.fromMap(Map<String, dynamic> user) {
-    return TripUser(user["role"]);
+    return TripUser(user["role"], user["nickname"]);
   }
+
 }
