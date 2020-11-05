@@ -17,8 +17,8 @@ class Trip {
     return Trip(document.id, document.get("name"), users);
   }
 
-  String getUserRole() {
-    return this.users[AuthService.getUser().uid].role;
+  currentUser() {
+    return this.users[AuthService.getUser().uid];
   }
 }
 

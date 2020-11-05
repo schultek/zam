@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jufa/general/ModuleRegistry.dart';
 import 'package:provider/provider.dart';
 
 import 'models/Trip.dart';
@@ -9,6 +10,7 @@ import 'pages/TripHome.dart';
 import 'pages/NoTrip.dart';
 
 void main() {
+  ModuleRegistry.registerModules();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<AppState>(create: (context) => AppState()),
   ], child: MyApp()));

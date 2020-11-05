@@ -1,0 +1,9 @@
+# flutter pub run build_runner build lib
+targets:
+  $default:
+    builders:
+      reflectable:
+        generate_for:
+          - lib/main.dart
+        options:
+          formatted: true

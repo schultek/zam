@@ -1,10 +1,36 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:jufa/models/Trip.dart';
+part of modules;
 
-class Profile extends StatelessWidget {
-  TripUser user;
-  Profile(this.user);
+class Profile extends Module {
+
+  @override
+  List<ModuleCard> getCards(ModuleData data) {
+    return [
+      ModuleCard(
+        builder: (context) => GestureDetector(
+          child: Container(
+            height: 100,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                color: Theme.of(context).primaryColor,
+                boxShadow: [BoxShadow(blurRadius: 10)]),
+            padding: EdgeInsets.all(10),
+            child: Center(child: Text("Profil")),
+          ),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfilePage(data.trip.currentUser())));
+          },
+        ),
+      ),
+    ];
+  }
+
+}
+
+class ProfilePage extends StatelessWidget {
+
+  final TripUser user;
+
+  ProfilePage(this.user);
 
   @override
   Widget build(BuildContext context) {

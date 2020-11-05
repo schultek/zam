@@ -5,6 +5,22 @@ import 'package:share/share.dart';
 import '../service/DynamicLinkService.dart';
 import '../models/Trip.dart';
 
+/*
+    GestureDetector(
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            color: Theme.of(context).primaryColor,
+            boxShadow: [BoxShadow(blurRadius: 10)]),
+        height: 100,
+        child: Center(child: Text("UserManagement")),
+      ),
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserManagementModule(trip)));
+      },
+    ),
+ */
+
 class UserManagementModule extends StatelessWidget {
   final Trip trip;
 

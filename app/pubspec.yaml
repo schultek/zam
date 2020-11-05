@@ -33,6 +33,8 @@ dependencies:
   cloud_functions: ^0.6.0
   firebase_dynamic_links: ^0.6.0
   share: ^0.6.5
+  reflectable: ^2.2.8
+  build_runner: any
 
 dev_dependencies:
   flutter_test:
