@@ -6,3 +6,4 @@ import 'package:jufa/models/Trip.dart';
 
 part 'Chat.dart';
 part 'Profile.dart';
+part 'supply/Supply.dart';
