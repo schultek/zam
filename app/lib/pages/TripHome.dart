@@ -4,7 +4,7 @@ import 'package:jufa/general/ModuleRegistry.dart';
 import 'package:jufa/service/AuthService.dart';
 
 import '../models/Trip.dart';
-import '../modules/UserManagementModule.dart';
+import '../modules/userManagement/UserManagementModule.dart';
 
 
 class TripHome extends StatelessWidget {
@@ -15,9 +15,9 @@ class TripHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    ModuleData moduleContext = ModuleData(trip: this.trip);
+    ModuleData moduleData = ModuleData(trip: this.trip);
     List<ModuleCard> moduleCards = ModuleRegistry.getAllModules()
-      .expand((m) => m.getCards(moduleContext))
+      .expand((m) => m.getCards(moduleData))
       .toList();
 
     return Scaffold(

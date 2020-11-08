@@ -1,4 +1,7 @@
-part of modules;
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:jufa/general/Module.dart';
+import 'package:jufa/modules/profile/ProfileModule.dart';
 
 class Supply extends Module {
   @override

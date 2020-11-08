@@ -1,11 +1,7 @@
 library modules;
 
-import 'package:flutter/material.dart';
-import 'package:jufa/general/Module.dart';
-import 'package:jufa/models/Trip.dart';
-import 'package:jufa/modules/supply/CookingPage.dart';
-import 'package:jufa/modules/supply/ShoppingPage.dart';
-
-part 'Chat.dart';
-part 'Profile.dart';
-part 'supply/Supply.dart';
+export 'thebutton/TheButtonModule.dart';
+export 'chat/ChatModule.dart';
+export 'profile/ProfileModule.dart';
+export 'userManagement/UserManagementModule.dart';
+export 'supply/Supply.dart';
