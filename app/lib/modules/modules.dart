@@ -1,8 +1,6 @@
 library modules;
 
-import 'package:flutter/material.dart';
-import 'package:jufa/general/Module.dart';
-import 'package:jufa/models/Trip.dart';
-
-part 'Chat.dart';
-part 'Profile.dart';
+export 'thebutton/TheButtonModule.dart';
+export 'chat/ChatModule.dart';
+export 'profile/ProfileModule.dart';
+export 'userManagement/UserManagementModule.dart';

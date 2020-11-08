@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
-import '../service/DynamicLinkService.dart';
-import '../models/Trip.dart';
+import '../../service/DynamicLinkService.dart';
+import '../../models/Trip.dart';
 
 /*
     GestureDetector(

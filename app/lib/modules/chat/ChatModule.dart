@@ -1,4 +1,5 @@
-part of modules;
+import 'package:flutter/material.dart';
+import 'package:jufa/general/Module.dart';
 
 class Chat extends Module {
   @override
