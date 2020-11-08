@@ -10,27 +10,20 @@ import 'package:rive/rive.dart';
 import 'TheButtonAnimationController.dart';
 
 class TheButtonModule extends Module {
-
   @override
   List<ModuleCard> getCards(ModuleData data) {
     return [
       ModuleCard(
-        builder: (context) => Material(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: Colors.black12,
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: TheButton(),
-                ),
+        builder: (context) => Stack(
+          children: [
+            Positioned.fill(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: TheButton(),
               ),
-              Positioned.fill(
-                  child: TheButtonHelp()
-              ),
-            ],
-          ),
+            ),
+            Positioned.fill(child: TheButtonHelp()),
+          ],
         ),
       ),
     ];
@@ -75,18 +68,17 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                   child: Stack(
                     children: [
                       Positioned.fill(
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text("The Button", style: Theme.of(context).textTheme.headline6),
-                              Text("The Button is a social game where you have to keep the button alive by.", textAlign: TextAlign.center)
-                            ],
-                          )
-                        )
-                      ),
+                          child: Padding(
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text("The Button", style: Theme.of(context).textTheme.bodyText2),
+                                  Text("The Button is a social game where you have to keep the button alive.",
+                                      style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center)
+                                ],
+                              ))),
                       Positioned(
                         top: 0,
                         left: 0,
@@ -112,8 +104,6 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
   }
 }
 
-
-
 class ExpandClipper extends CustomClipper<Rect> {
   double value;
 
@@ -122,10 +112,7 @@ class ExpandClipper extends CustomClipper<Rect> {
   @override
   Rect getClip(Size size) {
     return Rect.fromCenter(
-        center: Offset(20, 20),
-        width: size.width * 2 * sqrt(2) * this.value,
-        height: size.height * 2 * sqrt(2) * this.value
-    );
+        center: Offset(20, 20), width: size.width * 2 * sqrt(2) * this.value, height: size.height * 2 * sqrt(2) * this.value);
   }
 
   @override
@@ -133,7 +120,6 @@ class ExpandClipper extends CustomClipper<Rect> {
 }
 
 class TheButton extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Provider<TheButtonRepository>(
@@ -158,7 +144,9 @@ class TheButton extends StatelessWidget {
                 artboard.addController(fillController);
 
                 fillController.jumpTo(await repo.buttonState.first);
-                repo.buttonState.listen((value) => fillController.animateTo(value));
+                repo.buttonState.listen((value) {
+                  fillController.animateTo(value);
+                });
 
                 return artboard;
               }),

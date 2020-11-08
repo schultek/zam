@@ -1,6 +1,3 @@
-
-
-
 import 'package:rive/rive.dart';
 
 class TheButtonAnimationController extends RiveAnimationController<RuntimeArtboard> {
