@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jufa/general/Module.dart';
-import 'package:jufa/modules/profile/ProfileModule.dart';
+
+import 'CookingPage.dart';
+import 'ShoppingPage.dart';
 
 class Supply extends Module {
   @override
