@@ -30,7 +30,12 @@ class Recipe extends ArticleList{
   Recipe(this.preparation, relations, name, note) : super(relations, name, note);
 }
 
+class ArticleRepository {
+  List<Article> articles;
+  List<ArticleList> articleLists;
 
+  ArticleRepository(this.articles, this.articleLists);
+}
 
 
 
