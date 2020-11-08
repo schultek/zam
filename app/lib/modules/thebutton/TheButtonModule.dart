@@ -19,7 +19,7 @@ class TheButtonModule extends Module {
             Positioned.fill(
               child: Padding(
                 padding: EdgeInsets.all(20),
-                child: TheButton(),
+                child: TheButton(data.trip.id),
               ),
             ),
             Positioned.fill(child: TheButtonHelp()),
@@ -120,10 +120,15 @@ class ExpandClipper extends CustomClipper<Rect> {
 }
 
 class TheButton extends StatelessWidget {
+
+  String tripId;
+
+  TheButton(this.tripId);
+
   @override
   Widget build(BuildContext context) {
     return Provider<TheButtonRepository>(
-      create: (context) => TheButtonRepository(0),
+      create: (context) => TheButtonRepository(tripId),
       dispose: (context, repo) => repo.dispose(),
       builder: (context, _) {
         var repo = Provider.of<TheButtonRepository>(context);

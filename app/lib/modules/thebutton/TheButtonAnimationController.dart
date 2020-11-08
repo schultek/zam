@@ -39,7 +39,7 @@ class TheButtonAnimationController extends RiveAnimationController<RuntimeArtboa
       _instance.animation.speed = 1;
     } else if (targetTime > _instance.time) {
       _instance.direction = 1;
-      _instance.animation.speed = 0.01;
+      _instance.animation.speed = 0.1;
     }
 
     _instance.advance(elapsedSeconds);
