@@ -12,7 +12,9 @@ class CookingPage extends StatefulWidget {
 
 class _CookingPageState extends State<CookingPage> {
   List<Recipe> recipeList = [
-    Recipe("", [ArticleRelation(Article("Tomate", "", "nomnom"), 4, "Stück", false, "")], "Tomatensuppe", "")];
+    Recipe("Tomaten waschen, Tomaten schneiden, Tomaten kochen, Tomaten würzen, Tomaten auf Teller kippen, Tomaten essen",
+        [ArticleRelation(Article("Tomate", "", "nomnom"), 4, "Stück", false, "")], "Tomatensuppe", "")
+  ];
 
   Trip trip;
 
@@ -20,18 +22,18 @@ class _CookingPageState extends State<CookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: Builder(
-            builder: (BuildContext context) {
-              return IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-              );
-            },
-            ),
-          title: Text("Rezepteliste"),
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            );
+          },
+        ),
+        title: Text("Rezepteliste"),
       ),
       body: Container(
         child: ListView.builder(
@@ -55,34 +57,43 @@ class RecipePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-            children: [
-              Container(
-                height: 50
-              ),
-              Text(
-                  recipe.name,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor)),
-              Expanded(
+        body: Column(children: [
+      Container(
+        height: 30,
+      ),
+      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+        IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor),
+        ),
+      ]),
+      Text(recipe.name, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+      Container(height: 50),
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(10),
+          child: Text(
+            recipe.preparation,
+            textAlign: TextAlign.center,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.black12,
+          ),
+        ),
+      ),
+      Container(height: 50),
+      Expanded(
           child: ListView(
               children: recipe.relations.map((ArticleRelation articleRelation) {
-            return ListTile(
-              title: Text(articleRelation.article.name),
-            );
-          }).toList())
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Icon(
-                      Icons.arrow_back,
-                      color: Colors.white),
-            ),
-      ]
-      )
-    );
+        return ListTile(
+          title: Text(articleRelation.article.name),
+        );
+      }).toList())),
+    ]));
   }
 }
