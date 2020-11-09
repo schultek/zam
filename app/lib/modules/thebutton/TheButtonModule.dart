@@ -74,9 +74,9 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
-                                  Text("The Button", style: Theme.of(context).textTheme.bodyText2),
+                                  Text("The Button", style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.white)),
                                   Text("The Button is a social game where you have to keep the button alive.",
-                                      style: Theme.of(context).textTheme.caption, textAlign: TextAlign.center)
+                                      style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white), textAlign: TextAlign.center)
                                 ],
                               ))),
                       Positioned(
@@ -148,9 +148,29 @@ class TheButton extends StatelessWidget {
                 var fillController = TheButtonAnimationController();
                 artboard.addController(fillController);
 
-                fillController.jumpTo(await repo.buttonState.first);
+                var initialValue = await repo.buttonState.first;
+
+                var deadController, deadEntryController;
+
+                var runDeadAnimation = () {
+                  deadController = SimpleAnimation("Dead");
+                  artboard.addController(deadController);
+
+                  deadEntryController = SimpleAnimation("Dead Entry");
+                  artboard.addController(deadEntryController);
+                };
+
+                fillController.jumpTo(initialValue);
+                if (initialValue >= 1) {
+                  runDeadAnimation();
+                }
+
                 repo.buttonState.listen((value) {
-                  fillController.animateTo(value);
+                  if (value < 1) {
+                    fillController.animateTo(value);
+                  } else {
+                    runDeadAnimation();
+                  }
                 });
 
                 return artboard;
