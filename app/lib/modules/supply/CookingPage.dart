@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jufa/models/Trip.dart';
-import 'package:jufa/pages/TripHome.dart';
+import 'package:provider/provider.dart';
 
 import 'SupplyModels.dart';
+import 'SupplyRepository.dart';
 
 class CookingPage extends StatefulWidget {
   @override
@@ -16,35 +16,38 @@ class _CookingPageState extends State<CookingPage> {
         [ArticleRelation(Article("Tomate", "", "nomnom"), 4, "Stück", false, "")], "Tomatensuppe", "")
   ];
 
-  Trip trip;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
           },
+          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
         ),
         title: Text("Rezepteliste"),
       ),
       body: Container(
-        child: ListView.builder(
-            itemCount: recipeList.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
+        child: Selector<SupplyRepository, List<Recipe>>(
+          selector: (context, repository) => repository.articleLists.whereType<Recipe>().toList(),
+          shouldRebuild: (previous, next) => previous == null || previous.length != next.length,
+          builder: (context, recipeList, _) {
+            return ListView.builder(
+              itemCount: recipeList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
                   title: Text(recipeList[index].name),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => RecipePage(recipeList[index])));
-                  });
-            }),
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => RecipePage(recipeList[index], relation)));
+                  },
+                );
+              },
+            );
+
+          }
+        ),
       ),
     );
   }
@@ -52,8 +55,9 @@ class _CookingPageState extends State<CookingPage> {
 
 class RecipePage extends StatelessWidget {
   final Recipe recipe;
+  final ArticleRelation relation;
 
-  RecipePage(this.recipe);
+  RecipePage(this.recipe, this.relation);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,12 +92,17 @@ class RecipePage extends StatelessWidget {
       ),
       Container(height: 50),
       Expanded(
-          child: ListView(
-              children: recipe.relations.map((ArticleRelation articleRelation) {
-        return ListTile(
-          title: Text(articleRelation.article.name),
-        );
-      }).toList())),
+        child: ListView(
+          children: recipe.relations.map(
+            (ArticleRelation articleRelation) {
+              return ListTile(
+                title: Text(articleRelation.article.name),
+                trailing: Text(articleRelation.amount.toString() + "  " + articleRelation.unit),
+              );
+            },
+          ).toList(),
+        ),
+      ),
     ]));
   }
 }

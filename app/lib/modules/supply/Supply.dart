@@ -6,6 +6,7 @@ import 'package:rive/rive.dart';
 
 import 'CookingPage.dart';
 import 'ShoppingPage.dart';
+import 'SupplyRepository.dart';
 
 class Supply extends Module {
   @override
@@ -28,7 +29,7 @@ class Supply extends Module {
             ),
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CookingPage()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SupplyProvider(tripId: data.trip.id, child: CookingPage())));
           },
         ),
       ),
@@ -39,7 +40,7 @@ class Supply extends Module {
             child: Center(child: Text("Einkaufen")),
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ShoppingPage()));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SupplyProvider(tripId: data.trip.id, child: ShoppingPage())));
           },
         ),
       ),
