@@ -1,30 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jufa/general/Module.dart';
 import 'package:share/share.dart';
 
 import '../../service/DynamicLinkService.dart';
 import '../../models/Trip.dart';
 
-/*
-    GestureDetector(
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Theme.of(context).primaryColor,
-            boxShadow: [BoxShadow(blurRadius: 10)]),
-        height: 100,
-        child: Center(child: Text("UserManagement")),
-      ),
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserManagementModule(trip)));
-      },
-    ),
- */
 
-class UserManagementModule extends StatelessWidget {
+class UserModule extends Module {
+
+  @override
+  List<ModuleCard> getCards(ModuleData data) {
+    return [
+      ModuleCard(
+        builder: (context) => GestureDetector(
+          child: Container(
+            padding: EdgeInsets.all(10),
+            child: Center(child: Text("Users")),
+          ),
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserPage(data.trip)));
+          },
+        ),
+      ),
+    ];
+  }
+}
+
+class UserPage extends StatelessWidget {
+
   final Trip trip;
 
-  UserManagementModule(this.trip);
+  UserPage(this.trip);
 
   IconData getIconForUser(String role) {
     if (role == "organizer") {
