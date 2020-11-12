@@ -2,28 +2,29 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jufa/modules/supply/CookingPage.dart';
 import 'package:provider/provider.dart';
 
 import 'SupplyModels.dart';
 
 class SupplyRepository with ChangeNotifier {
-
   String tripId;
 
   StreamSubscription<QuerySnapshot> _articleSubscription;
-  List<Article> articles;
+  List<Article> articles = List();
 
   StreamSubscription<QuerySnapshot> _articleListSubscription;
-  List<ArticleList> articleLists;
+  List<ArticleList> articleLists = List();
 
   SupplyRepository(this.tripId) {
-
-    this._articleSubscription = FirebaseFirestore.instance.collection("trips")
+    this._articleSubscription = FirebaseFirestore.instance
+        .collection("trips")
         .doc(this.tripId)
         .collection("modules")
         .doc("supply")
         .collection("articles")
-        .snapshots().listen((snapshot) {
+        .snapshots()
+        .listen((snapshot) {
       List<Article> articles = snapshot.docs.map((QueryDocumentSnapshot doc) {
         return Article.fromDocument(doc);
       }).toList();
@@ -31,12 +32,14 @@ class SupplyRepository with ChangeNotifier {
       this.notifyListeners();
     });
 
-    this._articleListSubscription = FirebaseFirestore.instance.collection("trips")
+    this._articleListSubscription = FirebaseFirestore.instance
+        .collection("trips")
         .doc(this.tripId)
         .collection("modules")
         .doc("supply")
         .collection("articleLists")
-        .snapshots().listen((snapshot) {
+        .snapshots()
+        .listen((snapshot) {
       List<ArticleList> articleLists = snapshot.docs.map((QueryDocumentSnapshot doc) {
         return ArticleList.fromDocument(doc);
       }).toList();
@@ -46,15 +49,23 @@ class SupplyRepository with ChangeNotifier {
 
   }
 
+  @override
   dispose() {
+    super.dispose();
     this._articleSubscription.cancel();
     this._articleListSubscription.cancel();
   }
 
+  ArticleList getArticleListById(String listId) {
+    return this.articleLists.firstWhere((list) => list.id == listId);
+  }
+
+  Article getArticleById(String articleId) {
+    return this.articles.firstWhere((article) => article.id == articleId, orElse: () => null);
+  }
 }
 
 class SupplyProvider extends StatelessWidget {
-
   final String tripId;
   final Widget child;
 
@@ -62,12 +73,18 @@ class SupplyProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<SupplyRepository>(
+    return ChangeNotifierProvider<SupplyRepository>(
       create: (context) => SupplyRepository(this.tripId),
-      dispose: (context, repo) => repo.dispose(),
       builder: (context, child) => child,
       child: this.child,
     );
   }
 
+  static Widget of(BuildContext context, {RecipePage child}) {
+    return ChangeNotifierProvider.value(
+      value: Provider.of<SupplyRepository>(context, listen: false),
+      builder: (_, child) => child,
+      child: child
+    );
+  }
 }

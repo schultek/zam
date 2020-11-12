@@ -5,16 +5,9 @@ import 'package:provider/provider.dart';
 import 'SupplyModels.dart';
 import 'SupplyRepository.dart';
 
-class CookingPage extends StatefulWidget {
-  @override
-  _CookingPageState createState() => _CookingPageState();
-}
+import '../../general/Extensions.dart';
 
-class _CookingPageState extends State<CookingPage> {
-  List<Recipe> recipeList = [
-    Recipe("Tomaten waschen, Tomaten schneiden, Tomaten kochen, Tomaten würzen, Tomaten auf Teller kippen, Tomaten essen",
-        [ArticleRelation(Article("Tomate", "", "nomnom"), 4, "Stück", false, "")], "Tomatensuppe", "")
-  ];
+class CookingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +25,7 @@ class _CookingPageState extends State<CookingPage> {
       body: Container(
         child: Selector<SupplyRepository, List<Recipe>>(
           selector: (context, repository) => repository.articleLists.whereType<Recipe>().toList(),
-          shouldRebuild: (previous, next) => previous == null || previous.length != next.length,
+          shouldRebuild: (previous, next) => next.toSet().intersectionBy(previous, (e) => e.id+"-"+e.name).length != next.length,
           builder: (context, recipeList, _) {
             return ListView.builder(
               itemCount: recipeList.length,
@@ -40,13 +33,14 @@ class _CookingPageState extends State<CookingPage> {
                 return ListTile(
                   title: Text(recipeList[index].name),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => RecipePage(recipeList[index], relation)));
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (_) => SupplyProvider.of(context, child: RecipePage(recipeList[index].id)),
+                    ));
                   },
                 );
               },
             );
-
-          }
+          },
         ),
       ),
     );
@@ -54,55 +48,67 @@ class _CookingPageState extends State<CookingPage> {
 }
 
 class RecipePage extends StatelessWidget {
-  final Recipe recipe;
-  final ArticleRelation relation;
+  final String recipeId;
 
-  RecipePage(this.recipe, this.relation);
+  RecipePage(this.recipeId);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Column(children: [
-      Container(
-        height: 30,
+      body: Selector<SupplyRepository, Recipe>(
+        selector: (context, repository) => repository.getArticleListById(this.recipeId),
+        builder: (context, recipe, child) {
+          return Column(
+            children: [
+              Container(height: 30),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor),
+                  ),
+                ],
+              ),
+              Text(recipe.name, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+              Container(height: 50),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(10),
+                  child: Text(
+                    recipe.preparation,
+                    textAlign: TextAlign.center,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.black12,
+                  ),
+                ),
+              ),
+              Container(height: 50),
+              Expanded(
+                child: ListView(
+                  children: recipe.entries.map((ArticleEntry entry) {
+                    return Selector<SupplyRepository, Article>(
+                      selector: (context, repository) => repository.getArticleById(entry.articleId),
+                      builder: (context, article, child) {
+                        return ListTile(
+                          title: Text(article.name),
+                          trailing: Text(entry.amount.toString() + "  " + entry.unit),
+                        );
+                      },
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          );
+        },
       ),
-      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-        IconButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor),
-        ),
-      ]),
-      Text(recipe.name, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
-      Container(height: 50),
-      Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Container(
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(10),
-          child: Text(
-            recipe.preparation,
-            textAlign: TextAlign.center,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.black12,
-          ),
-        ),
-      ),
-      Container(height: 50),
-      Expanded(
-        child: ListView(
-          children: recipe.relations.map(
-            (ArticleRelation articleRelation) {
-              return ListTile(
-                title: Text(articleRelation.article.name),
-                trailing: Text(articleRelation.amount.toString() + "  " + articleRelation.unit),
-              );
-            },
-          ).toList(),
-        ),
-      ),
-    ]));
+    );
   }
 }
