@@ -31,8 +31,8 @@ class EnterPhoneNumber extends StatelessWidget {
             onPressed: () {
               AuthService.signIn(phoneNumber, (String verificatonId) {
                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => EnterCode(verificatonId)));
-              }, (User user) {
-                Provider.of<AppState>(context, listen: false).updateUser(user);
+              }, (User user) async {
+                await Provider.of<AppState>(context, listen: false).updateUser(user);
                 Navigator.of(context).popUntil((route) => route.isFirst);
               });
             },
@@ -74,7 +74,7 @@ class EnterCode extends StatelessWidget {
                 child: Text("Bestätigen"),
                 onPressed: () async {
                   var user = await AuthService.verifyCode(code, verificationId);
-                  Provider.of<AppState>(context, listen: false).updateUser(user);
+                  await Provider.of<AppState>(context, listen: false).updateUser(user);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),

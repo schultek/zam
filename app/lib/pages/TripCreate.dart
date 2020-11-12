@@ -30,8 +30,9 @@ class TripCreate extends StatelessWidget {
               ElevatedButton(
                 child: Text("Erstellen"),
                 onPressed: () async {
-                  DocumentReference doc = await DatabaseService.createNewTrip(tripName);
-                  await Provider.of<AppState>(context, listen: false).updateTrip(doc.id);
+                  var state = Provider.of<AppState>(context, listen: false);
+                  DocumentReference doc = await DatabaseService.createNewTrip(tripName, state.user.uid);
+                  state.selectTrip(doc.id);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),

@@ -52,19 +52,17 @@ class DynamicLinkService {
     if (queryParameters.containsKey("isOrganizer")) {
       if (queryParameters["isOrganizer"] == "yes") {
         await BackendService.updateUserPermissions(true);
-        await AppState.instance.updateUserPermissions();
+        await AppState.instance.updateUserPermissions(true);
       }
     }
     if (queryParameters.containsKey("isParticipant")) {
       if (queryParameters["isParticipant"] == "yes") {
         await BackendService.addUserToTrip(queryParameters["tripId"], UserRoles.Participant);
-        await AppState.instance.updateTrip(queryParameters["tripId"]);
       }
     }
     if (queryParameters.containsKey("isLeader")) {
       if (queryParameters["isLeader"] == "yes") {
         await BackendService.addUserToTrip(queryParameters["tripId"], UserRoles.Leader);
-        await AppState.instance.updateTrip(queryParameters["tripId"]);
       }
     }
   }

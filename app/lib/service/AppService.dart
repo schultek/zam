@@ -2,14 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import '../providers/AppState.dart';
-import '../models/Trip.dart';
 
 import 'AuthService.dart';
-import 'DatabaseService.dart';
 import 'DynamicLinkService.dart';
 
 class AppService {
-  static Future<User> initApp(AppState state) async {
+  static Future<void> initApp(AppState state) async {
     await Firebase.initializeApp();
 
     User user = await AuthService.getInitialUser();
@@ -19,13 +17,9 @@ class AppService {
       user = userCredentials.user;
     }
 
-    await state.updateUserAndUserPermissions(user);
-
-    List<Trip> trips = await DatabaseService.getTripsForUser(user);
-    state.updateTrips(trips);
+    await state.updateUser(user);
+    state.initUserSubscription();
 
     DynamicLinkService.handleDynamicLinks();
-
-    return user;
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'general/ModuleRegistry.dart';
+import 'models/Trip.dart';
 import 'service/AppService.dart';
 import 'providers/AppState.dart';
 import 'pages/TripHome.dart';
@@ -27,26 +28,35 @@ class MyApp extends StatelessWidget {
           future: AppService.initApp(Provider.of<AppState>(context, listen: false)),
           builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return Consumer<AppState>(builder: (BuildContext context, AppState state, _) {
-                if (state.trips.isNotEmpty) {
-                  return TripHome(state.trips.first);
-                } else {
-                  return NoTrip();
-                }
-              });
-            } else {
-              return Container(
-                width: double.infinity,
-                height: double.infinity,
-                color: Theme.of(context).primaryColor,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white)
-                  ),
-                ),
+              return Selector<AppState, Trip>(
+                selector: (context, state) => state.getSelectedTrip(),
+                shouldRebuild: (previous, next) => previous == null || next == null || previous.id != next.id,
+                builder: (BuildContext context, Trip trip, _) {
+                  if (trip != null) {
+                    return TripHome(trip);
+                  } else {
+                    return NoTrip();
+                  }
+                },
               );
+            } else {
+              return LoadingScreen();
             }
           }),
+    );
+  }
+}
+
+class LoadingScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      color: Theme.of(context).primaryColor,
+      child: Center(
+        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+      ),
     );
   }
 }
