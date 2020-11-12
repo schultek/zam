@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:jufa/providers/AppState.dart';
 import 'package:provider/provider.dart';
+
+import '../providers/AppState.dart';
 import '../service/DatabaseService.dart';
 
 class TripCreate extends StatelessWidget {

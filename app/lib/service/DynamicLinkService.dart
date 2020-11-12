@@ -1,7 +1,7 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:jufa/providers/AppState.dart';
-import 'package:jufa/service/AuthService.dart';
 
+import '../providers/AppState.dart';
+import 'AuthService.dart';
 import 'BackendService.dart';
 
 class DynamicLinkService {

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jufa/providers/AppState.dart';
 import 'package:provider/provider.dart';
-import '../service/AuthService.dart';
 
+import '../providers/AppState.dart';
 import 'SignIn.dart';
 import 'TripCreate.dart';
 

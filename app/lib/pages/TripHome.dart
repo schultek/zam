@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:jufa/general/Module.dart';
-import 'package:jufa/general/ModuleRegistry.dart';
-import 'package:jufa/service/AuthService.dart';
 
+import '../general/Module.dart';
+import '../general/ModuleRegistry.dart';
 import '../models/Trip.dart';
-import '../modules/userManagement/UserManagementModule.dart';
-
 
 class TripHome extends StatelessWidget {
   final Trip trip;

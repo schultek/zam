@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:jufa/general/ModuleRegistry.dart';
 import 'package:provider/provider.dart';
 
-import 'models/Trip.dart';
+import 'general/ModuleRegistry.dart';
 import 'service/AppService.dart';
 import 'providers/AppState.dart';
-import 'service/DatabaseService.dart';
 import 'pages/TripHome.dart';
 import 'pages/NoTrip.dart';
 

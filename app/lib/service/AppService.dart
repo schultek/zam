@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:jufa/providers/AppState.dart';
 
+import '../providers/AppState.dart';
 import '../models/Trip.dart';
 
 import 'AuthService.dart';

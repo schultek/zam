@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jufa/general/Module.dart';
 import 'package:rive/rive.dart';
 
+import '../../general/Module.dart';
 import 'CookingPage.dart';
 import 'ShoppingPage.dart';
 import 'SupplyRepository.dart';

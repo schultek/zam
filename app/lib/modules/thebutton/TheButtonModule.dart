@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:jufa/general/Module.dart';
-import 'package:jufa/modules/thebutton/TheButtonRepository.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 
+import '../../general/Module.dart';
+import 'TheButtonRepository.dart';
 import 'TheButtonAnimationController.dart';
 
 class TheButtonModule extends Module {
