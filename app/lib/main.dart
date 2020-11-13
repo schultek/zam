@@ -48,13 +48,12 @@ class _MyAppState extends State<MyApp> {
       home: Container(
         color: Colors.white,
         child: AnimatedSwitcher(
-          switchInCurve: Curves.linear,
+          switchInCurve: Curves.easeIn,
           switchOutCurve: Curves.easeOutExpo,
           duration: Duration(milliseconds: 600),
           child: isLoaded
               ? Selector<AppState, Trip>(
                   selector: (context, state) => state.getSelectedTrip(),
-                  shouldRebuild: (previous, next) => previous == null || next == null || previous.id != next.id,
                   builder: (BuildContext context, Trip trip, _) {
                     if (trip != null) {
                       return TripHome(trip);
