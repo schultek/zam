@@ -75,7 +75,6 @@ class SupplyProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SupplyRepository>(
       create: (context) => SupplyRepository(this.tripId),
-      builder: (context, child) => child,
       child: this.child,
     );
   }
@@ -83,7 +82,6 @@ class SupplyProvider extends StatelessWidget {
   static Widget of(BuildContext context, {RecipePage child}) {
     return ChangeNotifierProvider.value(
       value: Provider.of<SupplyRepository>(context, listen: false),
-      builder: (_, child) => child,
       child: child
     );
   }

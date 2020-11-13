@@ -49,7 +49,7 @@ class AppState with ChangeNotifier {
     var stream = FirebaseFirestore.instance
       .collection("trips").where("users.$userId.role", whereIn: [UserRoles.Participant, UserRoles.Leader, UserRoles.Organizer])
       .snapshots();
-    
+
     this._tripsSubscription = stream.listen((snapshot) {
         this.trips = snapshot.docs.map((doc) => Trip.fromDocument(doc)).toList();
         this.selectedTripId = this.trips.length > 0 ? this.trips.first.id : null;

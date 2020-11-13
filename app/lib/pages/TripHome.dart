@@ -4,19 +4,31 @@ import '../general/Module.dart';
 import '../general/ModuleRegistry.dart';
 import '../models/Trip.dart';
 
-class TripHome extends StatelessWidget {
+class TripHome extends StatefulWidget {
   final Trip trip;
 
   TripHome(this.trip);
 
   @override
+  _TripHomeState createState() => _TripHomeState();
+}
+
+class _TripHomeState extends State<TripHome> {
+
+  List<ModuleCard> moduleCards;
+
+  @override
+  void initState() {
+
+    ModuleData moduleData = ModuleData(trip: widget.trip);
+    this.moduleCards = ModuleRegistry.getAllModules()
+        .expand((m) => m.getCards(moduleData))
+        .toList();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
-
-    ModuleData moduleData = ModuleData(trip: this.trip);
-    List<ModuleCard> moduleCards = ModuleRegistry.getAllModules()
-      .expand((m) => m.getCards(moduleData))
-      .toList();
-
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -26,16 +38,16 @@ class TripHome extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(trip.name, style: Theme.of(context).textTheme.headline5),
+                Text(widget.trip.name, style: Theme.of(context).textTheme.headline5),
                 Container(height: 20),
                 Expanded(
                   child: GridView.count(
-                    primary: false,
-                    padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 20,
-                    mainAxisSpacing: 20,
-                    crossAxisCount: 2,
-                    children: moduleCards,
+                      primary: false,
+                      padding: const EdgeInsets.all(20),
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      crossAxisCount: 2,
+                      children: moduleCards,
                   ),
                 ),
               ],
@@ -45,4 +57,5 @@ class TripHome extends StatelessWidget {
       ),
     );
   }
+
 }

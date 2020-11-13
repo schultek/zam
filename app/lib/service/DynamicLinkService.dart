@@ -32,21 +32,21 @@ class DynamicLinkService {
     return dynamicUrl.shortUrl.toString();
   }
 
-  static void handleDynamicLinks() async {
+  static Future<void> handleDynamicLinks() async {
     // TODO: remove this line
     print(await DynamicLinkService.createOrganizerLink());
 
     var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
-      _handleDynamicLink(link);
+      await _handleDynamicLink(link);
     }
 
     FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData link) async {
-      _handleDynamicLink(link);
+      await _handleDynamicLink(link);
     });
   }
 
-  static void _handleDynamicLink(PendingDynamicLinkData link) async {
+  static Future<void> _handleDynamicLink(PendingDynamicLinkData link) async {
     var queryParameters = link.link.queryParameters;
     print(queryParameters);
     if (queryParameters.containsKey("isOrganizer")) {

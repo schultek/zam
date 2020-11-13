@@ -7,6 +7,7 @@ import 'AuthService.dart';
 import 'DynamicLinkService.dart';
 
 class AppService {
+
   static Future<void> initApp(AppState state) async {
     await Firebase.initializeApp();
 
@@ -17,9 +18,11 @@ class AppService {
       user = userCredentials.user;
     }
 
+    print(user.uid);
+
     await state.updateUser(user);
     state.initUserSubscription();
 
-    DynamicLinkService.handleDynamicLinks();
+    await DynamicLinkService.handleDynamicLinks();
   }
 }
