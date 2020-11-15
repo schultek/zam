@@ -63,6 +63,20 @@ class SupplyRepository with ChangeNotifier {
   Article getArticleById(String articleId) {
     return this.articles.firstWhere((article) => article.id == articleId, orElse: () => null);
   }
+
+  Future<void> saveArticle(String articleName, String articleCategory, String articleHint) async {
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .doc(this.tripId)
+        .collection("modules")
+        .doc("supply")
+        .collection("articles")
+        .add({
+          "name" : articleName,
+          "category" : articleCategory,
+          "hint" : articleHint,
+        });
+  }
 }
 
 class SupplyProvider extends StatelessWidget {

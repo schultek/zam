@@ -36,6 +36,7 @@ dependencies:
   reflectable: ^2.2.8
   build_runner: any
   rive: ^0.6.2
+  flutter_speed_dial: ^1.2.5
 
 dev_dependencies:
   flutter_test:

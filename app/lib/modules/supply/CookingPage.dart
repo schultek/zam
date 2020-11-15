@@ -47,16 +47,22 @@ class CookingPage extends StatelessWidget {
   }
 }
 
-class RecipePage extends StatelessWidget {
+class RecipePage extends StatefulWidget {
   final String recipeId;
 
   RecipePage(this.recipeId);
 
   @override
+  _RecipePageState createState() => _RecipePageState();
+}
+
+class _RecipePageState extends State<RecipePage> {
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Selector<SupplyRepository, Recipe>(
-        selector: (context, repository) => repository.getArticleListById(this.recipeId),
+        selector: (context, repository) => repository.getArticleListById(this.widget.recipeId),
         builder: (context, recipe, child) {
           return Column(
             children: [
@@ -105,6 +111,12 @@ class RecipePage extends StatelessWidget {
                   }).toList(),
                 ),
               ),
+              ElevatedButton(
+                child: Text("Artikel hinzufügen"),
+                onPressed: () {
+
+                }
+              )
             ],
           );
         },
