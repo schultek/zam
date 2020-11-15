@@ -1,7 +1,7 @@
 library modules;
 
 export 'thebutton/TheButtonModule.dart';
-export 'chat/ChatModule.dart';
 export 'profile/ProfileModule.dart';
-export 'userManagement/UserManagementModule.dart';
+export 'users/UsersModule.dart';
 export 'supply/Supply.dart';
+export 'welcome/WelcomeModule.dart';

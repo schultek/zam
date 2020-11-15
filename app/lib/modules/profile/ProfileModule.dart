@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:jufa/general/Module.dart';
-import 'package:jufa/models/Trip.dart';
+
+import '../../general/Module.dart';
+import '../../models/Trip.dart';
 
 class Profile extends Module {
 

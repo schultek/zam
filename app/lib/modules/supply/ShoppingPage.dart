@@ -22,7 +22,7 @@ class ShoppingPage extends StatelessWidget {
       ),
       body: Container(
         child: Selector<SupplyRepository, List<Article>>(
-          selector: (context, repository) => repository.articles.sublist(0),
+          selector: (context, repository) => repository.articles,
           builder: (context, articles, _) {
             return ListView.builder(
               itemCount: articles.length,

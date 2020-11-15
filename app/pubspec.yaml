@@ -37,6 +37,7 @@ dependencies:
   build_runner: any
   rive: ^0.6.2
   flutter_speed_dial: ^1.2.5
+  flutter_staggered_animations: ^0.1.2
 
 dev_dependencies:
   flutter_test:

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jufa/modules/supply/CookingPage.dart';
 import 'package:provider/provider.dart';
 
+import 'CookingPage.dart';
 import 'SupplyModels.dart';
 
 class SupplyRepository with ChangeNotifier {
@@ -89,7 +89,6 @@ class SupplyProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SupplyRepository>(
       create: (context) => SupplyRepository(this.tripId),
-      builder: (context, child) => child,
       child: this.child,
     );
   }
@@ -97,7 +96,6 @@ class SupplyProvider extends StatelessWidget {
   static Widget of(BuildContext context, {RecipePage child}) {
     return ChangeNotifierProvider.value(
       value: Provider.of<SupplyRepository>(context, listen: false),
-      builder: (_, child) => child,
       child: child
     );
   }

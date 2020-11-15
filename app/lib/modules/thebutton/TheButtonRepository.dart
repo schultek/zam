@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,7 +23,7 @@ class TheButtonRepository {
       .doc("thebutton")
       .snapshots().listen((snapshot) {
         this.lastReset = (snapshot.get("lastReset") as Timestamp).toDate();
-        this.aliveHours = snapshot.get("aliveHours");
+        this.aliveHours = snapshot.get("aliveHours") * 1.0;
         this._updateValue();
       });
 

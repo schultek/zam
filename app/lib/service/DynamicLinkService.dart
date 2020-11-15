@@ -1,7 +1,7 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
-import 'package:jufa/providers/AppState.dart';
-import 'package:jufa/service/AuthService.dart';
 
+import '../providers/AppState.dart';
+import 'AuthService.dart';
 import 'BackendService.dart';
 
 class DynamicLinkService {
@@ -32,39 +32,37 @@ class DynamicLinkService {
     return dynamicUrl.shortUrl.toString();
   }
 
-  static void handleDynamicLinks() async {
+  static Future<void> handleDynamicLinks() async {
     // TODO: remove this line
     print(await DynamicLinkService.createOrganizerLink());
 
     var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
-      _handleDynamicLink(link);
+      await _handleDynamicLink(link);
     }
 
     FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData link) async {
-      _handleDynamicLink(link);
+      await _handleDynamicLink(link);
     });
   }
 
-  static void _handleDynamicLink(PendingDynamicLinkData link) async {
+  static Future<void> _handleDynamicLink(PendingDynamicLinkData link) async {
     var queryParameters = link.link.queryParameters;
     print(queryParameters);
     if (queryParameters.containsKey("isOrganizer")) {
       if (queryParameters["isOrganizer"] == "yes") {
         await BackendService.updateUserPermissions(true);
-        await AppState.instance.updateUserPermissions();
+        await AppState.instance.updateUserPermissions(true);
       }
     }
     if (queryParameters.containsKey("isParticipant")) {
       if (queryParameters["isParticipant"] == "yes") {
         await BackendService.addUserToTrip(queryParameters["tripId"], UserRoles.Participant);
-        await AppState.instance.updateTrip(queryParameters["tripId"]);
       }
     }
     if (queryParameters.containsKey("isLeader")) {
       if (queryParameters["isLeader"] == "yes") {
         await BackendService.addUserToTrip(queryParameters["tripId"], UserRoles.Leader);
-        await AppState.instance.updateTrip(queryParameters["tripId"]);
       }
     }
   }

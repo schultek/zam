@@ -1,14 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jufa/general/Module.dart';
 import 'package:share/share.dart';
 
+import '../../general/Module.dart';
 import '../../service/DynamicLinkService.dart';
 import '../../models/Trip.dart';
 
-
-class UserModule extends Module {
-
+class UsersModule extends Module {
   @override
   List<ModuleCard> getCards(ModuleData data) {
     return [
@@ -19,7 +17,7 @@ class UserModule extends Module {
             child: Center(child: Text("Users")),
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserPage(data.trip)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => UsersPage(data.trip)));
           },
         ),
       ),
@@ -27,11 +25,10 @@ class UserModule extends Module {
   }
 }
 
-class UserPage extends StatelessWidget {
-
+class UsersPage extends StatelessWidget {
   final Trip trip;
 
-  UserPage(this.trip);
+  UsersPage(this.trip);
 
   IconData getIconForUser(String role) {
     if (role == "organizer") {
@@ -81,7 +78,8 @@ class UserPage extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey),
+                    color: Colors.grey,
+                  ),
                   child: ListView(
                     children: trip.users.entries
                         .map<Widget>(
