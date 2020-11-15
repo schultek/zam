@@ -46,7 +46,6 @@ class SupplyRepository with ChangeNotifier {
       this.articleLists = articleLists;
       this.notifyListeners();
     });
-
   }
 
   @override
@@ -72,10 +71,25 @@ class SupplyRepository with ChangeNotifier {
         .doc("supply")
         .collection("articles")
         .add({
-          "name" : articleName,
-          "category" : articleCategory,
-          "hint" : articleHint,
-        });
+      "name": articleName,
+      "category": articleCategory,
+      "hint": articleHint,
+    });
+  }
+
+  Future<void> saveShoppingList(String listName, List<ArticleEntry> listEntries) async {
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .doc(this.tripId)
+        .collection("modules")
+        .doc("supply")
+        .collection("articleLists")
+        .add({
+      "name": listName,
+      "type": "shoppingList",
+      "entries": listEntries.map((entry) => entry.toMap()).toList(),
+      "note": "",
+    });
   }
 }
 
@@ -93,10 +107,7 @@ class SupplyProvider extends StatelessWidget {
     );
   }
 
-  static Widget of(BuildContext context, {RecipePage child}) {
-    return ChangeNotifierProvider.value(
-      value: Provider.of<SupplyRepository>(context, listen: false),
-      child: child
-    );
+  static Widget of(BuildContext context, {Widget child}) {
+    return ChangeNotifierProvider.value(value: Provider.of<SupplyRepository>(context, listen: false), child: child);
   }
 }

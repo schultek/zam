@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class Article {
 
@@ -33,6 +34,8 @@ class ArticleList {
     String type = doc.get("type");
     if (type == "recipe") {
       return Recipe(doc.id, doc.get("name"), articleEntries, doc.get("preparation"), doc.get("note"));
+    } else if (type == "shoppingList") {
+      return ShoppingList(doc.id, doc.get("name"), articleEntries, doc.get("note"));
     } else {
       return ArticleList(doc.id, doc.get("name"), articleEntries, doc.get("note"));
     }
@@ -53,6 +56,16 @@ class ArticleEntry {
   factory ArticleEntry.fromMap(Map<String, dynamic> relation) {
     return ArticleEntry(relation["articleId"], relation["amount"] + 0.0, relation["unit"], relation["checked"], relation["hint"]);
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "articleId" : articleId,
+      "amount" : amount,
+      "unit" : unit,
+      "checked" : checked,
+      "hint" : hint,
+    };
+  }
 }
 
 class Recipe extends ArticleList {
@@ -61,6 +74,9 @@ class Recipe extends ArticleList {
   Recipe(String id, String name, List<ArticleEntry> entries, this.preparation, String note) : super(id, name, entries, note);
 }
 
+class ShoppingList extends ArticleList {
+  ShoppingList(String id, String name, List<ArticleEntry> entries, String note) : super(id, name, entries, note);
+}
 
 /*Datenmodell
    - Klasse: Artikel

@@ -34,7 +34,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    AppService.initApp(this.widget.state).then((_) => setState(() => isLoaded = true));
+    AppService.initApp(this.widget.state)
+        .then((_) => setState(() => isLoaded = true));
   }
 
   @override

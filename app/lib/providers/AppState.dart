@@ -47,7 +47,8 @@ class AppState with ChangeNotifier {
     }
 
     var stream = FirebaseFirestore.instance
-      .collection("trips").where("users.$userId.role", whereIn: [UserRoles.Participant, UserRoles.Leader, UserRoles.Organizer])
+      .collection("trips")
+      .where("users.$userId.role", whereIn: [UserRoles.Participant, UserRoles.Leader, UserRoles.Organizer])
       .snapshots();
 
     this._tripsSubscription = stream.listen((snapshot) {

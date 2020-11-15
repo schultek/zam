@@ -5,7 +5,7 @@ import 'package:rive/rive.dart';
 
 import '../../general/Module.dart';
 import 'CookingPage.dart';
-import 'ShoppingPage.dart';
+import 'shopping/ShoppingPage.dart';
 import 'SupplyRepository.dart';
 
 class Supply extends Module {
@@ -36,6 +36,7 @@ class Supply extends Module {
       ModuleCard(
         builder: (context) => GestureDetector(
           child: Container(
+            color: Colors.transparent,
             padding: EdgeInsets.all(10),
             child: Center(child: Text("Einkaufen")),
           ),
