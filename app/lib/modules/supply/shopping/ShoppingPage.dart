@@ -23,15 +23,15 @@ class ShoppingPage extends StatelessWidget {
         title: Text("Einkaufsliste"),
       ),
       body: Container(
-        child: Selector<SupplyRepository, List<Article>>(
-          selector: (context, repository) => repository.articles,
-          builder: (context, articles, _) {
+        child: Selector<SupplyRepository, List<ShoppingList>>(
+          selector: (context, repository) => repository.articleLists.whereType<ShoppingList>().toList(),
+          builder: (context, lists, _) {
             return ListView.builder(
-              itemCount: articles.length,
+              itemCount: lists.length,
               itemBuilder: (BuildContext context, int index) {
                 return ListTile(
-                  title: Text(articles[index].name),
-                  subtitle: Text(articles[index].category),
+                  title: Text(lists[index].name),
+                  subtitle: Text("${lists[index].entries.length} Artikel"),
                 );
               },
             );
