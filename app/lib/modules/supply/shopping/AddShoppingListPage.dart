@@ -67,10 +67,12 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
                       )
                   ),
                   suggestionsCallback: (pattern) async {
-                    return Provider.of<SupplyRepository>(context, listen: false).articles
-                        .where((article) => article.name.contains(pattern));
+                    SupplyRepository repository = Provider.of<SupplyRepository>(context, listen: false);
+                    List <dynamic> articles = repository.articles.where((article) => article.name.contains(pattern)).toList();
+                    List <dynamic> recipes = repository.articleLists.whereType<Recipe>().where((recipe) => recipe.name.contains(pattern)).toList();
+                    return articles + recipes;
                   },
-                  itemBuilder: (context, Article suggestion) {
+                  itemBuilder: (context, dynamic suggestion) {
                     return ListTile(
                       leading: Icon(Icons.shopping_cart),
                       title: Text(suggestion.name),
@@ -80,6 +82,8 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
                     if (suggestion is Article) {
                       ArticleEntry entry = ArticleEntry(suggestion.id, 0, "", false, "");
                       listEntries.add(entry);
+                    } else if (suggestion is Recipe) {
+                      ArticleEntry entry =
                     }
                   },
                 )
