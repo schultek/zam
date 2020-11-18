@@ -61,17 +61,21 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
             Container(height: 20),
             TypeAheadField(
               textFieldConfiguration: TextFieldConfiguration(
-                  controller: articleController,
                   decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Suche nach Artikeln oder Rezepten',
-                  )),
+                border: OutlineInputBorder(),
+                labelText: 'Suche nach Artikeln oder Rezepten',
+              )),
               suggestionsCallback: (pattern) async {
-                return Provider.of<SupplyRepository>(context, listen: false)
-                    .articles
-                    .where((article) => article.name.toLowerCase().contains(pattern.toLowerCase()));
+                SupplyRepository repository = Provider.of<SupplyRepository>(context, listen: false);
+                List<dynamic> articles =
+                    repository.articles.where((article) => article.name.toLowerCase().contains(pattern.toLowerCase())).toList();
+                List<dynamic> recipes = repository.articleLists
+                    .whereType<Recipe>()
+                    .where((recipe) => recipe.name.toLowerCase().contains(pattern.toLowerCase()))
+                    .toList();
+                return articles + recipes;
               },
-              itemBuilder: (context, Article suggestion) {
+              itemBuilder: (context, dynamic suggestion) {
                 return ListTile(
                   leading: Icon(Icons.shopping_cart),
                   title: Text(suggestion.name),
@@ -85,6 +89,8 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
                       listEntries.add(articleEntry);
                     });
                   }
+                } else if (suggestion is Recipe) {
+                  //ArticleEntry entry = 1;
                 }
                 articleController.text = "";
               },
