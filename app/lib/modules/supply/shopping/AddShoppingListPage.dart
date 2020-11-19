@@ -90,7 +90,12 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
                     });
                   }
                 } else if (suggestion is Recipe) {
-                  //ArticleEntry entry = 1;
+                  List<ArticleEntry> articleEntries = await RecipeDialog.open(context, suggestion);
+                  if (articleEntries != null) {
+                    setState(() {
+                    listEntries.addAll(articleEntries);
+                    });
+                  }
                 }
                 articleController.text = "";
               },
@@ -182,3 +187,81 @@ class _ArticleEntryDialogState extends State<ArticleEntryDialog> {
     );
   }
 }
+
+
+class RecipeDialog extends StatefulWidget {
+  final Recipe recipe;
+
+  RecipeDialog(this.recipe);
+
+  @override
+  _RecipeDialogState createState() => _RecipeDialogState();
+
+  static Future<List<ArticleEntry>> open(BuildContext context, Recipe recipe) {
+    return showDialog<List<ArticleEntry>>(context: context, builder: (context) => RecipeDialog(recipe));
+  }
+}
+
+class _RecipeDialogState extends State<RecipeDialog> {
+  List<ArticleEntry> articleEntries;
+
+  @override
+  void initState() {
+    super.initState();
+    for (ArticleEntry article in widget.recipe.entries) {
+      articleEntries.add(ArticleEntry(article.articleId, article.amount, article.unit, true, article.hint));
+    }
+  }
+
+  void closeDialog(bool shouldSave) {
+    Navigator.of(context).pop(shouldSave ? articleEntries : null);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      actionsPadding: EdgeInsets.only(right: 10),
+      title: Text(widget.recipe.name),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Amount',
+            ),
+            keyboardType: TextInputType.number,
+            onChanged: (String amount) {
+              setState(() {
+                articleEntry.amount = double.parse(amount);
+              });
+            },
+          ),
+          TextField(
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Unit',
+            ),
+            onChanged: (String unit) {
+              setState(() {
+                articleEntry.unit = unit;
+              });
+            },
+          )
+        ],
+      ),
+      actions: <Widget>[
+        FlatButton(
+          child: Text("Abbrechen", style: TextStyle(color: Colors.black54)),
+          onPressed: () => closeDialog(false),
+        ),
+        FlatButton(
+          child: Text("Speichern", style: TextStyle(color: Colors.black54)),
+          onPressed: () => closeDialog(true),
+        ),
+      ],
+    );
+  }
+}
+
