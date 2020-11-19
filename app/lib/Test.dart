@@ -1,6 +1,6 @@
 
 
-+++++++
+// +++++++
 
 class Tisch {
 
@@ -35,7 +35,7 @@ class Stuhl {
   }
 }
 
-void run() {
+void main() {
 
 
   Tisch tisch1 = Tisch("Olaf");
@@ -60,19 +60,19 @@ void run() {
 
 
 
-Stuhl stuhl2 = tisch1.neuerStuhl();
+Stuhl stuhl2 = tisch1.neuerStuhl(); // 5
 
-stuhl2.sitzen();
+stuhl2.sitzen(); // 6
 
-Stuhl stuhl3 = tisch1.wegziehen(stuhl2);
+Stuhl stuhl3 = tisch1.wegziehen(stuhl2); // 5
 
-tisch1.wegziehen(stuhl1);
+tisch1.wegziehen(stuhl1); // 5 (stuhl1!)
 
-int a = stuhl3.sitzen();
+int a = stuhl3.sitzen(); // 6
 
-int b = stuhl2.sitzen() + a;
+int b = stuhl2.sitzen() + a; // 7 + 6 = 13
 
-
+print(b);
 // was ist b ?
 
 }
