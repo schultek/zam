@@ -82,17 +82,17 @@ class AppScreen extends StatelessWidget {
       floatingActionButton: isAdmin
           ? SpeedDial(
               child: Icon(Icons.admin_panel_settings, size: 20),
-              backgroundColor: Colors.black12,
+              backgroundColor: Colors.grey.shade600,
               children: [
                 SpeedDialChild(
-                    backgroundColor: Colors.black12,
+                    backgroundColor: Colors.grey.shade600,
                     child: Icon(Icons.supervised_user_circle),
                     label: "Nutzer verwalten",
                     onTap: () async {
                       Navigator.of(context).push(MaterialPageRoute(builder: (context) => AdminUserManager()));
                     }),
                 SpeedDialChild(
-                    backgroundColor: Colors.black12,
+                    backgroundColor: Colors.grey.shade600,
                     child: Icon(Icons.bolt),
                     label: "Admin-Link erstellen",
                     onTap: () async {
@@ -100,7 +100,7 @@ class AppScreen extends StatelessWidget {
                       Share.share("Über den folgenden Link wirst du Admin in der Jufa App: $link");
                     }),
                 SpeedDialChild(
-                    backgroundColor: Colors.black12,
+                    backgroundColor: Colors.grey.shade600,
                     child: Icon(Icons.add_link),
                     label: "Organisator-Link erstellen",
                     onTap: () async {
