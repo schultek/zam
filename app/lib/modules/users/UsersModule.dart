@@ -17,7 +17,7 @@ class UsersModule extends Module {
             child: Center(child: Text("Users")),
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => UsersPage(data.trip)));
+            Navigator.of(context).push(ModulePageRoute(context, child: UsersPage(data.trip)));
           },
         ),
       ),

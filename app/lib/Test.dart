@@ -60,19 +60,40 @@ void main() {
 
 
 
-Stuhl stuhl2 = tisch1.neuerStuhl(); // 5
+  Stuhl stuhl2 = tisch1.neuerStuhl();
 
-stuhl2.sitzen(); // 6
+  stuhl2.sitzen();
 
-Stuhl stuhl3 = tisch1.wegziehen(stuhl2); // 5
+  Stuhl stuhl3 = tisch1.wegziehen(stuhl2); // 5
 
-tisch1.wegziehen(stuhl1); // 5 (stuhl1!)
+  tisch1.wegziehen(stuhl1);
 
-int a = stuhl3.sitzen(); // 6
+  int a = stuhl3.sitzen();
 
-int b = stuhl2.sitzen() + a; // 7 + 6 = 13
+  int b = stuhl2.sitzen() + a;
 
-print(b);
-// was ist b ?
+  print(b);
+  // was ist b ?
+
+
+
+  // int, double, bool, float, String -> Valuetype / Wertetype
+  // List, alles andere -> Referencetype / Referenztyp
+
+  stuhl2 == stuhl3
+  stuhl2 != stuhl1
+
+  a != b
+
+
+
+  List<int> l1 = [];
+
+  List<int> l2 = l1;
+  
+
+  l1.add(1);
+
+  // l2 = [1];
 
 }

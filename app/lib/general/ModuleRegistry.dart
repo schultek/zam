@@ -1,7 +1,4 @@
-import 'package:reflectable/reflectable.dart';
-import '../main.reflectable.dart';
-
-import 'Module.dart';
+part of module;
 
 class ModuleRegistry {
 

@@ -18,7 +18,9 @@ class Supply extends Module {
             padding: EdgeInsets.all(10),
             child: Stack(
               children: [
-                Positioned.fill(child: CookingPot()),
+                Positioned.fill(
+                  child: ModuleHero(tag: 'cooking', child: CookingPot()),
+                ),
                 Positioned(
                   top: 8,
                   left: 0,
@@ -29,7 +31,10 @@ class Supply extends Module {
             ),
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SupplyProvider(tripId: data.trip.id, child: CookingPage())));
+            Navigator.of(context).push(ModulePageRoute(
+              context,
+              child: SupplyProvider(tripId: data.trip.id, child: CookingPage()),
+            ));
           },
         ),
       ),
@@ -41,32 +46,36 @@ class Supply extends Module {
             child: Center(child: Text("Einkaufen")),
           ),
           onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SupplyProvider(tripId: data.trip.id, child: ShoppingPage())));
+            Navigator.of(context).push(ModulePageRoute(
+              context,
+              child: SupplyProvider(tripId: data.trip.id, child: ShoppingPage()),
+            ));
           },
         ),
       ),
     ];
   }
-
 }
 
 class CookingPot extends StatelessWidget {
+  static Future<Artboard> future = rootBundle.load('lib/assets/animations/cookingpot.riv').then((data) async {
+    var file = RiveFile();
+    file.import(data);
+
+    var artboard = file.mainArtboard;
+
+    artboard.addController(SimpleAnimation("Stir"));
+    artboard.addController(SimpleAnimation("Smoke"));
+
+    artboard.originY = -0.12;
+
+    return artboard;
+  });
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Artboard>(
-      future: rootBundle.load('lib/assets/animations/cookingpot.riv').then((data) async {
-        var file = RiveFile();
-        file.import(data);
-
-        var artboard = file.mainArtboard;
-
-        artboard.addController(SimpleAnimation("Stir"));
-        artboard.addController(SimpleAnimation("Smoke"));
-
-        artboard.originY = -0.12;
-
-        return artboard;
-      }),
+      future: future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           return Rive(
@@ -81,4 +90,3 @@ class CookingPot extends StatelessWidget {
     );
   }
 }
-

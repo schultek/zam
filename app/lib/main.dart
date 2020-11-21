@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -5,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'general/ModuleRegistry.dart';
+import 'general/Module.dart';
 import 'models/Trip.dart';
 import 'service/AppService.dart';
 import 'providers/AppState.dart';
@@ -87,7 +89,7 @@ class AppScreen extends StatelessWidget {
                     child: Icon(Icons.supervised_user_circle),
                     label: "Nutzer verwalten",
                     onTap: () async {
-
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => AdminUserManager()));
                     }),
                 SpeedDialChild(
                     backgroundColor: Colors.black12,
@@ -108,6 +110,22 @@ class AppScreen extends StatelessWidget {
               ],
             )
           : Container(),
+    );
+  }
+}
+
+class AdminUserManager extends StatefulWidget {
+  @override
+  _AdminUserManagerState createState() => _AdminUserManagerState();
+}
+
+class _AdminUserManagerState extends State<AdminUserManager> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+      ),
     );
   }
 }
