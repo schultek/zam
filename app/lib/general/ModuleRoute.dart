@@ -5,8 +5,8 @@ class ModulePageRoute extends PageRouteBuilder {
 
   ModulePageRoute(BuildContext context, {this.child})
       : super(
-          reverseTransitionDuration: Duration(milliseconds: 800),
-          transitionDuration: Duration(milliseconds: 800),
+          //reverseTransitionDuration: Duration(milliseconds: 800),
+          //transitionDuration: Duration(milliseconds: 800),
           maintainState: false,
           pageBuilder: (ctx, animation, a2) {
 
@@ -16,16 +16,32 @@ class ModulePageRoute extends PageRouteBuilder {
             }
 
             animation.addStatusListener((status) {
-              module.animate(animation.value);
+              module.animate(context, animation.value);
             });
             
             return AnimatedBuilder(
               animation: animation,
               builder: (context, child) {
-                var transition = module.animate(animation.value);
+                var transition = module.animate(context, animation.value);
                 if (transition != null) {
                   return Stack(
                     children: [
+                      Positioned.fromRect(
+                        rect: transition.page,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 10,
+                                color: Colors.black.withOpacity(transition.cardShadow),
+                              )
+                            ],
+                            borderRadius: BorderRadius.circular(transition.clipRadius),
+                            color: Colors.grey.shade300,
+                          ),
+                        ),
+                      ),
+                      transition.card,
                       ClipRRect(
                         clipper: TransitionClipper(transition),
                         child: Opacity(
@@ -68,21 +84,6 @@ class ModulePageRoute extends PageRouteBuilder {
 
     return Matrix4.identity()..translate(dx, dy)..scale(scale);
 
-  }
-}
-
-class ModuleTransition {
-
-  Rect page;
-
-  double cardShadow;
-  double clipRadius;
-  double pageOpacity;
-
-  ModuleTransition(this.page, double value) {
-    this.cardShadow = min(0.3, value * 2);
-    this.clipRadius = (1 - Curves.easeIn.transformRange(value, r: Range(0.7, 1))) * 20;
-    this.pageOpacity = Curves.easeInOut.transformRange(value, r: Range(0.1, 1));
   }
 }
 

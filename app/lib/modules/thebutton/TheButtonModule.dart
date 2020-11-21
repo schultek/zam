@@ -123,7 +123,6 @@ class TheButton extends StatelessWidget {
 
   String tripId;
 
-
   TheButton(this.tripId);
 
   @override
@@ -149,8 +148,6 @@ class TheButton extends StatelessWidget {
                 var fillController = TheButtonAnimationController();
                 artboard.addController(fillController);
 
-                var initialValue = await repo.buttonState.first;
-
                 var deadController, deadEntryController;
 
                 var runDeadAnimation = () {
@@ -160,6 +157,8 @@ class TheButton extends StatelessWidget {
                   deadEntryController = SimpleAnimation("Dead Entry");
                   artboard.addController(deadEntryController);
                 };
+
+                var initialValue = await repo.getValue();
 
                 fillController.jumpTo(initialValue);
                 if (initialValue >= 1) {

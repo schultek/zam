@@ -14,7 +14,6 @@ import 'package:jufa/modules/modules.dart';
 part 'ModuleRegistry.dart';
 part 'ModuleCard.dart';
 part 'ModuleRoute.dart';
-part 'ModulePopout.dart';
 
 class ModuleReflector extends Reflectable {
   const ModuleReflector()

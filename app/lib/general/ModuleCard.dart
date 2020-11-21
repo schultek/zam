@@ -6,84 +6,44 @@ class ModuleData {
   ModuleData({this.trip});
 }
 
-class TransformListener<T, U> {
-  T value;
-  U Function(T value) listener;
-
-  TransformListener(this.value);
-
-  U apply(T value) {
-    this.value = value;
-    if (this.listener != null) {
-      return this.listener(value);
-    } else {
-      return null;
-    }
-  }
-
-  void onValue(U Function(T value) listener) {
-    this.listener = listener;
-    listener(this.value);
-  }
-}
-
-class ModuleCardLocator extends InheritedWidget {
-  final TransformListener<double, ModuleTransition> listener;
-
-  ModuleCardLocator({Widget child, this.listener})
-      : super(
-          child: AnimatedModuleCard(
-            listener: listener,
-            child: child,
-          ),
-        );
-
-  static ModuleCardLocator of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<ModuleCardLocator>();
-  }
-
-  ModuleTransition animate(double value) {
-    return this.listener.apply(value);
-  }
-
-  @override
-  bool updateShouldNotify(ModuleCardLocator old) => false;
-}
-
 class ModuleCard {
   final Widget Function(BuildContext context) builder;
+  final Widget Function(BuildContext context) onNavigate;
 
-  ModuleCard({this.builder});
+  ModuleCard({this.builder, this.onNavigate});
 
   Widget build() {
-    return ModuleCardLocator(
-      listener: TransformListener(0.0),
+    return ModuleCardTransition(
       child: Builder(
-        builder: (context) => Material(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: Colors.grey[300],
-          child: this.builder(context),
+        builder: (context) => GestureDetector(
+          child: Material(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            color: Colors.grey[300],
+            child: this.builder(context),
+          ),
+          onTap: () {
+            if (this.onNavigate != null) {
+              Navigator.of(context).push(ModulePageRoute(context, child: this.onNavigate(context)));
+            }
+          },
         ),
       ),
     );
   }
 }
 
-class AnimatedModuleCard extends StatefulWidget {
+class ModuleCardTransition extends StatefulWidget {
   final Widget child;
-  final TransformListener<double, ModuleTransition> listener;
 
-  AnimatedModuleCard({this.child, this.listener});
+  ModuleCardTransition({this.child});
 
   @override
-  _AnimatedModuleCardState createState() => _AnimatedModuleCardState();
+  _ModuleCardTransitionState createState() => _ModuleCardTransitionState();
 }
 
-class _AnimatedModuleCardState extends State<AnimatedModuleCard> with SingleTickerProviderStateMixin {
+class _ModuleCardTransitionState extends State<ModuleCardTransition> with SingleTickerProviderStateMixin {
   Rect fullRect;
   final containerKey = GlobalKey();
-
-  bool childVisible = true;
 
   Rect get moduleRect => this.containerKey.globalPaintBounds;
 
@@ -93,135 +53,95 @@ class _AnimatedModuleCardState extends State<AnimatedModuleCard> with SingleTick
   void initState() {
     super.initState();
     _moduleTransform = RectTransform(Offset.zero, 1);
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      fullRect = Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
-      widget.listener.onValue((double value) {
-        var dxCurve = Curves.easeIn;
-        var dyCurve = Curves.easeOut;
-        var dRange = Range(0, 0.8);
-        var scaleCurve = Curves.easeIn;
-
-        var dx = fullRect.center.dx - moduleRect.center.dx;
-        var dy = fullRect.center.dy - moduleRect.center.dy;
-
-        _moduleTransform = RectTransform(
-          Offset(dx * dxCurve.transformRange(value, r: dRange), dy * dyCurve.transformRange(value, r: dRange)),
-          1 + scaleCurve.transform(value) * 0.2,
-        );
-
-        var cardRect = moduleRect.transform(_moduleTransform);
-
-        var pageCurve = Curves.easeInOut;
-        var pageRange = Range(0.2, 1);
-
-        var pageRect = Rect.lerp(cardRect, fullRect, pageCurve.transformRange(value, r: pageRange));
-
-        var transition = ModuleTransition(pageRect, value);
-
-        ModuleCardPopout.of(context).onPopout(value > 0
-            ? [
-                Positioned.fromRect(
-                  rect: pageRect,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 20,
-                          color: Colors.black.withOpacity(transition.cardShadow),
-                        )
-                      ],
-                      borderRadius: BorderRadius.circular(transition.clipRadius),
-                      color: Colors.grey.shade300,
-                    ),
-                  ),
-                ),
-                Positioned.fromRect(
-                  rect: cardRect,
-                  child: widget.child,
-                ),
-              ]
-            : []);
-
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          if (mounted)
-            setState(() {
-              childVisible = value == 0;
-            });
-        });
-
-        return transition;
-      });
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      key: containerKey,
-      child: Stack(
-        children: [
-          HeroModuleBuilder(child: widget.child),
-          childVisible
-              ? Container()
-              : SizedBox.fromSize(
-                  size: moduleRect.size,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey.shade100,
-                    ),
-                  ),
-                ),
-          childVisible
-              ? Container()
-              : Transform(
-                  transform: _moduleTransform.toMatrix4(),
-                  child: widget.child,
-                ),
-        ],
+    return ModuleCardLocator(
+      onAnimate: onAnimate,
+      child: Container(
+        key: containerKey,
+        child: Transform(
+          alignment: Alignment.center,
+          transform: _moduleTransform.toMatrix4(),
+          child: widget.child,
+        ),
       ),
     );
   }
-}
 
-class ModuleHero extends StatelessWidget {
-  final Object tag;
-  final HeroPlaceholderBuilder placeholderBuilder;
-  final Widget child;
-
-  const ModuleHero({
-    Key key,
-    @required this.tag,
-    this.placeholderBuilder,
-    @required this.child,
-  })  : assert(tag != null),
-        assert(child != null),
-        super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    var transitional = HeroModuleBuilder.of(context);
-    if (transitional != null) {
-      return Hero(tag: tag, placeholderBuilder: placeholderBuilder, child: child);
-    } else {
-      return Container();
+  ModuleTransition onAnimate(BuildContext context, double value) {
+    if (fullRect == null) {
+      fullRect = Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
     }
+
+    var dxCurve = Curves.easeInOutQuad;
+    var dyCurve = Curves.easeInCubic;
+    var dRange = Range(0, 0.8);
+    var scaleCurve = Curves.easeIn;
+
+    var dx = fullRect.center.dx - moduleRect.center.dx;
+    var dy = fullRect.center.dy - moduleRect.center.dy;
+
+    _moduleTransform = RectTransform(
+      Offset(dx * dxCurve.transformRange(value, r: dRange), dy * dyCurve.transformRange(value, r: dRange)),
+      1 + scaleCurve.transform(value) * 0.2,
+    );
+
+    var cardRect = moduleRect.transform(_moduleTransform);
+
+    var pageCurve = Curves.easeInOut;
+    var pageRange = Range(0.2, 1);
+
+    var pageRect = Rect.lerp(cardRect, fullRect, pageCurve.transformRange(value, r: pageRange));
+
+    var card = value > 0
+        ? Positioned.fromRect(
+            rect: cardRect,
+            child: widget.child,
+          )
+        : Container();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (mounted) setState(() {});
+    });
+
+    return ModuleTransition(pageRect, card, value);
   }
 }
 
-class HeroModuleBuilder extends InheritedWidget {
-  const HeroModuleBuilder({
-    Key key,
-    @required Widget child,
-  }) : super(key: key, child: child);
+class ModuleCardLocator extends InheritedWidget {
+  final Function(BuildContext context, double d) onAnimate;
 
-  static HeroModuleBuilder of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<HeroModuleBuilder>();
+  ModuleCardLocator({Widget child, this.onAnimate}) : super(child: child);
+
+  static ModuleCardLocator of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ModuleCardLocator>();
+  }
+
+  ModuleTransition animate(BuildContext context, double value) {
+    return this.onAnimate(context, value);
   }
 
   @override
-  bool updateShouldNotify(HeroModuleBuilder old) => false;
+  bool updateShouldNotify(ModuleCardLocator old) => false;
+}
+
+class ModuleTransition {
+
+  Rect page;
+  Widget card;
+
+  double cardShadow;
+  double clipRadius;
+  double pageOpacity;
+
+
+  ModuleTransition(this.page, this.card, double value) {
+    this.cardShadow = min(0.2, value);
+    this.clipRadius = (1 - Curves.easeIn.transformRange(value, r: Range(0.7, 1))) * 20;
+    this.pageOpacity = Curves.easeInOut.transformRange(value, r: Range(0.1, 0.6));
+  }
 }
 
 class Range {

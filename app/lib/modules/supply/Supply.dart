@@ -13,45 +13,28 @@ class Supply extends Module {
   List<ModuleCard> getCards(ModuleData data) {
     return [
       ModuleCard(
-        builder: (context) => GestureDetector(
-          child: Container(
-            padding: EdgeInsets.all(10),
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: ModuleHero(tag: 'cooking', child: CookingPot()),
-                ),
-                Positioned(
-                  top: 8,
-                  left: 0,
-                  right: 0,
-                  child: Center(child: Text("Kochen", style: TextStyle(color: Colors.black45))),
-                )
-              ],
-            ),
+        builder: (context) => Container(
+          padding: EdgeInsets.all(10),
+          child: Stack(
+            children: [
+              Positioned.fill(child: CookingPot()),
+              Positioned(
+                top: 8,
+                left: 0,
+                right: 0,
+                child: Center(child: Text("Kochen", style: TextStyle(color: Colors.black45))),
+              )
+            ],
           ),
-          onTap: () {
-            Navigator.of(context).push(ModulePageRoute(
-              context,
-              child: SupplyProvider(tripId: data.trip.id, child: CookingPage()),
-            ));
-          },
         ),
+        onNavigate: (context) => SupplyProvider(tripId: data.trip.id, child: CookingPage()),
       ),
       ModuleCard(
-        builder: (context) => GestureDetector(
-          child: Container(
-            color: Colors.transparent,
-            padding: EdgeInsets.all(10),
-            child: Center(child: Text("Einkaufen")),
-          ),
-          onTap: () {
-            Navigator.of(context).push(ModulePageRoute(
-              context,
-              child: SupplyProvider(tripId: data.trip.id, child: ShoppingPage()),
-            ));
-          },
+        builder: (context) => Container(
+          padding: EdgeInsets.all(10),
+          child: Center(child: Text("Einkaufen")),
         ),
+        onNavigate: (context) => SupplyProvider(tripId: data.trip.id, child: ShoppingPage()),
       ),
     ];
   }

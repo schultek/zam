@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:jufa/general/Module.dart';
 import 'package:provider/provider.dart';
 
 import 'Supply.dart';
@@ -14,10 +13,12 @@ class CookingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade300,
-        leading: Hero(
-          tag: 'cooking',
-          child: SizedBox(width: 20, height: 20, child: CookingPot()),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
         ),
         title: Text("Rezepteliste"),
       ),

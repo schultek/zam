@@ -23,27 +23,25 @@ class _TripHomeState extends State<TripHome> {
 
   @override
   Widget build(BuildContext context) {
-    return ModuleController(
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(widget.trip.name, style: Theme.of(context).textTheme.headline5),
-              Container(height: 20),
-              Expanded(
-                child: GridView.count(
-                  primary: false,
-                  padding: const EdgeInsets.all(20),
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  crossAxisCount: 2,
-                  children: moduleCards,
-                ),
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(widget.trip.name, style: Theme.of(context).textTheme.headline5),
+            Container(height: 20),
+            Expanded(
+              child: GridView.count(
+                primary: false,
+                padding: const EdgeInsets.all(20),
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 20,
+                crossAxisCount: 2,
+                children: moduleCards,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
