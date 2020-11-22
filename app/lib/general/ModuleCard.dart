@@ -6,20 +6,29 @@ class ModuleData {
   ModuleData({this.trip});
 }
 
+enum ModuleCardSize {
+  Square, Wide
+}
+
 class ModuleCard {
+
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context) onNavigate;
+  final ModuleCardSize size;
 
-  ModuleCard({this.builder, this.onNavigate});
+  ModuleCard({this.builder, this.onNavigate, this.size = ModuleCardSize.Square});
 
   Widget build() {
     return ModuleCardTransition(
       child: Builder(
         builder: (context) => GestureDetector(
-          child: Material(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            color: Colors.grey[300],
-            child: this.builder(context),
+          child: AspectRatio(
+            aspectRatio: size == ModuleCardSize.Square ? 1 / 1 : 2 / 1,
+            child: Material(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              color: Colors.grey[300],
+              child: this.builder(context),
+            ),
           ),
           onTap: () {
             if (this.onNavigate != null) {

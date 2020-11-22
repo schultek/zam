@@ -20,7 +20,8 @@ class ModuleRegistry {
   }
 
   static List<Module> getAllModules() {
-    return modules.map((m) => m.newInstance("", []) as Module).toList();
+    var list = modules.map((m) => m.newInstance("", []) as Module).toList();
+    return list + list;
   }
 
 }

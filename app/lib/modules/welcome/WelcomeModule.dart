@@ -7,6 +7,7 @@ class WelcomeModule extends Module {
   List<ModuleCard> getCards(ModuleData context) {
     return [
       ModuleCard(
+        size: ModuleCardSize.Wide,
         builder: (context) => Container(
           padding: EdgeInsets.all(10),
           child: Center(child: Text("Welcome")),
