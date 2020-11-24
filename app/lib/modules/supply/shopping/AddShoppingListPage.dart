@@ -68,13 +68,17 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
               )),
               suggestionsCallback: (pattern) async {
                 SupplyRepository repository = Provider.of<SupplyRepository>(context, listen: false);
-                List<dynamic> articles =
-                    repository.articles.where((article) => article.name.toLowerCase().contains(pattern.toLowerCase())).toList();
-                List<dynamic> recipes = repository.articleLists
-                    .whereType<Recipe>()
-                    .where((recipe) => recipe.name.toLowerCase().contains(pattern.toLowerCase()))
-                    .toList();
-                return articles + recipes;
+                List<dynamic> suggestions = [];
+                suggestions.addAll(
+                  repository.articles.where((article) => article.name.toLowerCase().contains(pattern.toLowerCase())).toList(),
+                );
+                suggestions.addAll(
+                  repository.articleLists
+                      .whereType<Recipe>()
+                      .where((recipe) => recipe.name.toLowerCase().contains(pattern.toLowerCase()))
+                      .toList(),
+                );
+                return suggestions;
               },
               itemBuilder: (context, dynamic suggestion) {
                 return ListTile(
@@ -94,7 +98,7 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
                   List<ArticleEntry> articleEntries = await RecipeDialog.open(context, suggestion);
                   if (articleEntries != null) {
                     setState(() {
-                    listEntries.addAll(articleEntries);
+                      listEntries.addAll(articleEntries);
                     });
                   }
                 }
@@ -189,7 +193,6 @@ class _ArticleEntryDialogState extends State<ArticleEntryDialog> {
   }
 }
 
-
 class RecipeDialog extends StatefulWidget {
   final Recipe recipe;
 
@@ -226,9 +229,7 @@ class _RecipeDialogState extends State<RecipeDialog> {
       title: Text(widget.recipe.name),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
-
-        ],
+        children: [],
       ),
       actions: <Widget>[
         FlatButton(
@@ -243,4 +244,3 @@ class _RecipeDialogState extends State<RecipeDialog> {
     );
   }
 }
-
