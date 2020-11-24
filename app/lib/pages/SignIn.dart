@@ -5,8 +5,14 @@ import 'package:provider/provider.dart';
 import '../providers/AppState.dart';
 import '../service/AuthService.dart';
 
-class EnterPhoneNumber extends StatelessWidget {
+class EnterPhoneNumber extends StatefulWidget {
+  @override
+  _EnterPhoneNumberState createState() => _EnterPhoneNumberState();
+}
+
+class _EnterPhoneNumberState extends State<EnterPhoneNumber> {
   String phoneNumber = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +25,9 @@ class EnterPhoneNumber extends StatelessWidget {
               labelText: "Telefonnummer",
             ),
             onChanged: (text) {
-              phoneNumber = text;
+              setState(() {
+                phoneNumber = text;
+              });
             },
             keyboardType: TextInputType.phone,
           ),
@@ -43,11 +51,17 @@ class EnterPhoneNumber extends StatelessWidget {
   }
 }
 
-class EnterCode extends StatelessWidget {
-  String code = "";
-  String verificationId;
+class EnterCode extends StatefulWidget {
+  final String verificationId;
 
   EnterCode(this.verificationId);
+
+  @override
+  _EnterCodeState createState() => _EnterCodeState();
+}
+
+class _EnterCodeState extends State<EnterCode> {
+  String code = "";
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +78,9 @@ class EnterCode extends StatelessWidget {
                   labelText: "Code",
                 ),
                 onChanged: (text) {
-                  code = text;
+                  setState(() {
+                    code = text;
+                  });
                 },
               ),
               Container(
@@ -73,7 +89,7 @@ class EnterCode extends StatelessWidget {
               ElevatedButton(
                 child: Text("Bestätigen"),
                 onPressed: () async {
-                  var user = await AuthService.verifyCode(code, verificationId);
+                  var user = await AuthService.verifyCode(code, widget.verificationId);
                   await Provider.of<AppState>(context, listen: false).updateUser(user);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },

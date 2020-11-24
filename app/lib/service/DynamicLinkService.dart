@@ -78,7 +78,6 @@ class DynamicLinkService {
     if (updatedClaims) {
       await AppState.instance.updateUserClaims(true);
     }
-
   }
 
   static Future<String> createEncodedLinkParams(Map<String, dynamic> params) async {

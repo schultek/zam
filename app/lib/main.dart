@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -18,15 +16,16 @@ import 'service/DynamicLinkService.dart';
 void main() {
   ModuleRegistry.registerModules();
   runApp(ChangeNotifierProvider<AppState>(
-      create: (context) => AppState(),
-      builder: (context, _) {
-        var state = Provider.of<AppState>(context, listen: false);
-        return MyApp(state);
-      }));
+    create: (context) => AppState(),
+    builder: (context, _) {
+      var state = Provider.of<AppState>(context, listen: false);
+      return MyApp(state);
+    },
+  ));
 }
 
 class MyApp extends StatefulWidget {
-  AppState state;
+  final AppState state;
   MyApp(this.state);
 
   @override

@@ -17,6 +17,7 @@ class _TripHomeState extends State<TripHome> {
 
   @override
   void initState() {
+    super.initState();
     ModuleData moduleData = ModuleData(trip: widget.trip);
     List<ModuleCard> moduleCards = ModuleRegistry.getAllModules().expand((m) => m.getCards(moduleData)).toList();
 

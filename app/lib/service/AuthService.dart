@@ -1,27 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-
   static User getUser() {
     return FirebaseAuth.instance.currentUser;
   }
 
-  static Future<void> signIn(String phoneNumber, void Function(String verificationId) onSent, void Function(User user) onCompleted) async {
+  static Future<void> signIn(String phoneNumber, void Function(String) onSent, void Function(User) onCompleted) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          var user = await linkOrSignInUser(credential);
-          onCompleted(user);
-        },
-        verificationFailed: (FirebaseAuthException exception) {
-          print(exception.message);
-        },
-        codeSent: (String verificationId, int resendToken) {
-          onSent(verificationId);
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {
-          print("TIMEOUT");
-        });
+      phoneNumber: phoneNumber,
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        var user = await linkOrSignInUser(credential);
+        onCompleted(user);
+      },
+      verificationFailed: (FirebaseAuthException exception) {
+        print(exception.message);
+      },
+      codeSent: (String verificationId, int resendToken) {
+        onSent(verificationId);
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        print("TIMEOUT");
+      },
+    );
   }
 
   static Future<User> verifyCode(String code, String verificationId) async {
@@ -34,7 +34,6 @@ class AuthService {
     try {
       userCredential = await getUser().linkWithCredential(phoneAuthCredential);
     } on FirebaseAuthException catch (exception) {
-      print(exception.code);
       if (exception.code == "credential-already-in-use") {
         userCredential = await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
       } else {

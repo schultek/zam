@@ -5,8 +5,14 @@ import 'package:provider/provider.dart';
 import '../providers/AppState.dart';
 import '../service/DatabaseService.dart';
 
-class TripCreate extends StatelessWidget {
+class TripCreate extends StatefulWidget {
+  @override
+  _TripCreateState createState() => _TripCreateState();
+}
+
+class _TripCreateState extends State<TripCreate> {
   String tripName;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +27,9 @@ class TripCreate extends StatelessWidget {
                   labelText: "Freizeit-Name",
                 ),
                 onChanged: (text) {
-                  tripName = text;
+                  setState(() {
+                    tripName = text;
+                  });
                 },
               ),
               Container(

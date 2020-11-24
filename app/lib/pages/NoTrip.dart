@@ -11,25 +11,22 @@ class NoTrip extends StatefulWidget {
 }
 
 class _NoTripState extends State<NoTrip> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      var state = Provider.of<AppState>(context, listen: false);
 
-  bool isInit = false;
+      if (state.claims.canCreateTrips) {
+        if (state.user.isAnonymous) {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => EnterPhoneNumber()));
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    if (!this.isInit) {
-      this.isInit = true;
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        var state = Provider.of<AppState>(context, listen: false);
-
-        if (state.claims.canCreateTrips) {
-          if (state.user.isAnonymous) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => EnterPhoneNumber()));
-          }
-        }
-      });
-    }
-
     return Center(
       child: Consumer<AppState>(
         builder: (BuildContext context, AppState state, _) {
