@@ -3,17 +3,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:jufa/service/AuthService.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'general/Module.dart';
 import 'models/Trip.dart';
-import 'providers/AppState.dart';
 import 'pages/TripHome.dart';
 import 'pages/NoTrip.dart';
+import 'providers/AppState.dart';
 import 'service/DynamicLinkService.dart';
+import 'service/AuthService.dart';
 
 void main() {
   ModuleRegistry.registerModules();

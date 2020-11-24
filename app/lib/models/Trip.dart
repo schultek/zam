@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:jufa/service/AuthService.dart';
+
+import '../service/AuthService.dart';
 
 class Trip {
   String name;

@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 
 import '../../general/Module.dart';
-import 'CookingPage.dart';
 import 'shopping/ShoppingPage.dart';
+import 'CookingPage.dart';
 import 'SupplyRepository.dart';
 
 class Supply extends Module {

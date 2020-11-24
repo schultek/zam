@@ -120,8 +120,7 @@ class ExpandClipper extends CustomClipper<Rect> {
 }
 
 class TheButton extends StatelessWidget {
-
-  String tripId;
+  final String tripId;
 
   TheButton(this.tripId);
 

@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 
 import '../models/Trip.dart';
-import '../service/AuthService.dart';
 
 class AppState with ChangeNotifier {
   User user;

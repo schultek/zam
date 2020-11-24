@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:jufa/models/Trip.dart';
+
+import '../models/Trip.dart';
 
 class DatabaseService {
 

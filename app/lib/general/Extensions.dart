@@ -1,4 +1,3 @@
-
 extension PropertyCompare<T> on Set<T> {
 
   bool containsAllBy<U>(Iterable<T> other, U Function(T object) propertyGetter) {

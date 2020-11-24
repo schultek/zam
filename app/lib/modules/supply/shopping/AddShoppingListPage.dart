@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:jufa/modules/supply/SupplyModels.dart';
 import 'package:provider/provider.dart';
 
+import '../SupplyModels.dart';
 import '../SupplyRepository.dart';
 
 class AddShoppingListPage extends StatefulWidget {
@@ -19,6 +19,7 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
 
   @override
   void initState() {
+    super.initState();
     articleController = TextEditingController();
   }
 
