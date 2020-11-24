@@ -8,9 +8,8 @@ import '../models/Trip.dart';
 import '../service/AuthService.dart';
 
 class AppState with ChangeNotifier {
-
   User user;
-  bool canCreateTrips = false;
+  UserClaims claims = UserClaims();
   List<Trip> trips = [];
   String selectedTripId;
 
@@ -30,7 +29,9 @@ class AppState with ChangeNotifier {
   @override
   void dispose() {
     super.dispose();
-    this._userSubscription.cancel();
+    if (this._userSubscription != null) {
+      this._userSubscription.cancel();
+    }
     if (this._tripsSubscription != null) {
       this._tripsSubscription.cancel();
     }
@@ -41,21 +42,22 @@ class AppState with ChangeNotifier {
     this.notifyListeners();
   }
 
-  Future<void> updateTripsListener(String userId) async {
+  Future<void> updateTripsListener() async {
     if (this._tripsSubscription != null) {
       this._tripsSubscription.cancel();
     }
 
-    var stream = FirebaseFirestore.instance
-      .collection("trips")
-      .where("users.$userId.role", whereIn: [UserRoles.Participant, UserRoles.Leader, UserRoles.Organizer])
-      .snapshots();
+    var stream = this.claims.isAdmin
+        ? FirebaseFirestore.instance.collection("trips").snapshots()
+        : FirebaseFirestore.instance
+            .collection("trips")
+            .where("users.${user.uid}.role", whereIn: [UserRoles.Participant, UserRoles.Leader, UserRoles.Organizer]).snapshots();
 
     this._tripsSubscription = stream.listen((snapshot) {
-        this.trips = snapshot.docs.map((doc) => Trip.fromDocument(doc)).toList();
-        this.selectedTripId = this.trips.length > 0 ? this.trips.first.id : null;
-        this.notifyListeners();
-      });
+      this.trips = snapshot.docs.map((doc) => Trip.fromDocument(doc)).toList();
+      this.selectedTripId = this.trips.length > 0 ? this.trips.first.id : null;
+      this.notifyListeners();
+    });
 
     await stream.first;
   }
@@ -70,22 +72,40 @@ class AppState with ChangeNotifier {
   }
 
   Future<void> updateUser(User user) async {
-    var updatePermissions = false;
-    if (this.user == null || this.user.uid != user.uid) {
-      await this.updateTripsListener(user.uid);
-      updatePermissions = true;
-    }
+    var userChanged = (this.user == null || this.user.uid != user.uid);
     this.user = user;
-    if (updatePermissions) {
-      await this.updateUserPermissions(false);
+    if (userChanged) {
+      var claimsChanged = await this.updateUserClaims(false);
+      if (!claimsChanged) {
+        await this.updateTripsListener();
+      }
     }
     this.notifyListeners();
   }
 
-  Future<void> updateUserPermissions(bool forceRefresh) async {
+  Future<bool> updateUserClaims(bool forceRefresh) async {
     var result = await user.getIdTokenResult(forceRefresh);
-    this.canCreateTrips = result.claims["canCreateTrips"] ?? false;
-    this.notifyListeners();
-  }
 
+    print(result.claims);
+
+    var canCreateTrips = result.claims["canCreateTrips"] ?? false;
+    var isAdmin = result.claims["isAdmin"] ?? false;
+
+    var claimsChanged = this.claims.canCreateTrips != canCreateTrips || this.claims.isAdmin != isAdmin;
+
+    this.claims.canCreateTrips = canCreateTrips;
+    this.claims.isAdmin = isAdmin;
+
+    if (claimsChanged) {
+      await this.updateTripsListener();
+      this.notifyListeners();
+    }
+
+    return claimsChanged;
+  }
+}
+
+class UserClaims {
+  bool canCreateTrips = false;
+  bool isAdmin = false;
 }

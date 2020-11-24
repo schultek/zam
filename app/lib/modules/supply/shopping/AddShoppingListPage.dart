@@ -226,29 +226,7 @@ class _RecipeDialogState extends State<RecipeDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Amount',
-            ),
-            keyboardType: TextInputType.number,
-            onChanged: (String amount) {
-              setState(() {
-                articleEntry.amount = double.parse(amount);
-              });
-            },
-          ),
-          TextField(
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Unit',
-            ),
-            onChanged: (String unit) {
-              setState(() {
-                articleEntry.unit = unit;
-              });
-            },
-          )
+
         ],
       ),
       actions: <Widget>[

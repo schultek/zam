@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
+import 'Supply.dart';
 import 'SupplyModels.dart';
 import 'SupplyRepository.dart';
 
 import '../../general/Extensions.dart';
 
 class CookingPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,26 +23,32 @@ class CookingPage extends StatelessWidget {
         title: Text("Rezepteliste"),
       ),
       body: Container(
-        child: Selector<SupplyRepository, List<Recipe>>(
-          selector: (context, repository) => repository.articleLists.whereType<Recipe>().toList(),
-          shouldRebuild: (previous, next) => next.toSet().intersectionBy(previous, (e) => e.id+"-"+e.name).length != next.length,
-          builder: (context, recipeList, _) {
-            return ListView.builder(
-              itemCount: recipeList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  title: Text(recipeList[index].name),
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => SupplyProvider.of(context, child: RecipePage(recipeList[index].id)),
-                    ));
+          child: Column(
+        children: [
+          Expanded(
+            child: Selector<SupplyRepository, List<Recipe>>(
+              selector: (context, repository) => repository.articleLists.whereType<Recipe>().toList(),
+              shouldRebuild: (previous, next) =>
+                  next.toSet().intersectionBy(previous, (e) => e.id + "-" + e.name).length != next.length,
+              builder: (context, recipeList, _) {
+                return ListView.builder(
+                  itemCount: recipeList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text(recipeList[index].name),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (_) => SupplyProvider.of(context, child: RecipePage(recipeList[index].id)),
+                        ));
+                      },
+                    );
                   },
                 );
               },
-            );
-          },
-        ),
-      ),
+            ),
+          ),
+        ],
+      )),
     );
   }
 }
@@ -57,7 +63,6 @@ class RecipePage extends StatefulWidget {
 }
 
 class _RecipePageState extends State<RecipePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,12 +116,7 @@ class _RecipePageState extends State<RecipePage> {
                   }).toList(),
                 ),
               ),
-              ElevatedButton(
-                child: Text("Artikel hinzufügen"),
-                onPressed: () {
-
-                }
-              )
+              ElevatedButton(child: Text("Artikel hinzufügen"), onPressed: () {})
             ],
           );
         },

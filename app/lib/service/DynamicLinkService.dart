@@ -1,41 +1,65 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
 import '../providers/AppState.dart';
-import 'AuthService.dart';
-import 'BackendService.dart';
 
 class DynamicLinkService {
-  static Future<String> createOrganizerLink() async {
-    var parameters = DynamicLinkParameters(
-        uriPrefix: "https://jufa.page.link",
-        androidParameters: AndroidParameters(packageName: "de.schultek.jufa"),
-        link: Uri.parse("https://jufa20.web.app/?isOrganizer=yes"));
-    final Uri dynamicUrl = await parameters.buildUrl();
-    return dynamicUrl.toString();
+
+  static Future<String> createTripCreatorLink() async {
+    return buildDynamicLink({
+      "claim": "canCreateTrips"
+    }, meta: SocialMetaTagParameters(
+      title: "Werde Organisator",
+      description: "Erstelle und manage Freizeiten und andere Gruppen-Events.",
+      imageUrl: Uri.parse("https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200"),
+    ));
+  }
+
+  static Future<String> createAdminLink() async {
+    return buildDynamicLink({
+      "claim": "isAdmin"
+    }, meta: SocialMetaTagParameters(
+      title: "Werde Admin",
+      description: "Erhalte Admin Rechte in der Jufa App.",
+      imageUrl: Uri.parse("https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200"),
+    ));
   }
 
   static Future<String> createParticipantLink(String tripId) async {
-    var parameters = DynamicLinkParameters(
-        uriPrefix: "https://jufa.page.link",
-        androidParameters: AndroidParameters(packageName: "de.schultek.jufa"),
-        link: Uri.parse("https://jufa20.web.app/?isParticipant=yes&tripId=$tripId"));
-    final ShortDynamicLink dynamicUrl = await parameters.buildShortLink();
-    return dynamicUrl.shortUrl.toString();
+    return buildDynamicLink({
+      "role": "participant",
+      "tripId": tripId,
+    }, meta: SocialMetaTagParameters(
+      title: "Freizeit-Einladung",
+      description: "Trete der Freizeit bei.",
+      imageUrl: Uri.parse("https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200"),
+    ));
   }
 
   static Future<String> createLeaderLink(String tripId) async {
+    return buildDynamicLink({
+      "role": "leader",
+      "tripId": tripId,
+    }, meta: SocialMetaTagParameters(
+      title: "Werde Leiter",
+      description: "Trete der Freizeit bei.",
+      imageUrl: Uri.parse("https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200"),
+    ));
+  }
+
+  static Future<String> buildDynamicLink(Map<String, dynamic> params, {SocialMetaTagParameters meta}) async {
+    String p = await createEncodedLinkParams(params);
     var parameters = DynamicLinkParameters(
         uriPrefix: "https://jufa.page.link",
         androidParameters: AndroidParameters(packageName: "de.schultek.jufa"),
-        link: Uri.parse("https://jufa20.web.app/?isLeader=yes&tripId=$tripId"));
+        socialMetaTagParameters: meta,
+        link: Uri.parse("https://jufa20.web.app/?$p"),
+    );
     final ShortDynamicLink dynamicUrl = await parameters.buildShortLink();
     return dynamicUrl.shortUrl.toString();
   }
 
   static Future<void> handleDynamicLinks() async {
-    // TODO: remove this line
-    print(await DynamicLinkService.createOrganizerLink());
-
     var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
       await _handleDynamicLink(link);
@@ -48,22 +72,24 @@ class DynamicLinkService {
 
   static Future<void> _handleDynamicLink(PendingDynamicLinkData link) async {
     var queryParameters = link.link.queryParameters;
-    print(queryParameters);
-    if (queryParameters.containsKey("isOrganizer")) {
-      if (queryParameters["isOrganizer"] == "yes") {
-        await BackendService.updateUserPermissions(true);
-        await AppState.instance.updateUserPermissions(true);
-      }
+
+    var updatedClaims = await receiveEncodedLinkParams(queryParameters);
+
+    if (updatedClaims) {
+      await AppState.instance.updateUserClaims(true);
     }
-    if (queryParameters.containsKey("isParticipant")) {
-      if (queryParameters["isParticipant"] == "yes") {
-        await BackendService.addUserToTrip(queryParameters["tripId"], UserRoles.Participant);
-      }
-    }
-    if (queryParameters.containsKey("isLeader")) {
-      if (queryParameters["isLeader"] == "yes") {
-        await BackendService.addUserToTrip(queryParameters["tripId"], UserRoles.Leader);
-      }
-    }
+
+  }
+
+  static Future<String> createEncodedLinkParams(Map<String, dynamic> params) async {
+    HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: "createEncodedLinkParams");
+    var res = await callable.call(params);
+    return res.data;
+  }
+
+  static Future<bool> receiveEncodedLinkParams(Map<String, dynamic> params) async {
+    HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: "receiveEncodedLinkParams");
+    var res = await callable.call(params);
+    return res.data;
   }
 }

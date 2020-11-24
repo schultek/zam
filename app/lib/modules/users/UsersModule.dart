@@ -11,15 +11,11 @@ class UsersModule extends Module {
   List<ModuleCard> getCards(ModuleData data) {
     return [
       ModuleCard(
-        builder: (context) => GestureDetector(
-          child: Container(
-            padding: EdgeInsets.all(10),
-            child: Center(child: Text("Users")),
-          ),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => UsersPage(data.trip)));
-          },
+        builder: (context) => Container(
+          padding: EdgeInsets.all(10),
+          child: Center(child: Text("Users")),
         ),
+        onNavigate: (context) => UsersPage(data.trip),
       ),
     ];
   }

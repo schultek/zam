@@ -74,4 +74,9 @@ class TheButtonRepository {
     }
   }
 
+  Future<double> getValue() async {
+    if (this.value != null) return value;
+    else return this.buttonState.first;
+  }
+
 }

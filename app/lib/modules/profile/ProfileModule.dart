@@ -4,28 +4,21 @@ import '../../general/Module.dart';
 import '../../models/Trip.dart';
 
 class Profile extends Module {
-
   @override
   List<ModuleCard> getCards(ModuleData data) {
     return [
       ModuleCard(
-        builder: (context) => GestureDetector(
-          child: Container(
-            padding: EdgeInsets.all(10),
-            child: Center(child: Text("Profil")),
-          ),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProfilePage(data.trip.currentUser())));
-          },
+        builder: (context) => Container(
+          padding: EdgeInsets.all(10),
+          child: Center(child: Text("Profil")),
         ),
+        onNavigate: (context) => ProfilePage(data.trip.currentUser()),
       ),
     ];
   }
-
 }
 
 class ProfilePage extends StatelessWidget {
-
   final TripUser user;
 
   ProfilePage(this.user);
@@ -37,7 +30,7 @@ class ProfilePage extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 50),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               TextField(
                 decoration: InputDecoration(
@@ -46,7 +39,7 @@ class ProfilePage extends StatelessWidget {
                 onChanged: (text) {
                   user.nickname = text;
                 },
-              ),
+              )
             ],
           ),
         ),
