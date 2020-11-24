@@ -107,6 +107,6 @@ class SupplyProvider extends StatelessWidget {
   }
 
   static Widget of(BuildContext context, {Widget child}) {
-    return ChangeNotifierProvider.value(value: Provider.of<SupplyRepository>(context, listen: false), child: child);
+    return SupplyProvider(tripId: Provider.of<SupplyRepository>(context, listen: false).tripId, child: child);
   }
 }
