@@ -31,5 +31,10 @@ class TripUser {
   factory TripUser.fromMap(Map<String, dynamic> user) {
     return TripUser(user["role"], user["nickname"]);
   }
+}
 
+class UserRoles {
+  static const Organizer = "organizer";
+  static const Leader = "leader";
+  static const Participant = "participant";
 }

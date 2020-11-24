@@ -1,15 +1,17 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:jufa/service/AuthService.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'general/Module.dart';
 import 'models/Trip.dart';
-import 'service/AppService.dart';
 import 'providers/AppState.dart';
 import 'pages/TripHome.dart';
 import 'pages/NoTrip.dart';
@@ -26,7 +28,7 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  AppState state;
+  final AppState state;
   MyApp(this.state);
 
   @override
@@ -39,8 +41,27 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    AppService.initApp(this.widget.state).then((_) => setState(() => isLoaded = true));
+    initApp(this.widget.state).then((_) => setState(() => isLoaded = true));
   }
+
+  Future<void> initApp(AppState state) async {
+    await Firebase.initializeApp();
+
+    User user = await AuthService.getInitialUser();
+
+    if (user == null) {
+      var userCredentials = await AuthService.createAnonymousUser();
+      user = userCredentials.user;
+    }
+
+    print(user.uid);
+
+    await state.updateUser(user);
+    state.initUserSubscription();
+
+    await DynamicLinkService.handleDynamicLinks();
+  }
+
 
   @override
   Widget build(BuildContext context) {
