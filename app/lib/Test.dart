@@ -55,7 +55,7 @@ void main() {
   int z = tisch1.wegziehen(tisch1.neuerStuhl()).sitzen(); // = 5
 
   String name4 = tisch1.test1(tisch1.test1(tisch1.test1(name + " Schubert") + " Schubert"));
-
+Ich bin hallo ich bin hallo ich bin hallo Olaf Schubert Schubert
 
 
 
@@ -95,5 +95,7 @@ void main() {
   l1.add(1);
 
   // l2 = [1];
+
+b ist 9
 
 }

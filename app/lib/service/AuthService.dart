@@ -52,8 +52,4 @@ class AuthService {
   }
 }
 
-class UserRoles {
-  static const Organizer = "organizer";
-  static const Leader = "leader";
-  static const Participant = "participant";
-}
+
