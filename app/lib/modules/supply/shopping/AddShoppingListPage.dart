@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:jufa/modules/modules.dart';
 import 'package:provider/provider.dart';
 
 import '../SupplyModels.dart';
@@ -202,12 +203,12 @@ class RecipeDialog extends StatefulWidget {
   _RecipeDialogState createState() => _RecipeDialogState();
 
   static Future<List<ArticleEntry>> open(BuildContext context, Recipe recipe) {
-    return showDialog<List<ArticleEntry>>(context: context, builder: (context) => RecipeDialog(recipe));
+    return showDialog<List<ArticleEntry>>(context: context, builder: (_context) => SupplyProvider.of(context, child: RecipeDialog(recipe)),);
   }
 }
 
 class _RecipeDialogState extends State<RecipeDialog> {
-  List<ArticleEntry> articleEntries;
+  List<ArticleEntry> articleEntries = [];
 
   @override
   void initState() {
@@ -227,9 +228,20 @@ class _RecipeDialogState extends State<RecipeDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       actionsPadding: EdgeInsets.only(right: 10),
       title: Text(widget.recipe.name),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [],
+      content: ListView.builder(
+        itemCount: articleEntries.length,
+        itemBuilder: (context, index) {
+          print(Provider.of<SupplyRepository>(context, listen: false).articles);
+            return CheckboxListTile(
+              title: Text(Provider.of<SupplyRepository>(context, listen: false).getArticleById(articleEntries[index].articleId).name),
+              value: articleEntries[index].checked,
+              onChanged: (bool value) {
+                setState(() {
+                  articleEntries[index].checked = value;
+                });
+              }
+            );
+        },
       ),
       actions: <Widget>[
         FlatButton(
