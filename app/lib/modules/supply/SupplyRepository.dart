@@ -10,12 +10,12 @@ class SupplyRepository with ChangeNotifier {
   String tripId;
 
   StreamSubscription<QuerySnapshot> _articleSubscription;
-  List<Article> articles = List();
+  List<Article> articles;
 
   StreamSubscription<QuerySnapshot> _articleListSubscription;
-  List<ArticleList> articleLists = List();
+  List<ArticleList> articleLists;
 
-  SupplyRepository(this.tripId) {
+  SupplyRepository(this.tripId, {this.articles = const [], this.articleLists = const []}) {
     this._articleSubscription = FirebaseFirestore.instance
         .collection("trips")
         .doc(this.tripId)
@@ -107,6 +107,10 @@ class SupplyProvider extends StatelessWidget {
   }
 
   static Widget of(BuildContext context, {Widget child}) {
-    return SupplyProvider(tripId: Provider.of<SupplyRepository>(context, listen: false).tripId, child: child);
+    var parent = Provider.of<SupplyRepository>(context, listen: false);
+    return ChangeNotifierProvider<SupplyRepository>(
+      create: (context) => SupplyRepository(parent.tripId, articles: parent.articles, articleLists: parent.articleLists),
+      child: child,
+    );
   }
 }
