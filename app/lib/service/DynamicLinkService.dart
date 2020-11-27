@@ -52,6 +52,7 @@ class DynamicLinkService {
     var parameters = DynamicLinkParameters(
         uriPrefix: "https://jufa.page.link",
         androidParameters: AndroidParameters(packageName: "de.schultek.jufa"),
+        iosParameters: IosParameters(bundleId: "de.schultek.jufa"),
         socialMetaTagParameters: meta,
         link: Uri.parse("https://jufa20.web.app/?$p"),
     );

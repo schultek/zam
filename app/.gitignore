@@ -11,6 +11,7 @@
 
 #Firebase related
 android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
 
 #Android app signin
 android/app/jufa_key.jks

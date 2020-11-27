@@ -207,7 +207,7 @@ class RecipeDialog extends StatefulWidget {
 }
 
 class _RecipeDialogState extends State<RecipeDialog> {
-  List<ArticleEntry> articleEntries;
+  List<ArticleEntry> articleEntries = [];
 
   @override
   void initState() {
