@@ -13,72 +13,53 @@ class TripHome extends StatefulWidget {
 }
 
 class _TripHomeState extends State<TripHome> {
-  List<Widget> moduleSlivers;
+  List<ModuleCard> moduleCards;
+  ModuleGrid moduleGrid;
 
   @override
   void initState() {
     super.initState();
     ModuleData moduleData = ModuleData(trip: widget.trip);
-    List<ModuleCard> moduleCards = ModuleRegistry.getAllModules().expand((m) => m.getCards(moduleData)).toList();
-
-    moduleSlivers = [];
-
-    List<Widget> currentRow = [];
-
-    for (ModuleCard card in moduleCards) {
-      if (card.size == ModuleCardSize.Wide) {
-        moduleSlivers.add(SliverPadding(
-          padding: EdgeInsets.only(bottom: 20),
-          sliver: SliverList(
-            delegate: SliverChildListDelegate.fixed([card.build()]),
-          ),
-        ));
-      } else if (card.size == ModuleCardSize.Square) {
-        currentRow.add(card.build());
-        if (currentRow.length == 2) {
-          moduleSlivers.add(SliverPadding(
-            padding: EdgeInsets.only(bottom: 20),
-            sliver: SliverGrid.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: 20,
-              children: currentRow,
-            ),
-          ));
-          currentRow = [];
-        }
-      }
-    }
-
-    if (currentRow.length > 0) {
-      moduleSlivers.add(SliverGrid.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 20,
-        children: currentRow,
-      ));
-    }
+    moduleCards = ModuleRegistry.getAllModules().expand((m) => m.getCards(moduleData)).toList();
+    moduleGrid = ModuleGrid(moduleCards);
   }
 
   @override
   Widget build(BuildContext context) {
-    print(MediaQuery.of(context).padding.top);
+
+    List<Widget> moduleSlivers = moduleGrid.buildSlivers();
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
-      child: CustomScrollView(
-        slivers: [
-          SliverList(
-            delegate: SliverChildListDelegate.fixed([
-              Container(
-                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, bottom: 20),
-                child: Center(
-                  child: Text(widget.trip.name, style: Theme.of(context).textTheme.headline5),
+      child: ReorderableList(
+        getGridIndex: moduleGrid.indexOf,
+        onReorder: (Key draggedItem, Key newPosition) {
+          setState(() {
+            moduleGrid.onReorder(draggedItem, newPosition);
+          });
+          return true;
+        },
+        onReorderDone: this._onReorderDone,
+        child: CustomScrollView(
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate.fixed([
+                Container(
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, bottom: 20),
+                  child: Center(
+                    child: Text(widget.trip.name, style: Theme.of(context).textTheme.headline5),
+                  ),
                 ),
-              ),
-            ]),
-          ),
-          ...moduleSlivers
-        ],
+              ]),
+            ),
+            ...moduleSlivers
+          ],
+        ),
       ),
     );
+  }
+
+  void _onReorderDone(Key draggedItem) {
+    print("Reordering finished");
   }
 }

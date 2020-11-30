@@ -6,38 +6,51 @@ class ModuleData {
   ModuleData({this.trip});
 }
 
-enum ModuleCardSize {
+class ModuleCardKey extends ValueKey<ModuleCard> {
+  ModuleCardKey(ModuleCard value) : super(value);
+}
+
+enum CardSize {
   Square, Wide
 }
 
-class ModuleCard {
+class ModuleCard extends StatelessWidget {
 
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context) onNavigate;
-  final ModuleCardSize size;
+  final CardSize size;
+  int index = 0;
 
-  ModuleCard({this.builder, this.onNavigate, this.size = ModuleCardSize.Square});
+  static int i = 0;
+  int test = 0;
 
-  Widget build() {
+  Key key;
+
+  ModuleCard({this.builder, this.onNavigate, this.size = CardSize.Square}) {
+    this.key = UniqueKey();
+    this.test = i++;
+  }
+
+  Widget build(BuildContext context) {
     return ModuleCardTransition(
-      child: Builder(
-        builder: (context) => GestureDetector(
-          child: AspectRatio(
-            aspectRatio: size == ModuleCardSize.Square ? 1 / 1 : 2 / 1,
-            child: Material(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              color: Colors.grey[300],
-              child: this.builder(context),
+            child: Builder(
+              builder: (context) => GestureDetector(
+                child: AspectRatio(
+                  aspectRatio: size == CardSize.Square ? 1 / 1 : 2 / 1,
+                  child: Material(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    color: Colors.grey[300],
+                    child: Text("$test"),//this.builder(context),
+                  ),
+                ),
+                onTap: () {
+                  if (this.onNavigate != null) {
+                    Navigator.of(context).push(ModulePageRoute(context, child: this.onNavigate(context)));
+                  }
+                },
+              ),
             ),
-          ),
-          onTap: () {
-            if (this.onNavigate != null) {
-              Navigator.of(context).push(ModulePageRoute(context, child: this.onNavigate(context)));
-            }
-          },
-        ),
-      ),
-    );
+          );
   }
 }
 
