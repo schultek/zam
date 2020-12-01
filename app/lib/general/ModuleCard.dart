@@ -21,14 +21,10 @@ class ModuleCard extends StatelessWidget {
   final CardSize size;
   int index = 0;
 
-  static int i = 0;
-  int test = 0;
-
   Key key;
 
   ModuleCard({this.builder, this.onNavigate, this.size = CardSize.Square}) {
     this.key = UniqueKey();
-    this.test = i++;
   }
 
   Widget build(BuildContext context) {
@@ -40,7 +36,7 @@ class ModuleCard extends StatelessWidget {
                   child: Material(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     color: Colors.grey[300],
-                    child: Text("$test"),//this.builder(context),
+                    child: this.builder(context),
                   ),
                 ),
                 onTap: () {

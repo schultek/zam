@@ -4,22 +4,8 @@ typedef bool ReorderItemCallback(Key draggedItem, Key newPosition);
 typedef void ReorderCompleteCallback(Key draggedItem);
 typedef GridIndex GridIndexCallback(Key itemKey);
 
-// Represents placeholder for currently dragged row including decorations
-// (i.e. before and after shadow)
-class DecoratedPlaceholder {
-  DecoratedPlaceholder({
-    this.offset,
-    this.widget,
-  });
-
-  // Height of decoration before widget
-  final double offset;
-  final Widget widget;
-}
-
 // Decorates current placeholder widget
-typedef DecoratedPlaceholder DecoratePlaceholder(
-    Widget widget, double decorationOpacity);
+typedef Widget DecoratePlaceholder(Widget widget, double decorationOpacity);
 
 // Can be used to cancel reordering (i.e. when underlying data changed)
 class CancellationToken {
@@ -37,10 +23,10 @@ class ReorderableList extends StatefulWidget {
     Key key,
     @required this.child,
     @required this.onReorder,
-    @required this.getGridIndex,
+    @required this.grid,
     this.onReorderDone,
     this.cancellationToken,
-    this.decoratePlaceholder = _defaultDecoratePlaceholder,
+    this.decoratePlaceholder,
   }) : super(key: key);
 
   final Widget child;
@@ -49,7 +35,7 @@ class ReorderableList extends StatefulWidget {
   final ReorderCompleteCallback onReorderDone;
   final DecoratePlaceholder decoratePlaceholder;
 
-  final GridIndexCallback getGridIndex;
+  final ModuleGrid grid;
 
   final CancellationToken cancellationToken;
 
@@ -75,8 +61,7 @@ enum ReorderableItemState {
 //
 //
 
-typedef Widget ReorderableItemChildBuilder(
-    BuildContext context, ReorderableItemState state);
+typedef Widget ReorderableItemChildBuilder(BuildContext context, ReorderableItemState state);
 
 class ReorderableItem extends StatefulWidget {
   /// [key] must be unique key for every item. It must be stable and not change
@@ -130,16 +115,12 @@ class ReorderableListener extends StatelessWidget {
   }
 
   void _startDragging({BuildContext context, PointerEvent event}) {
-    _ReorderableItemState state =
-    context.findAncestorStateOfType<_ReorderableItemState>();
+    _ReorderableItemState state = context.findAncestorStateOfType<_ReorderableItemState>();
     final scrollable = Scrollable.of(context);
     final listState = _ReorderableListState.of(context);
     if (listState.dragging == null) {
       listState._startDragging(
-          key: state.key,
-          event: event,
-          scrollable: scrollable,
-          recognizer: createRecognizer(debugOwner: this, kind: event.kind));
+          key: state.key, event: event, scrollable: scrollable, recognizer: createRecognizer(debugOwner: this, kind: event.kind));
     }
   }
 }
@@ -159,8 +140,7 @@ class DelayedReorderableListener extends ReorderableListener {
     @required Object debugOwner,
     PointerDeviceKind kind,
   }) {
-    return DelayedMultiDragGestureRecognizer(
-        delay: delay, debugOwner: debugOwner, kind: kind);
+    return DelayedMultiDragGestureRecognizer(delay: delay, debugOwner: debugOwner, kind: kind);
   }
 }
 
@@ -168,17 +148,15 @@ class DelayedReorderableListener extends ReorderableListener {
 //
 //
 
-class _ReorderableListState extends State<ReorderableList>
-    with TickerProviderStateMixin, Drag {
+class _ReorderableListState extends State<ReorderableList> with TickerProviderStateMixin, Drag {
   @override
   Widget build(BuildContext context) {
-    return new Stack(
-      fit: StackFit.passthrough,
-      children: <Widget>[
-        widget.child,
-        new _DragProxy(widget.decoratePlaceholder)
-      ],
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return Stack(
+        fit: StackFit.passthrough,
+        children: <Widget>[widget.child, new _DragProxy(widget.decoratePlaceholder, constraints.maxWidth)],
+      );
+    });
   }
 
   @override
@@ -196,7 +174,8 @@ class _ReorderableListState extends State<ReorderableList>
     }
     _finalAnimation?.dispose();
     for (final c in _itemTranslations.values) {
-      c.dispose();
+      if (c.item1 != null) c.item1.dispose();
+      if (c.item2 != null) c.item2.dispose();
     }
     _scrolling = null;
     _recognizer?.dispose();
@@ -249,7 +228,6 @@ class _ReorderableListState extends State<ReorderableList>
     }
 
     _maybeDragging = key;
-    _lastReportedKey = null;
     _recognizer?.dispose();
     _recognizer = recognizer;
     _recognizer.onStart = _dragStart;
@@ -266,9 +244,7 @@ class _ReorderableListState extends State<ReorderableList>
     _hapticFeedback();
     final draggedItem = _items[_dragging];
     draggedItem.update();
-    _dragProxy.setWidget(
-        draggedItem.widget
-            .childBuilder(draggedItem.context, ReorderableItemState.dragProxy),
+    _dragProxy.setWidget(draggedItem.widget.childBuilder(draggedItem.context, ReorderableItemState.dragProxy),
         draggedItem.context.findRenderObject());
     this._scrollable.position.addListener(this._scrolled);
 
@@ -278,8 +254,7 @@ class _ReorderableListState extends State<ReorderableList>
   void _draggedItemWidgetUpdated() {
     final draggedItem = _items[_dragging];
     if (draggedItem != null) {
-      _dragProxy.updateWidget(draggedItem.widget
-          .childBuilder(draggedItem.context, ReorderableItemState.dragProxy));
+      _dragProxy.updateWidget(draggedItem.widget.childBuilder(draggedItem.context, ReorderableItemState.dragProxy));
     }
   }
 
@@ -288,7 +263,8 @@ class _ReorderableListState extends State<ReorderableList>
   }
 
   void update(DragUpdateDetails details) {
-    _dragProxy.offset += details.delta.dy;
+    _dragProxy.offsetY += details.delta.dy;
+    _dragProxy.offsetX += details.delta.dx;
     checkDragPosition();
     maybeScroll();
   }
@@ -299,34 +275,27 @@ class _ReorderableListState extends State<ReorderableList>
     if (!_scrolling && _scrollable != null && _dragging != null) {
       final position = _scrollable.position;
       double newOffset;
-      int duration = 14; // in ms
+      int duration = 15; // in ms
       double step = 1.0;
-      double overdragMax = 20.0;
-      double overdragCoef = 10.0;
+      double overdragMax = 40.0;
+      double overdragCoef = 5.0;
 
       MediaQueryData d = MediaQuery.of(context);
 
       double top = d?.padding?.top ?? 0.0;
-      double bottom = this._scrollable.position.viewportDimension -
-          (d?.padding?.bottom ?? 0.0);
+      double bottom = this._scrollable.position.viewportDimension - (d?.padding?.bottom ?? 0.0);
 
-      if (_dragProxy.offset < top &&
-          position.pixels > position.minScrollExtent) {
-        final overdrag = max(top - _dragProxy.offset, overdragMax);
-        newOffset = max(position.minScrollExtent,
-            position.pixels - step * overdrag / overdragCoef);
-      } else if (_dragProxy.offset + _dragProxy.height > bottom &&
-          position.pixels < position.maxScrollExtent) {
-        final overdrag = max<double>(
-            _dragProxy.offset + _dragProxy.height - bottom, overdragMax);
-        newOffset = min(position.maxScrollExtent,
-            position.pixels + step * overdrag / overdragCoef);
+      if (_dragProxy.offsetY < top && position.pixels > position.minScrollExtent) {
+        final overdrag = max(top - _dragProxy.offsetY, overdragMax);
+        newOffset = max(position.minScrollExtent, position.pixels - step * overdrag / overdragCoef);
+      } else if (_dragProxy.offsetY + _dragProxy.height > bottom && position.pixels < position.maxScrollExtent) {
+        final overdrag = max<double>(_dragProxy.offsetY + _dragProxy.height - bottom, overdragMax);
+        newOffset = min(position.maxScrollExtent, position.pixels + step * overdrag / overdragCoef);
       }
 
       if (newOffset != null && (newOffset - position.pixels).abs() >= 1.0) {
         _scrolling = true;
-        await this._scrollable.position.animateTo(newOffset,
-            duration: Duration(milliseconds: duration), curve: Curves.linear);
+        await this._scrollable.position.animateTo(newOffset, duration: Duration(milliseconds: duration), curve: Curves.linear);
         _scrolling = false;
         if (_dragging != null) {
           checkDragPosition();
@@ -371,21 +340,17 @@ class _ReorderableListState extends State<ReorderableList>
     if (current == null) return;
 
     final originalOffset = _itemOffset(current);
-    final dragProxyOffset = _dragProxy.offset;
+    final dragProxyOffsetY = _dragProxy.offsetY;
+    final dragProxyOffsetX = _dragProxy.offsetX;
 
-    _dragProxy.updateWidget(current.widget
-        .childBuilder(current.context, ReorderableItemState.dragProxyFinished));
+    _dragProxy.updateWidget(current.widget.childBuilder(current.context, ReorderableItemState.dragProxyFinished));
 
-    _finalAnimation = new AnimationController(
-        vsync: this,
-        lowerBound: 0.0,
-        upperBound: 1.0,
-        value: 0.0,
-        duration: Duration(milliseconds: 300));
+    _finalAnimation =
+        new AnimationController(vsync: this, lowerBound: 0.0, upperBound: 1.0, value: 0.0, duration: Duration(milliseconds: 300));
 
     _finalAnimation.addListener(() {
-      _dragProxy.offset =
-          lerpDouble(dragProxyOffset, originalOffset, _finalAnimation.value);
+      _dragProxy.offsetY = lerpDouble(dragProxyOffsetY, originalOffset.dy, _finalAnimation.value);
+      _dragProxy.offsetX = lerpDouble(dragProxyOffsetX, originalOffset.dx, _finalAnimation.value);
       _dragProxy.decorationOpacity = 1.0 - _finalAnimation.value;
     });
 
@@ -419,90 +384,95 @@ class _ReorderableListState extends State<ReorderableList>
       return;
     }
 
-    final draggingTop = _itemOffset(draggingState);
+    final draggingOffset = _itemOffset(draggingState);
     final draggingHeight = draggingState.context.size.height;
+    final draggingWidth = draggingState.context.size.width;
 
-    _ReorderableItemState closest;
-    double closestDistance = 0.0;
+    if (_dragProxy.offsetY < draggingOffset.dy - draggingHeight / 2 - 20) {
+      var dragIndex = widget.grid.indexOf(_dragging);
+      if (dragIndex.row > 0) {
+        var aboveRow = widget.grid.grid[dragIndex.row - 1];
 
-    // These callbacks will be invoked on successful reorder, they will ensure that
-    // reordered items appear on their old position and animate to new one
-    List<Function> onReorderApproved = new List();
+        if (dragIndex.size == CardSize.Wide) {
+          widget.onReorder(_dragging, aboveRow[0].key);
 
-    final draggingIndex = widget.getGridIndex(_dragging);
+          _adjustItemTranslationY(aboveRow[0].key, -draggingHeight, draggingHeight);
+          if (aboveRow.length == 2) _adjustItemTranslationY(aboveRow[1].key, -draggingHeight, draggingHeight);
+        } else {
+          if (aboveRow.length == 2) {
+            var aboveItem = aboveRow[dragIndex.column];
 
-    if (_dragProxy.offset < draggingTop) {
-      for (_ReorderableItemState item in _items.values) {
-        if (item.key == _dragging) continue;
+            widget.onReorder(_dragging, aboveItem.key);
+            _adjustItemTranslationY(aboveItem.key, -draggingHeight, draggingHeight);
+          } else {
+            var siblingItem = widget.grid.grid[dragIndex.row][1 - dragIndex.column];
 
-        final itemIndex = widget.getGridIndex(item.key);
-        if (itemIndex.size == CardSize.Square && draggingIndex.size == CardSize.Square && itemIndex.column != draggingIndex.column)
-          continue;
-
-        final itemTop = _itemOffset(item);
-        if (itemTop > draggingTop) continue;
-        final itemBottom = itemTop +
-            (item.context.findRenderObject() as RenderBox).size.height / 2;
-
-        if (_dragProxy.offset < itemBottom) {
-          onReorderApproved.add(() {
-            _adjustItemTranslation(item.key, -draggingHeight, draggingHeight);
-          });
-          if (closest == null ||
-              closestDistance > (itemBottom - _dragProxy.offset)) {
-            closest = item;
-            closestDistance = (itemBottom - _dragProxy.offset);
+            widget.onReorder(_dragging, aboveRow[0].key);
+            _adjustItemTranslationY(aboveRow[0].key, -draggingHeight, draggingHeight);
+            _adjustItemTranslationY(siblingItem.key, draggingHeight, draggingHeight);
           }
         }
+
+        if (Platform.isIOS) {
+          _hapticFeedback();
+        }
+        SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
+          _scheduledRebuild = false;
+        });
+        _scheduledRebuild = true;
       }
-    } else {
-      double draggingBottom = _dragProxy.offset + draggingHeight;
+    } else if (_dragProxy.offsetY > draggingOffset.dy + draggingHeight / 2 + 20) {
+      var dragIndex = widget.grid.indexOf(_dragging);
+      if (dragIndex.row < widget.grid.grid.length - 1) {
+        var belowRow = widget.grid.grid[dragIndex.row + 1];
 
-      for (_ReorderableItemState item in _items.values) {
-        if (item.key == _dragging) continue;
+        if (dragIndex.size == CardSize.Wide) {
+          widget.onReorder(_dragging, belowRow[0].key);
 
-        final itemIndex = widget.getGridIndex(item.key);
-        if (itemIndex.size == CardSize.Square && draggingIndex.size == CardSize.Square && itemIndex.column != draggingIndex.column)
-          continue;
+          _adjustItemTranslationY(belowRow[0].key, draggingHeight, draggingHeight);
+          if (belowRow.length == 2) _adjustItemTranslationY(belowRow[1].key, draggingHeight, draggingHeight);
+        } else {
+          if (belowRow.length == 2) {
+            var belowItem = belowRow[dragIndex.column];
 
-        final itemTop = _itemOffset(item);
-        if (itemTop < draggingTop) continue;
+            widget.onReorder(_dragging, belowItem.key);
+            _adjustItemTranslationY(belowItem.key, draggingHeight, draggingHeight);
+          } else {
+            var siblingItem = widget.grid.grid[dragIndex.row][1 - dragIndex.column];
 
-        final itemBottom = itemTop +
-            (item.context.findRenderObject() as RenderBox).size.height / 2;
-        if (draggingBottom > itemBottom) {
-          onReorderApproved.add(() {
-            _adjustItemTranslation(item.key, draggingHeight, draggingHeight);
-          });
-          if (closest == null ||
-              closestDistance > (draggingBottom - itemBottom)) {
-            closest = item;
-            closestDistance = draggingBottom - itemBottom;
+            widget.onReorder(_dragging, belowRow[0].key);
+            _adjustItemTranslationY(belowRow[0].key, draggingHeight, draggingHeight);
+            _adjustItemTranslationY(siblingItem.key, -draggingHeight, draggingHeight);
           }
         }
+
+        if (Platform.isIOS) {
+          _hapticFeedback();
+        }
+        SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
+          _scheduledRebuild = false;
+        });
+        _scheduledRebuild = true;
       }
-    }
+    } else if ((_dragProxy.offsetX - draggingOffset.dx).abs() > draggingWidth / 2 + 20) {
 
-    // _lastReportedKey check is to ensure we don't keep spamming the callback when reorder
-    // was rejected for this key;
-    if (closest != null &&
-        closest.key != _dragging &&
-        closest.key != _lastReportedKey) {
-      SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
-        _scheduledRebuild = false;
-      });
-      _scheduledRebuild = true;
-      _lastReportedKey = closest.key;
-      if (widget.onReorder != null) {
-        if (widget.onReorder(_dragging, closest.key)) {
-          if (Platform.isIOS) {
-            _hapticFeedback();
-          }
-          for (final f in onReorderApproved) {
-            f();
-          }
-          _lastReportedKey = null;
+      var dragIndex = widget.grid.indexOf(_dragging);
+      if (dragIndex.size == CardSize.Square) {
+
+        var siblingItem = widget.grid.grid[dragIndex.row][1 - dragIndex.column];
+
+        widget.onReorder(_dragging, siblingItem.key);
+
+        var sign = dragIndex.column == 0 ? 1 : -1;
+        _adjustItemTranslationX(siblingItem.key, sign * draggingWidth, draggingWidth);
+
+        if (Platform.isIOS) {
+          _hapticFeedback();
         }
+        SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
+          _scheduledRebuild = false;
+        });
+        _scheduledRebuild = true;
       }
     }
   }
@@ -512,7 +482,7 @@ class _ReorderableListState extends State<ReorderableList>
   }
 
   bool _scheduledRebuild = false;
-  Key _lastReportedKey;
+
   //
 
   final _items = new HashMap<Key, _ReorderableItemState>();
@@ -525,11 +495,9 @@ class _ReorderableListState extends State<ReorderableList>
     if (_items[item.key] == item) _items.remove(item.key);
   }
 
-  double _itemOffset(_ReorderableItemState item) {
+  Offset _itemOffset(_ReorderableItemState item) {
     final topRenderBox = context.findRenderObject() as RenderBox;
-    return (item.context.findRenderObject() as RenderBox)
-        .localToGlobal(Offset.zero, ancestor: topRenderBox)
-        .dy;
+    return (item.context.findRenderObject() as RenderBox).localToGlobal(Offset.zero, ancestor: topRenderBox);
   }
 
   static _ReorderableListState of(BuildContext context) {
@@ -538,22 +506,26 @@ class _ReorderableListState extends State<ReorderableList>
 
   //
 
-  Map<Key, AnimationController> _itemTranslations = new HashMap();
+  Map<Key, Tuple2<AnimationController, AnimationController>> _itemTranslations = new HashMap();
 
-  double itemTranslation(Key key) {
+  Offset itemTranslation(Key key) {
     if (!_itemTranslations.containsKey(key))
-      return 0.0;
-    else
-      return _itemTranslations[key].value;
+      return Offset.zero;
+    else {
+      var tuple = _itemTranslations[key];
+      return Offset(tuple.item1 != null ? tuple.item1.value : 0.0, tuple.item2 != null ? tuple.item2.value : 0.0);
+    }
   }
 
-  void _adjustItemTranslation(Key key, double delta, double max) {
+  void _adjustItemTranslationY(Key key, double delta, double max) {
     double current = 0.0;
-    final currentController = _itemTranslations[key];
-    if (currentController != null) {
-      current = currentController.value;
-      currentController.stop(canceled: true);
-      currentController.dispose();
+    if (_itemTranslations.containsKey(key)) {
+      var currentController = _itemTranslations[key].item2;
+      if (currentController != null) {
+        current = currentController.value;
+        currentController.stop(canceled: true);
+        currentController.dispose();
+      }
     }
 
     current += delta;
@@ -570,14 +542,65 @@ class _ReorderableListState extends State<ReorderableList>
     newController.addStatusListener((AnimationStatus s) {
       if (s == AnimationStatus.completed || s == AnimationStatus.dismissed) {
         newController.dispose();
-        if (_itemTranslations[key] == newController) {
-          _itemTranslations.remove(key);
+        if (_itemTranslations[key].item2 == newController) {
+          setItemTranslationY(key, null);
         }
       }
     });
-    _itemTranslations[key] = newController;
+    setItemTranslationY(key, newController);
 
     newController.animateTo(0.0, curve: Curves.easeInOut);
+  }
+
+  void setItemTranslationY(key, controller) {
+    if (_itemTranslations.containsKey(key)) {
+      _itemTranslations[key] = Tuple2(_itemTranslations[key].item1, controller);
+    } else {
+      _itemTranslations[key] = Tuple2(null, controller);
+    }
+  }
+
+  void _adjustItemTranslationX(Key key, double delta, double max) {
+    double current = 0.0;
+    if (_itemTranslations.containsKey(key)) {
+      var currentController = _itemTranslations[key].item1;
+      if (currentController != null) {
+        current = currentController.value;
+        currentController.stop(canceled: true);
+        currentController.dispose();
+      }
+    }
+
+    current += delta;
+
+    final newController = new AnimationController(
+        vsync: this,
+        lowerBound: current < 0.0 ? -max : 0.0,
+        upperBound: current < 0.0 ? 0.0 : max,
+        value: current,
+        duration: const Duration(milliseconds: 300));
+    newController.addListener(() {
+      _items[key]?.setState(() {}); // update offset
+    });
+    newController.addStatusListener((AnimationStatus s) {
+      if (s == AnimationStatus.completed || s == AnimationStatus.dismissed) {
+        newController.dispose();
+        if (_itemTranslations[key].item1 == newController) {
+          setItemTranslationX(key, null);
+        }
+      }
+    });
+    setItemTranslationX(key, newController);
+
+    newController.animateTo(0.0, curve: Curves.easeInOut);
+  }
+
+  void setItemTranslationX(key, controller) {
+    if (_itemTranslations.containsKey(key)) {
+      _itemTranslations[key] = Tuple2(controller, _itemTranslations[key].item2);
+    } else {
+      _itemTranslations[key] = Tuple2(controller, null);
+    }
   }
 
   AnimationController _finalAnimation;
@@ -593,14 +616,10 @@ class _ReorderableItemState extends State<ReorderableItem> {
 
     _listState.registerItem(this);
     bool dragging = _listState.dragging == key;
-    double translation = _listState.itemTranslation(key);
+    Offset translation = _listState.itemTranslation(key);
     return Transform(
-      transform: new Matrix4.translationValues(0.0, translation, 0.0),
-      child: widget.childBuilder(
-          context,
-          dragging
-              ? ReorderableItemState.placeholder
-              : ReorderableItemState.normal),
+      transform: new Matrix4.translationValues(translation.dx, translation.dy, 0.0),
+      child: widget.childBuilder(context, dragging ? ReorderableItemState.placeholder : ReorderableItemState.normal),
     );
   }
 
@@ -636,17 +655,18 @@ class _ReorderableItemState extends State<ReorderableItem> {
 
 class _DragProxy extends StatefulWidget {
   final DecoratePlaceholder decoratePlaceholder;
+  double parentWidth;
 
   @override
   State<StatefulWidget> createState() => new _DragProxyState();
 
-  _DragProxy(this.decoratePlaceholder);
+  _DragProxy(this.decoratePlaceholder, this.parentWidth);
 }
 
 class _DragProxyState extends State<_DragProxy> {
   Widget _widget;
   Size _size;
-  double _offset;
+  double _offsetY;
   double _offsetX;
 
   _DragProxyState();
@@ -659,7 +679,7 @@ class _DragProxyState extends State<_DragProxy> {
       RenderBox renderBox = state.context.findRenderObject();
       final offset = position.localToGlobal(Offset.zero, ancestor: renderBox);
       _offsetX = offset.dx;
-      _offset = offset.dy;
+      _offsetY = offset.dy;
       _size = position.size;
     });
   }
@@ -668,15 +688,25 @@ class _DragProxyState extends State<_DragProxy> {
     _widget = widget;
   }
 
-  set offset(double newOffset) {
+  set offsetY(double newOffset) {
     setState(() {
-      _offset = newOffset;
+      _offsetY = newOffset;
     });
   }
 
-  get offset => _offset;
+  get offsetY => _offsetY;
+
+  set offsetX(double newOffset) {
+    setState(() {
+      _offsetX = newOffset;
+    });
+  }
+
+  get offsetX => _offsetX;
 
   get height => _size.height;
+
+  get width => _size.width;
 
   double _decorationOpacity;
 
@@ -697,7 +727,7 @@ class _DragProxyState extends State<_DragProxy> {
     final state = _ReorderableListState.of(context);
     state._dragProxy = this;
 
-    if (_widget != null && _size != null && _offset != null) {
+    if (_widget != null && _size != null && _offsetY != null) {
       final w = IgnorePointer(
         child: MediaQuery.removePadding(
           context: context,
@@ -707,13 +737,12 @@ class _DragProxyState extends State<_DragProxy> {
         ),
       );
 
-      final decoratedPlaceholder =
-      widget.decoratePlaceholder(w, _decorationOpacity);
+      final decoratedPlaceholder = widget.decoratePlaceholder(w, _decorationOpacity);
       return Positioned(
-        child: decoratedPlaceholder.widget,
-        left: _offsetX,
+        child: decoratedPlaceholder,
+        top: _offsetY,
+        left: max(0, min(widget.parentWidth - _size.width, _offsetX)),
         width: _size.width,
-        top: offset - decoratedPlaceholder.offset,
       );
     } else {
       return new Container(width: 0.0, height: 0.0);
@@ -728,8 +757,7 @@ class _DragProxyState extends State<_DragProxy> {
 }
 
 class _VerticalPointerState extends MultiDragPointerState {
-  _VerticalPointerState(Offset initialPosition, PointerDeviceKind kind)
-      : super(initialPosition, kind) {
+  _VerticalPointerState(Offset initialPosition, PointerDeviceKind kind) : super(initialPosition, kind) {
     _resolveTimer = Timer(Duration(milliseconds: 150), () {
       resolve(GestureDisposition.accepted);
       _resolveTimer = null;
@@ -739,8 +767,7 @@ class _VerticalPointerState extends MultiDragPointerState {
   @override
   void checkForResolutionAfterMove() {
     assert(pendingDelta != null);
-    if (pendingDelta.dy.abs() > pendingDelta.dx.abs())
-      resolve(GestureDisposition.accepted);
+    if (pendingDelta.dy.abs() > pendingDelta.dx.abs()) resolve(GestureDisposition.accepted);
   }
 
   @override
@@ -776,56 +803,4 @@ class _Recognizer extends MultiDragGestureRecognizer<_VerticalPointerState> {
 
   @override
   String get debugDescription => "Vertical recognizer";
-}
-
-DecoratedPlaceholder _defaultDecoratePlaceholder(
-    Widget widget, double decorationOpacity) {
-  final double decorationHeight = 10.0;
-
-  final decoratedWidget = Builder(builder: (BuildContext context) {
-    final mq = MediaQuery.of(context);
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Opacity(
-              opacity: decorationOpacity,
-              child: Container(
-                height: decorationHeight,
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                            color: Color(0x50000000),
-                            width: 1.0 / mq.devicePixelRatio)),
-                    gradient: LinearGradient(
-                        begin: Alignment(0.0, -1.0),
-                        end: Alignment(0.0, 1.0),
-                        colors: <Color>[
-                          Color(0x00000000),
-                          Color(0x10000000),
-                          Color(0x30000000)
-                        ])),
-              )),
-          widget,
-          Opacity(
-              opacity: decorationOpacity,
-              child: Container(
-                height: decorationHeight,
-                decoration: BoxDecoration(
-                    border: Border(
-                        top: BorderSide(
-                            color: Color(0x50000000),
-                            width: 1.0 / mq.devicePixelRatio)),
-                    gradient: LinearGradient(
-                        begin: Alignment(0.0, -1.0),
-                        end: Alignment(0.0, 1.0),
-                        colors: <Color>[
-                          Color(0x30000000),
-                          Color(0x10000000),
-                          Color(0x00000000)
-                        ])),
-              )),
-        ]);
-  });
-  return DecoratedPlaceholder(
-      offset: decorationHeight, widget: decoratedWidget);
 }

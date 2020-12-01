@@ -40,8 +40,13 @@ class Supply extends Module {
   }
 }
 
-class CookingPot extends StatelessWidget {
-  static Future<Artboard> future = rootBundle.load('lib/assets/animations/cookingpot.riv').then((data) async {
+class CookingPot extends StatefulWidget {
+  @override
+  _CookingPotState createState() => _CookingPotState();
+}
+
+class _CookingPotState extends State<CookingPot> {
+  static Future<Artboard> animationFuture = rootBundle.load('lib/assets/animations/cookingpot.riv').then((data) async {
     var file = RiveFile();
     file.import(data);
 
@@ -55,21 +60,31 @@ class CookingPot extends StatelessWidget {
     return artboard;
   });
 
+  static Artboard artboard;
+
+  @override
+  void initState() {
+    super.initState();
+    if (artboard == null) {
+      loadAnimation();
+    }
+  }
+
+  void loadAnimation() async {
+    artboard = await animationFuture;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Artboard>(
-      future: future,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Rive(
-            artboard: snapshot.data,
-            fit: BoxFit.cover,
-            alignment: Alignment.bottomCenter,
-          );
-        } else {
-          return Container();
-        }
-      },
-    );
+    if (artboard != null) {
+      return Rive(
+        artboard: artboard,
+        fit: BoxFit.cover,
+        alignment: Alignment.bottomCenter,
+      );
+    } else {
+      return Container();
+    }
   }
 }

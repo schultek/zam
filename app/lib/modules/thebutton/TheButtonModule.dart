@@ -76,7 +76,8 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                                 children: [
                                   Text("The Button", style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.white)),
                                   Text("The Button is a social game where you have to keep the button alive.",
-                                      style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white), textAlign: TextAlign.center)
+                                      style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),
+                                      textAlign: TextAlign.center)
                                 ],
                               ))),
                       Positioned(
@@ -133,55 +134,7 @@ class TheButton extends StatelessWidget {
         var repo = Provider.of<TheButtonRepository>(context);
 
         return RaisedButton(
-            child: FutureBuilder<Artboard>(
-              future: rootBundle.load('lib/assets/animations/the_button.riv').then((data) async {
-                var file = RiveFile();
-                file.import(data);
-
-                var artboard = file.mainArtboard;
-
-                var waveController = SimpleAnimation("Wave");
-                artboard.addController(waveController);
-                waveController.instance.animation.speed = 0.1;
-
-                var fillController = TheButtonAnimationController();
-                artboard.addController(fillController);
-
-                var deadController, deadEntryController;
-
-                var runDeadAnimation = () {
-                  deadController = SimpleAnimation("Dead");
-                  artboard.addController(deadController);
-
-                  deadEntryController = SimpleAnimation("Dead Entry");
-                  artboard.addController(deadEntryController);
-                };
-
-                var initialValue = await repo.getValue();
-
-                fillController.jumpTo(initialValue);
-                if (initialValue >= 1) {
-                  runDeadAnimation();
-                }
-
-                repo.buttonState.listen((value) {
-                  if (value < 1) {
-                    fillController.animateTo(value);
-                  } else {
-                    runDeadAnimation();
-                  }
-                });
-
-                return artboard;
-              }),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return Rive(artboard: snapshot.data);
-                } else {
-                  return Container();
-                }
-              },
-            ),
+            child: TheButtonAnimation(repo),
             shape: CircleBorder(),
             padding: EdgeInsets.zero,
             color: Colors.black26,
@@ -192,4 +145,85 @@ class TheButton extends StatelessWidget {
       },
     );
   }
+}
+
+class TheButtonAnimation extends StatefulWidget {
+
+  TheButtonRepository repo;
+
+  TheButtonAnimation(this.repo);
+
+  @override
+  _TheButtonAnimationState createState() => _TheButtonAnimationState();
+}
+
+class _TheButtonAnimationState extends State<TheButtonAnimation> {
+
+  static Future<Artboard> animationFuture = rootBundle.load('lib/assets/animations/the_button.riv').then((data) async {
+    var file = RiveFile();
+    file.import(data);
+
+    var artboard = file.mainArtboard;
+
+    var waveController = SimpleAnimation("Wave");
+    artboard.addController(waveController);
+    waveController.instance.animation.speed = 0.1;
+
+    return artboard;
+  });
+
+  static Artboard artboard;
+
+  @override
+  void initState() {
+    super.initState();
+    if (artboard == null) {
+      loadAnimation();
+    }
+  }
+
+  void loadAnimation() async {
+
+    artboard = await animationFuture;
+
+    var fillController = TheButtonAnimationController();
+    artboard.addController(fillController);
+
+    var deadController, deadEntryController;
+
+    var runDeadAnimation = () {
+      deadController = SimpleAnimation("Dead");
+      artboard.addController(deadController);
+
+      deadEntryController = SimpleAnimation("Dead Entry");
+      artboard.addController(deadEntryController);
+    };
+
+    var initialValue = await widget.repo.getValue();
+
+    fillController.jumpTo(initialValue);
+    if (initialValue >= 1) {
+      runDeadAnimation();
+    }
+
+    widget.repo.buttonState.listen((value) {
+      if (value < 1) {
+        fillController.animateTo(value);
+      } else {
+        runDeadAnimation();
+      }
+    });
+
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (artboard != null) {
+      return Rive(artboard: artboard);
+    } else {
+      return Container();
+    }
+  }
+
 }

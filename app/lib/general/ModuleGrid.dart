@@ -76,7 +76,15 @@ class ModuleGrid {
     GridIndex curIndex = indexOf(draggedItem);
     GridIndex newIndex = indexOf(newPosition);
 
-    var draggedRow = grid.removeAt(curIndex.row);
-    grid.insert(newIndex.row, draggedRow);
+    if (curIndex.row == newIndex.row) {
+      grid[curIndex.row] = grid[curIndex.row].reversed.toList();
+    } else if (curIndex.size == CardSize.Square && newIndex.size == CardSize.Square) {
+      var draggedCard = grid[curIndex.row][curIndex.column];
+      grid[curIndex.row][curIndex.column] = grid[newIndex.row][newIndex.column];
+      grid[newIndex.row][newIndex.column] = draggedCard;
+    } else {
+      var draggedRow = grid.removeAt(curIndex.row);
+      grid.insert(newIndex.row, draggedRow);
+    }
   }
 }

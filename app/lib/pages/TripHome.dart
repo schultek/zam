@@ -32,12 +32,24 @@ class _TripHomeState extends State<TripHome> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: ReorderableList(
-        getGridIndex: moduleGrid.indexOf,
+        grid: moduleGrid,
         onReorder: (Key draggedItem, Key newPosition) {
           setState(() {
             moduleGrid.onReorder(draggedItem, newPosition);
           });
           return true;
+        },
+        decoratePlaceholder: (widget, opacity) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [BoxShadow(
+                blurRadius: 8,
+                color: Colors.black.withOpacity(opacity*0.5),
+              )]
+            ),
+            child: widget,
+          );
         },
         onReorderDone: this._onReorderDone,
         child: CustomScrollView(
