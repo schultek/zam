@@ -33,7 +33,7 @@ class ShoppingPage extends StatelessWidget {
                   title: Text(lists[index].name),
                   subtitle: Text("${lists[index].entries.length} Artikel"),
                   onTap: () {
-
+                    ShoppingListDialog.open(context, lists[index].id);
                   },
                 );
               },
@@ -87,6 +87,38 @@ class _ShoppingListDialogState extends State<ShoppingListDialog> {
           selector: (BuildContext context, SupplyRepository repo) {
             return repo.getArticleListById(widget.id);
           },
+      ),
+      content: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: MediaQuery.of(context).size.height * 0.9,
+        child: Selector<SupplyRepository, ArticleList>(
+          builder: (BuildContext context, ArticleList list, _){
+            return ListView.builder(
+              itemCount: list.entries.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Selector<SupplyRepository, Article>(
+                    builder: (BuildContext context, Article article, _){
+                      return CheckboxListTile(
+                          title: Text(article.name),
+                          value: list.entries[index].checked,
+                          onChanged: (value) {
+                            list.entries[index].checked = value;
+                            Provider.of<SupplyRepository>(context, listen: false).updateShoppingList(list);
+                          },
+                      );
+                    },
+                    selector: (BuildContext context, SupplyRepository repo) {
+                      return repo.getArticleById(list.entries[index].articleId);
+                    },
+                  );
+              },
+            );
+          },
+          selector: (BuildContext context, SupplyRepository repo) {
+            return repo.getArticleListById(widget.id);
+          },
+        ),
+
       ),
     );
   }

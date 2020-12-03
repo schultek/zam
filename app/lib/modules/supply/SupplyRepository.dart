@@ -90,7 +90,23 @@ class SupplyRepository with ChangeNotifier {
       "note": "",
     });
   }
+
+  Future<void> updateShoppingList(ArticleList list) async {
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .doc(this.tripId)
+        .collection("modules")
+        .doc("supply")
+        .collection("articleLists")
+        .doc(list.id)
+        .update({
+      "name": list.name,
+      "entries": list.entries.map((entry) => entry.toMap()).toList(),
+      "note": list.note,
+    });
+  }
 }
+
 
 class SupplyProvider extends StatelessWidget {
   final String tripId;
