@@ -20,7 +20,7 @@ class ShoppingPage extends StatelessWidget {
           },
           tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
         ),
-        title: Text("Einkaufsliste"),
+        title: Text("Einkaufslisten"),
       ),
       body: Container(
         child: Selector<SupplyRepository, List<ShoppingList>>(
@@ -32,6 +32,9 @@ class ShoppingPage extends StatelessWidget {
                 return ListTile(
                   title: Text(lists[index].name),
                   subtitle: Text("${lists[index].entries.length} Artikel"),
+                  onTap: () {
+
+                  },
                 );
               },
             );
@@ -59,4 +62,33 @@ class ShoppingPage extends StatelessWidget {
   }
 }
 
+class ShoppingListDialog extends StatefulWidget {
+  @override
+  _ShoppingListDialogState createState() => _ShoppingListDialogState();
+  String id;
+  ShoppingListDialog(this.id);
+
+  static Future<void> open(BuildContext context, String id) async {
+    await showDialog(
+      context: context,
+      builder: (_context) => SupplyProvider.of(context, child: ShoppingListDialog(id)),
+    );
+  }
+}
+
+class _ShoppingListDialogState extends State<ShoppingListDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Selector<SupplyRepository, ArticleList>(
+          builder: (BuildContext context, ArticleList list, _){
+            return Text(list.name);
+          },
+          selector: (BuildContext context, SupplyRepository repo) {
+            return repo.getArticleListById(widget.id);
+          },
+      ),
+    );
+  }
+}
 

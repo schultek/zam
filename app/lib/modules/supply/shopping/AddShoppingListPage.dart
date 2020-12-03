@@ -229,7 +229,10 @@ class _RecipeDialogState extends State<RecipeDialog> {
   }
 
   void closeDialog(bool shouldSave) {
-    Navigator.of(context).pop(shouldSave ? articleEntries.where((ArticleEntry entry) => entry.checked).toList() : null);
+    Navigator.of(context).pop(shouldSave ? articleEntries.where((ArticleEntry entry) => entry.checked).map((ArticleEntry entry) {
+      entry.checked = false;
+      return entry;
+    }).toList() : null);
   }
 
   @override
