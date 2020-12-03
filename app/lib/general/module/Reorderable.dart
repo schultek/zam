@@ -1,11 +1,10 @@
 part of module;
 
-typedef bool ReorderItemCallback(Key draggedItem, Key newPosition);
-typedef void ReorderCompleteCallback(Key draggedItem);
-typedef GridIndex GridIndexCallback(Key itemKey);
-
-// Decorates current placeholder widget
-typedef Widget DecoratePlaceholder(Widget widget, double decorationOpacity);
+class GridIndex {
+  int row, column;
+  CardSize size;
+  GridIndex(this.row, this.column, this.size);
+}
 
 // Can be used to cancel reordering (i.e. when underlying data changed)
 class CancellationToken {
@@ -18,29 +17,33 @@ class CancellationToken {
   final _callbacks = List<VoidCallback>();
 }
 
+abstract class GridProvider {
+  GridIndex indexOf(Key key);
+  List<List<ModuleCard>> getGrid();
+  void onReorder(Key draggedItem, Key newPosition);
+  void onReorderDone(Key draggedItem) {}
+  Widget decorateItem(Widget widget, double decorationOpacity);
+}
+
 class ReorderableList extends StatefulWidget {
   ReorderableList({
     Key key,
     @required this.child,
-    @required this.onReorder,
     @required this.grid,
-    this.onReorderDone,
     this.cancellationToken,
-    this.decoratePlaceholder,
   }) : super(key: key);
 
   final Widget child;
-
-  final ReorderItemCallback onReorder;
-  final ReorderCompleteCallback onReorderDone;
-  final DecoratePlaceholder decoratePlaceholder;
-
-  final ModuleGrid grid;
+  final GridProvider grid;
 
   final CancellationToken cancellationToken;
 
   @override
   State<StatefulWidget> createState() => new _ReorderableListState();
+
+  static _ReorderableListState of(BuildContext context) {
+    return _ReorderableListState.of(context);
+  }
 }
 
 enum ReorderableItemState {
@@ -154,7 +157,7 @@ class _ReorderableListState extends State<ReorderableList> with TickerProviderSt
     return LayoutBuilder(builder: (context, constraints) {
       return Stack(
         fit: StackFit.passthrough,
-        children: <Widget>[widget.child, new _DragProxy(widget.decoratePlaceholder, constraints.maxWidth)],
+        children: <Widget>[widget.child, new _DragProxy(widget.grid.decorateItem, constraints.maxWidth)],
       );
     });
   }
@@ -196,9 +199,7 @@ class _ReorderableListState extends State<ReorderableList> with TickerProviderSt
       var current = _items[_dragging];
       current?.update();
 
-      if (widget.onReorderDone != null) {
-        widget.onReorderDone(dragging);
-      }
+      widget.grid.onReorderDone(dragging);
     }
   }
 
@@ -369,9 +370,7 @@ class _ReorderableListState extends State<ReorderableList> with TickerProviderSt
       current.update();
       _scrollable = null;
 
-      if (widget.onReorderDone != null) {
-        widget.onReorderDone(dragging);
-      }
+      widget.grid.onReorderDone(dragging);
     }
   }
 
@@ -388,34 +387,33 @@ class _ReorderableListState extends State<ReorderableList> with TickerProviderSt
     final draggingHeight = draggingState.context.size.height;
     final draggingWidth = draggingState.context.size.width;
 
+    var grid = widget.grid.getGrid();
+
     if (_dragProxy.offsetY < draggingOffset.dy - draggingHeight / 2 - 20) {
       var dragIndex = widget.grid.indexOf(_dragging);
       if (dragIndex.row > 0) {
-        var aboveRow = widget.grid.grid[dragIndex.row - 1];
+        var aboveRow = grid[dragIndex.row - 1];
 
         if (dragIndex.size == CardSize.Wide) {
-          widget.onReorder(_dragging, aboveRow[0].key);
+          widget.grid.onReorder(_dragging, aboveRow[0].key);
 
-          _adjustItemTranslationY(aboveRow[0].key, -draggingHeight, draggingHeight);
-          if (aboveRow.length == 2) _adjustItemTranslationY(aboveRow[1].key, -draggingHeight, draggingHeight);
+          _adjustItemTranslationY(aboveRow[0].key, -draggingHeight);
+          if (aboveRow.length == 2) _adjustItemTranslationY(aboveRow[1].key, -draggingHeight);
         } else {
           if (aboveRow.length == 2) {
             var aboveItem = aboveRow[dragIndex.column];
 
-            widget.onReorder(_dragging, aboveItem.key);
-            _adjustItemTranslationY(aboveItem.key, -draggingHeight, draggingHeight);
+            widget.grid.onReorder(_dragging, aboveItem.key);
+            _adjustItemTranslationY(aboveItem.key, -draggingHeight);
           } else {
-            var siblingItem = widget.grid.grid[dragIndex.row][1 - dragIndex.column];
+            var siblingItem = widget.grid.getGrid()[dragIndex.row][1 - dragIndex.column];
 
-            widget.onReorder(_dragging, aboveRow[0].key);
-            _adjustItemTranslationY(aboveRow[0].key, -draggingHeight, draggingHeight);
-            _adjustItemTranslationY(siblingItem.key, draggingHeight, draggingHeight);
+            widget.grid.onReorder(_dragging, aboveRow[0].key);
+            _adjustItemTranslationY(aboveRow[0].key, -draggingHeight);
+            _adjustItemTranslationY(siblingItem.key, draggingHeight);
           }
         }
 
-        if (Platform.isIOS) {
-          _hapticFeedback();
-        }
         SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
           _scheduledRebuild = false;
         });
@@ -423,32 +421,29 @@ class _ReorderableListState extends State<ReorderableList> with TickerProviderSt
       }
     } else if (_dragProxy.offsetY > draggingOffset.dy + draggingHeight / 2 + 20) {
       var dragIndex = widget.grid.indexOf(_dragging);
-      if (dragIndex.row < widget.grid.grid.length - 1) {
-        var belowRow = widget.grid.grid[dragIndex.row + 1];
+      if (dragIndex.row < grid.length - 1) {
+        var belowRow = grid[dragIndex.row + 1];
 
         if (dragIndex.size == CardSize.Wide) {
-          widget.onReorder(_dragging, belowRow[0].key);
+          widget.grid.onReorder(_dragging, belowRow[0].key);
 
-          _adjustItemTranslationY(belowRow[0].key, draggingHeight, draggingHeight);
-          if (belowRow.length == 2) _adjustItemTranslationY(belowRow[1].key, draggingHeight, draggingHeight);
+          _adjustItemTranslationY(belowRow[0].key, draggingHeight);
+          if (belowRow.length == 2) _adjustItemTranslationY(belowRow[1].key, draggingHeight);
         } else {
           if (belowRow.length == 2) {
             var belowItem = belowRow[dragIndex.column];
 
-            widget.onReorder(_dragging, belowItem.key);
-            _adjustItemTranslationY(belowItem.key, draggingHeight, draggingHeight);
+            widget.grid.onReorder(_dragging, belowItem.key);
+            _adjustItemTranslationY(belowItem.key, draggingHeight);
           } else {
-            var siblingItem = widget.grid.grid[dragIndex.row][1 - dragIndex.column];
+            var siblingItem = grid[dragIndex.row][1 - dragIndex.column];
 
-            widget.onReorder(_dragging, belowRow[0].key);
-            _adjustItemTranslationY(belowRow[0].key, draggingHeight, draggingHeight);
-            _adjustItemTranslationY(siblingItem.key, -draggingHeight, draggingHeight);
+            widget.grid.onReorder(_dragging, belowRow[0].key);
+            _adjustItemTranslationY(belowRow[0].key, draggingHeight);
+            _adjustItemTranslationY(siblingItem.key, -draggingHeight);
           }
         }
 
-        if (Platform.isIOS) {
-          _hapticFeedback();
-        }
         SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
           _scheduledRebuild = false;
         });
@@ -459,22 +454,25 @@ class _ReorderableListState extends State<ReorderableList> with TickerProviderSt
       var dragIndex = widget.grid.indexOf(_dragging);
       if (dragIndex.size == CardSize.Square) {
 
-        var siblingItem = widget.grid.grid[dragIndex.row][1 - dragIndex.column];
+        var siblingItem = grid[dragIndex.row][1 - dragIndex.column];
 
-        widget.onReorder(_dragging, siblingItem.key);
+        widget.grid.onReorder(_dragging, siblingItem.key);
 
         var sign = dragIndex.column == 0 ? 1 : -1;
         _adjustItemTranslationX(siblingItem.key, sign * draggingWidth, draggingWidth);
 
-        if (Platform.isIOS) {
-          _hapticFeedback();
-        }
         SchedulerBinding.instance.addPostFrameCallback((Duration timeStamp) {
           _scheduledRebuild = false;
         });
         _scheduledRebuild = true;
       }
     }
+  }
+
+  void removeItem(Key key) {
+
+
+
   }
 
   void _hapticFeedback() {
@@ -517,8 +515,9 @@ class _ReorderableListState extends State<ReorderableList> with TickerProviderSt
     }
   }
 
-  void _adjustItemTranslationY(Key key, double delta, double max) {
+  void _adjustItemTranslationY(Key key, double delta) {
     double current = 0.0;
+    double max = delta.abs();
     if (_itemTranslations.containsKey(key)) {
       var currentController = _itemTranslations[key].item2;
       if (currentController != null) {
@@ -654,13 +653,13 @@ class _ReorderableItemState extends State<ReorderableItem> {
 //
 
 class _DragProxy extends StatefulWidget {
-  final DecoratePlaceholder decoratePlaceholder;
+  final Widget Function(Widget child, double opacity) itemPlaceholder;
   double parentWidth;
 
   @override
   State<StatefulWidget> createState() => new _DragProxyState();
 
-  _DragProxy(this.decoratePlaceholder, this.parentWidth);
+  _DragProxy(this.itemPlaceholder, this.parentWidth);
 }
 
 class _DragProxyState extends State<_DragProxy> {
@@ -737,11 +736,11 @@ class _DragProxyState extends State<_DragProxy> {
         ),
       );
 
-      final decoratedPlaceholder = widget.decoratePlaceholder(w, _decorationOpacity);
+      final decoratedPlaceholder = widget.itemPlaceholder(w, _decorationOpacity);
       return Positioned(
         child: decoratedPlaceholder,
         top: _offsetY,
-        left: max(0, min(widget.parentWidth - _size.width, _offsetX)),
+        left: max(20, min(widget.parentWidth - _size.width - 20, _offsetX)),
         width: _size.width,
       );
     } else {

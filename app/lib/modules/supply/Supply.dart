@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rive/rive.dart';
 
-import '../../general/Module.dart';
+import '../../general/module/Module.dart';
 import 'shopping/ShoppingPage.dart';
 import 'CookingPage.dart';
 import 'SupplyRepository.dart';
@@ -12,7 +12,7 @@ class Supply extends Module {
   @override
   List<ModuleCard> getCards(ModuleData data) {
     return [
-      ModuleCard(
+      ModuleCard("cooking",
         builder: (context) => Container(
           padding: EdgeInsets.all(10),
           child: Stack(
@@ -29,7 +29,7 @@ class Supply extends Module {
         ),
         onNavigate: (context) => SupplyProvider(tripId: data.trip.id, child: CookingPage()),
       ),
-      ModuleCard(
+      ModuleCard("shopping",
         builder: (context) => Container(
           padding: EdgeInsets.all(10),
           child: Center(child: Text("Einkaufen")),
@@ -77,14 +77,14 @@ class _CookingPotState extends State<CookingPot> {
 
   @override
   Widget build(BuildContext context) {
-    if (artboard != null) {
-      return Rive(
-        artboard: artboard,
-        fit: BoxFit.cover,
-        alignment: Alignment.bottomCenter,
-      );
-    } else {
+    // if (artboard != null) {
+    //   return Rive(
+    //     artboard: artboard,
+    //     fit: BoxFit.cover,
+    //     alignment: Alignment.bottomCenter,
+    //   );
+    // } else {
       return Container();
-    }
+    // }
   }
 }

@@ -10,44 +10,47 @@ class ModuleCardKey extends ValueKey<ModuleCard> {
   ModuleCardKey(ModuleCard value) : super(value);
 }
 
-enum CardSize {
-  Square, Wide
-}
+enum CardSize { Square, Wide }
 
 class ModuleCard extends StatelessWidget {
-
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context) onNavigate;
+  final void Function() onTap;
+
   final CardSize size;
-  int index = 0;
 
-  Key key;
+  final String id;
 
-  ModuleCard({this.builder, this.onNavigate, this.size = CardSize.Square}) {
-    this.key = UniqueKey();
-  }
+  ModuleCard(this.id, {this.builder, this.onNavigate, this.onTap, this.size = CardSize.Square}): super(key: UniqueKey());
 
   Widget build(BuildContext context) {
     return ModuleCardTransition(
-            child: Builder(
-              builder: (context) => GestureDetector(
-                child: AspectRatio(
-                  aspectRatio: size == CardSize.Square ? 1 / 1 : 2 / 1,
-                  child: Material(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    color: Colors.grey[300],
-                    child: this.builder(context),
-                  ),
-                ),
-                onTap: () {
-                  if (this.onNavigate != null) {
-                    Navigator.of(context).push(ModulePageRoute(context, child: this.onNavigate(context)));
-                  }
-                },
+      child: Builder(
+        builder: (context) => GestureDetector(
+          child: AspectRatio(
+            aspectRatio: size == CardSize.Square ? 1 / 1 : 2 / 1,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Material(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                color: Colors.grey[300],
+                child: this.builder(context),
               ),
             ),
-          );
+          ),
+          onTap: () {
+            if (this.onTap != null) {
+              this.onTap();
+            }
+            if (this.onNavigate != null) {
+              Navigator.of(context).push(ModulePageRoute(context, child: this.onNavigate(context)));
+            }
+          },
+        ),
+      ),
+    );
   }
+
 }
 
 class ModuleCardTransition extends StatefulWidget {
@@ -146,14 +149,12 @@ class ModuleCardLocator extends InheritedWidget {
 }
 
 class ModuleTransition {
-
   Rect page;
   Widget card;
 
   double cardShadow;
   double clipRadius;
   double pageOpacity;
-
 
   ModuleTransition(this.page, this.card, double value) {
     this.cardShadow = min(0.2, value);

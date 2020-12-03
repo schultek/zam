@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
-import '../../general/Module.dart';
+import '../../general/module/Module.dart';
 import '../../models/Trip.dart';
 import '../../service/DynamicLinkService.dart';
 
@@ -10,7 +10,7 @@ class UsersModule extends Module {
   @override
   List<ModuleCard> getCards(ModuleData data) {
     return [
-      ModuleCard(
+      ModuleCard("users",
         builder: (context) => Container(
           padding: EdgeInsets.all(10),
           child: Center(child: Text("Users")),

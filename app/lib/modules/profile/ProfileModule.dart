@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-import '../../general/Module.dart';
+import '../../general/module/Module.dart';
 import '../../models/Trip.dart';
 
 class Profile extends Module {
   @override
   List<ModuleCard> getCards(ModuleData data) {
     return [
-      ModuleCard(
+      ModuleCard("profile",
         builder: (context) => Container(
           padding: EdgeInsets.all(10),
           child: Center(child: Text("Profil")),

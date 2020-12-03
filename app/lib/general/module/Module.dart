@@ -14,16 +14,15 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:reflectable/reflectable.dart';
 import 'package:tuple/tuple.dart';
-import '../main.reflectable.dart';
+import '../../main.reflectable.dart';
 
 // ignore: UNUSED_IMPORT
-import '../modules/modules.dart';
-import '../models/Trip.dart';
+import '../../modules/modules.dart';
+import '../../models/Trip.dart';
 
 part 'ModuleRegistry.dart';
 part 'ModuleCard.dart';
 part 'ModuleRoute.dart';
-part 'ModuleGrid.dart';
 part 'Reorderable.dart';
 
 class ModuleReflector extends Reflectable {

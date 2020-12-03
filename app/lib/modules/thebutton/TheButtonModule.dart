@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 
-import '../../general/Module.dart';
+import '../../general/module/Module.dart';
 import 'TheButtonRepository.dart';
 import 'TheButtonAnimationController.dart';
 
@@ -13,7 +13,7 @@ class TheButtonModule extends Module {
   @override
   List<ModuleCard> getCards(ModuleData data) {
     return [
-      ModuleCard(
+      ModuleCard("thebutton",
         builder: (context) => Stack(
           children: [
             Positioned.fill(
@@ -219,11 +219,11 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    if (artboard != null) {
-      return Rive(artboard: artboard);
-    } else {
+    // if (artboard != null) {
+    //   return Rive(artboard: artboard);
+    // } else {
       return Container();
-    }
+    // }
   }
 
 }

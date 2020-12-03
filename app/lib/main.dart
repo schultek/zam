@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'general/Module.dart';
+import 'general/module/Module.dart';
 import 'models/Trip.dart';
-import 'pages/TripHome.dart';
+import 'pages/trip/TripHome.dart';
 import 'pages/NoTrip.dart';
 import 'providers/AppState.dart';
 import 'service/DynamicLinkService.dart';

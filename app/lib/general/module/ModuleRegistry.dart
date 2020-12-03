@@ -19,9 +19,14 @@ class ModuleRegistry {
     });
   }
 
-  static List<Module> getAllModules() {
-    var list = modules.map((m) => m.newInstance("", []) as Module).toList();
-    return list + list;
+  static List<ModuleCard> getModuleCards(ModuleData moduleData) {
+    Set<String> cardIdentifiers = Set();
+    var cards = modules.expand((m) => (m.newInstance("", []) as Module).getCards(moduleData)).toList();
+    cards.forEach((card) {
+      assert(!cardIdentifiers.contains(card.id), "Module Card has non-unique identifier ${card.id}.");
+      cardIdentifiers.add(card.id);
+    });
+    return cards;
   }
 
 }
