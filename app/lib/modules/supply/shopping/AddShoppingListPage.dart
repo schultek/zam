@@ -110,7 +110,14 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
               child: ListView.builder(
                   itemCount: listEntries.length,
                   itemBuilder: (context, index) {
-                    return ListTile(title: Text(listEntries[index].articleId));
+                    return Selector<SupplyRepository, Article>(
+                      selector: (context, repo) => repo.getArticleById(listEntries[index].articleId),
+                      builder: (BuildContext context, Article article, _) {
+                        return ListTile(
+                          title: Text(article.name),
+                        );
+                      },
+                    );
                   }),
             ),
           ],
@@ -222,7 +229,7 @@ class _RecipeDialogState extends State<RecipeDialog> {
   }
 
   void closeDialog(bool shouldSave) {
-    Navigator.of(context).pop(shouldSave ? articleEntries : null);
+    Navigator.of(context).pop(shouldSave ? articleEntries.where((ArticleEntry entry) => entry.checked).toList() : null);
   }
 
   @override
