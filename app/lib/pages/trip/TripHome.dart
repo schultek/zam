@@ -252,6 +252,9 @@ class _TripHomeState extends State<TripHome> with TickerProviderStateMixin, Grid
 
       var index = indexOf(card.key);
       grid[index.row].remove(card);
+      if (grid[index.row].length == 0) {
+        grid.removeAt(index.row);
+      }
 
       this.updateIndices();
     });

@@ -219,11 +219,11 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
 
   @override
   Widget build(BuildContext context) {
-    // if (artboard != null) {
-    //   return Rive(artboard: artboard);
-    // } else {
+    if (artboard != null) {
+      return Rive(artboard: artboard);
+    } else {
       return Container();
-    // }
+    }
   }
 
 }

@@ -77,14 +77,14 @@ class _CookingPotState extends State<CookingPot> {
 
   @override
   Widget build(BuildContext context) {
-    // if (artboard != null) {
-    //   return Rive(
-    //     artboard: artboard,
-    //     fit: BoxFit.cover,
-    //     alignment: Alignment.bottomCenter,
-    //   );
-    // } else {
+    if (artboard != null) {
+      return Rive(
+        artboard: artboard,
+        fit: BoxFit.cover,
+        alignment: Alignment.bottomCenter,
+      );
+    } else {
       return Container();
-    // }
+    }
   }
 }

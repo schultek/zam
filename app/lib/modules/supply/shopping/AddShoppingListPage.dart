@@ -203,7 +203,10 @@ class RecipeDialog extends StatefulWidget {
   _RecipeDialogState createState() => _RecipeDialogState();
 
   static Future<List<ArticleEntry>> open(BuildContext context, Recipe recipe) {
-    return showDialog<List<ArticleEntry>>(context: context, builder: (_context) => SupplyProvider.of(context, child: RecipeDialog(recipe)),);
+    return showDialog<List<ArticleEntry>>(
+      context: context,
+      builder: (_context) => SupplyProvider.of(context, child: RecipeDialog(recipe)),
+    );
   }
 }
 
@@ -228,20 +231,25 @@ class _RecipeDialogState extends State<RecipeDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       actionsPadding: EdgeInsets.only(right: 10),
       title: Text(widget.recipe.name),
-      content: ListView.builder(
-        itemCount: articleEntries.length,
-        itemBuilder: (context, index) {
-          print(Provider.of<SupplyRepository>(context, listen: false).articles);
+      content: Container(
+        height: 500,
+        width: 300,
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: articleEntries.length,
+          itemBuilder: (context, index) {
+            print(Provider.of<SupplyRepository>(context, listen: false).articles);
             return CheckboxListTile(
-              title: Text(Provider.of<SupplyRepository>(context, listen: false).getArticleById(articleEntries[index].articleId).name),
-              value: articleEntries[index].checked,
-              onChanged: (bool value) {
-                setState(() {
-                  articleEntries[index].checked = value;
+                title: Text(
+                    Provider.of<SupplyRepository>(context, listen: false).getArticleById(articleEntries[index].articleId).name),
+                value: articleEntries[index].checked,
+                onChanged: (bool value) {
+                  setState(() {
+                    articleEntries[index].checked = value;
+                  });
                 });
-              }
-            );
-        },
+          },
+        ),
       ),
       actions: <Widget>[
         FlatButton(
