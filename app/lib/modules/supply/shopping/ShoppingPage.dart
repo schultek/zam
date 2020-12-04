@@ -48,13 +48,15 @@ class ShoppingPage extends StatelessWidget {
               child: Icon(Icons.fastfood),
               label: "Artikel hinzufügen",
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => SupplyProvider.of(context, child: AddArticlePage())));
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => SupplyProvider.of(context, child: AddArticlePage())));
               }),
           SpeedDialChild(
               child: Icon(Icons.shopping_cart),
               label: "Einkaufsliste hinzufügen",
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => SupplyProvider.of(context, child: AddShoppingListPage())));
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => SupplyProvider.of(context, child: AddShoppingListPage())));
               }),
         ],
       ),
@@ -81,36 +83,37 @@ class _ShoppingListDialogState extends State<ShoppingListDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Selector<SupplyRepository, ArticleList>(
-          builder: (BuildContext context, ArticleList list, _){
-            return Text(list.name);
-          },
-          selector: (BuildContext context, SupplyRepository repo) {
-            return repo.getArticleListById(widget.id);
-          },
+        builder: (BuildContext context, ArticleList list, _) {
+          return Text(list.name);
+        },
+        selector: (BuildContext context, SupplyRepository repo) {
+          return repo.getArticleListById(widget.id);
+        },
       ),
       content: Container(
         width: MediaQuery.of(context).size.width * 0.9,
         height: MediaQuery.of(context).size.height * 0.9,
         child: Selector<SupplyRepository, ArticleList>(
-          builder: (BuildContext context, ArticleList list, _){
+          builder: (BuildContext context, ArticleList list, _) {
             return ListView.builder(
               itemCount: list.entries.length,
               itemBuilder: (BuildContext context, int index) {
                 return Selector<SupplyRepository, Article>(
-                    builder: (BuildContext context, Article article, _){
-                      return CheckboxListTile(
-                          title: Text(article.name),
-                          value: list.entries[index].checked,
-                          onChanged: (value) {
-                            list.entries[index].checked = value;
-                            Provider.of<SupplyRepository>(context, listen: false).updateShoppingList(list);
-                          },
-                      );
-                    },
-                    selector: (BuildContext context, SupplyRepository repo) {
-                      return repo.getArticleById(list.entries[index].articleId);
-                    },
-                  );
+                  builder: (BuildContext context, Article article, _) {
+                    return CheckboxListTile(
+                      title: Text(article.name),
+                      value: list.entries[index].checked,
+                      onChanged: (value) {
+                        list.entries[index].checked = value;
+                        Provider.of<SupplyRepository>(context, listen: false).updateShoppingList(list);
+                      },
+                      subtitle: Text(list.entries[index].amount.toString() + " " + list.entries[index].unit),
+                    );
+                  },
+                  selector: (BuildContext context, SupplyRepository repo) {
+                    return repo.getArticleById(list.entries[index].articleId);
+                  },
+                );
               },
             );
           },
@@ -118,9 +121,18 @@ class _ShoppingListDialogState extends State<ShoppingListDialog> {
             return repo.getArticleListById(widget.id);
           },
         ),
-
       ),
+      actions: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddArticlePage()));
+              }
+              ),
+        ),
+      ],
     );
   }
 }
-
