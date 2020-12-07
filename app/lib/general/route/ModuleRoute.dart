@@ -1,4 +1,4 @@
-part of module;
+part of route;
 
 class ModulePageRoute extends PageRouteBuilder {
   final Widget child;
@@ -10,19 +10,19 @@ class ModulePageRoute extends PageRouteBuilder {
           maintainState: false,
           pageBuilder: (ctx, animation, a2) {
 
-            var module = ModuleCardLocator.of(context);
-            if (module == null) {
+            var transitionState = ModuleRouteTransition.of(context);
+            if (transitionState == null) {
               return child;
             }
 
             animation.addStatusListener((status) {
-              module.animate(context, animation.value);
+              transitionState.onAnimate(context, animation.value);
             });
             
             return AnimatedBuilder(
               animation: animation,
               builder: (context, child) {
-                var transition = module.animate(context, animation.value);
+                var transition = transitionState.onAnimate(context, animation.value);
                 if (transition != null) {
                   return Stack(
                     children: [

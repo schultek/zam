@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jufa/general/widgets/widgets.dart';
 import 'package:rive/rive.dart';
 
 import '../../general/module/Module.dart';
@@ -8,35 +9,43 @@ import 'shopping/ShoppingPage.dart';
 import 'CookingPage.dart';
 import 'SupplyRepository.dart';
 
-class Supply extends Module {
-  @override
-  List<ModuleCard> getCards(ModuleData data) {
-    return [
-      ModuleCard("cooking",
-        builder: (context) => Container(
-          padding: EdgeInsets.all(10),
-          child: Stack(
-            children: [
-              Positioned.fill(child: CookingPot()),
-              Positioned(
-                top: 8,
-                left: 0,
-                right: 0,
-                child: Center(child: Text("Kochen", style: TextStyle(color: Colors.black45))),
-              )
-            ],
+@Module()
+class SupplyModule {
+
+  ModuleData moduleData;
+  SupplyModule(this.moduleData);
+
+  @ModuleItem(id: "cooking")
+  BodySegment getCookingCard() {
+    return BodySegment(
+      builder: (context) =>
+          Container(
+            padding: EdgeInsets.all(10),
+            child: Stack(
+              children: [
+                Positioned.fill(child: CookingPot()),
+                Positioned(
+                  top: 8,
+                  left: 0,
+                  right: 0,
+                  child: Center(child: Text("Kochen", style: TextStyle(color: Colors.black45))),
+                )
+              ],
+            ),
           ),
-        ),
-        onNavigate: (context) => SupplyProvider(tripId: data.trip.id, child: CookingPage()),
-      ),
-      ModuleCard("shopping",
+      onNavigate: (context) => SupplyProvider(tripId: moduleData.trip.id, child: CookingPage()),
+    );
+  }
+
+  @ModuleItem(id: "shopping")
+  BodySegment getShoppingCard() {
+     return BodySegment(
         builder: (context) => Container(
           padding: EdgeInsets.all(10),
           child: Center(child: Text("Einkaufen")),
         ),
-        onNavigate: (context) => SupplyProvider(tripId: data.trip.id, child: ShoppingPage()),
-      ),
-    ];
+        onNavigate: (context) => SupplyProvider(tripId: moduleData.trip.id, child: ShoppingPage()),
+      );
   }
 }
 

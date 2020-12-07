@@ -1,68 +1,27 @@
-part of module;
+part of route;
 
-class ModuleData {
-  Trip trip;
-
-  ModuleData({this.trip});
-}
-
-class ModuleCardKey extends ValueKey<ModuleCard> {
-  ModuleCardKey(ModuleCard value) : super(value);
-}
-
-enum CardSize { Square, Wide }
-
-class ModuleCard extends StatelessWidget {
-  final Widget Function(BuildContext context) builder;
-  final Widget Function(BuildContext context) onNavigate;
-  final void Function() onTap;
-
-  final CardSize size;
-
-  final String id;
-
-  ModuleCard(this.id, {this.builder, this.onNavigate, this.onTap, this.size = CardSize.Square}): super(key: UniqueKey());
-
-  Widget build(BuildContext context) {
-    return ModuleCardTransition(
-      child: Builder(
-        builder: (context) => GestureDetector(
-          child: AspectRatio(
-            aspectRatio: size == CardSize.Square ? 1 / 1 : 2 / 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Material(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                color: Colors.grey[300],
-                child: this.builder(context),
-              ),
-            ),
-          ),
-          onTap: () {
-            if (this.onTap != null) {
-              this.onTap();
-            }
-            if (this.onNavigate != null) {
-              Navigator.of(context).push(ModulePageRoute(context, child: this.onNavigate(context)));
-            }
-          },
-        ),
-      ),
-    );
-  }
-
-}
-
-class ModuleCardTransition extends StatefulWidget {
-  final Widget child;
-
-  ModuleCardTransition({this.child});
+class _InheritedModuleRouteTransition extends InheritedWidget {
+  final _ModuleRouteTransitionState state;
+  _InheritedModuleRouteTransition({Key key, this.state, Widget child}) : super(key: key, child: child);
 
   @override
-  _ModuleCardTransitionState createState() => _ModuleCardTransitionState();
+  bool updateShouldNotify(_InheritedModuleRouteTransition old) => true;
 }
 
-class _ModuleCardTransitionState extends State<ModuleCardTransition> with SingleTickerProviderStateMixin {
+class ModuleRouteTransition extends StatefulWidget {
+  final Widget child;
+
+  ModuleRouteTransition({this.child});
+
+  @override
+  State<StatefulWidget> createState() => _ModuleRouteTransitionState();
+
+  static _ModuleRouteTransitionState of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_InheritedModuleRouteTransition>().state;
+  }
+}
+
+class _ModuleRouteTransitionState extends State<ModuleRouteTransition> with SingleTickerProviderStateMixin {
   Rect fullRect;
   final containerKey = GlobalKey();
 
@@ -78,16 +37,14 @@ class _ModuleCardTransitionState extends State<ModuleCardTransition> with Single
 
   @override
   Widget build(BuildContext context) {
-    return ModuleCardLocator(
-      onAnimate: onAnimate,
-      child: Container(
-        key: containerKey,
-        child: Transform(
-          alignment: Alignment.center,
-          transform: _moduleTransform.toMatrix4(),
-          child: widget.child,
-        ),
+    return _InheritedModuleRouteTransition(state: this, child: Container(
+      key: containerKey,
+      child: Transform(
+        alignment: Alignment.center,
+        transform: _moduleTransform.toMatrix4(),
+        child: widget.child,
       ),
+    ),
     );
   }
 
@@ -118,9 +75,9 @@ class _ModuleCardTransitionState extends State<ModuleCardTransition> with Single
 
     var card = value > 0
         ? Positioned.fromRect(
-            rect: cardRect,
-            child: widget.child,
-          )
+      rect: cardRect,
+      child: widget.child,
+    )
         : Container();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -131,22 +88,6 @@ class _ModuleCardTransitionState extends State<ModuleCardTransition> with Single
   }
 }
 
-class ModuleCardLocator extends InheritedWidget {
-  final Function(BuildContext context, double d) onAnimate;
-
-  ModuleCardLocator({Widget child, this.onAnimate}) : super(child: child);
-
-  static ModuleCardLocator of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<ModuleCardLocator>();
-  }
-
-  ModuleTransition animate(BuildContext context, double value) {
-    return this.onAnimate(context, value);
-  }
-
-  @override
-  bool updateShouldNotify(ModuleCardLocator old) => false;
-}
 
 class ModuleTransition {
   Rect page;

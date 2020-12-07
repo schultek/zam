@@ -1,19 +1,8 @@
 library module;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
-
-import 'dart:collection';
-import 'dart:math';
-import 'dart:async';
-import 'dart:io';
-import 'dart:ui' show lerpDouble;
 
 import 'package:reflectable/reflectable.dart';
-import 'package:tuple/tuple.dart';
 import '../../main.reflectable.dart';
 
 // ignore: UNUSED_IMPORT
@@ -21,16 +10,45 @@ import '../../modules/modules.dart';
 import '../../models/Trip.dart';
 
 part 'ModuleRegistry.dart';
-part 'ModuleCard.dart';
-part 'ModuleRoute.dart';
-part 'Reorderable.dart';
 
-class ModuleReflector extends Reflectable {
-  const ModuleReflector()
-      : super(newInstanceCapability, reflectedTypeCapability, typeCapability, typeRelationsCapability, subtypeQuantifyCapability);
+class Module extends Reflectable {
+  const Module() : super(
+      reflectedTypeCapability,
+      newInstanceCapability,
+      staticInvokeCapability,
+      typeCapability,
+      declarationsCapability,
+      metadataCapability,
+      instanceInvokeCapability
+  );
 }
 
-@ModuleReflector()
-abstract class Module {
-  List<ModuleCard> getCards(ModuleData data);
+class ModuleWidgetReflectable extends Reflectable {
+  const ModuleWidgetReflectable() : super(
+      reflectedTypeCapability,
+      typeCapability,
+      typeRelationsCapability,
+      subtypeQuantifyCapability
+  );
+}
+
+class ModuleItem {
+  final String id;
+  const ModuleItem({this.id});
+}
+
+@ModuleWidgetReflectable()
+abstract class ModuleWidget extends StatelessWidget {
+  ModuleWidget({Key key}): super(key: key);
+
+  String _id;
+  String get id => _id;
+  _setId(String id) {
+    this._id = id;
+  }
+}
+
+class ModuleData {
+  Trip trip;
+  ModuleData({this.trip});
 }

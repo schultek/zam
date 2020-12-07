@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:jufa/general/widgets/widgets.dart';
 
 import '../../general/module/Module.dart';
 import '../../models/Trip.dart';
 
-class Profile extends Module {
-  @override
-  List<ModuleCard> getCards(ModuleData data) {
-    return [
-      ModuleCard("profile",
-        builder: (context) => Container(
-          padding: EdgeInsets.all(10),
-          child: Center(child: Text("Profil")),
-        ),
-        onNavigate: (context) => ProfilePage(data.trip.currentUser()),
+@Module()
+class ProfileModule {
+
+  ModuleData moduleData;
+  ProfileModule(this.moduleData);
+
+  @ModuleItem(id: "profile")
+  BodySegment getProfileCard() {
+    return BodySegment(
+      builder: (context) => Container(
+        padding: EdgeInsets.all(10),
+        child: Center(child: Text("Profil")),
       ),
-    ];
+      onNavigate: (context) => ProfilePage(moduleData.trip.currentUser()),
+    );
   }
 }
 

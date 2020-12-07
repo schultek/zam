@@ -63,10 +63,12 @@ class ShoppingPage extends StatelessWidget {
 }
 
 class ShoppingListDialog extends StatefulWidget {
+  final String id;
+
+  ShoppingListDialog(this.id);
+
   @override
   _ShoppingListDialogState createState() => _ShoppingListDialogState();
-  String id;
-  ShoppingListDialog(this.id);
 
   static Future<void> open(BuildContext context, String id) async {
     await showDialog(

@@ -1,18 +1,7 @@
-import 'dart:math';
-
-import 'package:flare_flutter/flare.dart';
-import 'package:flare_flutter/flare_actor.dart';
-import 'package:flare_flutter/flare_controller.dart';
-import 'package:flare_dart/math/mat2d.dart';
-import 'package:flutter/material.dart';
+part of templates;
 
 class ReorderToggle extends StatefulWidget {
-
-  final AnimationController controller;
-  final void Function(bool on) onStartToggle;
-  final void Function(bool on) onCompletedToggle;
-
-  ReorderToggle({this.controller, this.onStartToggle, this.onCompletedToggle});
+  ReorderToggle();
 
   @override
   _ReorderToggleState createState() => _ReorderToggleState();
@@ -20,40 +9,39 @@ class ReorderToggle extends StatefulWidget {
 
 class _ReorderToggleState extends State<ReorderToggle> with FlareController {
 
-  bool isToggled = false;
+  Animation<double> transition;
 
   FlutterActorArtboard artboard;
   ActorAnimation iconAnimation;
 
   @override
-  void initState() {
-    super.initState();
-    widget.controller.addListener(onAnimationTick);
-    widget.controller.addStatusListener(onAnimationStatus);
-  }
-
-  @override
   void dispose() {
     super.dispose();
-    widget.controller.removeListener(onAnimationTick);
-    widget.controller.removeStatusListener(onAnimationStatus);
+    if (this.transition != null)
+      this.transition.removeListener(onAnimationTick);
+  }
+
+
+  setTransition(Animation<double> transition) {
+    if (this.transition == transition) return;
+    if (this.transition != null) this.transition.removeListener(onAnimationTick());
+    this.transition = transition;
+    this.transition.addListener(onAnimationTick());
   }
 
   onAnimationTick() {
     if (this.artboard == null || this.iconAnimation == null) return;
-    var time = widget.controller.value * this.iconAnimation.duration;
+    var time = this.transition.value * this.iconAnimation.duration;
     this.iconAnimation.apply(time, this.artboard, 1.0);
     this.isActive.value = true;
   }
 
-  onAnimationStatus(status) {
-    if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
-      widget.onCompletedToggle(isToggled);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+
+    var state = TripTemplate.of(context);
+    setTransition(state.transition);
+
     return IconButton(
       icon: ShaderMask(
         blendMode: BlendMode.srcIn,
@@ -70,13 +58,7 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
         ),
       ),
       onPressed: () {
-        isToggled = !isToggled;
-        if (isToggled) {
-          widget.controller.forward();
-        } else {
-          widget.controller.reverse();
-        }
-        widget.onStartToggle(isToggled);
+        state.toggleEdit();
       },
     );
   }

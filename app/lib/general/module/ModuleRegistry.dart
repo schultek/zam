@@ -1,65 +1,101 @@
 part of module;
 
-class ModuleRegistry {
+class ModuleMethodMirror {
 
-  static List<ClassMirror> modules = [];
+  String name, id;
+  Type type;
 
-  static registerModules() {
-    initializeReflectable();
+  ModuleMethodMirror(this.name, this.id, this.type);
+}
 
-    var reflector = Reflectable.getInstance(ModuleReflector);
-    var moduleType = reflector.reflectType(Module);
+class ModuleMirror {
 
-    reflector.annotatedClasses.forEach((module) {
-      if (module.simpleName == "Module") return;
-      assert(module.isSubclassOf(moduleType), "Module ${module.simpleName} must extend the Module class.");
+  String id;
 
-      print("FOUND MODULE ${module.simpleName}");
-      modules.add(module);
-    });
-  }
+  List<ModuleMethodMirror> methods = [];
+  ClassMirror classMirror;
 
-  static List<ModuleCard> getModuleCards(ModuleData moduleData) {
-    Set<String> cardIdentifiers = Set();
-    var cards = modules.expand((m) => (m.newInstance("", []) as Module).getCards(moduleData)).toList();
-    cards.forEach((card) {
-      assert(!cardIdentifiers.contains(card.id), "Module Card has non-unique identifier ${card.id}.");
-      cardIdentifiers.add(card.id);
-    });
-    return cards;
+  ModuleMirror(this.id, this.classMirror);
+
+  void addMethod(String name, String id, Type type) {
+    methods.add(ModuleMethodMirror(name, id, type));
   }
 
 }
 
+class ModuleRegistry {
 
+  static List<ModuleMirror> modules = [];
 
+  static registerModules() {
+    initializeReflectable();
 
-/*
+    var reflector = Reflectable.getInstance(Module);
 
-faktoren:
-- user defined layout
-- module self prioritizing
+    var widgetReflector = Reflectable.getInstance(ModuleWidgetReflectable);
+    var moduleWidgetType = widgetReflector.reflectType(ModuleWidget);
 
-- mehrere unterschiedliche karten pro modul möglich
+    reflector.annotatedClasses.forEach((module) {
+      String id = module.simpleName.toLowerCase();
+      if (id.endsWith("module")) id = id.substring(0, id.length - 6);
+      ModuleMirror moduleMirror = ModuleMirror(id, module);
 
-examples
-- next upcoming event on top
-- pinned anouncement on top
-- management actions high, only organizer
-- welcome message on top, only on first start
-- ...
+      for (MethodMirror method in module.instanceMembers.values) {
+        for (Object o in method.metadata) {
+          if (o is ModuleItem) {
+            print("Method ${method.simpleName} with id ${o.id} and type ${method.reflectedReturnType}");
+            bool isModuleWidget = widgetReflector.canReflectType(method.reflectedReturnType) && method.returnType.isSubtypeOf(moduleWidgetType) && method.returnType.simpleName != moduleWidgetType.simpleName;
+            assert(isModuleWidget, "Annotated methods must define a valid module widget return type!");
+            int parameterCount = method.parameters.length;
+            assert(parameterCount == 0, "Annotated methods must have no parameters!");
 
-programmatische generierung der homepage
-  -> abfragen der module
-  -> jedes modul kann beliebig fiele karten registrieren zur anzeige
-  -> sortieren der module nach priorität / ordnung
-  -> anzeigen der module
+            moduleMirror.addMethod(method.simpleName, id + "/" + o.id, method.reflectedReturnType);
+          }
+        }
+      }
 
+      var constructors = module.declarations.values.where((declare) {
+        return declare is MethodMirror && declare.isConstructor;
+      }).map((d) => d as MethodMirror).toList();
 
+      assert(constructors.length == 1, "Modules must have a constructor.");
+      assert(constructors[0].simpleName == module.simpleName, "Modules must have a default constructor.");
 
-karten sortierung
-  - index -> user defined
-  - size -> full / half width
-  - priority -> module defined
+      int parameterCount = constructors[0].parameters.length;
+      assert(parameterCount == 1, "Module constructors must have exactly 1 parameter.");
+      var param = constructors[0].parameters[0];
+      assert(!param.isNamed &&
+          param.reflectedType == ModuleData, "Module constructors must have a parameter of type ModuleData.");
 
-*/
+      print("FOUND MODULE ${moduleMirror.id}");
+      modules.add(moduleMirror);
+    });
+  }
+
+  static List<ModuleWidgetFactory> getModuleWidgetFactories(ModuleData moduleData) {
+    return modules.expand((module) {
+      var moduleInstance = module.classMirror.newInstance("", [moduleData]);
+      var instanceMirror = Reflectable.getInstance(Module).reflect(moduleInstance);
+      return module.methods.map((method) {
+        return ModuleWidgetFactory(method.id, method.type, () => instanceMirror.invoke(method.name, []));
+      });
+    }).toList();
+  }
+
+}
+
+@immutable
+class ModuleWidgetFactory {
+
+  final String id;
+  final Type type;
+  final ModuleWidget Function() _factory;
+
+  const ModuleWidgetFactory(this.id, this.type, this._factory);
+
+  ModuleWidget getWidget() {
+    var widget = this._factory();
+    widget._setId(this.id);
+    return widget;
+  }
+}

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jufa/general/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 
@@ -9,24 +10,27 @@ import '../../general/module/Module.dart';
 import 'TheButtonRepository.dart';
 import 'TheButtonAnimationController.dart';
 
-class TheButtonModule extends Module {
-  @override
-  List<ModuleCard> getCards(ModuleData data) {
-    return [
-      ModuleCard("thebutton",
-        builder: (context) => Stack(
-          children: [
-            Positioned.fill(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: TheButton(data.trip.id),
-              ),
+@Module()
+class TheButtonModule {
+
+  ModuleData moduleData;
+  TheButtonModule(this.moduleData);
+
+  @ModuleItem(id: "thebutton")
+  BodySegment getButtonCard() {
+    return BodySegment(
+      builder: (context) => Stack(
+        children: [
+          Positioned.fill(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: TheButton(moduleData.trip.id),
             ),
-            Positioned.fill(child: TheButtonHelp()),
-          ],
-        ),
+          ),
+          Positioned.fill(child: TheButtonHelp()),
+        ],
       ),
-    ];
+    );
   }
 }
 
@@ -149,7 +153,7 @@ class TheButton extends StatelessWidget {
 
 class TheButtonAnimation extends StatefulWidget {
 
-  TheButtonRepository repo;
+  final TheButtonRepository repo;
 
   TheButtonAnimation(this.repo);
 
