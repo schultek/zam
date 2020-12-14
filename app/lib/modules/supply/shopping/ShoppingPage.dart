@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import '../SupplyModels.dart';
 import '../SupplyRepository.dart';
-import 'AddArticlePage.dart';
-import 'AddShoppingListPage.dart';
+import 'AddArticleDialog.dart';
+import 'EditShoppingListPage.dart';
+import 'ShoppingListDialog.dart';
 
 class ShoppingPage extends StatelessWidget {
   @override
@@ -35,102 +35,62 @@ class ShoppingPage extends StatelessWidget {
                   onTap: () {
                     ShoppingListDialog.open(context, lists[index].id);
                   },
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      DeleteListDialog.open(context, lists[index]);
+                    },
+                  )
                 );
               },
             );
           },
         ),
       ),
-      floatingActionButton: SpeedDial(
-        child: Icon(Icons.add),
-        children: [
-          SpeedDialChild(
-              child: Icon(Icons.fastfood),
-              label: "Artikel hinzufügen",
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => SupplyProvider.of(context, child: AddArticlePage())));
-              }),
-          SpeedDialChild(
-              child: Icon(Icons.shopping_cart),
-              label: "Einkaufsliste hinzufügen",
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => SupplyProvider.of(context, child: AddShoppingListPage())));
-              }),
-        ],
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.shopping_cart),
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => SupplyProvider.of(context, child: EditShoppingListPage(null))));
+        },
       ),
     );
   }
 }
 
-class ShoppingListDialog extends StatefulWidget {
-  @override
-  _ShoppingListDialogState createState() => _ShoppingListDialogState();
-  String id;
-  ShoppingListDialog(this.id);
+class DeleteListDialog extends StatefulWidget {
+  final ArticleList list;
 
-  static Future<void> open(BuildContext context, String id) async {
-    await showDialog(
-      context: context,
-      builder: (_context) => SupplyProvider.of(context, child: ShoppingListDialog(id)),
-    );
+  DeleteListDialog(this.list);
+  @override
+  _DeleteListDialogState createState() => _DeleteListDialogState();
+
+  static dynamic open(BuildContext context, ArticleList list) {
+    return showDialog(context: context, builder: (_) => SupplyProvider.of(context, child: DeleteListDialog(list)));
   }
 }
 
-class _ShoppingListDialogState extends State<ShoppingListDialog> {
+class _DeleteListDialogState extends State<DeleteListDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Selector<SupplyRepository, ArticleList>(
-        builder: (BuildContext context, ArticleList list, _) {
-          return Text(list.name);
-        },
-        selector: (BuildContext context, SupplyRepository repo) {
-          return repo.getArticleListById(widget.id);
-        },
-      ),
-      content: Container(
-        width: MediaQuery.of(context).size.width * 0.9,
-        height: MediaQuery.of(context).size.height * 0.9,
-        child: Selector<SupplyRepository, ArticleList>(
-          builder: (BuildContext context, ArticleList list, _) {
-            return ListView.builder(
-              itemCount: list.entries.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Selector<SupplyRepository, Article>(
-                  builder: (BuildContext context, Article article, _) {
-                    return CheckboxListTile(
-                      title: Text(article.name),
-                      value: list.entries[index].checked,
-                      onChanged: (value) {
-                        list.entries[index].checked = value;
-                        Provider.of<SupplyRepository>(context, listen: false).updateShoppingList(list);
-                      },
-                      subtitle: Text(list.entries[index].amount.toString() + " " + list.entries[index].unit),
-                    );
-                  },
-                  selector: (BuildContext context, SupplyRepository repo) {
-                    return repo.getArticleById(list.entries[index].articleId);
-                  },
-                );
-              },
-            );
-          },
-          selector: (BuildContext context, SupplyRepository repo) {
-            return repo.getArticleListById(widget.id);
+      title: Text("Wirklich die ganze Einkaufsliste löschen?"),
+      content: Text(widget.list.name),
+      actions: <Widget> [
+        TextButton(
+          child: Text("Abbrechen"),
+          onPressed: () {
+            Navigator.of(context).pop();
           },
         ),
-      ),
-      actions: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddArticlePage()));
-              }
-              ),
+        ElevatedButton(
+          child: Text("Löschen"),
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.red.shade300),
+          ),
+          onPressed: () {
+            Provider.of<SupplyRepository>(context, listen: false).removeShoppingList(widget.list.id);
+            Navigator.of(context).pop();
+          },
         ),
       ],
     );

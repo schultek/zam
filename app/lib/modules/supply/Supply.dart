@@ -5,7 +5,7 @@ import 'package:rive/rive.dart';
 
 import '../../general/module/Module.dart';
 import 'shopping/ShoppingPage.dart';
-import 'CookingPage.dart';
+import 'cooking/CookingPage.dart';
 import 'SupplyRepository.dart';
 
 class Supply extends Module {

@@ -62,8 +62,8 @@ class SupplyRepository with ChangeNotifier {
     return this.articles.firstWhere((article) => article.id == articleId, orElse: () => null);
   }
 
-  Future<void> saveArticle(String articleName, String articleCategory, String articleHint) async {
-    await FirebaseFirestore.instance
+  Future<String> saveArticle(String articleName, String articleCategory, String articleHint) async {
+    var docRef = await FirebaseFirestore.instance
         .collection("trips")
         .doc(this.tripId)
         .collection("modules")
@@ -74,6 +74,7 @@ class SupplyRepository with ChangeNotifier {
       "category": articleCategory,
       "hint": articleHint,
     });
+    return docRef.id;
   }
 
   Future<void> saveShoppingList(String listName, List<ArticleEntry> listEntries) async {
@@ -105,8 +106,31 @@ class SupplyRepository with ChangeNotifier {
       "note": list.note,
     });
   }
-}
 
+  Future<void> removeShoppingList(String listId) async {
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .doc(this.tripId)
+        .collection("modules")
+        .doc("supply")
+        .collection("articleLists")
+        .doc(listId)
+        .delete();
+  }
+
+  Future<void> addArticleEntryToRecipe(String recipeId, ArticleEntry articleEntry) async {
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .doc(this.tripId)
+        .collection("modules")
+        .doc("supply")
+        .collection("articleLists")
+        .doc(recipeId)
+        .update({
+      "entries": FieldValue.arrayUnion([articleEntry.toMap()]),
+    });
+  }
+}
 
 class SupplyProvider extends StatelessWidget {
   final String tripId;
