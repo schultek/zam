@@ -9,38 +9,13 @@ class ReorderToggle extends StatefulWidget {
 
 class _ReorderToggleState extends State<ReorderToggle> with FlareController {
 
-  Animation<double> transition;
-
   FlutterActorArtboard artboard;
   ActorAnimation iconAnimation;
 
   @override
-  void dispose() {
-    super.dispose();
-    if (this.transition != null)
-      this.transition.removeListener(onAnimationTick);
-  }
-
-
-  setTransition(Animation<double> transition) {
-    if (this.transition == transition) return;
-    if (this.transition != null) this.transition.removeListener(onAnimationTick());
-    this.transition = transition;
-    this.transition.addListener(onAnimationTick());
-  }
-
-  onAnimationTick() {
-    if (this.artboard == null || this.iconAnimation == null) return;
-    var time = this.transition.value * this.iconAnimation.duration;
-    this.iconAnimation.apply(time, this.artboard, 1.0);
-    this.isActive.value = true;
-  }
-
-  @override
   Widget build(BuildContext context) {
 
-    var state = TripTemplate.of(context);
-    setTransition(state.transition);
+    var state = WidgetTemplate.of(context, listen: false);
 
     return IconButton(
       icon: ShaderMask(
@@ -50,11 +25,22 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
             colors: <Color>[Colors.grey[600], Colors.grey[600]],
           ).createShader(bounds);
         },
-        child: FlareActor(
-          "lib/assets/animations/reorder_icon.flr",
-          alignment:Alignment.center,
-          fit:BoxFit.contain,
-          controller: this,
+        child: AnimatedBuilder(
+          animation: state.transition,
+          builder: (context, child) {
+            if (this.iconAnimation != null) {
+              var time = state.transition.value * this.iconAnimation.duration;
+              this.iconAnimation.apply(time, this.artboard, 1.0);
+              this.isActive.value = true;
+            }
+            return child;
+          },
+          child: FlareActor(
+            "lib/assets/animations/reorder_icon.flr",
+            alignment:Alignment.center,
+            fit:BoxFit.contain,
+            controller: this,
+          ),
         ),
       ),
       onPressed: () {

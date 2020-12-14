@@ -18,6 +18,7 @@ class TheButtonModule {
 
   @ModuleItem(id: "thebutton")
   BodySegment getButtonCard() {
+    var buttonKey = GlobalKey();
     return BodySegment(
       builder: (context) => Stack(
         children: [
@@ -27,7 +28,7 @@ class TheButtonModule {
               child: TheButton(moduleData.trip.id),
             ),
           ),
-          Positioned.fill(child: TheButtonHelp()),
+          Positioned.fill(child: TheButtonHelp(key: buttonKey)),
         ],
       ),
     );
@@ -35,6 +36,9 @@ class TheButtonModule {
 }
 
 class TheButtonHelp extends StatefulWidget {
+
+  TheButtonHelp({Key key}): super(key: key);
+
   @override
   _TheButtonHelpState createState() => _TheButtonHelpState();
 }

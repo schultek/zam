@@ -7,4 +7,10 @@ class HeaderSegment extends ModuleWidget {
     throw UnimplementedError();
   }
 
+  @override
+  Widget buildPlaceholder(BuildContext context) {
+    // TODO: implement buildPlaceholder
+    throw UnimplementedError();
+  }
+
 }

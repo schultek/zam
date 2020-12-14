@@ -117,18 +117,6 @@ extension RangedCurve on Curve {
   }
 }
 
-extension GlobalKeyExtension on GlobalKey {
-  Rect get globalPaintBounds {
-    final renderObject = currentContext?.findRenderObject();
-    var translation = renderObject?.getTransformTo(null)?.getTranslation();
-    if (translation != null && renderObject.paintBounds != null) {
-      return renderObject.paintBounds.shift(Offset(translation.x, translation.y));
-    } else {
-      return Rect.zero;
-    }
-  }
-}
-
 extension RectTransformUtil on Rect {
   Rect transform(RectTransform rectTransform) {
     return Rect.fromCenter(

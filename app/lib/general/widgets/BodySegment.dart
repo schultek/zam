@@ -9,23 +9,13 @@ class BodySegment extends ModuleWidget {
 
   final SegmentSize size;
 
-  BodySegment({this.builder, this.onNavigate, this.onTap, this.size = SegmentSize.Square}): super(key: UniqueKey());
+  BodySegment({this.builder, this.onNavigate, this.onTap, this.size = SegmentSize.Square}) : super(key: UniqueKey());
 
   Widget build(BuildContext context) {
-    return ModuleWidgetBuilder(
+    return ModuleWidgetBuilder<BodySegment>(
       key: key,
       builder: (context) => GestureDetector(
-        child: AspectRatio(
-          aspectRatio: size == SegmentSize.Square ? 1 / 1 : 2 / 1,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Material(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              color: Colors.grey[300],
-              child: this.builder(context),
-            ),
-          ),
-        ),
+        child: getSegment(context, false),
         onTap: () {
           if (this.onTap != null) {
             this.onTap();
@@ -35,14 +25,32 @@ class BodySegment extends ModuleWidget {
           }
         },
       ),
-      placeholderBuilder: (context) => AspectRatio(
-        aspectRatio: size == SegmentSize.Square ? 1 / 1 : 2 / 1,
-        child: Material(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: Colors.grey[300].withOpacity(.2),
-          child: Container(),
-        ),
+      placeholderBuilder: (context) => getSegment(context, true),
+    );
+  }
+
+  Widget getSegment(BuildContext context, bool isPlaceholder) {
+    var child = ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Material(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        color: Colors.grey[300].withOpacity(isPlaceholder ? 0.4 : 1),
+        child: isPlaceholder ? Container() : builder(context),
       ),
     );
+
+    if (size == SegmentSize.Wide) {
+      return child;
+    } else {
+      return AspectRatio(
+        aspectRatio: 1,
+        child: child,
+      );
+    }
+  }
+
+  @override
+  Widget buildPlaceholder(BuildContext context) {
+    return getSegment(context, true);
   }
 }

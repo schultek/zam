@@ -26,10 +26,10 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>InvitationLinks</string>
+			<string>io.upride.jufa</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>de.schultek.jufa</string>
+				<string>io.upride.jufa</string>
 			</array>
 		</dict>
 	</array>

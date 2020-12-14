@@ -13,9 +13,12 @@ class WelcomeModule {
   BodySegment getWelcomeBanner() {
     return BodySegment(
       size: SegmentSize.Wide,
-      builder: (context) => Container(
-        padding: EdgeInsets.all(10),
-        child: Center(child: Text("Welcome")),
+      builder: (context) => AspectRatio(
+        aspectRatio: 2,
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Center(child: Text("Welcome")),
+        ),
       ),
     );
   }

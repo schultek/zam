@@ -12,24 +12,14 @@ import '../../models/Trip.dart';
 part 'ModuleRegistry.dart';
 
 class Module extends Reflectable {
-  const Module() : super(
-      reflectedTypeCapability,
-      newInstanceCapability,
-      staticInvokeCapability,
-      typeCapability,
-      declarationsCapability,
-      metadataCapability,
-      instanceInvokeCapability
-  );
+  const Module()
+      : super(reflectedTypeCapability, newInstanceCapability, staticInvokeCapability, typeCapability,
+            declarationsCapability, metadataCapability, instanceInvokeCapability);
 }
 
 class ModuleWidgetReflectable extends Reflectable {
-  const ModuleWidgetReflectable() : super(
-      reflectedTypeCapability,
-      typeCapability,
-      typeRelationsCapability,
-      subtypeQuantifyCapability
-  );
+  const ModuleWidgetReflectable()
+      : super(reflectedTypeCapability, typeCapability, typeRelationsCapability, subtypeQuantifyCapability);
 }
 
 class ModuleItem {
@@ -39,7 +29,9 @@ class ModuleItem {
 
 @ModuleWidgetReflectable()
 abstract class ModuleWidget extends StatelessWidget {
-  ModuleWidget({Key key}): super(key: key);
+  ModuleWidget({@required Key key}) : super(key: key);
+
+  Widget buildPlaceholder(BuildContext context);
 
   String _id;
   String get id => _id;

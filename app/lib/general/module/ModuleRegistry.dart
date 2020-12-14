@@ -40,11 +40,13 @@ class ModuleRegistry {
       if (id.endsWith("module")) id = id.substring(0, id.length - 6);
       ModuleMirror moduleMirror = ModuleMirror(id, module);
 
+      print("Found module with id ${moduleMirror.id}");
+
       for (MethodMirror method in module.instanceMembers.values) {
         for (Object o in method.metadata) {
           if (o is ModuleItem) {
-            print("Method ${method.simpleName} with id ${o.id} and type ${method.reflectedReturnType}");
-            bool isModuleWidget = widgetReflector.canReflectType(method.reflectedReturnType) && method.returnType.isSubtypeOf(moduleWidgetType) && method.returnType.simpleName != moduleWidgetType.simpleName;
+            print("Found method ${method.simpleName} with id ${o.id} and type ${method.reflectedReturnType}");
+            bool isModuleWidget = widgetReflector.canReflectType(method.reflectedReturnType) && widgetReflector.reflectType(method.reflectedReturnType).isSubtypeOf(moduleWidgetType) && widgetReflector.reflectType(method.reflectedReturnType).simpleName != moduleWidgetType.simpleName;
             assert(isModuleWidget, "Annotated methods must define a valid module widget return type!");
             int parameterCount = method.parameters.length;
             assert(parameterCount == 0, "Annotated methods must have no parameters!");
@@ -67,7 +69,6 @@ class ModuleRegistry {
       assert(!param.isNamed &&
           param.reflectedType == ModuleData, "Module constructors must have a parameter of type ModuleData.");
 
-      print("FOUND MODULE ${moduleMirror.id}");
       modules.add(moduleMirror);
     });
   }
