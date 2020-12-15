@@ -29,7 +29,7 @@ class CookingPage extends StatelessWidget {
               child: Selector<SupplyRepository, List<Recipe>>(
                 selector: (context, repository) => repository.articleLists.whereType<Recipe>().toList(),
                 shouldRebuild: (previous, next) =>
-                    next.toSet().intersectionBy(previous, (e) => e.id + "-" + e.name).length != next.length,
+                    next.toSet().intersectionBy(previous, (e) => e.id + "-" + e.name).length != previous.length,
                 builder: (context, recipeList, _) {
                   return ListView.builder(
                     itemCount: recipeList.length,
@@ -55,7 +55,9 @@ class CookingPage extends StatelessWidget {
             ElevatedButton(
               child: Text("Rezept hinzufügen"),
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => SupplyProvider.of(context, child: AddRecipePage())));
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => SupplyProvider.of(context, child: AddRecipePage()),
+                ));
               },
             ),
           ],
