@@ -9,8 +9,8 @@ import 'package:jufa/general/route/route.dart';
 import 'package:jufa/general/templates/templates.dart';
 
 part 'BodySegment.dart';
-part 'QuickAction.dart';
 part 'HeaderSegment.dart';
+part 'QuickAction.dart';
 
 class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
   final Key key;
@@ -34,7 +34,7 @@ class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
       );
     }
 
-    var moduleWidget = builder(context);
+    var moduleWidget = Builder(builder: builder);
 
     return ReorderableItem(
       key: key,
