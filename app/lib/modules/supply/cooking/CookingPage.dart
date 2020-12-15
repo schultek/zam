@@ -28,8 +28,10 @@ class CookingPage extends StatelessWidget {
             Expanded(
               child: Selector<SupplyRepository, List<Recipe>>(
                 selector: (context, repository) => repository.articleLists.whereType<Recipe>().toList(),
-                shouldRebuild: (previous, next) =>
-                    next.toSet().intersectionBy(previous, (e) => e.id + "-" + e.name).length != previous.length,
+                shouldRebuild: (previous, next) {
+                  var intersect = next.toSet().intersectionBy(previous, (e) => e.id + "-" + e.name);
+                  return next.length != previous.length || intersect.length != previous.length;
+                },
                 builder: (context, recipeList, _) {
                   return ListView.builder(
                     itemCount: recipeList.length,
