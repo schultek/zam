@@ -131,7 +131,7 @@ class SupplyRepository with ChangeNotifier {
     });
   }
 
-  Future<void> saveRecipe(String recipeName, List<ArticleEntry> recipeEntries, String preparation) async {
+  Future<void> saveRecipe(String recipeName, List<ArticleEntry> recipeEntries, String preparation, String note) async {
     await FirebaseFirestore.instance
         .collection("trips")
         .doc(this.tripId)
@@ -143,7 +143,19 @@ class SupplyRepository with ChangeNotifier {
       "type": "recipe",
       "entries": recipeEntries.map((entry) => entry.toMap()).toList(),
       "preparation": preparation,
+      "note": note,
     });
+  }
+
+  Future<void> removeRecipe(String recipeId) async {
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .doc(this.tripId)
+        .collection("modules")
+        .doc("supply")
+        .collection("articleLists")
+        .doc(recipeId)
+        .delete();
   }
 }
 

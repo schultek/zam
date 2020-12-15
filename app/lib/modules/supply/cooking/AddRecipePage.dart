@@ -18,6 +18,7 @@ class _AddRecipePageState extends State<AddRecipePage> {
   ArticleEntry currentEntry;
   List<ArticleEntry> recipeEntries = [];
   String preparation = "";
+  String note = "";
 
   TextEditingController articleController;
 
@@ -44,7 +45,8 @@ class _AddRecipePageState extends State<AddRecipePage> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
-              await Provider.of<SupplyRepository>(context, listen: false).saveRecipe(recipeName, recipeEntries, preparation);
+              await Provider.of<SupplyRepository>(context, listen: false)
+                  .saveRecipe(recipeName, recipeEntries, preparation, note);
               Navigator.of(context).pop();
             },
           ),
@@ -86,9 +88,15 @@ class _AddRecipePageState extends State<AddRecipePage> {
                 suggestions.addAll(
                   repository.articles.where((article) => article.name.toLowerCase().contains(pattern.toLowerCase())).toList(),
                 );
+                if (suggestions.isEmpty) {
+                  suggestions.add(NewArticleSuggestion(pattern));
+                }
                 return suggestions;
               },
               itemBuilder: (context, dynamic suggestion) {
+                if (suggestion is NewArticleSuggestion) {
+                  return ListTile(leading: Icon(Icons.add), title: Text("Neuen Artikel zur Liste hinzufügen"));
+                }
                 return ListTile(
                   leading: Icon(Icons.shopping_cart),
                   title: Text(suggestion.name),
