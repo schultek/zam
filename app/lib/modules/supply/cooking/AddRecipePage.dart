@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:jufa/modules/supply/shopping/AddArticleDialog.dart';
+import 'package:jufa/modules/supply/shopping/ArticleEntryDialog.dart';
+import 'package:jufa/modules/supply/shopping/EditShoppingListPage.dart';
 import 'package:provider/provider.dart';
 
 import '../SupplyModels.dart';
 import '../SupplyRepository.dart';
-import 'ArticleEntryDialog.dart';
-import 'RecipeDialog.dart';
 
-class AddShoppingListPage extends StatefulWidget {
+class AddRecipePage extends StatefulWidget {
   @override
-  _AddShoppingListPageState createState() => _AddShoppingListPageState();
+  _AddRecipePageState createState() => _AddRecipePageState();
 }
 
-class _AddShoppingListPageState extends State<AddShoppingListPage> {
-  String listName = "";
+class _AddRecipePageState extends State<AddRecipePage> {
+  String recipeName = "";
   ArticleEntry currentEntry;
-  List<ArticleEntry> listEntries = [];
+  List<ArticleEntry> recipeEntries = [];
+  String preparation = "";
 
   TextEditingController articleController;
 
@@ -42,7 +44,7 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () async {
-              await Provider.of<SupplyRepository>(context, listen: false).saveShoppingList(listName, listEntries);
+              await Provider.of<SupplyRepository>(context, listen: false).saveRecipe(recipeName, recipeEntries, preparation);
               Navigator.of(context).pop();
             },
           ),
@@ -58,7 +60,17 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
                 labelText: 'Titel',
               ),
               onChanged: (String name) {
-                listName = name;
+                recipeName = name;
+              },
+            ),
+            Container(height: 20),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Zubereitung',
+              ),
+              onChanged: (String prep) {
+                preparation = prep;
               },
             ),
             Container(height: 20),
@@ -66,19 +78,13 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
               textFieldConfiguration: TextFieldConfiguration(
                   decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Suche nach Artikeln oder Rezepten',
+                labelText: 'Suche nach Artikeln',
               )),
               suggestionsCallback: (pattern) async {
                 SupplyRepository repository = Provider.of<SupplyRepository>(context, listen: false);
                 List<dynamic> suggestions = [];
                 suggestions.addAll(
                   repository.articles.where((article) => article.name.toLowerCase().contains(pattern.toLowerCase())).toList(),
-                );
-                suggestions.addAll(
-                  repository.articleLists
-                      .whereType<Recipe>()
-                      .where((recipe) => recipe.name.toLowerCase().contains(pattern.toLowerCase()))
-                      .toList(),
                 );
                 return suggestions;
               },
@@ -93,26 +99,27 @@ class _AddShoppingListPageState extends State<AddShoppingListPage> {
                   ArticleEntry articleEntry = await ArticleEntryDialog.open(context, suggestion);
                   if (articleEntry != null) {
                     setState(() {
-                      listEntries.add(articleEntry);
+                      recipeEntries.add(articleEntry);
                     });
                   }
-                } else if (suggestion is Recipe) {
-                  List<ArticleEntry> articleEntries = await RecipeDialog.open(context, suggestion);
-                  if (articleEntries != null) {
+                } else if (suggestion is NewArticleSuggestion) {
+                  ArticleEntry articleEntry = await AddArticleDialog.open(context, suggestion.name);
+                  if (articleEntry != null) {
                     setState(() {
-                      listEntries.addAll(articleEntries);
+                      recipeEntries.add(articleEntry);
                     });
                   }
                 }
+
                 articleController.text = "";
               },
             ),
             Expanded(
               child: ListView.builder(
-                  itemCount: listEntries.length,
+                  itemCount: recipeEntries.length,
                   itemBuilder: (context, index) {
                     return Selector<SupplyRepository, Article>(
-                      selector: (context, repo) => repo.getArticleById(listEntries[index].articleId),
+                      selector: (context, repo) => repo.getArticleById(recipeEntries[index].articleId),
                       builder: (BuildContext context, Article article, _) {
                         return ListTile(
                           title: Text(article.name),

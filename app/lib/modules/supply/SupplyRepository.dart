@@ -130,6 +130,21 @@ class SupplyRepository with ChangeNotifier {
       "entries": FieldValue.arrayUnion([articleEntry.toMap()]),
     });
   }
+
+  Future<void> saveRecipe(String recipeName, List<ArticleEntry> recipeEntries, String preparation) async {
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .doc(this.tripId)
+        .collection("modules")
+        .doc("supply")
+        .collection("articleLists")
+        .add({
+      "name": recipeName,
+      "type": "recipe",
+      "entries": recipeEntries.map((entry) => entry.toMap()).toList(),
+      "preparation": preparation,
+    });
+  }
 }
 
 class SupplyProvider extends StatelessWidget {
