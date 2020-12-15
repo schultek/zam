@@ -1,7 +1,7 @@
 part of areas;
 
 class BodyWidgetArea extends WidgetArea<BodySegment> {
-  final ScrollController scrollController;
+  ScrollController scrollController;
   BodyWidgetArea(this.scrollController) : super("body");
 
   @override
@@ -29,32 +29,33 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, BodySegment> {
     }
   }
 
+  @override
+  EdgeInsetsGeometry getPadding() => const EdgeInsets.all(0);
+
   Widget buildArea(BuildContext context) {
     return ListView.builder(
-      controller: widget.scrollController,
       padding: EdgeInsets.only(top: 10),
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
       itemCount: grid.length,
-      itemBuilder: (context, index) {
-        var row = grid[index];
-        return Padding(
-          padding: EdgeInsets.only(bottom: 20, left: 10, right: 10),
-          child: row[0].size == SegmentSize.Wide
-              ? row[0]
-              : Row(children: [
-                  Flexible(
-                    fit: FlexFit.tight,
-                    flex: 1,
-                    child: row[0],
-                  ),
-                  Container(width: 20),
-                  Flexible(
-                    fit: FlexFit.tight,
-                    flex: 1,
-                    child: row.length == 2 ? row[1] : Container(),
-                  )
-                ]),
-        );
-      },
+      itemBuilder: (context, index) => Padding(
+        padding: EdgeInsets.only(bottom: index == grid.length - 1 ? 10 : 20, left: 10, right: 10),
+        child: grid[index][0].size == SegmentSize.Wide
+            ? grid[index][0]
+            : Row(children: [
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 1,
+                  child: grid[index][0],
+                ),
+                Container(width: 20),
+                Flexible(
+                  fit: FlexFit.tight,
+                  flex: 1,
+                  child: grid[index].length == 2 ? grid[index][1] : Container(),
+                )
+              ]),
+      ),
     );
   }
 
@@ -181,6 +182,8 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, BodySegment> {
     if (!_scrolling) {
       final position = widget.scrollController.position;
       int duration = 15; // in ms
+
+      print(position);
 
       MediaQueryData d = MediaQuery.of(context);
 

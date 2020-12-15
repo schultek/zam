@@ -5,18 +5,16 @@ import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:flare_flutter/flare.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controller.dart';
 import 'package:flare_dart/math/mat2d.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 import 'package:jufa/general/areas/areas.dart';
 import 'package:jufa/general/module/Module.dart';
-import 'package:jufa/general/widgets/widgets.dart';
-import 'package:provider/provider.dart';
 import 'package:tuple/tuple.dart';
 
 part 'ReorderToggle.dart';
@@ -63,6 +61,7 @@ abstract class WidgetTemplate extends StatefulWidget {
 class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderStateMixin {
   AnimationController _transitionController;
   AnimationController _wiggleController;
+  AnimationController _moveAnimation;
 
   bool _isEditing = false;
 
@@ -87,6 +86,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
     _transitionController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _wiggleController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _moveAnimation = AnimationController(vsync: this, duration: Duration(milliseconds: 250));
 
     _widgetFactories = ModuleRegistry.getModuleWidgetFactories(widget.moduleData);
     _reorderableManager = ReorderableManager(this);
@@ -142,6 +142,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
     _selectedArea = area.id;
     _widgetSelector = WidgetSelector.show<T>(this);
+    _moveAnimation.forward();
 
     setState(() {});
   }
@@ -152,6 +153,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     if (_widgetSelector != null) {
       _widgetSelector.close();
       _widgetSelector = null;
+      _moveAnimation.reverse();
     }
 
     setState(() {});
@@ -171,7 +173,14 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   Widget build(BuildContext context) {
     return _InheritedWidgetTemplate(
       state: this,
-      child: widget.build(context),
+      child: AnimatedBuilder(
+        animation: _moveAnimation,
+        builder: (context, child) => Padding(
+          padding: EdgeInsets.only(bottom: _moveAnimation.value * 120),
+          child: child,
+        ),
+        child: widget.build(context),
+      ),
     );
   }
 
