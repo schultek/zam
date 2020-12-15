@@ -157,6 +157,19 @@ class SupplyRepository with ChangeNotifier {
         .doc(recipeId)
         .delete();
   }
+
+  Future<void> savePreparation(String preparation, String recipeId) async {
+    await FirebaseFirestore.instance
+        .collection("trips")
+        .doc(this.tripId)
+        .collection("modules")
+        .doc("supply")
+        .collection("articleLists")
+        .doc(recipeId)
+        .update({
+      "preparation": preparation,
+    });
+  }
 }
 
 class SupplyProvider extends StatelessWidget {

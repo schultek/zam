@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../SupplyModels.dart';
 import '../SupplyRepository.dart';
 import 'AddArticleToRecipeDialog.dart';
+import 'EditPreparationDialog.dart';
 
 class RecipePage extends StatefulWidget {
   final String recipeId;
@@ -42,9 +43,24 @@ class _RecipePageState extends State<RecipePage> {
                 child: Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(10),
-                  child: Text(
-                    recipe.preparation,
-                    textAlign: TextAlign.center,
+                  child: Stack(
+                    children: [
+                      Text(
+                        recipe.preparation,
+                        textAlign: TextAlign.center,
+                      ),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            decoration: const ShapeDecoration(color: Colors.white, shape: CircleBorder()),
+                            child: IconButton(
+                                icon: Icon(Icons.edit),
+                                color: Colors.purple,
+                                onPressed: () async {
+                                  await EditPreparationDialog.open(context, recipe.preparation, widget.recipeId);
+                                }),
+                          )),
+                    ],
                   ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
