@@ -12,7 +12,7 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
 
   @override
   void initAreaState() {
-    row = [];
+    row = selectedWidgets;
   }
 
   @override
@@ -29,8 +29,7 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
 
   @override
   BoxConstraints constrainWidget(QuickAction widget) {
-    // TODO: implement constrainWidget
-    throw UnimplementedError();
+    return BoxConstraints();
   }
 
   @override
@@ -89,12 +88,16 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
     int index = row.indexWhere((e) => e.key == itemKey);
 
     if (index > 0 && offset.dx < itemOffset.dx - itemSize.width / 2 - 20) {
-      var draggedItem = row.removeAt(index);
-      row.insert(index - 1, draggedItem);
+      setState(() {
+        var draggedItem = row.removeAt(index);
+        row.insert(index - 1, draggedItem);
+      });
       return true;
     } else if (index < row.length - 1 && offset.dx > itemOffset.dx + itemSize.width / 2 + 20) {
-      var draggedItem = row.removeAt(index);
-      row.insert(index + 1, draggedItem);
+      setState(() {
+        var draggedItem = row.removeAt(index);
+        row.insert(index + 1, draggedItem);
+      });
       return true;
     }
     return false;
