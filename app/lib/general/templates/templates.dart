@@ -3,26 +3,25 @@ library templates;
 import 'dart:collection';
 import 'dart:ui';
 
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-
+import 'package:flare_dart/math/mat2d.dart';
 import 'package:flare_flutter/flare.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controller.dart';
-import 'package:flare_dart/math/mat2d.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-
 import 'package:jufa/general/areas/areas.dart';
 import 'package:jufa/general/module/Module.dart';
+import 'package:jufa/general/widgets/widgets.dart';
 import 'package:tuple/tuple.dart';
 
+part 'BasicTemplate.dart';
 part 'ReorderToggle.dart';
 part 'WidgetSelector.dart';
-part 'reorderable/ReorderableManager.dart';
 part 'reorderable/ReorderableItem.dart';
 part 'reorderable/ReorderableListener.dart';
-part 'BasicTemplate.dart';
+part 'reorderable/ReorderableManager.dart';
 
 class _InheritedWidgetTemplate extends InheritedWidget {
   final WidgetTemplateState state;
@@ -61,14 +60,13 @@ abstract class WidgetTemplate extends StatefulWidget {
 class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderStateMixin {
   AnimationController _transitionController;
   AnimationController _wiggleController;
-  AnimationController _moveAnimation;
 
   bool _isEditing = false;
 
   List<ModuleWidgetFactory> _widgetFactories;
 
   final _widgetAreas = Map<String, WidgetAreaState>();
-  String _selectedArea;
+  String _selectedArea, _lastSelectedArea;
   WidgetSelectorController _widgetSelector;
 
   Animation<double> get transition => _transitionController.view;
@@ -86,7 +84,6 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
     _transitionController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _wiggleController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    _moveAnimation = AnimationController(vsync: this, duration: Duration(milliseconds: 250));
 
     _widgetFactories = ModuleRegistry.getModuleWidgetFactories(widget.moduleData);
     _reorderableManager = ReorderableManager(this);
@@ -114,6 +111,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     });
     _wiggleController.repeat();
     _transitionController.forward();
+    selectWidgetArea(_widgetAreas[_lastSelectedArea]);
   }
 
   void _finishEdit() {
@@ -134,15 +132,18 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   }
 
   void selectWidgetArea<T extends ModuleWidget>(WidgetAreaState<WidgetArea<T>, T> area) {
+    if (!isEditing) return;
     if (_selectedArea == area.id) {
       return;
     } else if (_selectedArea != null) {
       _unselectArea();
     }
 
+    print(area);
+
     _selectedArea = area.id;
+    _lastSelectedArea = _selectedArea;
     _widgetSelector = WidgetSelector.show<T>(this);
-    _moveAnimation.forward();
 
     setState(() {});
   }
@@ -153,7 +154,6 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     if (_widgetSelector != null) {
       _widgetSelector.close();
       _widgetSelector = null;
-      _moveAnimation.reverse();
     }
 
     setState(() {});
@@ -161,6 +161,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
   void registerArea(WidgetAreaState area) {
     this._widgetAreas[area.id] = area;
+    if (_lastSelectedArea == null) _lastSelectedArea = area.id;
   }
 
   void onWidgetRemoved<T extends ModuleWidget>(WidgetAreaState<WidgetArea<T>, T> area, T widget) {
@@ -173,14 +174,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   Widget build(BuildContext context) {
     return _InheritedWidgetTemplate(
       state: this,
-      child: AnimatedBuilder(
-        animation: _moveAnimation,
-        builder: (context, child) => Padding(
-          padding: EdgeInsets.only(bottom: _moveAnimation.value * 120),
-          child: child,
-        ),
-        child: widget.build(context),
-      ),
+      child: widget.build(context),
     );
   }
 

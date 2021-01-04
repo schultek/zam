@@ -1,15 +1,15 @@
 library areas;
 
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:jufa/general/module/Module.dart';
 import 'package:jufa/general/templates/templates.dart';
 import 'package:jufa/general/widgets/widgets.dart';
 
-import '../Extensions.dart';
-
 part 'BodyWidgetArea.dart';
+part 'QuickActionRowArea.dart';
 
 class InheritedWidgetArea extends InheritedWidget {
   final WidgetAreaState state;
@@ -142,7 +142,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleWidget> 
   T getWidgetFromKey(Key key);
   void onWidgetRemoved(Key key);
 
-  bool onDrag(Key key);
+  bool hasKey(Key key);
   bool checkDropPosition(Offset offset, T item);
   void onDrop();
   void cancelDrop(Key key);
