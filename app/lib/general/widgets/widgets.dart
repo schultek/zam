@@ -3,32 +3,32 @@ library widgets;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:jufa/general/areas/areas.dart';
-import 'package:jufa/general/module/Module.dart';
-import 'package:jufa/general/route/route.dart';
-import 'package:jufa/general/templates/templates.dart';
 
-part 'BodySegment.dart';
-part 'HeaderSegment.dart';
-part 'QuickAction.dart';
+import '../areas/areas.dart';
+import '../module/module.dart';
+import '../route/route.dart';
+import '../templates/templates.dart';
+
+part 'body_segment.dart';
+part 'quick_action.dart';
 
 class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
-  final Key key;
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context) placeholderBuilder;
 
-  ModuleWidgetBuilder({@required this.key, @required this.builder, @required this.placeholderBuilder});
+  const ModuleWidgetBuilder({required Key key, required this.builder, required this.placeholderBuilder})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (WidgetSelector.existsIn(context)) {
       return ReorderableItem(
-        key: key,
+        key: key!,
         builder: (context, state, child) {
           return state == ReorderableState.placeholder ? placeholderBuilder(context) : child;
         },
         child: ReorderableListener<T>(
-          delay: Duration(milliseconds: 200),
+          delay: const Duration(milliseconds: 200),
           child: AbsorbPointer(child: builder(context)),
         ),
       );
@@ -37,7 +37,7 @@ class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
     var moduleWidget = Builder(builder: builder);
 
     return ReorderableItem(
-      key: key,
+      key: key!,
       builder: (context, state, child) {
         if (state == ReorderableState.placeholder) {
           return placeholderBuilder(context);
@@ -58,7 +58,7 @@ class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
         }
       },
       child: RemovableDraggableModuleWidget<T>(
-        key: key,
+        key: key!,
         child: moduleWidget,
       ),
     );
@@ -66,18 +66,17 @@ class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
 }
 
 class RemovableDraggableModuleWidget<T extends ModuleWidget> extends StatelessWidget {
-  final Key key;
   final Widget child;
-  RemovableDraggableModuleWidget({this.key, this.child});
+  const RemovableDraggableModuleWidget({required Key key, required this.child}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var templateState = WidgetTemplate.of(context, listen: true);
+    var templateState = WidgetTemplate.of(context);
 
     if (templateState.isEditing) {
       return Stack(children: [
         ReorderableListener<T>(
-          delay: Duration(milliseconds: 100),
+          delay: const Duration(milliseconds: 100),
           child: AbsorbPointer(child: child),
         ),
         Positioned(
@@ -94,12 +93,16 @@ class RemovableDraggableModuleWidget<T extends ModuleWidget> extends StatelessWi
             child: Material(
               color: Colors.red, // button color
               child: InkWell(
-                splashColor: Colors.redAccent, // inkwell color
-                child: SizedBox(width: 24, height: 24, child: Icon(Icons.close, size: 15, color: Colors.white)),
+                splashColor: Colors.redAccent,
                 onTap: () {
                   var areaState = WidgetArea.of(context, listen: false);
-                  areaState.removeWidget(key);
-                },
+                  areaState.removeWidget(key!);
+                }, // inkwell color
+                child: const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: Icon(Icons.close, size: 15, color: Colors.white),
+                ),
               ),
             ),
           ),
@@ -114,15 +117,16 @@ class RemovableDraggableModuleWidget<T extends ModuleWidget> extends StatelessWi
 class PhasedAnimation extends CompoundAnimation<double> {
   double shift;
 
-  PhasedAnimation({phase, intensity, this.shift = 0.0}) : super(first: phase, next: intensity);
+  PhasedAnimation({required Animation<double> phase, required Animation<double> intensity, this.shift = 0.0})
+      : super(first: phase, next: intensity);
 
   @override
   double get value {
-    var phase = this.first.value + shift;
+    var phase = first.value + shift;
     phase = phase > 1 ? phase - 1 : phase;
     phase *= 2;
     phase = phase > 1 ? 2 - phase : phase;
-    return phase * this.next.value;
+    return phase * next.value;
   }
 
   factory PhasedAnimation.of(BuildContext context) {
@@ -141,8 +145,8 @@ class ScalingClipper extends CustomClipper<Rect> {
   Rect getClip(Size size) {
     return Rect.fromCenter(
       center: center,
-      width: size.width * this.value,
-      height: size.height * this.value,
+      width: size.width * value,
+      height: size.height * value,
     );
   }
 

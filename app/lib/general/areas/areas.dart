@@ -4,20 +4,21 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:jufa/general/module/Module.dart';
-import 'package:jufa/general/templates/templates.dart';
-import 'package:jufa/general/widgets/widgets.dart';
 
-part 'BodyWidgetArea.dart';
-part 'QuickActionRowArea.dart';
+import '../module/module.dart';
+import '../templates/templates.dart';
+import '../widgets/widgets.dart';
 
-class InheritedWidgetArea extends InheritedWidget {
-  final WidgetAreaState state;
+part 'body_widget_area.dart';
+part 'quick_action_row_area.dart';
 
-  InheritedWidgetArea({
-    Key key,
-    @required this.state,
-    @required Widget child,
+class InheritedWidgetArea<T extends ModuleWidget> extends InheritedWidget {
+  final WidgetAreaState<WidgetArea<T>, T> state;
+
+  const InheritedWidgetArea({
+    Key? key,
+    required this.state,
+    required Widget child,
   }) : super(key: key, child: child);
 
   @override
@@ -26,14 +27,14 @@ class InheritedWidgetArea extends InheritedWidget {
 
 abstract class WidgetArea<T extends ModuleWidget> extends StatefulWidget {
   final String id;
-  WidgetArea(this.id);
+  const WidgetArea(this.id);
 
   static WidgetAreaState<WidgetArea<T>, T> of<T extends ModuleWidget>(BuildContext context, {bool listen = true}) {
     if (listen) {
-      return context.dependOnInheritedWidgetOfExactType<InheritedWidgetArea>().state;
+      return context.dependOnInheritedWidgetOfExactType<InheritedWidgetArea<T>>()!.state;
     } else {
-      return (context.getElementForInheritedWidgetOfExactType<InheritedWidgetArea>().widget as InheritedWidgetArea)
-          .state;
+      var element = context.getElementForInheritedWidgetOfExactType<InheritedWidgetArea<T>>()!;
+      return (element.widget as InheritedWidgetArea<T>).state;
     }
   }
 }
@@ -41,14 +42,14 @@ abstract class WidgetArea<T extends ModuleWidget> extends StatefulWidget {
 abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleWidget> extends State<U>
     with TickerProviderStateMixin {
   bool _isInitialized = false;
-  List<T> selectedWidgets;
+  late List<T> selectedWidgets;
 
   String get id => widget.id;
 
   final _areaKey = GlobalKey();
-  Size _areaSize;
+  Size? _areaSize;
 
-  Size get areaSize => _areaSize;
+  Size? get areaSize => _areaSize;
 
   @override
   void didChangeDependencies() {
@@ -57,9 +58,9 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleWidget> 
     _isInitialized = true;
 
     var templateState = WidgetTemplate.of(context, listen: false);
-    this.selectedWidgets = templateState.getWidgetsForArea<T>(widget.id);
+    selectedWidgets = templateState.getWidgetsForArea<T>(widget.id);
 
-    this.initAreaState();
+    initAreaState();
   }
 
   void initAreaState();
@@ -70,19 +71,19 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleWidget> 
   }
 
   void updateAreaSize(_) {
-    this._areaSize = (_areaKey.currentContext.findRenderObject() as RenderBox).size;
+    _areaSize = (_areaKey.currentContext!.findRenderObject() as RenderBox).size;
   }
 
   @override
   Widget build(BuildContext context) {
-    var templateState = WidgetTemplate.of(context, listen: true);
+    var templateState = WidgetTemplate.of(context);
     templateState.registerArea(this);
 
-    var isSelected = templateState.selectedArea == this.id;
+    var isSelected = templateState.selectedArea == id;
     var backgroundColor = Colors.blue.withOpacity(0.05);
     var borderColor = Colors.blue.withOpacity(0.5);
 
-    WidgetsBinding.instance.addPostFrameCallback(updateAreaSize);
+    WidgetsBinding.instance!.addPostFrameCallback(updateAreaSize);
 
     return InheritedWidgetArea(
       state: this,
@@ -120,9 +121,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleWidget> 
     );
   }
 
-  EdgeInsetsGeometry getPadding() {
-    return EdgeInsets.all(10);
-  }
+  EdgeInsetsGeometry getPadding() => const EdgeInsets.all(10);
 
   BoxConstraints constrainWidget(T widget);
 
@@ -133,11 +132,11 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleWidget> 
       var templateState = WidgetTemplate.of(context, listen: false);
       templateState.onWidgetRemoved(this, widget);
 
-      this.onWidgetRemoved(key);
+      onWidgetRemoved(key);
     });
   }
 
-  Offset get areaOffset => (_areaKey.currentContext.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+  Offset get areaOffset => (_areaKey.currentContext!.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
 
   T getWidgetFromKey(Key key);
   void onWidgetRemoved(Key key);

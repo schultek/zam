@@ -3,33 +3,38 @@ library templates;
 import 'dart:collection';
 import 'dart:ui';
 
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flare_dart/math/mat2d.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flare_flutter/flare.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flare_flutter/flare_actor.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flare_flutter/flare_controller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:jufa/general/areas/areas.dart';
-import 'package:jufa/general/module/Module.dart';
-import 'package:jufa/general/widgets/widgets.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:tuple/tuple.dart';
 
-part 'BasicTemplate.dart';
-part 'ReorderToggle.dart';
-part 'WidgetSelector.dart';
-part 'reorderable/ReorderableItem.dart';
-part 'reorderable/ReorderableListener.dart';
-part 'reorderable/ReorderableManager.dart';
+import '../areas/areas.dart';
+import '../module/module.dart';
+
+part 'basic_template.dart';
+part 'reorderable/reorderable_item.dart';
+part 'reorderable/reorderable_listener.dart';
+part 'reorderable/reorderable_manager.dart';
+part 'widgets/reorder_toggle.dart';
+part 'widgets/widget_selector.dart';
 
 class _InheritedWidgetTemplate extends InheritedWidget {
   final WidgetTemplateState state;
 
-  _InheritedWidgetTemplate({
-    Key key,
-    @required this.state,
-    @required Widget child,
+  const _InheritedWidgetTemplate({
+    Key? key,
+    required this.state,
+    required Widget child,
   }) : super(key: key, child: child);
 
   @override
@@ -39,7 +44,7 @@ class _InheritedWidgetTemplate extends InheritedWidget {
 abstract class WidgetTemplate extends StatefulWidget {
   final String id;
   final ModuleData moduleData;
-  WidgetTemplate(this.id, this.moduleData);
+  const WidgetTemplate(this.id, this.moduleData);
 
   Widget build(BuildContext context);
 
@@ -48,42 +53,41 @@ abstract class WidgetTemplate extends StatefulWidget {
 
   static WidgetTemplateState of(BuildContext context, {bool listen = true}) {
     if (listen) {
-      return context.dependOnInheritedWidgetOfExactType<_InheritedWidgetTemplate>().state;
+      return context.dependOnInheritedWidgetOfExactType<_InheritedWidgetTemplate>()!.state;
     } else {
-      return (context.getElementForInheritedWidgetOfExactType<_InheritedWidgetTemplate>().widget
-              as _InheritedWidgetTemplate)
-          .state;
+      var element = context.getElementForInheritedWidgetOfExactType<_InheritedWidgetTemplate>()!;
+      return (element.widget as _InheritedWidgetTemplate).state;
     }
   }
 }
 
 class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderStateMixin {
-  AnimationController _transitionController;
-  AnimationController _wiggleController;
+  late AnimationController _transitionController;
+  late AnimationController _wiggleController;
 
   bool _isEditing = false;
 
-  List<ModuleWidgetFactory> _widgetFactories;
+  late List<ModuleWidgetFactory> _widgetFactories;
 
-  final _widgetAreas = Map<String, WidgetAreaState>();
-  String _selectedArea, _lastSelectedArea;
-  WidgetSelectorController _widgetSelector;
+  final Map<String, WidgetAreaState> _widgetAreas = {};
+  String? _selectedArea, _lastSelectedArea;
+  WidgetSelectorController? _widgetSelector;
 
   Animation<double> get transition => _transitionController.view;
   Animation<double> get wiggle => _wiggleController.view;
 
   bool get isEditing => _isEditing;
-  String get selectedArea => _selectedArea;
+  String? get selectedArea => _selectedArea;
 
-  ReorderableManager _reorderableManager;
+  late ReorderableManager _reorderableManager;
   ReorderableManager get reorderable => _reorderableManager;
 
   @override
   void initState() {
     super.initState();
 
-    _transitionController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    _wiggleController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    _transitionController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    _wiggleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
 
     _widgetFactories = ModuleRegistry.getModuleWidgetFactories(widget.moduleData);
     _reorderableManager = ReorderableManager(this);
@@ -98,7 +102,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   }
 
   void toggleEdit() {
-    if (this._isEditing) {
+    if (_isEditing) {
       _finishEdit();
     } else {
       _beginEdit();
@@ -111,7 +115,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     });
     _wiggleController.repeat();
     _transitionController.forward();
-    selectWidgetArea(_widgetAreas[_lastSelectedArea]);
+    selectWidgetArea(_widgetAreas[_lastSelectedArea]!);
   }
 
   void _finishEdit() {
@@ -152,7 +156,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     _selectedArea = null;
 
     if (_widgetSelector != null) {
-      _widgetSelector.close();
+      _widgetSelector!.close();
       _widgetSelector = null;
     }
 
@@ -160,13 +164,13 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   }
 
   void registerArea(WidgetAreaState area) {
-    this._widgetAreas[area.id] = area;
-    if (_lastSelectedArea == null) _lastSelectedArea = area.id;
+    _widgetAreas[area.id] = area;
+    _lastSelectedArea ??= area.id;
   }
 
   void onWidgetRemoved<T extends ModuleWidget>(WidgetAreaState<WidgetArea<T>, T> area, T widget) {
-    if (_widgetSelector != null && _widgetSelector.isForArea(area)) {
-      _widgetSelector.state.addWidget(null, widget);
+    if (_widgetSelector != null && _widgetSelector!.isForArea(area)) {
+      _widgetSelector!.state!.addWidget(null, widget);
     }
   }
 
