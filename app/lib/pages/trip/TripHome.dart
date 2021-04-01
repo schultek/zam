@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jufa/general/templates/templates.dart';
+
 import '../../general/module/Module.dart';
 import '../../models/Trip.dart';
 

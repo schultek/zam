@@ -1,7 +1,7 @@
 part of areas;
 
 class BodyWidgetArea extends WidgetArea<BodySegment> {
-  ScrollController scrollController;
+  final ScrollController scrollController;
   BodyWidgetArea(this.scrollController) : super("body");
 
   @override
@@ -33,38 +33,40 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, BodySegment> {
   EdgeInsetsGeometry getPadding() => const EdgeInsets.all(0);
 
   Widget buildArea(BuildContext context) {
-    return ListView.builder(
-      padding: EdgeInsets.only(top: 10),
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: grid.length,
-      itemBuilder: (context, index) => Padding(
-        padding: EdgeInsets.only(bottom: index == grid.length - 1 ? 10 : 20, left: 10, right: 10),
-        child: grid[index][0].size == SegmentSize.Wide
-            ? grid[index][0]
-            : Row(children: [
-                Flexible(
-                  fit: FlexFit.tight,
-                  flex: 1,
-                  child: grid[index][0],
-                ),
-                Container(width: 20),
-                Flexible(
-                  fit: FlexFit.tight,
-                  flex: 1,
-                  child: grid[index].length == 2 ? grid[index][1] : Container(),
-                )
-              ]),
+    return AnimatedSize(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+      alignment: Alignment.topCenter,
+      curve: Curves.easeInOut,
+      child: ListView.builder(
+        padding: EdgeInsets.only(top: 10),
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: grid.length,
+        itemBuilder: (context, index) => Padding(
+          padding: EdgeInsets.only(bottom: index == grid.length - 1 ? 10 : 20, left: 10, right: 10),
+          child: grid[index][0].size == SegmentSize.Wide
+              ? grid[index][0]
+              : Row(children: [
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: grid[index][0],
+                  ),
+                  Container(width: 20),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: grid[index].length == 2 ? grid[index][1] : Container(),
+                  )
+                ]),
+        ),
       ),
     );
   }
 
   @override
-  bool onDrag(Key key) {
-    return hasItem(key);
-  }
-
-  bool hasItem(Key key) {
+  bool hasKey(Key key) {
     return grid.any((row) => row.any((segment) => segment.key == key));
   }
 
@@ -119,7 +121,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, BodySegment> {
       return true;
     }
 
-    if (hasItem(item.key)) {
+    if (hasKey(item.key)) {
       if (checkDragPosition(offset, item.key)) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           _scheduledRebuild = false;
@@ -179,11 +181,9 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, BodySegment> {
   bool _scrolling = false;
 
   void maybeScroll(Offset dragOffset, Key itemKey, Offset itemOffset, Size itemSize) async {
-    if (!_scrolling) {
+    if (false && !_scrolling) {
       final position = widget.scrollController.position;
       int duration = 15; // in ms
-
-      print(position);
 
       MediaQueryData d = MediaQuery.of(context);
 
@@ -197,7 +197,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, BodySegment> {
         await widget.scrollController.position
             .animateTo(newOffset, duration: Duration(milliseconds: duration), curve: Curves.linear);
         _scrolling = false;
-        if (hasItem(itemKey)) {
+        if (hasKey(itemKey)) {
           checkDragPosition(dragOffset, itemKey);
         }
       }
@@ -394,9 +394,8 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, BodySegment> {
               managerState.translateItemY(belowRow[0].key, itemSize.height + 20);
               managerState.translateItemY(grid[index.row][0].key, -itemSize.height - 20);
 
-              var siblingItem = grid[index.row][0];
-              grid[index.row] = [belowRow[0]];
-              belowRow[0] = siblingItem;
+              grid[index.row + 1] = grid[index.row];
+              grid[index.row] = belowRow;
 
               checkRemovePosition(GridIndex(index.row + 1, index.column, SegmentSize.Square));
             }

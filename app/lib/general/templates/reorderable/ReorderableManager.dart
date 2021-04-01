@@ -125,7 +125,7 @@ class ReorderableManager with Drag {
 
     _dragDecorationOpacity = 1.0;
 
-    _isDropAccepted = _focusedArea.onDrag(_dragging);
+    _isDropAccepted = _focusedArea.hasKey(_dragging);
 
     _dragScaleAnimation.value = _isDropAccepted ? 1 : 0;
     _isOverWidgetSelector = !_isDropAccepted;

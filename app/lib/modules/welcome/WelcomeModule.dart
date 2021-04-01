@@ -8,6 +8,30 @@ class WelcomeModule {
   ModuleData moduleData;
   WelcomeModule(this.moduleData);
 
+  @ModuleItem(id: "action1")
+  QuickAction getAction1() {
+    return QuickAction(
+      icon: Icons.ac_unit,
+      text: "Hallo",
+    );
+  }
+
+  @ModuleItem(id: "action2")
+  QuickAction getAction2() {
+    return QuickAction(
+      icon: Icons.bakery_dining,
+      text: "Test",
+    );
+  }
+
+  @ModuleItem(id: "action3")
+  QuickAction getAction3() {
+    return QuickAction(
+      icon: Icons.wine_bar,
+      text: "Anja",
+    );
+  }
+
   @ModuleItem(id: "banner")
   BodySegment getWelcomeBanner() {
     return BodySegment(

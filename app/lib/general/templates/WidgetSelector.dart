@@ -54,7 +54,7 @@ class WidgetSelector<T extends ModuleWidget> extends StatefulWidget {
   }
 }
 
-class WidgetSelectorState<T extends ModuleWidget> extends State<WidgetSelector<T>> {
+class WidgetSelectorState<T extends ModuleWidget> extends State<WidgetSelector<T>> with TickerProviderStateMixin {
   List<T> widgets;
   ScrollController _scrollController;
 
@@ -118,26 +118,31 @@ class WidgetSelectorState<T extends ModuleWidget> extends State<WidgetSelector<T
   Widget build(BuildContext context) {
     return InheritedWidgetArea(
       state: widget.widgetArea,
-      child: Container(
-        height: 130,
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            controller: _scrollController,
-            itemCount: widgets.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                child: FittedBox(
-                  fit: BoxFit.fitHeight,
-                  child: ConstrainedBox(
-                    constraints: widget.widgetArea.constrainWidget(widgets[index]),
-                    child: widgets[index],
+      child: AnimatedSize(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        vsync: this,
+        child: Container(
+          height: widgets.isNotEmpty ? 130 : 0,
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: _scrollController,
+              itemCount: widgets.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  child: FittedBox(
+                    fit: BoxFit.fitHeight,
+                    child: ConstrainedBox(
+                      constraints: widget.widgetArea.constrainWidget(widgets[index]),
+                      child: widgets[index],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),

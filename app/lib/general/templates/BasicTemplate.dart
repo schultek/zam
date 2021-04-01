@@ -24,24 +24,28 @@ class BasicTemplate extends WidgetTemplate {
           ),
         ),
         SliverPadding(
-          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 20),
+          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
+          sliver: SliverToBoxAdapter(child: QuickActionRowArea("hello")),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
           sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
         ),
+        SliverToBoxAdapter(child: Container(height: 130)),
       ],
     );
   }
 }
 
 class SliverTemplateHeader extends SingleChildRenderObjectWidget {
-  SliverTemplateHeader({Key key, Widget child}): super(key: key, child: child);
+  SliverTemplateHeader({Key key, Widget child}) : super(key: key, child: child);
 
   @override
   RenderObject createRenderObject(BuildContext context) => RenderSliverTemplateHeader();
 }
 
 class RenderSliverTemplateHeader extends RenderSliverSingleBoxAdapter {
-
-  RenderSliverTemplateHeader({RenderBox child}): super(child: child);
+  RenderSliverTemplateHeader({RenderBox child}) : super(child: child);
 
   @override
   void performLayout() {
@@ -77,5 +81,4 @@ class RenderSliverTemplateHeader extends RenderSliverSingleBoxAdapter {
     );
     setChildParentData(child, constraints, geometry);
   }
-
 }
