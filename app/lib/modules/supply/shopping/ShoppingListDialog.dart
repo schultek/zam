@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../SupplyModels.dart';
@@ -26,7 +27,10 @@ class _ShoppingListDialogState extends State<ShoppingListDialog> {
     return AlertDialog(
       title: Selector<SupplyRepository, ArticleList>(
         builder: (BuildContext context, ArticleList list, _) {
-          return Text(list.name);
+          return Text(
+            list.name,
+            textAlign: TextAlign.center,
+          );
         },
         selector: (BuildContext context, SupplyRepository repo) {
           return repo.getArticleListById(widget.id);
@@ -59,7 +63,11 @@ class _ShoppingListDialogState extends State<ShoppingListDialog> {
                             article.category) {
                       return Column(
                         children: [
-                          Text(article.category, style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text(
+                            article.category,
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                            textAlign: TextAlign.start,
+                          ),
                           child,
                         ],
                       );

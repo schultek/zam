@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:jufa/modules/modules.dart';
 import 'package:provider/provider.dart';
 
 import '../SupplyModels.dart';
@@ -54,6 +53,15 @@ class _EditShoppingListPageState extends State<EditShoppingListPage> {
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: Column(
           children: [
+            Text(
+              widget.list != null ? "Bearbeite die Einkaufsliste $listName" : "Erstelle eine neue Einkaufsliste",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
+            Container(height: 20),
             TextField(
               controller: titleController,
               decoration: InputDecoration(
@@ -86,15 +94,11 @@ class _EditShoppingListPageState extends State<EditShoppingListPage> {
                 if (suggestions.isEmpty) {
                   suggestions.add(NewArticleSuggestion(pattern));
                 }
-                  return suggestions;
-
+                return suggestions;
               },
               itemBuilder: (context, dynamic suggestion) {
                 if (suggestion is NewArticleSuggestion) {
-                  return ListTile(
-                    leading: Icon(Icons.add),
-                    title: Text("Neuen Artikel zur Liste hinzufügen")
-                  );
+                  return ListTile(leading: Icon(Icons.add), title: Text("Neuen Artikel zur Liste hinzufügen"));
                 } else {
                   return ListTile(
                     leading: Icon((suggestion is Article) ? Icons.shopping_cart : Icons.fastfood),
@@ -138,13 +142,12 @@ class _EditShoppingListPageState extends State<EditShoppingListPage> {
                         return ListTile(
                           title: Text(article.name),
                           trailing: IconButton(
-                              icon: Icon(Icons.delete),
-                              onPressed: () {
-                                setState((){
-                                  listEntries.removeAt(index);
-                                }
-                                );
-                              },
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              setState(() {
+                                listEntries.removeAt(index);
+                              });
+                            },
                           ),
                         );
                       },
@@ -153,11 +156,7 @@ class _EditShoppingListPageState extends State<EditShoppingListPage> {
             ),
             TextButton(
               style: TextButton.styleFrom(backgroundColor: Colors.purple),
-              child: Text(
-                widget.list != null ? "Aktualisieren" : "Erstellen",
-                 style: TextStyle(
-                      color: Colors.white)
-              ),
+              child: Text(widget.list != null ? "Aktualisieren" : "Erstellen", style: TextStyle(color: Colors.white)),
               onPressed: () async {
                 if (widget.list == null) {
                   await Provider.of<SupplyRepository>(context, listen: false).saveShoppingList(listName, listEntries);
@@ -179,6 +178,4 @@ class NewArticleSuggestion {
   String name;
 
   NewArticleSuggestion(this.name);
-
 }
-
