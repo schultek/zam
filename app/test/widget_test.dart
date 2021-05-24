@@ -8,12 +8,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jufa/main.dart';
-import 'package:jufa/providers/app_state.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(JufaApp(AppState()));
+    await tester.pumpWidget(const JufaApp());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

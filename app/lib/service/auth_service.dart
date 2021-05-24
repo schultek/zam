@@ -1,11 +1,6 @@
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  static User getUser() {
-    return FirebaseAuth.instance.currentUser;
-  }
-
   static Future<void> signIn(String phoneNumber, void Function(String) onSent, void Function(User) onCompleted) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phoneNumber,
@@ -16,7 +11,7 @@ class AuthService {
       verificationFailed: (FirebaseAuthException exception) {
         print(exception.message);
       },
-      codeSent: (String verificationId, int resendToken) {
+      codeSent: (String verificationId, int? resendToken) {
         onSent(verificationId);
       },
       codeAutoRetrievalTimeout: (String verificationId) {
@@ -33,7 +28,7 @@ class AuthService {
   static Future<User> linkOrSignInUser(AuthCredential phoneAuthCredential) async {
     UserCredential userCredential;
     try {
-      userCredential = await getUser().linkWithCredential(phoneAuthCredential);
+      userCredential = await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential);
     } on FirebaseAuthException catch (exception) {
       if (exception.code == "credential-already-in-use") {
         userCredential = await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
@@ -41,7 +36,7 @@ class AuthService {
         rethrow;
       }
     }
-    return userCredential.user;
+    return userCredential.user!;
   }
 
   static Future<UserCredential> createAnonymousUser() {

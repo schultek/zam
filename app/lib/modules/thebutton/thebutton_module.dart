@@ -6,8 +6,7 @@ import 'package:provider/provider.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:rive/rive.dart';
 
-import '../../general/module/Module.dart';
-import '../../general/widgets/widgets.dart';
+import '../../core/module/module.dart';
 import 'thebutton_animation_controller.dart';
 import 'thebutton_repository.dart';
 
@@ -17,9 +16,9 @@ class TheButtonModule {
   TheButtonModule(this.moduleData);
 
   @ModuleItem(id: "thebutton")
-  BodySegment getButtonCard() {
+  ContentSegment getButtonCard() {
     var buttonKey = GlobalKey();
-    return BodySegment(
+    return ContentSegment(
       builder: (context) => Stack(
         children: [
           Positioned.fill(
@@ -144,11 +143,13 @@ class TheButton extends StatelessWidget {
       builder: (context, _) {
         var repo = Provider.of<TheButtonRepository>(context);
 
-        return RaisedButton(
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-          color: Colors.black26,
-          elevation: 8,
+        return ElevatedButton(
+          style: ButtonStyle(
+            shape: MaterialStateProperty.all(const CircleBorder()),
+            padding: MaterialStateProperty.all(EdgeInsets.zero),
+            backgroundColor: MaterialStateProperty.all(Colors.black26),
+            elevation: MaterialStateProperty.all(8),
+          ),
           onPressed: () {
             repo.resetState();
           },
@@ -168,15 +169,14 @@ class TheButtonAnimation extends StatefulWidget {
 }
 
 class _TheButtonAnimationState extends State<TheButtonAnimation> {
-  static Future<Artboard> animationFuture = rootBundle.load('lib/assets/animations/the_button.riv').then((data) async {
-    var file = RiveFile();
-    file.import(data);
+  static Future<Artboard> animationFuture = rootBundle.load('assets/animations/the_button.riv').then((data) async {
+    var file = RiveFile.import(data);
 
     var artboard = file.mainArtboard;
 
     var waveController = SimpleAnimation("Wave");
     artboard.addController(waveController);
-    waveController.instance.animation.speed = 0.1;
+    waveController.instance!.animation.speed = 0.1;
 
     return artboard;
   });
@@ -228,7 +228,7 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
   @override
   Widget build(BuildContext context) {
     if (artboard != null) {
-      return Rive(artboard: artboard);
+      return Rive(artboard: artboard!);
     } else {
       return Container();
     }

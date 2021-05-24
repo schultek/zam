@@ -1,9 +1,15 @@
-# flutter pub run build_runner build lib
+# flutter pub run build_runner watch --delete-conflicting-outputs
+# flutter pub run build_runner build --delete-conflicting-outputs
 targets:
   $default:
     builders:
-      reflectable:
+      dart_json_mapper:
         generate_for:
+          # here should be listed entry point files having 'void main()' function
           - lib/main.dart
         options:
           formatted: true
+
+      reflectable:
+        generate_for:
+          - no/files

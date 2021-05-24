@@ -1,6 +1,11 @@
-part of templates;
+import 'package:flutter/material.dart';
 
-class WidgetSelectorController<T extends ModuleWidget> {
+import '../areas/areas.dart';
+import '../module/module.dart';
+import '../templates/templates.dart';
+import '../themes/themes.dart';
+
+class WidgetSelectorController<T extends ModuleElement> {
   final GlobalKey<WidgetSelectorState<T>> _selectorKey;
   final WidgetSelector<T> _widgetSelector;
   final PersistentBottomSheetController _bottomSheetController;
@@ -12,7 +17,7 @@ class WidgetSelectorController<T extends ModuleWidget> {
   const WidgetSelectorController(this._selectorKey, this._widgetSelector, this._bottomSheetController);
 }
 
-class WidgetSelector<T extends ModuleWidget> extends StatefulWidget {
+class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
   final List<T> widgets;
   final WidgetAreaState<WidgetArea<T>, T> widgetArea;
 
@@ -21,24 +26,24 @@ class WidgetSelector<T extends ModuleWidget> extends StatefulWidget {
   @override
   WidgetSelectorState createState() => WidgetSelectorState<T>();
 
-  static WidgetSelectorController show<T extends ModuleWidget>(WidgetTemplateState template) {
+  static WidgetSelectorController show<T extends ModuleElement>(WidgetTemplateState template) {
     var selectorKey = GlobalKey<WidgetSelectorState<T>>();
 
     WidgetAreaState<WidgetArea<T>, T> widgetArea =
-        template._widgetAreas[template._selectedArea]! as WidgetAreaState<WidgetArea<T>, T>;
+        template.widgetAreas[template.selectedArea]! as WidgetAreaState<WidgetArea<T>, T>;
 
-    List<T> widgets = template._widgetFactories
+    List<T> widgets = template.widgetFactories
         .where((f) => f.type == T)
         .map((f) => f.getWidget() as T)
-        .where((w) => !widgetArea.selectedWidgets.any((ww) => ww.id == w.id))
+        .where((w) => !widgetArea.getWidgets().any((ww) => ww.id == w.id))
         .toList();
 
     var widgetSelector = WidgetSelector<T>(selectorKey, widgets, widgetArea);
 
     var bottomSheetController = Scaffold.of(template.context).showBottomSheet(
-      (context) => _InheritedWidgetTemplate(state: template, child: widgetSelector),
+      (context) => InheritedWidgetTemplate(state: template, child: widgetSelector),
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      elevation: 20,
+      backgroundColor: template.context.getFillColor(),
     );
 
     return WidgetSelectorController(selectorKey, widgetSelector, bottomSheetController);
@@ -49,7 +54,7 @@ class WidgetSelector<T extends ModuleWidget> extends StatefulWidget {
   }
 }
 
-class WidgetSelectorState<T extends ModuleWidget> extends State<WidgetSelector<T>> with TickerProviderStateMixin {
+class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<T>> with TickerProviderStateMixin {
   late List<T> widgets;
   late ScrollController _scrollController;
 
@@ -111,36 +116,40 @@ class WidgetSelectorState<T extends ModuleWidget> extends State<WidgetSelector<T
   }
 
   double get itemHeight => 90;
-  double get topEdge => (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero).dy - 10;
+  double get topEdge => (context.findRenderObject()! as RenderBox).localToGlobal(Offset.zero).dy - 10;
 
   @override
   Widget build(BuildContext context) {
     return InheritedWidgetArea(
       state: widget.widgetArea,
-      child: AnimatedSize(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        vsync: this,
-        child: SizedBox(
-          height: widgets.isNotEmpty ? 130 : 0,
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              controller: _scrollController,
-              itemCount: widgets.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: FittedBox(
-                    fit: BoxFit.fitHeight,
-                    child: ConstrainedBox(
-                      constraints: widget.widgetArea.constrainWidget(widgets[index]),
-                      child: widgets[index],
+      child: InheritedThemeState(
+        theme: widget.widgetArea.theme,
+        reuseTheme: true,
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+          vsync: this,
+          child: SizedBox(
+            height: widgets.isNotEmpty ? 130 : 0,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                controller: _scrollController,
+                itemCount: widgets.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    child: FittedBox(
+                      fit: BoxFit.fitHeight,
+                      child: ConstrainedBox(
+                        constraints: widget.widgetArea.constrainWidget(widgets[index]),
+                        child: widgets[index],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ),

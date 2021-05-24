@@ -1,4 +1,7 @@
-part of templates;
+import 'package:flutter/material.dart';
+
+import '../templates/templates.dart';
+import 'reorderable_manager.dart';
 
 enum ReorderableState { normal, placeholder, dragging }
 
@@ -6,11 +9,13 @@ class ReorderableItem extends StatefulWidget {
   const ReorderableItem({
     required Key key,
     required this.builder,
+    required this.decorationBuilder,
     required this.child,
   }) : super(key: key);
 
   final Widget child;
   final Widget Function(BuildContext context, ReorderableState state, Widget child) builder;
+  final Widget Function(Widget widget, double opacity) decorationBuilder;
 
   @override
   ReorderableItemState createState() => ReorderableItemState();
@@ -29,7 +34,7 @@ class ReorderableItemState extends State<ReorderableItem> {
     Widget child;
     if (_manager!.dragging == key) {
       child = SizedBox.fromSize(
-        size: _manager!._dragSize,
+        size: _manager!.dragSize,
         child: widget.builder(context, ReorderableState.placeholder, widget.child),
       );
     } else {
@@ -49,7 +54,7 @@ class ReorderableItemState extends State<ReorderableItem> {
 
     _manager = WidgetTemplate.of(context, listen: false).reorderable;
     if (_manager!.dragging == key) {
-      _manager!._draggedItemWidgetUpdated();
+      _manager!.draggedItemWidgetUpdated();
     }
   }
 

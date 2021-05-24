@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:shimmer/shimmer.dart';
 
 class LoadingScreen extends StatelessWidget {

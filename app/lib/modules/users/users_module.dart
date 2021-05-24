@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
-import '../../general/module/module.dart';
-import '../../general/widgets/widgets.dart';
+import '../../core/module/module.dart';
+import '../../helpers/locator.dart';
 import '../../models/models.dart';
 import '../../service/dynamic_link_service.dart';
 
@@ -13,8 +13,8 @@ class UsersModule {
   UsersModule(this.moduleData);
 
   @ModuleItem(id: "users")
-  BodySegment getUsers() {
-    return BodySegment(
+  ContentSegment getUsers() {
+    return ContentSegment(
       builder: (context) => Container(
         padding: const EdgeInsets.all(10),
         child: const Center(child: Text("Users")),
@@ -53,14 +53,14 @@ class UsersPage extends StatelessWidget {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {
-                  String link = await DynamicLinkService.createParticipantLink(trip.id);
+                  String link = await locator<DynamicLinkService>().createParticipantLink(trip.id);
                   Share.share("Um dich bei der Freizeit anzumelden, klicke auf den Link: $link");
                 },
                 child: const Text("Einladungslink für Teilnehmer erstellen"),
               ),
               ElevatedButton(
                 onPressed: () async {
-                  String link = await DynamicLinkService.createLeaderLink(trip.id);
+                  String link = await locator<DynamicLinkService>().createLeaderLink(trip.id);
                   Share.share("Um dich als Leiter bei der Freizeit anzumelden, klicke auf den Link: $link");
                 },
                 child: const Text("Einladungslink für Leiter erstellen"),

@@ -1,4 +1,10 @@
-part of templates;
+import 'package:flare_flutter/base/animation/actor_animation.dart';
+import 'package:flare_flutter/flare.dart';
+import 'package:flare_flutter/flare_actor.dart';
+import 'package:flare_flutter/flare_controller.dart';
+import 'package:flutter/material.dart';
+
+import '../templates/templates.dart';
 
 class ReorderToggle extends StatefulWidget {
   @override
@@ -24,15 +30,15 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
         child: AnimatedBuilder(
           animation: state.transition,
           builder: (context, child) {
-            if (iconAnimation != null) {
+            if (iconAnimation != null && artboard != null) {
               var time = state.transition.value * iconAnimation!.duration;
-              iconAnimation!.apply(time, artboard, 1.0);
+              iconAnimation!.apply(time, artboard!, 1.0);
               isActive.value = true;
             }
             return child!;
           },
           child: FlareActor(
-            "lib/assets/animations/reorder_icon.flr",
+            "assets/animations/reorder_icon.flr",
             controller: this,
           ),
         ),

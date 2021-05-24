@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../providers/app_state.dart';
+import '../../bloc/app_bloc.dart';
 import '../../service/auth_service.dart';
 
 class SmsCodeScreen extends StatefulWidget {
@@ -39,7 +39,7 @@ class _EnterCodeState extends State<SmsCodeScreen> {
               ElevatedButton(
                 onPressed: () async {
                   var user = await AuthService.verifyCode(code, widget.verificationId);
-                  await Provider.of<AppState>(context, listen: false).updateUser(user);
+                  await context.read<AppBloc>().updateUser(user);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 child: const Text("Bestätigen"),

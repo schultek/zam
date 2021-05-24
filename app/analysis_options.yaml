@@ -1,14 +1,13 @@
 include: package:lint/analysis_options.yaml
 
 analyzer:
-  exclude: [lib/generated**, lib/main.reflectable.dart]
+  exclude: [lib/generated**, lib/main.mapper.g.dart]
   strong-mode:
     implicit-casts: false
     implicit-dynamic: true
 
 linter:
   rules:
-    sort_pub_dependencies: false
     avoid_classes_with_only_static_members: false
     avoid_positional_boolean_parameters: false
     constant_identifier_names: false
@@ -16,4 +15,5 @@ linter:
     unnecessary_final: true
     prefer_final_locals: false
     prefer_final_in_for_each: false
+    use_late_for_private_fields_and_variables: false
     avoid_print: false # TODO remove in production

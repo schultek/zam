@@ -4,8 +4,7 @@ import 'package:flutter/widgets.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:rive/rive.dart';
 
-import '../../general/module/Module.dart';
-import '../../general/widgets/widgets.dart';
+import '../../core/module/module.dart';
 import 'cooking/cooking_screen.dart';
 import 'shopping/shopping_screen.dart';
 import 'supply_repository.dart';
@@ -16,8 +15,8 @@ class SupplyModule {
   SupplyModule(this.moduleData);
 
   @ModuleItem(id: "cooking")
-  BodySegment getCookingCard() {
-    return BodySegment(
+  ContentSegment getCookingCard() {
+    return ContentSegment(
       builder: (context) => Container(
         padding: const EdgeInsets.all(10),
         child: Stack(
@@ -37,8 +36,8 @@ class SupplyModule {
   }
 
   @ModuleItem(id: "shopping")
-  BodySegment getShoppingCard() {
-    return BodySegment(
+  ContentSegment getShoppingCard() {
+    return ContentSegment(
       builder: (context) => Container(
         padding: const EdgeInsets.all(10),
         child: const Center(child: Text("Einkaufen")),
@@ -54,9 +53,8 @@ class CookingPot extends StatefulWidget {
 }
 
 class _CookingPotState extends State<CookingPot> {
-  static Future<Artboard> animationFuture = rootBundle.load('lib/assets/animations/cookingpot.riv').then((data) async {
-    var file = RiveFile();
-    file.import(data);
+  static Future<Artboard> animationFuture = rootBundle.load('assets/animations/cookingpot.riv').then((data) async {
+    var file = RiveFile.import(data);
 
     var artboard = file.mainArtboard;
 
@@ -87,7 +85,7 @@ class _CookingPotState extends State<CookingPot> {
   Widget build(BuildContext context) {
     if (artboard != null) {
       return Rive(
-        artboard: artboard,
+        artboard: artboard!,
         fit: BoxFit.cover,
         alignment: Alignment.bottomCenter,
       );

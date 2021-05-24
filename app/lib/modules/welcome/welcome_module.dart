@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../general/module/Module.dart';
-import '../../general/widgets/widgets.dart';
+import '../../core/module/module.dart';
 
 @Module()
 class WelcomeModule {
@@ -32,43 +31,86 @@ class WelcomeModule {
     );
   }
 
-  @ModuleItem(id: "banner")
-  BodySegment getWelcomeBanner() {
-    return BodySegment(
+  @ModuleItem(id: "halloid")
+  ContentSegment getWelcomeBanner() {
+    return ContentSegment(
       size: SegmentSize.Wide,
-      builder: (context) => const AspectRatio(
+      builder: (context) => AspectRatio(
         aspectRatio: 2,
         child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Center(child: Text("Welcome")),
+          padding: const EdgeInsets.all(10),
+          child: Center(
+            child: Text(
+              "Welcome",
+              style: TextStyle(color: context.getTextColor()),
+            ),
+          ),
         ),
       ),
     );
   }
 
   @ModuleItem(id: "banner2")
-  BodySegment getWelcomeBanner2() {
-    return BodySegment(
+  ContentSegment getWelcomeBanner2() {
+    return ContentSegment(
       size: SegmentSize.Wide,
-      builder: (context) => const AspectRatio(
+      builder: (context) => AspectRatio(
         aspectRatio: 2,
         child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Center(child: Text("Bonjour")),
+          padding: const EdgeInsets.all(10),
+          child: FillColor(
+            builder: (context, fillColor) => Container(
+              color: fillColor,
+              padding: const EdgeInsets.all(10),
+              child: FillColor(
+                builder: (context, fillColor) => Container(
+                  color: fillColor,
+                  padding: const EdgeInsets.all(10),
+                  child: FillColor(
+                    builder: (context, fillColor) => Container(
+                      color: fillColor,
+                      padding: const EdgeInsets.all(10),
+                      child: FillColor(
+                        builder: (context, fillColor) => Container(
+                          color: fillColor,
+                          padding: const EdgeInsets.all(10),
+                          child: FillColor(
+                            builder: (context, fillColor) => Container(
+                              color: fillColor,
+                              padding: const EdgeInsets.all(10),
+                              child: Icon(
+                                Icons.portrait,
+                                color: context.getTextColor(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  @ModuleItem(id: "banner3")
-  BodySegment getWelcomeBanner3() {
-    return BodySegment(
+  @ModuleItem(id: "test123")
+  ContentSegment getWelcomeBanner3() {
+    return ContentSegment(
       size: SegmentSize.Wide,
-      builder: (context) => const AspectRatio(
+      builder: (context) => AspectRatio(
         aspectRatio: 2,
         child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Center(child: Text("Willkommen")),
+          padding: const EdgeInsets.all(10),
+          child: Center(
+            child: Text(
+              "Willkommen",
+              style: TextStyle(color: context.getTextColor()),
+            ),
+          ),
         ),
       ),
     );

@@ -1,44 +1,29 @@
 library templates;
 
-import 'dart:collection';
-import 'dart:ui';
-
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:flare_dart/math/mat2d.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:flare_flutter/flare.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:flare_flutter/flare_actor.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:flare_flutter/flare_controller.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:tuple/tuple.dart';
 
+import '../../bloc/app_bloc.dart';
 import '../areas/areas.dart';
 import '../module/module.dart';
+import '../reorderable/reorderable_manager.dart';
+import '../themes/themes.dart';
+import '../widgets/reorder_toggle.dart';
+import '../widgets/widget_selector.dart';
 
 part 'basic_template.dart';
-part 'reorderable/reorderable_item.dart';
-part 'reorderable/reorderable_listener.dart';
-part 'reorderable/reorderable_manager.dart';
-part 'widgets/reorder_toggle.dart';
-part 'widgets/widget_selector.dart';
 
-class _InheritedWidgetTemplate extends InheritedWidget {
+class InheritedWidgetTemplate extends InheritedWidget {
   final WidgetTemplateState state;
 
-  const _InheritedWidgetTemplate({
+  const InheritedWidgetTemplate({
     Key? key,
     required this.state,
     required Widget child,
   }) : super(key: key, child: child);
 
   @override
-  bool updateShouldNotify(covariant _InheritedWidgetTemplate oldWidget) => true;
+  bool updateShouldNotify(covariant InheritedWidgetTemplate oldWidget) => true;
 }
 
 abstract class WidgetTemplate extends StatefulWidget {
@@ -53,10 +38,10 @@ abstract class WidgetTemplate extends StatefulWidget {
 
   static WidgetTemplateState of(BuildContext context, {bool listen = true}) {
     if (listen) {
-      return context.dependOnInheritedWidgetOfExactType<_InheritedWidgetTemplate>()!.state;
+      return context.dependOnInheritedWidgetOfExactType<InheritedWidgetTemplate>()!.state;
     } else {
-      var element = context.getElementForInheritedWidgetOfExactType<_InheritedWidgetTemplate>()!;
-      return (element.widget as _InheritedWidgetTemplate).state;
+      var element = context.getElementForInheritedWidgetOfExactType<InheritedWidgetTemplate>()!;
+      return (element.widget as InheritedWidgetTemplate).state;
     }
   }
 }
@@ -67,11 +52,11 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
   bool _isEditing = false;
 
-  late List<ModuleWidgetFactory> _widgetFactories;
+  late List<ModuleWidgetFactory> widgetFactories;
 
-  final Map<String, WidgetAreaState> _widgetAreas = {};
+  final Map<String, WidgetAreaState> widgetAreas = {};
   String? _selectedArea, _lastSelectedArea;
-  WidgetSelectorController? _widgetSelector;
+  WidgetSelectorController? widgetSelector;
 
   Animation<double> get transition => _transitionController.view;
   Animation<double> get wiggle => _wiggleController.view;
@@ -89,7 +74,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     _transitionController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
     _wiggleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
 
-    _widgetFactories = ModuleRegistry.getModuleWidgetFactories(widget.moduleData);
+    widgetFactories = ModuleRegistry.getModuleWidgetFactories(widget.moduleData);
     _reorderableManager = ReorderableManager(this);
   }
 
@@ -115,7 +100,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     });
     _wiggleController.repeat();
     _transitionController.forward();
-    selectWidgetArea(_widgetAreas[_lastSelectedArea]!);
+    selectWidgetArea(widgetAreas[_lastSelectedArea]!);
   }
 
   void _finishEdit() {
@@ -129,13 +114,18 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     _unselectArea();
   }
 
-  List<T> getWidgetsForArea<T extends ModuleWidget>(String areaId) {
-    //allModuleCards.where((card) => moduleData.trip.modules.contains(card.id)).toList()
-    //  ..sort((a, b) => moduleData.trip.modules.indexOf(a.id) - moduleData.trip.modules.indexOf(b.id));
-    return _widgetFactories.where((f) => f.type == T).map((f) => f.getWidget() as T).toList();
+  List<T> getWidgetsForArea<T extends ModuleElement>(String areaId) {
+    var selectedModules = context.trip!.modules[areaId];
+    var selectedFactories = widgetFactories
+        .where((f) => f.type == T && (selectedModules == null || selectedModules.contains(f.id)))
+        .toList();
+    if (selectedModules != null) {
+      selectedFactories.sort((a, b) => selectedModules.indexOf(a.id) - selectedModules.indexOf(b.id));
+    }
+    return selectedFactories.map((f) => f.getWidget() as T).toList();
   }
 
-  void selectWidgetArea<T extends ModuleWidget>(WidgetAreaState<WidgetArea<T>, T> area) {
+  void selectWidgetArea<T extends ModuleElement>(WidgetAreaState<WidgetArea<T>, T> area) {
     if (!isEditing) return;
     if (_selectedArea == area.id) {
       return;
@@ -147,7 +137,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
     _selectedArea = area.id;
     _lastSelectedArea = _selectedArea;
-    _widgetSelector = WidgetSelector.show<T>(this);
+    widgetSelector = WidgetSelector.show<T>(this);
 
     setState(() {});
   }
@@ -155,43 +145,30 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   void _unselectArea() {
     _selectedArea = null;
 
-    if (_widgetSelector != null) {
-      _widgetSelector!.close();
-      _widgetSelector = null;
+    if (widgetSelector != null) {
+      widgetSelector!.close();
+      widgetSelector = null;
     }
 
     setState(() {});
   }
 
   void registerArea(WidgetAreaState area) {
-    _widgetAreas[area.id] = area;
+    widgetAreas[area.id] = area;
     _lastSelectedArea ??= area.id;
   }
 
-  void onWidgetRemoved<T extends ModuleWidget>(WidgetAreaState<WidgetArea<T>, T> area, T widget) {
-    if (_widgetSelector != null && _widgetSelector!.isForArea(area)) {
-      _widgetSelector!.state!.addWidget(null, widget);
+  void onWidgetRemoved<T extends ModuleElement>(WidgetAreaState<WidgetArea<T>, T> area, T widget) {
+    if (widgetSelector != null && widgetSelector!.isForArea(area)) {
+      widgetSelector!.state!.addWidget(null, widget);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return _InheritedWidgetTemplate(
+    return InheritedWidgetTemplate(
       state: this,
       child: widget.build(context),
-    );
-  }
-
-  Widget decorateItem(Widget widget, double opacity) {
-    return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: [
-        BoxShadow(
-          blurRadius: 8,
-          spreadRadius: -2,
-          color: Colors.black.withOpacity(opacity * 0.5),
-        )
-      ]),
-      child: widget,
     );
   }
 }

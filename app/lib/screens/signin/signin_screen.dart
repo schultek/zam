@@ -1,9 +1,8 @@
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../providers/app_state.dart';
+import '../../bloc/app_bloc.dart';
 import '../../service/auth_service.dart';
 import 'sms_code_screen.dart';
 
@@ -39,7 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 AuthService.signIn(phoneNumber, (String verificatonId) {
                   Navigator.of(context).push(MaterialPageRoute(builder: (context) => SmsCodeScreen(verificatonId)));
                 }, (User user) async {
-                  await Provider.of<AppState>(context, listen: false).updateUser(user);
+                  await context.read<AppBloc>().updateUser(user);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 });
               },

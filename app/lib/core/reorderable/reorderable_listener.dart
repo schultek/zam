@@ -1,6 +1,12 @@
-part of templates;
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 
-class ReorderableListener<T extends ModuleWidget> extends StatelessWidget {
+import '../areas/areas.dart';
+import '../module/module.dart';
+import '../templates/templates.dart';
+import 'reorderable_item.dart';
+
+class ReorderableListener<T extends ModuleElement> extends StatelessWidget {
   const ReorderableListener({
     Key? key,
     required this.child,

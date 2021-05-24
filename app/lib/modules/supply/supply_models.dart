@@ -1,5 +1,6 @@
-import '../../models/models.dart';
+import 'package:dart_json_mapper/dart_json_mapper.dart';
 
+@jsonSerializable
 class Article {
   String id;
   String name;
@@ -7,14 +8,10 @@ class Article {
   String hint;
 
   Article(this.id, this.name, this.category, this.hint);
-
-  Article.fromMap(Map<String, dynamic> map)
-      : id = map.get("id"),
-        name = map.get("name"),
-        category = map.get("category"),
-        hint = map.get("hint");
 }
 
+@jsonSerializable
+@Json(discriminatorProperty: "type")
 class ArticleList {
   String id;
   String name;
@@ -22,23 +19,6 @@ class ArticleList {
   String note;
 
   ArticleList(this.id, this.name, this.entries, this.note);
-
-  ArticleList.fromMap(Map<String, dynamic> map)
-      : id = map.get("id"),
-        name = map.get("name"),
-        entries = map.getList("entries", map: (Map<String, dynamic> v) => ArticleEntry.fromMap(v)),
-        note = map.get("note");
-
-  factory ArticleList.typedFromMap(Map<String, dynamic> map) {
-    String type = map.get("type");
-    if (type == "recipe") {
-      return Recipe.fromMap(map);
-    } else if (type == "shoppingList") {
-      return ShoppingList.fromMap(map);
-    } else {
-      return ArticleList.fromMap(map);
-    }
-  }
 }
 
 class ArticleEntry {
@@ -49,35 +29,21 @@ class ArticleEntry {
   String hint;
 
   ArticleEntry(this.articleId, this.amount, this.unit, this.checked, this.hint);
-
-  ArticleEntry.fromMap(Map<String, dynamic> map)
-      : articleId = map.get("articleId"),
-        amount = map.get("amount"),
-        unit = map.get("unit"),
-        checked = map.get("checked"),
-        hint = map.get("hint");
-
-  Map<String, dynamic> toMap() {
-    return {
-      "articleId": articleId,
-      "amount": amount,
-      "unit": unit,
-      "checked": checked,
-      "hint": hint,
-    };
-  }
 }
 
+@jsonSerializable
+@Json(discriminatorValue: "recipe")
 class Recipe extends ArticleList {
   String preparation;
 
-  Recipe.fromMap(Map<String, dynamic> map)
-      : preparation = map.get("preparation"),
-        super.fromMap(map);
+  Recipe(String id, String name, List<ArticleEntry> entries, this.preparation, String note)
+      : super(id, name, entries, note);
 }
 
+@jsonSerializable
+@Json(discriminatorValue: "shoppingList")
 class ShoppingList extends ArticleList {
-  ShoppingList.fromMap(Map<String, dynamic> map) : super.fromMap(map);
+  ShoppingList(String id, String name, List<ArticleEntry> entries, String note) : super(id, name, entries, note);
 }
 
 /*Datenmodell

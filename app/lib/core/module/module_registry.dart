@@ -24,12 +24,19 @@ class ModuleRegistry {
   static List<ModuleMirror> modules = [];
 
   static void registerModules() {
-    initializeReflectable();
+    initializeJsonMapper(adapters: [
+      JsonMapperAdapter(valueDecorators: {
+        typeOf<int>(): (value) => value?.round(),
+        typeOf<int?>(): (value) => value?.round(),
+        typeOf<Map<String, TripUser>>(): (value) => value.cast<String, TripUser>(),
+        typeOf<Map<String, List<String>>>(): (value) => value.cast<String, List<String>>(),
+      })
+    ]);
 
-    var reflector = Reflectable.getInstance(Module);
+    var reflector = Reflectable.getInstance(Module)!;
 
-    var widgetReflector = Reflectable.getInstance(ModuleWidgetReflectable);
-    var moduleWidgetType = widgetReflector.reflectType(ModuleWidget);
+    var widgetReflector = Reflectable.getInstance(ModuleWidgetReflectable)!;
+    var moduleWidgetType = widgetReflector.reflectType(ModuleElement);
 
     for (var module in reflector.annotatedClasses) {
       String id = module.simpleName.toLowerCase();
@@ -79,12 +86,12 @@ class ModuleRegistry {
   static List<ModuleWidgetFactory> getModuleWidgetFactories(ModuleData moduleData) {
     return modules.expand((module) {
       var moduleInstance = module.classMirror.newInstance("", [moduleData]);
-      var instanceMirror = Reflectable.getInstance(Module).reflect(moduleInstance);
+      var instanceMirror = Reflectable.getInstance(Module)!.reflect(moduleInstance);
       return module.methods.map((method) {
         return ModuleWidgetFactory(
           method.id,
           method.type,
-          () => instanceMirror.invoke(method.name, []) as ModuleWidget,
+          () => instanceMirror.invoke(method.name, [])! as ModuleElement,
         );
       });
     }).toList();
@@ -95,11 +102,11 @@ class ModuleRegistry {
 class ModuleWidgetFactory {
   final String id;
   final Type type;
-  final ModuleWidget Function() _factory;
+  final ModuleElement Function() _factory;
 
   const ModuleWidgetFactory(this.id, this.type, this._factory);
 
-  ModuleWidget getWidget() {
+  ModuleElement getWidget() {
     var widget = _factory();
     widget._id = id;
     return widget;

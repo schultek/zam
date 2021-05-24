@@ -1,4 +1,16 @@
-part of templates;
+import 'dart:collection';
+import 'dart:ui';
+
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:tuple/tuple.dart';
+
+import '../areas/areas.dart';
+import '../module/module.dart';
+import '../templates/templates.dart';
+import '../widgets/widget_selector.dart';
+import 'reorderable_item.dart';
 
 class ReorderableManager with Drag {
   WidgetTemplateState templateState;
@@ -14,10 +26,10 @@ class ReorderableManager with Drag {
   OverlayEntry? _entry;
 
   Offset? _dragOffset;
-  Size? _dragSize;
+  Size? dragSize;
   Widget? _dragWidget;
   double? _dragDecorationOpacity;
-  ModuleWidget? _dragModuleWidget;
+  ModuleElement? _dragModuleWidget;
   AnimationController? _dragScaleAnimation;
   WidgetAreaState? _focusedArea;
 
@@ -26,7 +38,7 @@ class ReorderableManager with Drag {
   bool _isOverWidgetSelector = false;
   bool _isDropAccepted = false;
 
-  WidgetSelectorState? get widgetSelector => templateState._widgetSelector?.state;
+  WidgetSelectorState? get widgetSelector => templateState.widgetSelector?.state;
 
   ReorderableManager(this.templateState) {
     _dragScaleAnimation = AnimationController(
@@ -53,32 +65,32 @@ class ReorderableManager with Drag {
     return Positioned.fromRect(
       rect: Rect.fromCenter(
         center: _dragOffset!,
-        width: lerpDouble(widgetSelector!.itemHeight, _dragSize!.height, _dragScaleAnimation!.value)! /
-            _dragSize!.height *
-            _dragSize!.width,
-        height: lerpDouble(widgetSelector!.itemHeight, _dragSize!.height, _dragScaleAnimation!.value)!,
+        width: lerpDouble(widgetSelector!.itemHeight, dragSize!.height, _dragScaleAnimation!.value)! /
+            dragSize!.height *
+            dragSize!.width,
+        height: lerpDouble(widgetSelector!.itemHeight, dragSize!.height, _dragScaleAnimation!.value)!,
       ),
       child: FittedBox(
         fit: BoxFit.fitHeight,
         child: SizedBox.fromSize(
-          size: _dragSize,
-          child: templateState.decorateItem(
-            IgnorePointer(
-              child: MediaQuery.removePadding(
-                context: context,
-                removeTop: true,
-                removeBottom: true,
-                child: _dragWidget!,
+          size: dragSize,
+          child: _items[_dragging]!.widget.decorationBuilder(
+                IgnorePointer(
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    removeBottom: true,
+                    child: _dragWidget!,
+                  ),
+                ),
+                _dragDecorationOpacity!,
               ),
-            ),
-            _dragDecorationOpacity!,
-          ),
         ),
       ),
     );
   }
 
-  void startDragging<T extends ModuleWidget>({
+  void startDragging<T extends ModuleElement>({
     required Key key,
     required PointerDownEvent event,
     required MultiDragGestureRecognizer recognizer,
@@ -103,13 +115,13 @@ class ReorderableManager with Drag {
     _recognizer!.addPointer(event);
   }
 
-  Drag _dragStart<T extends ModuleWidget>(Offset position) {
+  Drag _dragStart<T extends ModuleElement>(Offset position) {
     if (_dragging == null && _maybeDragging != null) {
       _dragging = _maybeDragging;
       _maybeDragging = null;
     }
 
-    if (templateState._widgetSelector == null || widgetSelector == null) {
+    if (templateState.widgetSelector == null || widgetSelector == null) {
       templateState.selectWidgetArea<T>(_focusedArea! as WidgetAreaState<WidgetArea<T>, T>);
 
       WidgetsBinding.instance!.addPostFrameCallback((timestamp) {
@@ -134,24 +146,30 @@ class ReorderableManager with Drag {
     _dragScaleAnimation!.value = _isDropAccepted ? 1 : 0;
     _isOverWidgetSelector = !_isDropAccepted;
 
-    var renderBox = draggedItem.context.findRenderObject() as RenderBox;
-    _dragSize = Size(renderBox.size.width, renderBox.size.height);
+    var renderBox = draggedItem.context.findRenderObject()! as RenderBox;
+    dragSize = Size(renderBox.size.width, renderBox.size.height);
 
-    var height = _isDropAccepted ? _dragSize!.height : widgetSelector!.itemHeight;
-    var width = height / _dragSize!.height * _dragSize!.width;
+    var height = _isDropAccepted ? dragSize!.height : widgetSelector!.itemHeight;
+    var width = height / dragSize!.height * dragSize!.width;
 
     _dragOffset = renderBox.localToGlobal(Offset.zero) + Offset(width / 2, height / 2);
 
     var overlayState = Overlay.of(templateState.context)!;
     _entry = OverlayEntry(
-      builder: (ctx) => _InheritedWidgetTemplate(state: templateState, child: _buildDragProxy(ctx)),
+      builder: (ctx) => InheritedWidgetTemplate(
+        state: templateState,
+        child: InheritedThemeState(
+          theme: _focusedArea!.theme,
+          child: _buildDragProxy(ctx),
+        ),
+      ),
     );
     overlayState.insert(_entry!);
 
     return this;
   }
 
-  void _draggedItemWidgetUpdated() {
+  void draggedItemWidgetUpdated() {
     var draggedItem = _items[_dragging];
     if (draggedItem != null) {
       _dragWidget = draggedItem.widget.builder(
@@ -175,9 +193,9 @@ class ReorderableManager with Drag {
       }
 
       var areaOffset = _focusedArea!.areaOffset;
-      var localDragOffset = _dragOffset! - Offset(_dragSize!.width / 2, _dragSize!.height / 2) - areaOffset;
+      var localDragOffset = _dragOffset! - Offset(dragSize!.width / 2, dragSize!.height / 2) - areaOffset;
 
-      var accepted = _focusedArea!.checkDropPosition(localDragOffset, _dragModuleWidget!);
+      var accepted = _focusedArea!.didInsertItem(localDragOffset, _dragModuleWidget!);
       if (accepted != _isDropAccepted) {
         if (accepted) {
           widgetSelector!.removeWidget(_dragModuleWidget!);
@@ -231,7 +249,7 @@ class ReorderableManager with Drag {
 
     var dragOffset = _dragOffset;
 
-    var renderBox = draggedItem.context.findRenderObject() as RenderBox;
+    var renderBox = draggedItem.context.findRenderObject()! as RenderBox;
     var size = renderBox.size;
 
     var dragScale = _dragScaleAnimation!.value;
@@ -284,7 +302,7 @@ class ReorderableManager with Drag {
   }
 
   Offset _itemOffset(ReorderableItemState item) {
-    return (item.context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+    return (item.context.findRenderObject()! as RenderBox).localToGlobal(Offset.zero);
   }
 
   Offset itemOffset(Key key) {

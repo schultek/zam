@@ -62,11 +62,11 @@ class _ArticleEntryDialogState extends State<ArticleEntryDialog> {
         ],
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           onPressed: () => closeDialog(false),
           child: const Text("Abbrechen", style: TextStyle(color: Colors.black54)),
         ),
-        FlatButton(
+        TextButton(
           onPressed: () => closeDialog(true),
           child: const Text("Speichern", style: TextStyle(color: Colors.black54)),
         ),

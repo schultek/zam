@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../general/module/module.dart';
-import '../../general/templates/templates.dart';
+import '../../core/module/module.dart';
+import '../../core/templates/templates.dart';
+import '../../core/themes/themes.dart';
 import '../../models/models.dart';
 
 class TripScreen extends StatelessWidget {
@@ -10,6 +11,25 @@ class TripScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasicTemplate(ModuleData(trip: trip));
+    return FutureBuilder<ThemeState>(
+      future: ImageTheme.load(),
+      builder: (context, snapshot) => TripTheme(
+        theme: snapshot.hasData ? snapshot.data! : DarkTheme(),
+        child: Navigator(
+          onGenerateInitialRoutes: (state, route) {
+            return [
+              MaterialPageRoute(
+                builder: (context) => Scaffold(
+                  body: BasicTemplate(
+                    ModuleData(trip: trip),
+                  ),
+                ),
+              ),
+            ];
+          },
+          initialRoute: '/',
+        ),
+      ),
+    );
   }
 }

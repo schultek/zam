@@ -1,6 +1,5 @@
 import 'dart:async';
 
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +25,7 @@ class SupplyRepository with ChangeNotifier {
         .collection("articles")
         .snapshots()
         .listen((snapshot) {
-      List<Article> articles = snapshot.docs.map((doc) => Article.fromMap(doc.toMap())).toList();
+      List<Article> articles = snapshot.toList();
       this.articles = articles;
       notifyListeners();
     });
@@ -39,7 +38,7 @@ class SupplyRepository with ChangeNotifier {
         .collection("articleLists")
         .snapshots()
         .listen((snapshot) {
-      List<ArticleList> articleLists = snapshot.docs.map((doc) => ArticleList.fromMap(doc.toMap())).toList();
+      List<ArticleList> articleLists = snapshot.toList();
       this.articleLists = articleLists;
       notifyListeners();
     });
@@ -85,7 +84,7 @@ class SupplyRepository with ChangeNotifier {
         .add({
       "name": listName,
       "type": "shoppingList",
-      "entries": listEntries.map((entry) => entry.toMap()).toList(),
+      "entries": listEntries.map(encodeMap).toList(),
       "note": "",
     });
   }
@@ -100,7 +99,7 @@ class SupplyRepository with ChangeNotifier {
         .doc(list.id)
         .update({
       "name": list.name,
-      "entries": list.entries.map((entry) => entry.toMap()).toList(),
+      "entries": list.entries.map(encodeMap).toList(),
       "note": list.note,
     });
   }
@@ -125,7 +124,7 @@ class SupplyRepository with ChangeNotifier {
         .collection("articleLists")
         .doc(recipeId)
         .update({
-      "entries": FieldValue.arrayUnion([articleEntry.toMap()]),
+      "entries": FieldValue.arrayUnion([encodeMap(articleEntry)]),
     });
   }
 
@@ -139,7 +138,7 @@ class SupplyRepository with ChangeNotifier {
         .add({
       "name": recipeName,
       "type": "recipe",
-      "entries": recipeEntries.map((entry) => entry.toMap()).toList(),
+      "entries": recipeEntries.map(encodeMap).toList(),
       "preparation": preparation,
       "note": note,
     });

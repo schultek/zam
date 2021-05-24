@@ -7,32 +7,37 @@ class BasicTemplate extends WidgetTemplate {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: _scrollController,
-      slivers: [
-        SliverTemplateHeader(
-          child: Container(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(width: 50),
-                Text(moduleData.trip.name, style: Theme.of(context).textTheme.headline5),
-                SizedBox(width: 50, child: ReorderToggle()),
-              ],
+    return ThemedBackground(
+      child: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverTemplateHeader(
+            child: Container(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 50),
+                  Text(
+                    moduleData.trip.name,
+                    style: Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
+                  ),
+                  SizedBox(width: 50, child: ReorderToggle()),
+                ],
+              ),
             ),
           ),
-        ),
-        const SliverPadding(
-          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
-          sliver: SliverToBoxAdapter(child: QuickActionRowArea("hello")),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
-          sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
-        ),
-        SliverToBoxAdapter(child: Container(height: 130)),
-      ],
+          const SliverPadding(
+            padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
+            sliver: SliverToBoxAdapter(child: QuickActionRowArea("hello")),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
+            sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
+          ),
+          SliverToBoxAdapter(child: Container(height: 130)),
+        ],
+      ),
     );
   }
 }

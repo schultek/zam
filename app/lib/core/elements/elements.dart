@@ -1,4 +1,4 @@
-library widgets;
+library elements;
 
 import 'dart:math';
 
@@ -6,17 +6,24 @@ import 'package:flutter/material.dart';
 
 import '../areas/areas.dart';
 import '../module/module.dart';
+import '../reorderable/reorderable_item.dart';
+import '../reorderable/reorderable_listener.dart';
 import '../route/route.dart';
 import '../templates/templates.dart';
+import '../themes/themes.dart';
+import '../widgets/widget_selector.dart';
 
-part 'body_segment.dart';
+part 'content_segment.dart';
+part 'header_segment.dart';
 part 'quick_action.dart';
 
-class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
+class ModuleElementBuilder<T extends ModuleElement> extends StatelessWidget {
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context) placeholderBuilder;
+  final Widget Function(Widget child, double opacity) decorationBuilder;
 
-  const ModuleWidgetBuilder({required Key key, required this.builder, required this.placeholderBuilder})
+  const ModuleElementBuilder(
+      {required Key key, required this.builder, required this.placeholderBuilder, required this.decorationBuilder})
       : super(key: key);
 
   @override
@@ -27,6 +34,7 @@ class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
         builder: (context, state, child) {
           return state == ReorderableState.placeholder ? placeholderBuilder(context) : child;
         },
+        decorationBuilder: decorationBuilder,
         child: ReorderableListener<T>(
           delay: const Duration(milliseconds: 200),
           child: AbsorbPointer(child: builder(context)),
@@ -57,6 +65,7 @@ class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
           return AbsorbPointer(child: moduleWidget);
         }
       },
+      decorationBuilder: decorationBuilder,
       child: RemovableDraggableModuleWidget<T>(
         key: key!,
         child: moduleWidget,
@@ -65,7 +74,7 @@ class ModuleWidgetBuilder<T extends ModuleWidget> extends StatelessWidget {
   }
 }
 
-class RemovableDraggableModuleWidget<T extends ModuleWidget> extends StatelessWidget {
+class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessWidget {
   final Widget child;
   const RemovableDraggableModuleWidget({required Key key, required this.child}) : super(key: key);
 
@@ -74,28 +83,33 @@ class RemovableDraggableModuleWidget<T extends ModuleWidget> extends StatelessWi
     var templateState = WidgetTemplate.of(context);
 
     if (templateState.isEditing) {
-      return Stack(children: [
+      return Stack(clipBehavior: Clip.none, children: [
         ReorderableListener<T>(
           delay: const Duration(milliseconds: 100),
           child: AbsorbPointer(child: child),
         ),
         Positioned(
-          top: 0,
-          right: 0,
+          top: -5,
+          left: -5,
           child: AnimatedBuilder(
             animation: templateState.transition,
             builder: (context, child) {
-              return ClipOval(
-                clipper: ScalingClipper(templateState.transition.value, const Offset(12, 12)),
-                child: child,
+              return Transform.scale(
+                scale: templateState.transition.value,
+                child: FittedBox(
+                  child: child,
+                ),
               );
             },
             child: Material(
+              borderRadius: BorderRadius.circular(12),
+              shadowColor: Colors.black54,
+              elevation: 4,
               color: Colors.red, // button color
               child: InkWell(
                 splashColor: Colors.redAccent,
                 onTap: () {
-                  var areaState = WidgetArea.of(context, listen: false);
+                  var areaState = WidgetArea.of<T>(context, listen: false);
                   areaState.removeWidget(key!);
                 }, // inkwell color
                 child: const SizedBox(

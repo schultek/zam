@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../general/module/module.dart';
-import '../../general/widgets/widgets.dart';
+import '../../core/module/module.dart';
 import '../../models/models.dart';
 
 @Module()
@@ -10,8 +9,8 @@ class ProfileModule {
   ProfileModule(this.moduleData);
 
   @ModuleItem(id: "profile")
-  BodySegment getProfileCard() {
-    return BodySegment(
+  ContentSegment getProfileCard() {
+    return ContentSegment(
       builder: (context) => Container(
         padding: const EdgeInsets.all(10),
         child: const Center(child: Text("Profil")),

@@ -1,12 +1,11 @@
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:cloud_functions/cloud_functions.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 
-import '../providers/app_state.dart';
+import '../bloc/app_bloc.dart';
+import '../helpers/locator.dart';
 
 class DynamicLinkService {
-  static Future<String> createTripCreatorLink() async {
+  Future<String> createTripCreatorLink() async {
     return buildDynamicLink(
       {"claim": "canCreateTrips"},
       meta: SocialMetaTagParameters(
@@ -17,7 +16,7 @@ class DynamicLinkService {
     );
   }
 
-  static Future<String> createAdminLink() async {
+  Future<String> createAdminLink() async {
     return buildDynamicLink(
       {"claim": "isAdmin"},
       meta: SocialMetaTagParameters(
@@ -28,7 +27,7 @@ class DynamicLinkService {
     );
   }
 
-  static Future<String> createParticipantLink(String tripId) async {
+  Future<String> createParticipantLink(String tripId) async {
     return buildDynamicLink(
       {
         "role": "participant",
@@ -42,7 +41,7 @@ class DynamicLinkService {
     );
   }
 
-  static Future<String> createLeaderLink(String tripId) async {
+  Future<String> createLeaderLink(String tripId) async {
     return buildDynamicLink(
       {
         "role": "leader",
@@ -56,7 +55,7 @@ class DynamicLinkService {
     );
   }
 
-  static Future<String> buildDynamicLink(Map<String, dynamic> params, {SocialMetaTagParameters? meta}) async {
+  Future<String> buildDynamicLink(Map<String, dynamic> params, {SocialMetaTagParameters? meta}) async {
     String p = await createEncodedLinkParams(params);
     var parameters = DynamicLinkParameters(
       uriPrefix: "https://jufa.page.link",
@@ -69,23 +68,25 @@ class DynamicLinkService {
     return dynamicUrl.shortUrl.toString();
   }
 
-  static Future<void> handleDynamicLinks() async {
-    var link = await FirebaseDynamicLinks.instance.getInitialLink() as PendingDynamicLinkData?;
+  Future<void> setup() async {
+    var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
-      await _handleDynamicLink(link);
+      print("Got initial dynamic link");
+      _handleDynamicLink(link);
     }
 
-    FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData link) async {
+    FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData? link) async {
       await _handleDynamicLink(link);
     });
   }
 
-  static Future<void> _handleDynamicLink(PendingDynamicLinkData link) async {
+  static Future<void> _handleDynamicLink(PendingDynamicLinkData? link) async {
+    if (link == null) return;
     var queryParameters = link.link.queryParameters;
     var updatedClaims = await receiveEncodedLinkParams(queryParameters);
 
     if (updatedClaims) {
-      await AppState.instance.updateUserClaims(true);
+      await locator<AppBloc>().updateUserClaims(true);
     }
   }
 

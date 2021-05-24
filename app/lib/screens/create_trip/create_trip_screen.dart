@@ -1,10 +1,9 @@
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../providers/app_state.dart';
-import '../../service/database_service.dart';
+import '../../bloc/app_bloc.dart';
+import '../../models/models.dart';
 
 class CreateTripScreen extends StatefulWidget {
   @override
@@ -37,9 +36,9 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
               ElevatedButton(
                 onPressed: () async {
                   if (tripName == null) return;
-                  var state = Provider.of<AppState>(context, listen: false);
-                  DocumentReference doc = await DatabaseService.createNewTrip(tripName!, state.user!.uid);
-                  state.selectTrip(doc.id);
+                  var bloc = context.read<AppBloc>();
+                  DocumentReference doc = await createNewTrip(tripName!, bloc.state.user!.uid);
+                  bloc.selectTrip(doc.id);
                   Navigator.of(context).popUntil((route) => route.isFirst);
                 },
                 child: const Text("Erstellen"),
@@ -49,5 +48,14 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
         ),
       ),
     );
+  }
+
+  static Future<DocumentReference> createNewTrip(String tripName, String userId) {
+    return FirebaseFirestore.instance.collection("trips").add({
+      "name": tripName,
+      "users": {
+        userId: {"role": UserRoles.Organizer}
+      },
+    });
   }
 }
