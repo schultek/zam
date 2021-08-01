@@ -5,8 +5,8 @@ class ModulePageRoute extends PageRouteBuilder {
 
   ModulePageRoute(BuildContext context, {required this.child})
       : super(
-          //reverseTransitionDuration: Duration(milliseconds: 800),
-          //transitionDuration: Duration(milliseconds: 800),
+          //reverseTransitionDuration: Duration(seconds: 3),
+          //transitionDuration: Duration(seconds: 3),
           maintainState: false,
           pageBuilder: (ctx, animation, a2) {
             var transitionState = ModuleRouteTransition.of(context);
@@ -35,7 +35,7 @@ class ModulePageRoute extends PageRouteBuilder {
                             )
                           ],
                           borderRadius: BorderRadius.circular(transition.clipRadius),
-                          color: Colors.grey.shade300,
+                          color: Colors.transparent,
                         ),
                       ),
                     ),

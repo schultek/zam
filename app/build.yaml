@@ -3,13 +3,13 @@
 targets:
   $default:
     builders:
-      dart_json_mapper:
+      dart_mappable:
         generate_for:
-          # here should be listed entry point files having 'void main()' function
           - lib/main.dart
         options:
-          formatted: true
-
+          caseStyle: camelCase
+          enumCaseStyle: camelCase
+          include: []
       reflectable:
         generate_for:
-          - no/files
+          - lib/main.dart

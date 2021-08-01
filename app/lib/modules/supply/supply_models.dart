@@ -1,6 +1,6 @@
-import 'package:dart_json_mapper/dart_json_mapper.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 
-@jsonSerializable
+@MappableClass()
 class Article {
   String id;
   String name;
@@ -10,8 +10,7 @@ class Article {
   Article(this.id, this.name, this.category, this.hint);
 }
 
-@jsonSerializable
-@Json(discriminatorProperty: "type")
+@MappableClass(discriminatorKey: "type")
 class ArticleList {
   String id;
   String name;
@@ -21,6 +20,7 @@ class ArticleList {
   ArticleList(this.id, this.name, this.entries, this.note);
 }
 
+@MappableClass()
 class ArticleEntry {
   String articleId;
   double amount;
@@ -31,8 +31,7 @@ class ArticleEntry {
   ArticleEntry(this.articleId, this.amount, this.unit, this.checked, this.hint);
 }
 
-@jsonSerializable
-@Json(discriminatorValue: "recipe")
+@MappableClass(discriminatorValue: "recipe")
 class Recipe extends ArticleList {
   String preparation;
 
@@ -40,8 +39,7 @@ class Recipe extends ArticleList {
       : super(id, name, entries, note);
 }
 
-@jsonSerializable
-@Json(discriminatorValue: "shoppingList")
+@MappableClass(discriminatorValue: "shoppingList")
 class ShoppingList extends ArticleList {
   ShoppingList(String id, String name, List<ArticleEntry> entries, String note) : super(id, name, entries, note);
 }

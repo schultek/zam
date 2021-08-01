@@ -204,13 +204,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
-  dart_json_mapper:
+  cupertino_rounded_corners:
     dependency: "direct main"
     description:
-      name: dart_json_mapper
+      name: cupertino_rounded_corners
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.9"
+    version: "2.0.0"
+  dart_mappable:
+    dependency: "direct main"
+    description:
+      name: dart_mappable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.6+3"
   dart_style:
     dependency: transitive
     description:
@@ -394,6 +401,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  indent:
+    dependency: transitive
+    description:
+      name: indent
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   intl:
     dependency: transitive
     description:
@@ -581,6 +595,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  source_gen:
+    dependency: transitive
+    description:
+      name: source_gen
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   source_span:
     dependency: transitive
     description:

@@ -53,15 +53,16 @@ class UsersPage extends StatelessWidget {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {
-                  String link = await locator<DynamicLinkService>().createParticipantLink(trip.id);
-                  Share.share("Um dich bei der Freizeit anzumelden, klicke auf den Link: $link");
+                  String link = await locator<DynamicLinkService>().createTripInvitationLink(tripId: trip.id);
+                  Share.share("Um dich bei dem Ausflug anzumelden, klicke auf den Link: $link");
                 },
                 child: const Text("Einladungslink für Teilnehmer erstellen"),
               ),
               ElevatedButton(
                 onPressed: () async {
-                  String link = await locator<DynamicLinkService>().createLeaderLink(trip.id);
-                  Share.share("Um dich als Leiter bei der Freizeit anzumelden, klicke auf den Link: $link");
+                  String link = await locator<DynamicLinkService>()
+                      .createTripInvitationLink(tripId: trip.id, role: UserRoles.Leader);
+                  Share.share("Um dich als Leiter bei dem Ausflug anzumelden, klicke auf den Link: $link");
                 },
                 child: const Text("Einladungslink für Leiter erstellen"),
               ),

@@ -154,13 +154,19 @@ class ReorderableManager with Drag {
 
     _dragOffset = renderBox.localToGlobal(Offset.zero) + Offset(width / 2, height / 2);
 
+    print('INJECTING THEME ${_focusedArea!.theme}');
+
     var overlayState = Overlay.of(templateState.context)!;
     _entry = OverlayEntry(
       builder: (ctx) => InheritedWidgetTemplate(
         state: templateState,
-        child: InheritedThemeState(
-          theme: _focusedArea!.theme,
-          child: _buildDragProxy(ctx),
+        child: InheritedWidgetArea<T>(
+          state: _focusedArea! as WidgetAreaState<WidgetArea<T>, T>,
+          child: InheritedThemeState(
+            theme: _focusedArea!.theme,
+            reuseTheme: true,
+            child: _buildDragProxy(ctx),
+          ),
         ),
       ),
     );

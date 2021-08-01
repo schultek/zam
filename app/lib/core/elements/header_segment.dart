@@ -23,7 +23,7 @@ class HeaderSegment extends ModuleElement {
         child: getSegment(context, false),
       ),
       placeholderBuilder: (context) => getSegment(context, true),
-      decorationBuilder: (child, opacity) {
+      draggingBuilder: (child, opacity) {
         return Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: [
             BoxShadow(
@@ -50,10 +50,5 @@ class HeaderSegment extends ModuleElement {
         ),
       ),
     );
-  }
-
-  @override
-  Widget buildPlaceholder(BuildContext context) {
-    return getSegment(context, true);
   }
 }

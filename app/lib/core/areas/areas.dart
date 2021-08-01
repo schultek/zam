@@ -5,13 +5,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../bloc/app_bloc.dart';
+import '../../bloc/trip_bloc.dart';
 import '../elements/elements.dart';
 import '../module/module.dart';
 import '../reorderable/reorderable_manager.dart';
 import '../templates/templates.dart';
 
 part 'body_widget_area.dart';
+part 'full_page_area.dart';
 part 'quick_action_row_area.dart';
 
 class InheritedWidgetArea<T extends ModuleElement> extends InheritedWidget {
@@ -31,13 +32,9 @@ abstract class WidgetArea<T extends ModuleElement> extends StatefulWidget {
   final String id;
   const WidgetArea(this.id);
 
-  static WidgetAreaState<WidgetArea<T>, T> of<T extends ModuleElement>(BuildContext context, {bool listen = true}) {
-    if (listen) {
-      return context.dependOnInheritedWidgetOfExactType<InheritedWidgetArea<T>>()!.state;
-    } else {
-      var element = context.getElementForInheritedWidgetOfExactType<InheritedWidgetArea<T>>()!;
-      return (element.widget as InheritedWidgetArea<T>).state;
-    }
+  static WidgetAreaState<WidgetArea<T>, T>? of<T extends ModuleElement>(BuildContext context) {
+    var element = context.getElementForInheritedWidgetOfExactType<InheritedWidgetArea<T>>();
+    return element != null ? (element.widget as InheritedWidgetArea<T>).state : null;
   }
 }
 
@@ -56,8 +53,11 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   Offset get areaOffset => _areaOffset;
 
   ThemeState get theme => _areaTheme.value!;
+  WidgetTemplateState get template => WidgetTemplate.of(context, listen: false);
 
   late ReorderableManager _reorderable;
+
+  Type get elementType => T;
 
   @override
   void didChangeDependencies() {
@@ -65,12 +65,8 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     if (_isInitialized) return;
     _isInitialized = true;
 
-    var templateState = WidgetTemplate.of(context, listen: false);
-    var widgets = templateState.getWidgetsForArea<T>(widget.id);
-
-    _reorderable = WidgetTemplate.of(context, listen: false).reorderable;
-
-    initArea(widgets);
+    _reorderable = template.reorderable;
+    initArea(template.getWidgetsForArea<T>(widget.id));
   }
 
   void initArea(List<T> widgets);
@@ -84,6 +80,8 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     _areaSize = (_areaKey.currentContext!.findRenderObject()! as RenderBox).size;
     _areaOffset = (_areaKey.currentContext!.findRenderObject()! as RenderBox).localToGlobal(Offset.zero);
   }
+
+  bool get isSelected => template.selectedArea == id;
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +103,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
         child: ThemedContainer(
           themeNotifier: _areaTheme,
           child: Container(
+            margin: getMargin(),
             padding: getPadding(),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
@@ -122,32 +121,23 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   Widget buildArea(BuildContext context);
 
-  Widget decorateItem(Widget widget, double opacity) {
-    return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: [
-        BoxShadow(
-          blurRadius: 8,
-          spreadRadius: -2,
-          color: Colors.black.withOpacity(opacity * 0.5),
-        )
-      ]),
-      child: widget,
-    );
-  }
-
+  EdgeInsetsGeometry getMargin() => EdgeInsets.zero;
   EdgeInsetsGeometry getPadding() => const EdgeInsets.all(10);
+
+  Widget? decoratePlaceholder(BuildContext context, T element) => null;
+  Widget? decorateElement(BuildContext context, T element) => null;
 
   BoxConstraints constrainWidget(T widget);
 
   void removeWidget(Key key) {
     setState(() {
       var widget = getWidgetFromKey(key);
-
       removeItem(key);
 
       var templateState = WidgetTemplate.of(context, listen: false);
       templateState.onWidgetRemoved(this, widget);
     });
+    updateWidgetsInTrip();
   }
 
   Future<void> updateWidgetsInTrip() async {

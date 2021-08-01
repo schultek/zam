@@ -11,7 +11,7 @@ class QuickAction extends ModuleElement {
       key: key,
       builder: (context) => buildAction(context, 0),
       placeholderBuilder: (context) => buildPlaceholder(context),
-      decorationBuilder: (child, opacity) => Builder(
+      draggingBuilder: (child, opacity) => Builder(
         builder: (context) => buildAction(context, opacity),
       ),
     );
@@ -62,7 +62,6 @@ class QuickAction extends ModuleElement {
     );
   }
 
-  @override
   Widget buildPlaceholder(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),

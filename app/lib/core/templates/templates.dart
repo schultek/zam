@@ -1,17 +1,29 @@
 library templates;
 
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../../bloc/app_bloc.dart';
+import '../../bloc/trip_bloc.dart';
 import '../areas/areas.dart';
 import '../module/module.dart';
 import '../reorderable/reorderable_manager.dart';
 import '../themes/themes.dart';
 import '../widgets/reorder_toggle.dart';
+import '../widgets/template_navigator.dart';
 import '../widgets/widget_selector.dart';
 
-part 'basic_template.dart';
+part 'grid_template.dart';
+part 'swipe_template.dart';
+
+@MappableClass(discriminatorKey: 'type')
+abstract class TemplateModel {
+  String type;
+  TemplateModel(this.type);
+
+  String get name;
+  WidgetTemplate builder(ModuleData moduleData);
+}
 
 class InheritedWidgetTemplate extends InheritedWidget {
   final WidgetTemplateState state;
@@ -26,12 +38,14 @@ class InheritedWidgetTemplate extends InheritedWidget {
   bool updateShouldNotify(covariant InheritedWidgetTemplate oldWidget) => true;
 }
 
-abstract class WidgetTemplate extends StatefulWidget {
-  final String id;
+abstract class WidgetTemplate<T extends TemplateModel> extends StatefulWidget {
+  final T config;
   final ModuleData moduleData;
-  const WidgetTemplate(this.id, this.moduleData);
+  const WidgetTemplate(this.config, this.moduleData);
 
-  Widget build(BuildContext context);
+  Widget build(BuildContext context, WidgetTemplateState state);
+
+  void onEdit(WidgetTemplateState state) {}
 
   @override
   State<StatefulWidget> createState() => WidgetTemplateState();
@@ -55,7 +69,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   late List<ModuleWidgetFactory> widgetFactories;
 
   final Map<String, WidgetAreaState> widgetAreas = {};
-  String? _selectedArea, _lastSelectedArea;
+  String? _selectedArea;
   WidgetSelectorController? widgetSelector;
 
   Animation<double> get transition => _transitionController.view;
@@ -100,7 +114,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     });
     _wiggleController.repeat();
     _transitionController.forward();
-    selectWidgetArea(widgetAreas[_lastSelectedArea]!);
+    widget.onEdit(this);
   }
 
   void _finishEdit() {
@@ -125,21 +139,27 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     return selectedFactories.map((f) => f.getWidget() as T).toList();
   }
 
-  void selectWidgetArea<T extends ModuleElement>(WidgetAreaState<WidgetArea<T>, T> area) {
+  void selectWidgetArea<T extends ModuleElement>(WidgetAreaState<WidgetArea<T>, T>? area) {
+    selectWidgetAreaById<T>(area?.id);
+  }
+
+  void selectWidgetAreaById<T extends ModuleElement>(String? id) {
     if (!isEditing) return;
-    if (_selectedArea == area.id) {
+    if (_selectedArea == id) {
       return;
     } else if (_selectedArea != null) {
       _unselectArea();
     }
 
-    print(area);
+    if (id == null) return;
 
-    _selectedArea = area.id;
-    _lastSelectedArea = _selectedArea;
-    widgetSelector = WidgetSelector.show<T>(this);
+    _selectedArea = id;
 
     setState(() {});
+
+    if (widgetAreas[selectedArea]?.mounted ?? false) {
+      widgetSelector = WidgetSelector.show<T>(this);
+    }
   }
 
   void _unselectArea() {
@@ -155,7 +175,6 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
   void registerArea(WidgetAreaState area) {
     widgetAreas[area.id] = area;
-    _lastSelectedArea ??= area.id;
   }
 
   void onWidgetRemoved<T extends ModuleElement>(WidgetAreaState<WidgetArea<T>, T> area, T widget) {
@@ -168,7 +187,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   Widget build(BuildContext context) {
     return InheritedWidgetTemplate(
       state: this,
-      child: widget.build(context),
+      child: widget.build(context, this),
     );
   }
 }

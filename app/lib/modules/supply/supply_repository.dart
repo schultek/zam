@@ -84,7 +84,7 @@ class SupplyRepository with ChangeNotifier {
         .add({
       "name": listName,
       "type": "shoppingList",
-      "entries": listEntries.map(encodeMap).toList(),
+      "entries": Mapper.toValue(listEntries),
       "note": "",
     });
   }
@@ -99,7 +99,7 @@ class SupplyRepository with ChangeNotifier {
         .doc(list.id)
         .update({
       "name": list.name,
-      "entries": list.entries.map(encodeMap).toList(),
+      "entries": Mapper.toValue(list.entries),
       "note": list.note,
     });
   }
@@ -124,7 +124,7 @@ class SupplyRepository with ChangeNotifier {
         .collection("articleLists")
         .doc(recipeId)
         .update({
-      "entries": FieldValue.arrayUnion([encodeMap(articleEntry)]),
+      "entries": FieldValue.arrayUnion([Mapper.toValue(articleEntry)]),
     });
   }
 
@@ -138,7 +138,7 @@ class SupplyRepository with ChangeNotifier {
         .add({
       "name": recipeName,
       "type": "recipe",
-      "entries": recipeEntries.map(encodeMap).toList(),
+      "entries": Mapper.toValue(recipeEntries),
       "preparation": preparation,
       "note": note,
     });

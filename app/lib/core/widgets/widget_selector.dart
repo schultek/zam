@@ -8,13 +8,13 @@ import '../themes/themes.dart';
 class WidgetSelectorController<T extends ModuleElement> {
   final GlobalKey<WidgetSelectorState<T>> _selectorKey;
   final WidgetSelector<T> _widgetSelector;
-  final PersistentBottomSheetController _bottomSheetController;
+  final OverlayEntry _entry;
 
-  void close() => _bottomSheetController.close();
+  void close() => _entry.remove();
   bool isForArea(WidgetAreaState area) => _widgetSelector.widgetArea == area;
   WidgetSelectorState? get state => _selectorKey.currentState;
 
-  const WidgetSelectorController(this._selectorKey, this._widgetSelector, this._bottomSheetController);
+  const WidgetSelectorController(this._selectorKey, this._widgetSelector, this._entry);
 }
 
 class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
@@ -40,13 +40,22 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
 
     var widgetSelector = WidgetSelector<T>(selectorKey, widgets, widgetArea);
 
-    var bottomSheetController = Scaffold.of(template.context).showBottomSheet(
-      (context) => InheritedWidgetTemplate(state: template, child: widgetSelector),
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-      backgroundColor: template.context.getFillColor(),
+    var entry = OverlayEntry(
+      builder: (context) => Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            color: widgetArea.context.getFillColor(),
+          ),
+          child: InheritedWidgetTemplate(state: template, child: widgetSelector),
+        ),
+      ),
     );
 
-    return WidgetSelectorController(selectorKey, widgetSelector, bottomSheetController);
+    Overlay.of(template.context)!.insert(entry);
+
+    return WidgetSelectorController(selectorKey, widgetSelector, entry);
   }
 
   static bool existsIn(BuildContext context) {

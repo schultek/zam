@@ -21,12 +21,12 @@ class SupplyModule {
         padding: const EdgeInsets.all(10),
         child: Stack(
           children: [
-            Positioned.fill(child: CookingPot()),
+            Positioned.fill(child: Container()), //CookingPot()),
             const Positioned(
               top: 8,
               left: 0,
               right: 0,
-              child: Center(child: Text("Kochen", style: TextStyle(color: Colors.black45))),
+              child: Center(child: Text("Kochen")),
             )
           ],
         ),

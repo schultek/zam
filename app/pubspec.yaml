@@ -23,7 +23,8 @@ environment:
 dependencies:
   cloud_firestore: ^1.0.3
   cloud_functions: ^1.0.2
-  dart_json_mapper: ^2.0.6
+  cupertino_rounded_corners: ^2.0.0
+  dart_mappable: ^0.4.6
   firebase_auth: ^1.0.1
   firebase_core: ^1.0.2
   firebase_dynamic_links: ^2.0.0-dev.0

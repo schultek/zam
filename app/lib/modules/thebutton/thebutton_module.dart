@@ -24,7 +24,7 @@ class TheButtonModule {
           Positioned.fill(
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: TheButton(moduleData.trip.id),
+              child: Container(), //TheButton(moduleData.trip.id),
             ),
           ),
           Positioned.fill(child: TheButtonHelp(key: buttonKey)),
@@ -53,7 +53,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
           left: 0,
           child: IconButton(
             visualDensity: VisualDensity.compact,
-            icon: const Icon(Icons.help, size: 20, color: Colors.black26),
+            icon: Icon(Icons.help, size: 20, color: context.getTextColor()),
             onPressed: () => setState(() => helpOpen = true),
           ),
         ),
@@ -64,44 +64,46 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
             builder: (context, double value, _) {
               return ClipOval(
                 clipper: ExpandClipper(value),
-                child: Material(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  color: Colors.grey,
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                "The Button",
-                                style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white),
-                              ),
-                              Text(
-                                "The Button is a social game where you have to keep the button alive.",
-                                style: Theme.of(context).textTheme.caption?.copyWith(color: Colors.white),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
+                child: FillColor(
+                  builder: (context, fillColor) => Material(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    color: fillColor,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Text(
+                                  "The Button",
+                                  style: Theme.of(context).textTheme.bodyText2,
+                                ),
+                                Text(
+                                  "The Button is a social game where you have to keep the button alive.",
+                                  style: Theme.of(context).textTheme.caption,
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        child: IconButton(
-                          visualDensity: VisualDensity.compact,
-                          icon: const Icon(Icons.close, size: 20, color: Colors.white),
-                          onPressed: () {
-                            setState(() {
-                              helpOpen = false;
-                            });
-                          },
+                        Positioned(
+                          top: 0,
+                          left: 0,
+                          child: IconButton(
+                            visualDensity: VisualDensity.compact,
+                            icon: Icon(Icons.close, size: 20, color: context.getTextColor()),
+                            onPressed: () {
+                              setState(() {
+                                helpOpen = false;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -187,7 +189,7 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
   void initState() {
     super.initState();
     if (artboard == null) {
-      loadAnimation();
+      loadAnimation().catchError((e) {});
     }
   }
 

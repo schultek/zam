@@ -5,45 +5,30 @@ class AuthService {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        var user = await linkOrSignInUser(credential);
+        print("VERIFY COMPLETED");
+        var user = await signInUser(credential);
         onCompleted(user);
       },
       verificationFailed: (FirebaseAuthException exception) {
+        print("VERIFY ERROR");
         print(exception.message);
       },
       codeSent: (String verificationId, int? resendToken) {
         onSent(verificationId);
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        print("TIMEOUT");
+        print("VERIFY TIMEOUT");
       },
     );
   }
 
   static Future<User> verifyCode(String code, String verificationId) async {
     AuthCredential phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code);
-    return linkOrSignInUser(phoneAuthCredential);
+    return signInUser(phoneAuthCredential);
   }
 
-  static Future<User> linkOrSignInUser(AuthCredential phoneAuthCredential) async {
-    UserCredential userCredential;
-    try {
-      userCredential = await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential);
-    } on FirebaseAuthException catch (exception) {
-      if (exception.code == "credential-already-in-use") {
-        userCredential = await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
-      } else {
-        rethrow;
-      }
-    }
+  static Future<User> signInUser(AuthCredential phoneAuthCredential) async {
+    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
     return userCredential.user!;
-  }
-
-  static Future<UserCredential> createAnonymousUser() {
-    return FirebaseAuth.instance.signInAnonymously();
-  }
-
-  static Future<User?> getInitialUser() {
-    return FirebaseAuth.instance.userChanges().first;
   }
 }

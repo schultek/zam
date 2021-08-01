@@ -1,8 +1,12 @@
+import 'dart:typed_data';
+
+import 'package:flare_flutter/asset_provider.dart';
 import 'package:flare_flutter/base/animation/actor_animation.dart';
 import 'package:flare_flutter/flare.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import '../templates/templates.dart';
 
@@ -11,9 +15,24 @@ class ReorderToggle extends StatefulWidget {
   _ReorderToggleState createState() => _ReorderToggleState();
 }
 
+class MyAssetProvider extends AssetProvider {
+  final String asset;
+  MyAssetProvider(this.asset);
+
+  static final Map<String, Future<ByteData>> _cached = {};
+
+  @override
+  Future<ByteData> load() {
+    print(_cached);
+    return _cached[asset] ??= rootBundle.load(asset);
+  }
+}
+
 class _ReorderToggleState extends State<ReorderToggle> with FlareController {
   FlutterActorArtboard? artboard;
   ActorAnimation? iconAnimation;
+
+  MyAssetProvider iconProvider = MyAssetProvider("assets/animations/reorder_icon.flr");
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +56,8 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
             }
             return child!;
           },
-          child: FlareActor(
-            "assets/animations/reorder_icon.flr",
+          child: FlareActor.asset(
+            iconProvider,
             controller: this,
           ),
         ),

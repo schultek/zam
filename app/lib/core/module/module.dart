@@ -1,11 +1,10 @@
 library module;
 
-import 'package:dart_json_mapper/dart_json_mapper.dart';
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:reflectable/reflectable.dart';
 
-import '../../main.mapper.g.dart';
+import '../../main.reflectable.dart';
 import '../../models/models.dart';
 // ignore: UNUSED_IMPORT
 import '../../modules/modules.dart';
@@ -36,8 +35,6 @@ abstract class ModuleElement extends StatelessWidget {
   @override
   final Key key; // ignore: overridden_fields
   ModuleElement({required this.key}); // ignore: prefer_const_constructors_in_immutables
-
-  Widget buildPlaceholder(BuildContext context);
 
   late final String _id;
   String get id => _id;

@@ -29,7 +29,7 @@ class ReorderableListener<T extends ModuleElement> extends StatelessWidget {
   void _startDragging({required BuildContext context, required PointerDownEvent event}) {
     ReorderableItemState state = context.findAncestorStateOfType<ReorderableItemState>()!;
 
-    var widgetArea = WidgetArea.of<T>(context, listen: false);
+    var widgetArea = WidgetArea.of<T>(context)!;
     var manager = WidgetTemplate.of(context, listen: false).reorderable;
 
     if (manager.dragging == null) {

@@ -26,7 +26,6 @@ class InheritedThemeState extends InheritedWidget {
   @override
   bool updateShouldNotify(InheritedThemeState old) {
     var notify = old.theme != theme;
-    print("SHOUDL notify $notify");
     return notify;
   }
 
@@ -52,7 +51,12 @@ class TripTheme extends StatelessWidget {
         data: ThemeData(
           scaffoldBackgroundColor: theme.currentFillColor,
         ),
-        child: child,
+        child: DefaultTextStyle(
+          style: TextStyle(
+            color: theme.computeTextColor(),
+          ),
+          child: child,
+        ),
       ),
     );
   }
@@ -73,12 +77,6 @@ class FillColor extends StatefulWidget {
 
 class _FillColorState extends State<FillColor> {
   late ThemeState theme;
-
-  @override
-  void initState() {
-    print("INIT");
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {
@@ -104,7 +102,6 @@ class _FillColorState extends State<FillColor> {
 
   @override
   Widget build(BuildContext context) {
-    print("BUILD ${theme.currentFillColor}");
     return InheritedThemeState(
       theme: theme.copy(),
       reuseTheme: !widget.filled,
@@ -173,21 +170,19 @@ extension ThemeColorsContext on BuildContext {
   }
 }
 
+enum Brightness { veryDark, dark, mediumDart, medium, mediumLight, light, veryLight }
+
+enum Contrast { veryLow, low, mediumLow, medium, mediumHigh, high, veryHigh }
+
+enum Denotation { primary, secondary, success, info, error }
+
 class ColorPreference {
-  static const int Dark = -3;
-  static const int Light = 3;
-
-  static const int LowContrast = -3;
-  static const int HighContrast = 3;
-
-  final int? brightness;
-  final int? contrast;
-  final bool? colorful;
+  final Brightness? brightness;
+  final Contrast? contrast;
+  final Denotation? denotation;
 
   final String? id;
 
-  ColorPreference({this.brightness, this.contrast, this.colorful, this.id})
-      : assert(brightness == null || contrast == null),
-        assert(brightness == null || Dark <= brightness && Light >= brightness),
-        assert(contrast == null || LowContrast <= contrast && HighContrast >= contrast);
+  ColorPreference({this.brightness, this.contrast, this.denotation, this.id})
+      : assert(brightness == null || contrast == null);
 }

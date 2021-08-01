@@ -1,23 +1,24 @@
 part of models;
 
-@jsonSerializable
+@MappableClass()
 class Trip {
-  String name;
-  String id;
-  Map<String, TripUser> users;
-  Map<String, List<String>> modules;
+  final String name;
+  final String id;
+  final TemplateModel template;
+  final Map<String, TripUser> users;
+  final Map<String, List<String>> modules;
 
-  Trip(this.id, this.name, this.users, this.modules);
+  Trip({required this.id, required this.name, required this.template, this.users = const {}, this.modules = const {}});
 
   TripUser? get currentUser => users[FirebaseAuth.instance.currentUser?.uid];
 }
 
-@jsonSerializable
+@MappableClass()
 class TripUser {
   String role;
   String? nickname;
 
-  TripUser(this.role, this.nickname);
+  TripUser({required this.role, this.nickname});
 }
 
 class UserRoles {

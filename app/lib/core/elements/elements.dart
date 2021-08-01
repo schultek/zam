@@ -20,10 +20,10 @@ part 'quick_action.dart';
 class ModuleElementBuilder<T extends ModuleElement> extends StatelessWidget {
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context) placeholderBuilder;
-  final Widget Function(Widget child, double opacity) decorationBuilder;
+  final Widget Function(Widget child, double opacity) draggingBuilder;
 
   const ModuleElementBuilder(
-      {required Key key, required this.builder, required this.placeholderBuilder, required this.decorationBuilder})
+      {required Key key, required this.builder, required this.placeholderBuilder, required this.draggingBuilder})
       : super(key: key);
 
   @override
@@ -34,7 +34,7 @@ class ModuleElementBuilder<T extends ModuleElement> extends StatelessWidget {
         builder: (context, state, child) {
           return state == ReorderableState.placeholder ? placeholderBuilder(context) : child;
         },
-        decorationBuilder: decorationBuilder,
+        decorationBuilder: draggingBuilder,
         child: ReorderableListener<T>(
           delay: const Duration(milliseconds: 200),
           child: AbsorbPointer(child: builder(context)),
@@ -65,7 +65,7 @@ class ModuleElementBuilder<T extends ModuleElement> extends StatelessWidget {
           return AbsorbPointer(child: moduleWidget);
         }
       },
-      decorationBuilder: decorationBuilder,
+      decorationBuilder: draggingBuilder,
       child: RemovableDraggableModuleWidget<T>(
         key: key!,
         child: moduleWidget,
@@ -83,45 +83,53 @@ class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessW
     var templateState = WidgetTemplate.of(context);
 
     if (templateState.isEditing) {
-      return Stack(clipBehavior: Clip.none, children: [
-        ReorderableListener<T>(
-          delay: const Duration(milliseconds: 100),
-          child: AbsorbPointer(child: child),
-        ),
-        Positioned(
-          top: -5,
-          left: -5,
-          child: AnimatedBuilder(
-            animation: templateState.transition,
-            builder: (context, child) {
-              return Transform.scale(
-                scale: templateState.transition.value,
-                child: FittedBox(
-                  child: child,
-                ),
-              );
-            },
-            child: Material(
-              borderRadius: BorderRadius.circular(12),
-              shadowColor: Colors.black54,
-              elevation: 4,
-              color: Colors.red, // button color
-              child: InkWell(
-                splashColor: Colors.redAccent,
-                onTap: () {
-                  var areaState = WidgetArea.of<T>(context, listen: false);
-                  areaState.removeWidget(key!);
-                }, // inkwell color
-                child: const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: Icon(Icons.close, size: 15, color: Colors.white),
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          print(constraints);
+          return Stack(clipBehavior: Clip.none, children: [
+            ConstrainedBox(
+              constraints: constraints,
+              child: ReorderableListener<T>(
+                delay: const Duration(milliseconds: 300),
+                child: AbsorbPointer(child: child),
+              ),
+            ),
+            Positioned(
+              top: -5,
+              left: -5,
+              child: AnimatedBuilder(
+                animation: templateState.transition,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: templateState.transition.value,
+                    child: FittedBox(
+                      child: child,
+                    ),
+                  );
+                },
+                child: Material(
+                  borderRadius: BorderRadius.circular(12),
+                  shadowColor: Colors.black54,
+                  elevation: 4,
+                  color: Colors.red, // button color
+                  child: InkWell(
+                    splashColor: Colors.redAccent,
+                    onTap: () {
+                      var areaState = WidgetArea.of<T>(context)!;
+                      areaState.removeWidget(key!);
+                    }, // inkwell color
+                    child: const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Icon(Icons.close, size: 15, color: Colors.white),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      ]);
+          ]);
+        },
+      );
     } else {
       return ModuleRouteTransition(child: child);
     }
@@ -136,11 +144,9 @@ class PhasedAnimation extends CompoundAnimation<double> {
 
   @override
   double get value {
-    var phase = first.value + shift;
-    phase = phase > 1 ? phase - 1 : phase;
-    phase *= 2;
+    var phase = (first.value + shift > 1 ? first.value + shift - 1 : first.value + shift) * 2;
     phase = phase > 1 ? 2 - phase : phase;
-    return phase * next.value;
+    return ((phase - 0.5) * next.value) + 0.5;
   }
 
   factory PhasedAnimation.of(BuildContext context) {

@@ -1,61 +1,80 @@
+import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/app_bloc.dart';
+import '../../bloc/auth_bloc.dart';
+import '../../widgets/ju_background.dart';
 import '../create_trip/create_trip_screen.dart';
-import '../signin/signin_screen.dart';
 
 class NoTripScreen extends StatefulWidget {
   @override
   _NoTripScreenState createState() => _NoTripScreenState();
+
+  static Route route() {
+    return MaterialPageRoute(builder: (context) => NoTripScreen());
+  }
 }
 
 class _NoTripScreenState extends State<NoTripScreen> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      var state = Provider.of<AppState>(context, listen: false);
-
-      if (state.claims.canCreateTrips) {
-        if (state.user!.isAnonymous) {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignInScreen()));
-        }
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Consumer<AppState>(
-          builder: (BuildContext context, AppState state, _) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Du hast noch keine Freizeit"),
-                if (state.claims.canCreateTrips)
-                  state.user!.isAnonymous
-                      ? ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignInScreen()));
-                          },
-                          child: const Text("Jetzt registrieren"),
-                        )
-                      : ElevatedButton(
-                          onPressed: () {
+      backgroundColor: Theme.of(context).primaryColor,
+      body: JuBackground(
+        child: Padding(
+          padding: const EdgeInsets.all(40.0),
+          child: Center(
+            child: BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text(
+                      "Dein Ausflug.\n\nSo wie du ihn willst.",
+                      style: TextStyle(color: Colors.white, fontSize: 80, height: 1),
+                    ),
+                    if (state.user != null && (state.claims.isOrganizer || state.claims.isAdmin))
+                      CupertinoCard(
+                        elevation: 8.0,
+                        radius: const BorderRadius.all(Radius.circular(50.0)),
+                        child: InkWell(
+                          onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateTripScreen()));
                           },
-                          child: const Text("Neue Freizeit erstellen"),
-                        )
-                else
-                  const Text("Erhalte einen Einladungs-Link von deinem Leiter."),
-              ],
-            );
-          },
+                          child: const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(28.0),
+                              child: Text(
+                                "Neuen Ausflug erstellen",
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      _invitationPreview(),
+                  ],
+                );
+              },
+            ),
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _invitationPreview() {
+    return CupertinoCard(
+      elevation: 8.0,
+      padding: const EdgeInsets.all(30.0),
+      radius: const BorderRadius.all(Radius.circular(80.0)),
+      child: const Center(
+          child: Text(
+        "Du benötigst einen Einladungslink von deinem Organisator.",
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        textAlign: TextAlign.center,
+      )),
     );
   }
 }

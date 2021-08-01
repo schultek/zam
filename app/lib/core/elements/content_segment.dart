@@ -24,10 +24,11 @@ class ContentSegment extends ModuleElement {
             Navigator.of(context).push(ModulePageRoute(context, child: onNavigate!(context)));
           }
         },
-        child: getSegment(context, false),
+        child: buildElement(context),
       ),
-      placeholderBuilder: (context) => getSegment(context, true),
-      decorationBuilder: (child, opacity) {
+      placeholderBuilder: buildPlaceholder,
+      draggingBuilder: (child, opacity) {
+        print("BUILD DRAGGING");
         return Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: [
             BoxShadow(
@@ -42,31 +43,35 @@ class ContentSegment extends ModuleElement {
     );
   }
 
-  Widget getSegment(BuildContext context, bool isPlaceholder) {
-    var child = ClipRRect(
+  Widget buildPlaceholder(BuildContext context) {
+    return WidgetArea.of<ContentSegment>(context)?.decoratePlaceholder(context, this) ?? _defaultDecorator();
+  }
+
+  Widget buildElement(BuildContext context) {
+    return WidgetArea.of<ContentSegment>(context)?.decorateElement(context, this) ??
+        _defaultDecorator(builder(context));
+  }
+
+  Widget _defaultDecorator([Widget? child]) {
+    var w = ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: FillColor(
         preference: ColorPreference(id: id),
         builder: (context, fillColor) => Material(
+          textStyle: TextStyle(color: context.getTextColor()),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: fillColor.withOpacity(isPlaceholder ? 0.4 : 1),
-          child: isPlaceholder ? Container() : builder(context),
+          color: fillColor.withOpacity(child != null ? 1 : 0.4),
+          child: child ?? Container(),
         ),
       ),
     );
-
     if (size == SegmentSize.Wide) {
-      return child;
+      return w;
     } else {
       return AspectRatio(
         aspectRatio: 1,
-        child: child,
+        child: w,
       );
     }
-  }
-
-  @override
-  Widget buildPlaceholder(BuildContext context) {
-    return getSegment(context, true);
   }
 }
