@@ -213,4 +213,6 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   bool canInsertItem(T item) => true;
   void insertItem(T item);
   bool hasKey(Key key);
+
+  bool isAllowed(T item) => true;
 }

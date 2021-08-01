@@ -29,6 +29,11 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, ContentSegment> {
   }
 
   @override
+  bool isAllowed(ContentSegment item) {
+    return item.allow?.contains(SegmentAllow.FullScreen) ?? false;
+  }
+
+  @override
   BoxConstraints constrainWidget(ContentSegment widget) => BoxConstraints.tight(areaSize);
 
   @override

@@ -124,6 +124,9 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
   }
 
   @override
+  bool isAllowed(ContentSegment item) => item.allow?.contains(SegmentAllow.Card) ?? true;
+
+  @override
   List<ContentSegment> getWidgets() {
     List<ContentSegment> sortedWidgets = [];
     for (var row in grid) {

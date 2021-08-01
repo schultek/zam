@@ -1,5 +1,6 @@
 library modules;
 
+export 'chat/chat_module.dart';
 export 'profile/profile_module.dart';
 export 'supply/supply_module.dart';
 export 'thebutton/thebutton_module.dart';

@@ -35,7 +35,7 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
     List<T> widgets = template.widgetFactories
         .where((f) => f.type == T)
         .map((f) => f.getWidget() as T)
-        .where((w) => !widgetArea.getWidgets().any((ww) => ww.id == w.id))
+        .where((w) => !widgetArea.getWidgets().any((ww) => ww.id == w.id) && widgetArea.isAllowed(w))
         .toList();
 
     var widgetSelector = WidgetSelector<T>(selectorKey, widgets, widgetArea);

@@ -1,14 +1,16 @@
 part of elements;
 
 enum SegmentSize { Square, Wide }
+enum SegmentAllow { FullScreen, Card }
 
 class ContentSegment extends ModuleElement {
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context)? onNavigate;
   final void Function()? onTap;
   final SegmentSize size;
+  final List<SegmentAllow>? allow;
 
-  ContentSegment({required this.builder, this.onNavigate, this.onTap, this.size = SegmentSize.Square})
+  ContentSegment({required this.builder, this.onNavigate, this.onTap, this.size = SegmentSize.Square, this.allow})
       : super(key: UniqueKey());
 
   @override

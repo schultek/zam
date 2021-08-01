@@ -36,12 +36,12 @@ class ModuleRegistry {
       if (id.endsWith("module")) id = id.substring(0, id.length - 6);
       ModuleMirror moduleMirror = ModuleMirror(id, module);
 
-      //print("Found module with id ${moduleMirror.id}");
+      print("Found module with id ${moduleMirror.id}");
 
       for (MethodMirror method in module.instanceMembers.values) {
         for (Object o in method.metadata) {
           if (o is ModuleItem) {
-            //print("Found method ${method.simpleName} with id ${o.id} and type ${method.reflectedReturnType}");
+            print("Found method ${method.simpleName} with id ${o.id} and type ${method.reflectedReturnType}");
             bool isModuleWidget = widgetReflector.canReflectType(method.reflectedReturnType) &&
                 widgetReflector.reflectType(method.reflectedReturnType).isSubtypeOf(moduleWidgetType) &&
                 widgetReflector.reflectType(method.reflectedReturnType).simpleName != moduleWidgetType.simpleName;
