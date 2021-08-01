@@ -52,6 +52,15 @@ class _EditShoppingListPageState extends State<EditShoppingListPage> {
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         child: Column(
           children: [
+            Text(
+              widget.list != null ? "Bearbeite die Einkaufsliste $listName" : "Erstelle eine neue Einkaufsliste",
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: Colors.black,
+              ),
+            ),
+            Container(height: 20),
             TextField(
               controller: titleController,
               decoration: const InputDecoration(
