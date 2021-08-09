@@ -1,28 +1,27 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../bloc/auth_bloc.dart';
-import '../helpers/locator.dart';
-import '../models/models.dart';
+import '../../models/models.dart';
+import '../auth/claims_provider.dart';
+import '../auth/logic_provider.dart';
+import '../auth/user_provider.dart';
+import '../firebase/firebase_provider.dart';
 
-class DynamicLinkService {
-  DynamicLinkService() {
-    // var link =
-    //     "https://jufa20.web.app/invitation/organizer?phoneNumber=%2B4915787693846&hmac=753651ea7a018e59caf62a63a0791a785e91131025c8efe04e73d8f02eb889fd";
-    // _buildDynamicLink(
-    //   link: link,
-    //   meta: SocialMetaTagParameters(
-    //     title: "Werde Organisator",
-    //     description: "Erstelle und manage Ausflüge und andere Gruppen-Events.",
-    //     imageUrl: Uri.parse("https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200"),
-    //   ),
-    // ).then(print);
+final linkProvider = StateNotifierProvider<LinkState, Uri?>((ref) => LinkState(ref));
+
+class LinkState extends StateNotifier<Uri?> {
+  final ProviderReference ref;
+
+  LinkState(this.ref) : super(null) {
+    setup();
   }
 
   Future<void> setup() async {
+    await ref.read(firebaseProvider.future);
+
     var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
-      print("Got initial dynamic link");
       _handleDynamicLink(link);
     }
 
@@ -36,9 +35,36 @@ class DynamicLinkService {
 
     var uri = link.link;
     if (uri.path.startsWith('/invitation')) {
-      locator<AuthBloc>().handleInvitationLink(uri);
+      if (uri.path.endsWith('/organizer') || uri.path.endsWith('/admin')) {
+        state = uri;
+      } else if (uri.path.endsWith('/trip')) {
+        var user = ref.read(userProvider);
+        if (user.data?.value == null) {
+          await ref.read(authLogicProvider).signInAnonymously();
+        }
+        handleReceivedLink(uri);
+      }
     }
   }
+
+  Future<void> handleReceivedLink(Uri link) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('onLinkReceived');
+    var res = await callable.call({'link': link.toString()});
+    var claimsChanged = res.data as bool;
+    if (claimsChanged) {
+      if (state == link) {
+        state = null;
+      }
+      await ref.read(claimsProvider.notifier).refresh();
+    }
+  }
+}
+
+final linkLogicProvider = Provider((ref) => LinkLogic(ref));
+
+class LinkLogic {
+  final ProviderReference ref;
+  LinkLogic(this.ref);
 
   Future<String> createOrganizerLink({required String phoneNumber}) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createOrganizerLink');
@@ -77,15 +103,6 @@ class DynamicLinkService {
         imageUrl: Uri.parse("https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200"),
       ),
     );
-  }
-
-  Future<void> handleReceivedLink(Uri link) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('onLinkReceived');
-    var res = await callable.call({'link': link.toString()});
-    var claimsChanged = res.data as bool;
-    if (claimsChanged) {
-      await locator<AuthBloc>().updateUserClaims(true);
-    }
   }
 
   Future<String> _buildDynamicLink({required String link, SocialMetaTagParameters? meta}) async {

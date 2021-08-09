@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
-import '../../../helpers/extensions.dart';
 import '../supply_models.dart';
 import '../supply_repository.dart';
 import 'add_recipe_screen.dart';

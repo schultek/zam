@@ -3,35 +3,54 @@ part of themes;
 class DarkTheme extends ThemeState {
   final List<Color> belowColors;
   DarkTheme([List<Color>? colors])
-      : belowColors = colors ?? [dark],
+      : belowColors = colors ?? [d[9]],
         assert(colors?.isNotEmpty ?? true);
 
-  static final dark = Colors.grey.shade900;
-  static final dark2 = Colors.grey.shade800;
-  static final light = Colors.grey.shade200;
+  static final d = [
+    Colors.grey.shade50,
+    Colors.grey.shade100,
+    Colors.grey.shade200,
+    Colors.grey.shade300,
+    Colors.grey.shade400,
+    Colors.grey.shade500,
+    Colors.grey.shade600,
+    Colors.grey.shade700,
+    Colors.grey.shade800,
+    Colors.grey.shade900,
+  ];
 
   @override
-  DarkTheme computeFillColor({required BuildContext context, ColorPreference? preference}) {
-    if (belowColors.last == dark) {
-      return DarkTheme([...belowColors, dark2]);
-    } else if (belowColors.last == dark2) {
-      return DarkTheme([...belowColors, light]);
-    } else {
-      return DarkTheme([...belowColors, dark]);
+  DarkTheme computeFillColor(
+      {required BuildContext context, ColorPreference? preference, bool matchTextColor = false}) {
+    if (matchTextColor) {
+      return _next(computeTextColor(preference: preference));
     }
+
+    var c = belowColors.last;
+    var i = d.indexOf(c);
+    var contrast = preference?.contrast ?? Contrast.veryLow;
+
+    int j = i + contrast.index + 1;
+    if (j >= d.length) j = i - contrast.index - 1;
+    return _next(d[j]);
   }
+
+  DarkTheme _next(Color color) => DarkTheme([...belowColors, color]);
 
   @override
   Color computeTextColor({ColorPreference? preference}) {
-    if (belowColors.last == dark || belowColors.last == dark2) {
-      return light;
+    var c = belowColors.last;
+    var i = d.indexOf(c);
+
+    if (i > 5) {
+      return d[2];
     } else {
-      return dark;
+      return d[9];
     }
   }
 
   @override
-  Color get baseColor => dark;
+  Color get baseColor => d[9];
 
   @override
   Color get currentFillColor => belowColors.last;

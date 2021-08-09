@@ -1,20 +1,30 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AuthService {
-  static Future<void> signIn(String phoneNumber, void Function(String) onSent, void Function(User) onCompleted) async {
+final authLogicProvider = Provider((ref) => AuthLogic(ref));
+
+class AuthLogic {
+  final ProviderReference ref;
+  AuthLogic(this.ref);
+
+  Future<void> verifyPhoneNumber(
+    String phoneNumber, {
+    void Function(String)? onSent,
+    void Function(User)? onCompleted,
+  }) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       verificationCompleted: (PhoneAuthCredential credential) async {
         print("VERIFY COMPLETED");
         var user = await signInUser(credential);
-        onCompleted(user);
+        onCompleted?.call(user);
       },
       verificationFailed: (FirebaseAuthException exception) {
         print("VERIFY ERROR");
         print(exception.message);
       },
       codeSent: (String verificationId, int? resendToken) {
-        onSent(verificationId);
+        onSent?.call(verificationId);
       },
       codeAutoRetrievalTimeout: (String verificationId) {
         print("VERIFY TIMEOUT");
@@ -22,13 +32,17 @@ class AuthService {
     );
   }
 
-  static Future<User> verifyCode(String code, String verificationId) async {
+  Future<User> verifyCode(String code, String verificationId) async {
     AuthCredential phoneAuthCredential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: code);
     return signInUser(phoneAuthCredential);
   }
 
-  static Future<User> signInUser(AuthCredential phoneAuthCredential) async {
+  Future<User> signInUser(AuthCredential phoneAuthCredential) async {
     UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
     return userCredential.user!;
+  }
+
+  Future<void> signInAnonymously() async {
+    await FirebaseAuth.instance.signInAnonymously();
   }
 }

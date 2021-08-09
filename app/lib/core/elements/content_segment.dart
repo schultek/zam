@@ -1,23 +1,55 @@
 part of elements;
 
 enum SegmentSize { Square, Wide }
-enum SegmentAllow { FullScreen, Card }
 
-class ContentSegment extends ModuleElement {
+class IdProvider {
+  String? _id;
+
+  void provide(BuildContext context, String id) {
+    _id = id;
+    WidgetArea.of<ContentSegment>(context)!.updateWidgetsInTrip();
+  }
+
+  String? _getId(String id) {
+    return _id != null ? id.split('/').take(2).followedBy([_id!]).join('/') : id;
+  }
+}
+
+@ModuleWidgetReflectable()
+class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegment> {
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context)? onNavigate;
   final void Function()? onTap;
   final SegmentSize size;
-  final List<SegmentAllow>? allow;
+  final IdProvider? idProvider;
+  final void Function(BuildContext context)? whenRemoved;
 
-  ContentSegment({required this.builder, this.onNavigate, this.onTap, this.size = SegmentSize.Square, this.allow})
-      : super(key: UniqueKey());
+  ContentSegment({
+    required this.builder,
+    this.onNavigate,
+    this.onTap,
+    this.size = SegmentSize.Square,
+    this.idProvider,
+    this.whenRemoved,
+  }) : super(key: UniqueKey());
 
   @override
-  Widget build(BuildContext context) {
-    return ModuleElementBuilder<ContentSegment>(
-      key: key,
-      builder: (context) => GestureDetector(
+  String get id => idProvider?._getId(super.id) ?? super.id;
+
+  @override
+  void onRemoved(BuildContext context) => whenRemoved?.call(context);
+
+  @override
+  Widget buildPlaceholder(BuildContext context) {
+    return WidgetArea.of<ContentSegment>(context)?.decoratePlaceholder(context, this) ?? _defaultDecorator();
+  }
+
+  @override
+  Widget buildElement(BuildContext context) {
+    var child =
+        WidgetArea.of<ContentSegment>(context)?.decorateElement(context, this) ?? _defaultDecorator(builder(context));
+    if (onTap != null || onNavigate != null) {
+      child = GestureDetector(
         onTap: () {
           if (onTap != null) {
             onTap!();
@@ -26,32 +58,24 @@ class ContentSegment extends ModuleElement {
             Navigator.of(context).push(ModulePageRoute(context, child: onNavigate!(context)));
           }
         },
-        child: buildElement(context),
-      ),
-      placeholderBuilder: buildPlaceholder,
-      draggingBuilder: (child, opacity) {
-        print("BUILD DRAGGING");
-        return Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: [
-            BoxShadow(
-              blurRadius: 8,
-              spreadRadius: -2,
-              color: Colors.black.withOpacity(opacity * 0.5),
-            )
-          ]),
-          child: child,
-        );
-      },
+        child: child,
+      );
+    }
+    return child;
+  }
+
+  @override
+  Widget decorationBuilder(Widget child, double opacity) {
+    return Container(
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: [
+        BoxShadow(
+          blurRadius: 8,
+          spreadRadius: -2,
+          color: Colors.black.withOpacity(opacity * 0.5),
+        )
+      ]),
+      child: child,
     );
-  }
-
-  Widget buildPlaceholder(BuildContext context) {
-    return WidgetArea.of<ContentSegment>(context)?.decoratePlaceholder(context, this) ?? _defaultDecorator();
-  }
-
-  Widget buildElement(BuildContext context) {
-    return WidgetArea.of<ContentSegment>(context)?.decorateElement(context, this) ??
-        _defaultDecorator(builder(context));
   }
 
   Widget _defaultDecorator([Widget? child]) {

@@ -9,7 +9,3 @@ targets:
         options:
           caseStyle: camelCase
           enumCaseStyle: camelCase
-          include: []
-      reflectable:
-        generate_for:
-          - lib/main.dart

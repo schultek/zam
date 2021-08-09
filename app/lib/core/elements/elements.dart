@@ -14,41 +14,35 @@ import '../themes/themes.dart';
 import '../widgets/widget_selector.dart';
 
 part 'content_segment.dart';
-part 'header_segment.dart';
+part 'page_segment.dart';
 part 'quick_action.dart';
 
-class ModuleElementBuilder<T extends ModuleElement> extends StatelessWidget {
-  final Widget Function(BuildContext context) builder;
-  final Widget Function(BuildContext context) placeholderBuilder;
-  final Widget Function(Widget child, double opacity) draggingBuilder;
-
-  const ModuleElementBuilder(
-      {required Key key, required this.builder, required this.placeholderBuilder, required this.draggingBuilder})
-      : super(key: key);
+mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
+  Widget buildElement(BuildContext context);
+  Widget buildPlaceholder(BuildContext context);
+  Widget decorationBuilder(Widget child, double opacity);
 
   @override
   Widget build(BuildContext context) {
     if (WidgetSelector.existsIn(context)) {
       return ReorderableItem(
-        key: key!,
+        key: key,
         builder: (context, state, child) {
-          return state == ReorderableState.placeholder ? placeholderBuilder(context) : child;
+          return state == ReorderableState.placeholder ? buildPlaceholder(context) : child;
         },
-        decorationBuilder: draggingBuilder,
+        decorationBuilder: decorationBuilder,
         child: ReorderableListener<T>(
           delay: const Duration(milliseconds: 200),
-          child: AbsorbPointer(child: builder(context)),
+          child: AbsorbPointer(child: buildElement(context)),
         ),
       );
     }
 
-    var moduleWidget = Builder(builder: builder);
-
     return ReorderableItem(
-      key: key!,
+      key: key,
       builder: (context, state, child) {
         if (state == ReorderableState.placeholder) {
-          return placeholderBuilder(context);
+          return buildPlaceholder(context);
         } else if (state == ReorderableState.normal) {
           var animation = CurvedAnimation(parent: PhasedAnimation.of(context), curve: Curves.easeInOut);
           return AnimatedBuilder(
@@ -62,13 +56,13 @@ class ModuleElementBuilder<T extends ModuleElement> extends StatelessWidget {
             child: child,
           );
         } else {
-          return AbsorbPointer(child: moduleWidget);
+          return AbsorbPointer(child: buildElement(context));
         }
       },
-      decorationBuilder: draggingBuilder,
+      decorationBuilder: decorationBuilder,
       child: RemovableDraggableModuleWidget<T>(
-        key: key!,
-        child: moduleWidget,
+        key: key,
+        child: Builder(builder: buildElement),
       ),
     );
   }
@@ -85,7 +79,6 @@ class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessW
     if (templateState.isEditing) {
       return LayoutBuilder(
         builder: (context, constraints) {
-          print(constraints);
           return Stack(clipBehavior: Clip.none, children: [
             ConstrainedBox(
               constraints: constraints,

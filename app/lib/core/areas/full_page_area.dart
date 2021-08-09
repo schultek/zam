@@ -1,20 +1,20 @@
 part of areas;
 
-class FullPageArea extends WidgetArea<ContentSegment> {
+class FullPageArea extends WidgetArea<PageSegment> {
   const FullPageArea({required String id}) : super(id);
 
   @override
   State<StatefulWidget> createState() => FullPageAreaState();
 }
 
-class FullPageAreaState extends WidgetAreaState<FullPageArea, ContentSegment> {
-  ContentSegment? content;
+class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment> {
+  PageSegment? content;
 
   @override
-  void initArea(List<ContentSegment> widgets) => content = widgets.isNotEmpty ? widgets.first : null;
+  void initArea(List<PageSegment> widgets) => content = widgets.isNotEmpty ? widgets.first : null;
 
   @override
-  List<ContentSegment> getWidgets() => [if (content != null) content!];
+  List<PageSegment> getWidgets() => [if (content != null) content!];
 
   @override
   EdgeInsetsGeometry getMargin() =>
@@ -29,15 +29,10 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, ContentSegment> {
   }
 
   @override
-  bool isAllowed(ContentSegment item) {
-    return item.allow?.contains(SegmentAllow.FullScreen) ?? false;
-  }
+  BoxConstraints constrainWidget(PageSegment widget) => BoxConstraints.tight(areaSize);
 
   @override
-  BoxConstraints constrainWidget(ContentSegment widget) => BoxConstraints.tight(areaSize);
-
-  @override
-  ContentSegment getWidgetFromKey(Key key) => content!;
+  PageSegment getWidgetFromKey(Key key) => content!;
 
   @override
   bool hasKey(Key key) => content?.key == key;
@@ -46,7 +41,7 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, ContentSegment> {
   bool canInsertItem(_) => true;
 
   @override
-  void insertItem(ContentSegment item) {
+  void insertItem(PageSegment item) {
     if (content != null) removeWidget(content!.key);
     setState(() => content = item);
   }
@@ -59,8 +54,7 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, ContentSegment> {
   }
 
   @override
-  Widget? decorateElement(BuildContext context, ContentSegment element) {
-    print("APPLY CUSTOM DECORATOR");
+  Widget? decorateElement(BuildContext context, PageSegment element) {
     return Material(
       textStyle: TextStyle(color: context.getTextColor()),
       color: Colors.transparent,

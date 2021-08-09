@@ -1,14 +1,18 @@
 library areas;
 
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../bloc/trip_bloc.dart';
+import '../../providers/helpers.dart';
+import '../../providers/trips/logic_provider.dart';
+import '../../providers/trips/selected_trip_provider.dart';
 import '../elements/elements.dart';
 import '../module/module.dart';
-import '../reorderable/reorderable_manager.dart';
+import '../reorderable/logic_provider.dart';
 import '../templates/templates.dart';
 
 part 'body_widget_area.dart';
@@ -28,6 +32,16 @@ class InheritedWidgetArea<T extends ModuleElement> extends InheritedWidget {
   bool updateShouldNotify(covariant InheritedWidgetArea oldWidget) => true;
 }
 
+final areaModulesProvider = StateNotifierProvider.family<StateNotifier<List<String>>, List<String>, String>(
+  (ref, String id) {
+    var n = ref.watch(selectedTripProvider.notifier);
+    return StreamNotifier.from(
+      n.stream.map((t) => t?.modules[id] ?? []),
+      initialValue: ref.read(selectedTripProvider)?.modules[id] ?? [],
+    );
+  },
+);
+
 abstract class WidgetArea<T extends ModuleElement> extends StatefulWidget {
   final String id;
   const WidgetArea(this.id);
@@ -42,6 +56,8 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     with TickerProviderStateMixin {
   bool _isInitialized = false;
 
+  StreamSubscription<List<String>?>? _modulesSubscription;
+
   String get id => widget.id;
 
   final _areaKey = GlobalKey();
@@ -55,8 +71,6 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   ThemeState get theme => _areaTheme.value!;
   WidgetTemplateState get template => WidgetTemplate.of(context, listen: false);
 
-  late ReorderableManager _reorderable;
-
   Type get elementType => T;
 
   @override
@@ -65,14 +79,18 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     if (_isInitialized) return;
     _isInitialized = true;
 
-    _reorderable = template.reorderable;
-    initArea(template.getWidgetsForArea<T>(widget.id));
+    initArea(template.getWidgetsForArea<T>(id));
+    _modulesSubscription = context.read(areaModulesProvider(id).notifier).stream.listen((event) {
+      initArea(template.getWidgetsForArea<T>(widget.id));
+      setState(() {});
+    });
   }
 
   void initArea(List<T> widgets);
 
   @override
   void dispose() {
+    _modulesSubscription?.cancel();
     super.dispose();
   }
 
@@ -133,6 +151,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     setState(() {
       var widget = getWidgetFromKey(key);
       removeItem(key);
+      widget.onRemoved(context);
 
       var templateState = WidgetTemplate.of(context, listen: false);
       templateState.onWidgetRemoved(this, widget);
@@ -141,7 +160,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   }
 
   Future<void> updateWidgetsInTrip() async {
-    context.updateTrip({
+    context.read(tripsLogicProvider).updateTrip({
       "modules.$id": getWidgets().map((w) => w.id).toList(),
     });
   }
@@ -156,10 +175,12 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     });
   }
 
-  Offset getOffset(Key key) => _reorderable.itemOffset(key) - areaOffset;
-  Size getSize(Key key) => _reorderable.itemSize(key);
-  void translateX(Key key, double delta) => _reorderable.translateItemX(key, delta);
-  void translateY(Key key, double delta) => _reorderable.translateItemY(key, delta);
+  ReorderableLogic get logic => context.read(reorderableLogicProvider);
+
+  Offset getOffset(Key key) => logic.itemOffset(key) - areaOffset;
+  Size getSize(Key key) => logic.itemSize(key);
+  void translateX(Key key, double delta) => logic.translateItemX(this, key, delta);
+  void translateY(Key key, double delta) => logic.translateItemY(this, key, delta);
 
   bool isOverArea(Offset offset, Size size) {
     var areaRect = Rect.fromLTWH(0, 0, areaSize.width, areaSize.height);
@@ -198,7 +219,11 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     insertItem(item);
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      while (didReorderItem(offset, item.key)) {}
+      var n = 0;
+      while (n++ < 100 && didReorderItem(offset, item.key)) {}
+      if (n >= 100) {
+        print("WARNING: REORDERING DID NOT FINISH AFTER 100 STEPS");
+      }
       _scheduledRebuild = false;
     });
     _scheduledRebuild = true;
@@ -213,6 +238,4 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   bool canInsertItem(T item) => true;
   void insertItem(T item);
   bool hasKey(Key key);
-
-  bool isAllowed(T item) => true;
 }

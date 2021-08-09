@@ -11,6 +11,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import '../templates/templates.dart';
 
 class ReorderToggle extends StatefulWidget {
+  final void Function()? onPressed;
+  const ReorderToggle({this.onPressed});
   @override
   _ReorderToggleState createState() => _ReorderToggleState();
 }
@@ -23,7 +25,6 @@ class MyAssetProvider extends AssetProvider {
 
   @override
   Future<ByteData> load() {
-    print(_cached);
     return _cached[asset] ??= rootBundle.load(asset);
   }
 }
@@ -32,12 +33,11 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
   FlutterActorArtboard? artboard;
   ActorAnimation? iconAnimation;
 
-  MyAssetProvider iconProvider = MyAssetProvider("assets/animations/reorder_icon.flr");
+  static MyAssetProvider iconProvider = MyAssetProvider("assets/animations/reorder_icon.flr");
 
   @override
   Widget build(BuildContext context) {
     var state = WidgetTemplate.of(context, listen: false);
-
     return IconButton(
       icon: ShaderMask(
         blendMode: BlendMode.srcIn,
@@ -63,6 +63,7 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
         ),
       ),
       onPressed: () {
+        widget.onPressed?.call();
         state.toggleEdit();
       },
     );
@@ -72,7 +73,8 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
   void initialize(FlutterActorArtboard artboard) {
     this.artboard = artboard;
     iconAnimation = artboard.getAnimation("go");
-    iconAnimation!.apply(0, artboard, 1.0);
+    var time = WidgetTemplate.of(context, listen: false).transition.value * iconAnimation!.duration;
+    iconAnimation!.apply(time, artboard, 1.0);
   }
 
   @override

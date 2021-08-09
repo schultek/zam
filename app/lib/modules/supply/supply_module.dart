@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:rive/rive.dart';
 
+import '../../bloc/trip_bloc.dart';
 import '../../core/module/module.dart';
 import 'cooking/cooking_screen.dart';
 import 'shopping/shopping_screen.dart';
@@ -11,9 +12,6 @@ import 'supply_repository.dart';
 
 @Module()
 class SupplyModule {
-  ModuleData moduleData;
-  SupplyModule(this.moduleData);
-
   @ModuleItem(id: "cooking")
   ContentSegment getCookingCard() {
     return ContentSegment(
@@ -31,7 +29,7 @@ class SupplyModule {
           ],
         ),
       ),
-      onNavigate: (context) => SupplyProvider(tripId: moduleData.trip.id, child: CookingScreen()),
+      onNavigate: (context) => SupplyProvider(tripId: context.trip!.id, child: CookingScreen()),
     );
   }
 
@@ -42,7 +40,7 @@ class SupplyModule {
         padding: const EdgeInsets.all(10),
         child: const Center(child: Text("Einkaufen")),
       ),
-      onNavigate: (context) => SupplyProvider(tripId: moduleData.trip.id, child: ShoppingPage()),
+      onNavigate: (context) => SupplyProvider(tripId: context.trip!.id, child: ShoppingPage()),
     );
   }
 }

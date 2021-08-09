@@ -1,8 +1,9 @@
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../service/auth_service.dart';
+import '../../providers/auth/logic_provider.dart';
 import '../../widgets/ju_background.dart';
 
 class SmsCodeScreen extends StatefulWidget {
@@ -69,7 +70,7 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                 radius: const BorderRadius.all(Radius.circular(50.0)),
                 child: InkWell(
                   onTap: () async {
-                    var user = await AuthService.verifyCode(code, widget.verificationId);
+                    var user = await context.read(authLogicProvider).verifyCode(code, widget.verificationId);
                     await widget.onSignedIn(user);
                   },
                   child: const Center(

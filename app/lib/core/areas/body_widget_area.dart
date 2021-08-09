@@ -14,6 +14,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
   @override
   void initArea(List<ContentSegment> widgets) {
     List<ContentSegment>? row;
+    grid = [];
     for (ContentSegment segment in widgets) {
       if (segment.size == SegmentSize.Square) {
         if (row == null) {
@@ -124,9 +125,6 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
   }
 
   @override
-  bool isAllowed(ContentSegment item) => item.allow?.contains(SegmentAllow.Card) ?? true;
-
-  @override
   List<ContentSegment> getWidgets() {
     List<ContentSegment> sortedWidgets = [];
     for (var row in grid) {
@@ -196,6 +194,8 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
             onReorder(itemKey, aboveRow[0].key);
             translateY(aboveRow[0].key, -itemSize.height - 20);
             translateY(siblingItem.key, itemSize.height + 20);
+          } else {
+            print("FOUND ELSE?? WHAT IS THIS");
           }
         }
 

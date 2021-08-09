@@ -1,7 +1,9 @@
 include: package:lint/analysis_options.yaml
 
 analyzer:
-  exclude: [lib/generated**, lib/main.mapper.g.dart, lib/main.reflectable.dart]
+  exclude:
+    - lib/**.g.dart
+    - lib/modules/supply**
   strong-mode:
     implicit-casts: false
     implicit-dynamic: true

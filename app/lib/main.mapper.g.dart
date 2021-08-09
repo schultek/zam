@@ -1,12 +1,39 @@
-// ignore_for_file: unnecessary_cast, prefer_relative_imports, unused_element
 import 'dart:convert';
-import 'package:jufa/models/models.dart';
-import 'package:jufa/core/templates/templates.dart';
-import 'package:jufa/modules/supply/supply_models.dart';
 
-// === GENERATED MAPPER CLASSES AND EXTENSIONS ===
+import 'package:dart_mappable/dart_mappable.dart';
 
-class TripMapper implements Mapper<Trip> {
+import 'core/templates/templates.dart';
+import 'models/models.dart';
+import 'modules/notes/notes_provider.dart';
+
+// === ALL STATICALLY REGISTERED MAPPERS ===
+
+var _mappers = <String, BaseMapper>{
+  // primitive mappers
+  _typeOf<dynamic>(): PrimitiveMapper((dynamic v) => v),
+  _typeOf<String>(): PrimitiveMapper<String>((dynamic v) => v.toString()),
+  _typeOf<int>(): PrimitiveMapper<int>((dynamic v) => num.parse(v.toString()).round()),
+  _typeOf<double>(): PrimitiveMapper<double>((dynamic v) => double.parse(v.toString())),
+  _typeOf<num>(): PrimitiveMapper<num>((dynamic v) => num.parse(v.toString())),
+  _typeOf<bool>(): PrimitiveMapper<bool>((dynamic v) => v is num ? v != 0 : v.toString() == 'true'),
+  _typeOf<DateTime>(): DateTimeMapper(),
+  _typeOf<List>(): IterableMapper<List>(<T>(Iterable<T> i) => i.toList(), <T>(f) => f<List<T>>()),
+  _typeOf<Set>(): IterableMapper<Set>(<T>(Iterable<T> i) => i.toSet(), <T>(f) => f<Set<T>>()),
+  _typeOf<Map>(): MapMapper<Map>(<K, V>(Map<K, V> map) => map, <K, V>(f) => f<Map<K, V>>()),
+  // class mappers
+  _typeOf<Trip>(): TripMapper._(),
+  _typeOf<TripUser>(): TripUserMapper._(),
+  _typeOf<TemplateModel>(): TemplateModelMapper._(),
+  _typeOf<GridTemplateModel>(): GridTemplateModelMapper._(),
+  _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
+  _typeOf<Note>(): NoteMapper._(),
+  // enum mappers
+  // custom mappers
+};
+
+// === GENERATED CLASS MAPPERS AND EXTENSIONS ===
+
+class TripMapper extends BaseMapper<Trip> {
   TripMapper._();
 
   @override
@@ -20,6 +47,7 @@ class TripMapper implements Mapper<Trip> {
       modules: map.getMapOpt('modules') ?? const {});
 
   @override
+  Function get encoder => (Trip v) => encode(v);
   dynamic encode(Trip v) => toMap(v);
   Map<String, dynamic> toMap(Trip t) => {
         'id': Mapper.toValue(t.id),
@@ -30,13 +58,13 @@ class TripMapper implements Mapper<Trip> {
       };
 
   @override
-  String stringify(Trip self) =>
+  String? stringify(Trip self) =>
       'Trip(name: ${self.name}, id: ${self.id}, template: ${self.template}, users: ${self.users}, modules: ${self.modules})';
   @override
-  int hash(Trip self) =>
+  int? hash(Trip self) =>
       self.id.hashCode ^ self.name.hashCode ^ self.template.hashCode ^ self.users.hashCode ^ self.modules.hashCode;
   @override
-  bool equals(Trip self, Trip other) =>
+  bool? equals(Trip self, Trip other) =>
       self.id == other.id &&
       self.name == other.name &&
       self.template == other.template &&
@@ -47,7 +75,7 @@ class TripMapper implements Mapper<Trip> {
   Function get typeFactory => (f) => f<Trip>();
 }
 
-extension TripExtension on Trip {
+extension TripMapperExtension on Trip {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
   Trip copyWith(
@@ -64,37 +92,45 @@ extension TripExtension on Trip {
           modules: modules ?? this.modules);
 }
 
-class TripUserMapper implements Mapper<TripUser> {
+class TripUserMapper extends BaseMapper<TripUser> {
   TripUserMapper._();
 
   @override
   Function get decoder => decode;
   TripUser decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  TripUser fromMap(Map<String, dynamic> map) => TripUser(role: map.get('role'), nickname: map.getOpt('nickname'));
+  TripUser fromMap(Map<String, dynamic> map) =>
+      TripUser(role: map.get('role'), nickname: map.getOpt('nickname'), profileUrl: map.getOpt('profileUrl'));
 
   @override
+  Function get encoder => (TripUser v) => encode(v);
   dynamic encode(TripUser v) => toMap(v);
-  Map<String, dynamic> toMap(TripUser t) => {'role': Mapper.toValue(t.role), 'nickname': Mapper.toValue(t.nickname)};
+  Map<String, dynamic> toMap(TripUser t) => {
+        'role': Mapper.toValue(t.role),
+        'nickname': Mapper.toValue(t.nickname),
+        'profileUrl': Mapper.toValue(t.profileUrl)
+      };
 
   @override
-  String stringify(TripUser self) => 'TripUser(role: ${self.role}, nickname: ${self.nickname})';
+  String? stringify(TripUser self) =>
+      'TripUser(role: ${self.role}, nickname: ${self.nickname}, profileUrl: ${self.profileUrl})';
   @override
-  int hash(TripUser self) => self.role.hashCode ^ self.nickname.hashCode;
+  int? hash(TripUser self) => self.role.hashCode ^ self.nickname.hashCode ^ self.profileUrl.hashCode;
   @override
-  bool equals(TripUser self, TripUser other) => self.role == other.role && self.nickname == other.nickname;
+  bool? equals(TripUser self, TripUser other) =>
+      self.role == other.role && self.nickname == other.nickname && self.profileUrl == other.profileUrl;
 
   @override
   Function get typeFactory => (f) => f<TripUser>();
 }
 
-extension TripUserExtension on TripUser {
+extension TripUserMapperExtension on TripUser {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-  TripUser copyWith({String? role, String? nickname}) =>
-      TripUser(role: role ?? this.role, nickname: nickname ?? this.nickname);
+  TripUser copyWith({String? role, String? nickname, String? profileUrl}) =>
+      TripUser(role: role ?? this.role, nickname: nickname ?? this.nickname, profileUrl: profileUrl ?? this.profileUrl);
 }
 
-class TemplateModelMapper implements Mapper<TemplateModel> {
+class TemplateModelMapper extends BaseMapper<TemplateModel> {
   TemplateModelMapper._();
 
   @override
@@ -110,29 +146,39 @@ class TemplateModelMapper implements Mapper<TemplateModel> {
         }
       });
   TemplateModel fromMap(Map<String, dynamic> map) => throw MapperException(
-      "Cannot instantiate abstract class TemplateModel, did you forgot to specify a subclass for [ type: '${map['type']}' ] or a default subclass?");
+      "Cannot instantiate class TemplateModel, did you forgot to specify a subclass for [ type: '${map['type']}' ] or a default subclass?");
 
   @override
-  dynamic encode(TemplateModel v) => toMap(v);
+  Function get encoder => (TemplateModel v) => encode(v);
+  dynamic encode(TemplateModel v) {
+    if (v is GridTemplateModel) {
+      return GridTemplateModelMapper._().encode(v);
+    } else if (v is SwipeTemplateModel) {
+      return SwipeTemplateModelMapper._().encode(v);
+    } else {
+      return toMap(v);
+    }
+  }
+
   Map<String, dynamic> toMap(TemplateModel t) => {'type': Mapper.toValue(t.type)};
 
   @override
-  String stringify(TemplateModel self) => 'TemplateModel(type: ${self.type})';
+  String? stringify(TemplateModel self) => 'TemplateModel(type: ${self.type})';
   @override
-  int hash(TemplateModel self) => self.type.hashCode;
+  int? hash(TemplateModel self) => self.type.hashCode;
   @override
-  bool equals(TemplateModel self, TemplateModel other) => self.type == other.type;
+  bool? equals(TemplateModel self, TemplateModel other) => self.type == other.type;
 
   @override
   Function get typeFactory => (f) => f<TemplateModel>();
 }
 
-extension TemplateModelExtension on TemplateModel {
+extension TemplateModelMapperExtension on TemplateModel {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
 }
 
-class GridTemplateModelMapper implements Mapper<GridTemplateModel> {
+class GridTemplateModelMapper extends BaseMapper<GridTemplateModel> {
   GridTemplateModelMapper._();
 
   @override
@@ -141,27 +187,28 @@ class GridTemplateModelMapper implements Mapper<GridTemplateModel> {
   GridTemplateModel fromMap(Map<String, dynamic> map) => GridTemplateModel(type: map.getOpt('type'));
 
   @override
+  Function get encoder => (GridTemplateModel v) => encode(v);
   dynamic encode(GridTemplateModel v) => toMap(v);
   Map<String, dynamic> toMap(GridTemplateModel g) => {'type': Mapper.toValue(g.type)};
 
   @override
-  String stringify(GridTemplateModel self) => 'GridTemplateModel(type: ${self.type})';
+  String? stringify(GridTemplateModel self) => 'GridTemplateModel(type: ${self.type})';
   @override
-  int hash(GridTemplateModel self) => self.type.hashCode;
+  int? hash(GridTemplateModel self) => self.type.hashCode;
   @override
-  bool equals(GridTemplateModel self, GridTemplateModel other) => self.type == other.type;
+  bool? equals(GridTemplateModel self, GridTemplateModel other) => self.type == other.type;
 
   @override
   Function get typeFactory => (f) => f<GridTemplateModel>();
 }
 
-extension GridTemplateModelExtension on GridTemplateModel {
+extension GridTemplateModelMapperExtension on GridTemplateModel {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
   GridTemplateModel copyWith({String? type}) => GridTemplateModel(type: type ?? this.type);
 }
 
-class SwipeTemplateModelMapper implements Mapper<SwipeTemplateModel> {
+class SwipeTemplateModelMapper extends BaseMapper<SwipeTemplateModel> {
   SwipeTemplateModelMapper._();
 
   @override
@@ -170,281 +217,65 @@ class SwipeTemplateModelMapper implements Mapper<SwipeTemplateModel> {
   SwipeTemplateModel fromMap(Map<String, dynamic> map) => SwipeTemplateModel(type: map.getOpt('type'));
 
   @override
+  Function get encoder => (SwipeTemplateModel v) => encode(v);
   dynamic encode(SwipeTemplateModel v) => toMap(v);
   Map<String, dynamic> toMap(SwipeTemplateModel s) => {'type': Mapper.toValue(s.type)};
 
   @override
-  String stringify(SwipeTemplateModel self) => 'SwipeTemplateModel(type: ${self.type})';
+  String? stringify(SwipeTemplateModel self) => 'SwipeTemplateModel(type: ${self.type})';
   @override
-  int hash(SwipeTemplateModel self) => self.type.hashCode;
+  int? hash(SwipeTemplateModel self) => self.type.hashCode;
   @override
-  bool equals(SwipeTemplateModel self, SwipeTemplateModel other) => self.type == other.type;
+  bool? equals(SwipeTemplateModel self, SwipeTemplateModel other) => self.type == other.type;
 
   @override
   Function get typeFactory => (f) => f<SwipeTemplateModel>();
 }
 
-extension SwipeTemplateModelExtension on SwipeTemplateModel {
+extension SwipeTemplateModelMapperExtension on SwipeTemplateModel {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
   SwipeTemplateModel copyWith({String? type}) => SwipeTemplateModel(type: type ?? this.type);
 }
 
-class ArticleMapper implements Mapper<Article> {
-  ArticleMapper._();
+class NoteMapper extends BaseMapper<Note> {
+  NoteMapper._();
 
   @override
   Function get decoder => decode;
-  Article decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  Article fromMap(Map<String, dynamic> map) =>
-      Article(map.get('id'), map.get('name'), map.get('category'), map.get('hint'));
+  Note decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  Note fromMap(Map<String, dynamic> map) => Note(map.get('id'), map.get('title'), map.get('content'));
 
   @override
-  dynamic encode(Article v) => toMap(v);
-  Map<String, dynamic> toMap(Article a) => {
-        'id': Mapper.toValue(a.id),
-        'name': Mapper.toValue(a.name),
-        'category': Mapper.toValue(a.category),
-        'hint': Mapper.toValue(a.hint)
-      };
+  Function get encoder => (Note v) => encode(v);
+  dynamic encode(Note v) => toMap(v);
+  Map<String, dynamic> toMap(Note n) =>
+      {'id': Mapper.toValue(n.id), 'title': Mapper.toValue(n.title), 'content': Mapper.toValue(n.content)};
 
   @override
-  String stringify(Article self) =>
-      'Article(id: ${self.id}, name: ${self.name}, category: ${self.category}, hint: ${self.hint})';
+  String? stringify(Note self) => 'Note(id: ${self.id}, title: ${self.title}, content: ${self.content})';
   @override
-  int hash(Article self) => self.id.hashCode ^ self.name.hashCode ^ self.category.hashCode ^ self.hint.hashCode;
+  int? hash(Note self) => self.id.hashCode ^ self.title.hashCode ^ self.content.hashCode;
   @override
-  bool equals(Article self, Article other) =>
-      self.id == other.id && self.name == other.name && self.category == other.category && self.hint == other.hint;
+  bool? equals(Note self, Note other) =>
+      self.id == other.id && self.title == other.title && self.content == other.content;
 
   @override
-  Function get typeFactory => (f) => f<Article>();
+  Function get typeFactory => (f) => f<Note>();
 }
 
-extension ArticleExtension on Article {
+extension NoteMapperExtension on Note {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-  Article copyWith({String? id, String? name, String? category, String? hint}) =>
-      Article(id ?? this.id, name ?? this.name, category ?? this.category, hint ?? this.hint);
+  Note copyWith({String? id, String? title, String? content}) =>
+      Note(id ?? this.id, title ?? this.title, content ?? this.content);
 }
 
-class ArticleListMapper implements Mapper<ArticleList> {
-  ArticleListMapper._();
+// === GENERATED ENUM MAPPERS AND EXTENSIONS ===
 
-  @override
-  Function get decoder => decode;
-  ArticleList decode(dynamic v) => _checked(v, (Map<String, dynamic> map) {
-        switch (map['type']) {
-          case "recipe":
-            return RecipeMapper._().decode(map);
-          case "shoppingList":
-            return ShoppingListMapper._().decode(map);
-          default:
-            return fromMap(map);
-        }
-      });
-  ArticleList fromMap(Map<String, dynamic> map) =>
-      ArticleList(map.get('id'), map.get('name'), map.getList('entries'), map.get('note'));
+// === GENERATED UTILITY CODE ===
 
-  @override
-  dynamic encode(ArticleList v) => toMap(v);
-  Map<String, dynamic> toMap(ArticleList a) => {
-        'id': Mapper.toValue(a.id),
-        'name': Mapper.toValue(a.name),
-        'entries': Mapper.toValue(a.entries),
-        'note': Mapper.toValue(a.note)
-      };
-
-  @override
-  String stringify(ArticleList self) =>
-      'ArticleList(id: ${self.id}, name: ${self.name}, entries: ${self.entries}, note: ${self.note})';
-  @override
-  int hash(ArticleList self) => self.id.hashCode ^ self.name.hashCode ^ self.entries.hashCode ^ self.note.hashCode;
-  @override
-  bool equals(ArticleList self, ArticleList other) =>
-      self.id == other.id && self.name == other.name && self.entries == other.entries && self.note == other.note;
-
-  @override
-  Function get typeFactory => (f) => f<ArticleList>();
-}
-
-extension ArticleListExtension on ArticleList {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  ArticleList copyWith({String? id, String? name, List<ArticleEntry>? entries, String? note}) =>
-      ArticleList(id ?? this.id, name ?? this.name, entries ?? this.entries, note ?? this.note);
-}
-
-class ArticleEntryMapper implements Mapper<ArticleEntry> {
-  ArticleEntryMapper._();
-
-  @override
-  Function get decoder => decode;
-  ArticleEntry decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  ArticleEntry fromMap(Map<String, dynamic> map) =>
-      ArticleEntry(map.get('articleId'), map.get('amount'), map.get('unit'), map.get('checked'), map.get('hint'));
-
-  @override
-  dynamic encode(ArticleEntry v) => toMap(v);
-  Map<String, dynamic> toMap(ArticleEntry a) => {
-        'articleId': Mapper.toValue(a.articleId),
-        'amount': Mapper.toValue(a.amount),
-        'unit': Mapper.toValue(a.unit),
-        'checked': Mapper.toValue(a.checked),
-        'hint': Mapper.toValue(a.hint)
-      };
-
-  @override
-  String stringify(ArticleEntry self) =>
-      'ArticleEntry(articleId: ${self.articleId}, amount: ${self.amount}, unit: ${self.unit}, checked: ${self.checked}, hint: ${self.hint})';
-  @override
-  int hash(ArticleEntry self) =>
-      self.articleId.hashCode ^ self.amount.hashCode ^ self.unit.hashCode ^ self.checked.hashCode ^ self.hint.hashCode;
-  @override
-  bool equals(ArticleEntry self, ArticleEntry other) =>
-      self.articleId == other.articleId &&
-      self.amount == other.amount &&
-      self.unit == other.unit &&
-      self.checked == other.checked &&
-      self.hint == other.hint;
-
-  @override
-  Function get typeFactory => (f) => f<ArticleEntry>();
-}
-
-extension ArticleEntryExtension on ArticleEntry {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  ArticleEntry copyWith({String? articleId, double? amount, String? unit, bool? checked, String? hint}) => ArticleEntry(
-      articleId ?? this.articleId,
-      amount ?? this.amount,
-      unit ?? this.unit,
-      checked ?? this.checked,
-      hint ?? this.hint);
-}
-
-class RecipeMapper implements Mapper<Recipe> {
-  RecipeMapper._();
-
-  @override
-  Function get decoder => decode;
-  Recipe decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  Recipe fromMap(Map<String, dynamic> map) =>
-      Recipe(map.get('id'), map.get('name'), map.getList('entries'), map.get('preparation'), map.get('note'));
-
-  @override
-  dynamic encode(Recipe v) => toMap(v);
-  Map<String, dynamic> toMap(Recipe r) => {
-        'id': Mapper.toValue(r.id),
-        'name': Mapper.toValue(r.name),
-        'entries': Mapper.toValue(r.entries),
-        'preparation': Mapper.toValue(r.preparation),
-        'note': Mapper.toValue(r.note),
-        'type': "recipe"
-      };
-
-  @override
-  String stringify(Recipe self) =>
-      'Recipe(id: ${self.id}, name: ${self.name}, entries: ${self.entries}, note: ${self.note}, preparation: ${self.preparation})';
-  @override
-  int hash(Recipe self) =>
-      self.id.hashCode ^ self.name.hashCode ^ self.entries.hashCode ^ self.preparation.hashCode ^ self.note.hashCode;
-  @override
-  bool equals(Recipe self, Recipe other) =>
-      self.id == other.id &&
-      self.name == other.name &&
-      self.entries == other.entries &&
-      self.preparation == other.preparation &&
-      self.note == other.note;
-
-  @override
-  Function get typeFactory => (f) => f<Recipe>();
-}
-
-extension RecipeExtension on Recipe {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  Recipe copyWith({String? id, String? name, List<ArticleEntry>? entries, String? preparation, String? note}) => Recipe(
-      id ?? this.id, name ?? this.name, entries ?? this.entries, preparation ?? this.preparation, note ?? this.note);
-}
-
-class ShoppingListMapper implements Mapper<ShoppingList> {
-  ShoppingListMapper._();
-
-  @override
-  Function get decoder => decode;
-  ShoppingList decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  ShoppingList fromMap(Map<String, dynamic> map) =>
-      ShoppingList(map.get('id'), map.get('name'), map.getList('entries'), map.get('note'));
-
-  @override
-  dynamic encode(ShoppingList v) => toMap(v);
-  Map<String, dynamic> toMap(ShoppingList s) => {
-        'id': Mapper.toValue(s.id),
-        'name': Mapper.toValue(s.name),
-        'entries': Mapper.toValue(s.entries),
-        'note': Mapper.toValue(s.note),
-        'type': "shoppingList"
-      };
-
-  @override
-  String stringify(ShoppingList self) =>
-      'ShoppingList(id: ${self.id}, name: ${self.name}, entries: ${self.entries}, note: ${self.note})';
-  @override
-  int hash(ShoppingList self) => self.id.hashCode ^ self.name.hashCode ^ self.entries.hashCode ^ self.note.hashCode;
-  @override
-  bool equals(ShoppingList self, ShoppingList other) =>
-      self.id == other.id && self.name == other.name && self.entries == other.entries && self.note == other.note;
-
-  @override
-  Function get typeFactory => (f) => f<ShoppingList>();
-}
-
-extension ShoppingListExtension on ShoppingList {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  ShoppingList copyWith({String? id, String? name, List<ArticleEntry>? entries, String? note}) =>
-      ShoppingList(id ?? this.id, name ?? this.name, entries ?? this.entries, note ?? this.note);
-}
-
-// === ALL STATICALLY REGISTERED MAPPERS ===
-
-var _mappers = <String, Mapper>{
-  // primitive mappers
-  _typeOf<dynamic>(): _PrimitiveMapper((dynamic v) => v),
-  _typeOf<String>(): _PrimitiveMapper<String>((dynamic v) => v.toString()),
-  _typeOf<int>(): _PrimitiveMapper<int>((dynamic v) => num.parse(v.toString()).round()),
-  _typeOf<double>(): _PrimitiveMapper<double>((dynamic v) => double.parse(v.toString())),
-  _typeOf<num>(): _PrimitiveMapper<num>((dynamic v) => num.parse(v.toString())),
-  _typeOf<bool>(): _PrimitiveMapper<bool>((dynamic v) => v is num ? v != 0 : v.toString() == 'true'),
-  _typeOf<DateTime>(): _DateTimeMapper(),
-  _typeOf<List>(): IterableMapper<List>(<T>(Iterable<T> i) => i.toList(), <T>(f) => f<List<T>>()),
-  _typeOf<Set>(): IterableMapper<Set>(<T>(Iterable<T> i) => i.toSet(), <T>(f) => f<Set<T>>()),
-  _typeOf<Map>(): MapMapper<Map>(<K, V>(Map<K, V> map) => map, <K, V>(f) => f<Map<K, V>>()),
-  // generated mappers
-  _typeOf<Trip>(): TripMapper._(),
-  _typeOf<TripUser>(): TripUserMapper._(),
-  _typeOf<TemplateModel>(): TemplateModelMapper._(),
-  _typeOf<GridTemplateModel>(): GridTemplateModelMapper._(),
-  _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
-  _typeOf<Article>(): ArticleMapper._(),
-  _typeOf<ArticleList>(): ArticleListMapper._(),
-  _typeOf<ArticleEntry>(): ArticleEntryMapper._(),
-  _typeOf<Recipe>(): RecipeMapper._(),
-  _typeOf<ShoppingList>(): ShoppingListMapper._(),
-};
-
-// === GENERATED UTILITY CLASSES ===
-
-abstract class Mapper<T> {
-  dynamic encode(T self);
-  Function get decoder;
-  Function get typeFactory;
-
-  String stringify(T self);
-  int hash(T self);
-  bool equals(T self, T other);
-
+class Mapper<T> {
   Mapper._();
 
   static T fromValue<T>(dynamic value) {
@@ -453,14 +284,14 @@ abstract class Mapper<T> {
     } else {
       TypeInfo typeInfo;
       if (value is Map<String, dynamic> && value['__type'] != null) {
-        typeInfo = getTypeInfo(value['__type'] as String);
+        typeInfo = TypeInfo.fromType(value['__type'] as String);
       } else {
-        typeInfo = getTypeInfo<T>();
+        typeInfo = TypeInfo.fromType<T>();
       }
       var mapper = _mappers[typeInfo.type];
-      if (mapper != null) {
+      if (mapper?.decoder != null) {
         try {
-          return genericCall(typeInfo, mapper.decoder, value) as T;
+          return genericCall(typeInfo, mapper!.decoder!, value) as T;
         } catch (e) {
           throw MapperException('Error on decoding type $T: ${e is MapperException ? e.message : e}');
         }
@@ -473,12 +304,15 @@ abstract class Mapper<T> {
 
   static dynamic toValue(dynamic value) {
     if (value == null) return null;
-    var typeInfo = getTypeInfoFor(value);
-    if (_mappers[typeInfo.type] != null) {
-      var encoded = _mappers[typeInfo.type]!.encode(value);
+    var typeInfo = TypeInfo.fromValue(value);
+    var mapper = _mappers[typeInfo.type] ??
+        _mappers.values.cast<BaseMapper?>().firstWhere((m) => m!.isFor(value), orElse: () => null);
+    if (mapper != null && mapper.encoder != null) {
+      var encoded = mapper.encoder!.call(value);
       if (encoded is Map<String, dynamic>) {
         _clearType(encoded);
         if (typeInfo.params.isNotEmpty) {
+          typeInfo.type = _typeOf(mapper.type);
           encoded['__type'] = typeInfo.toString();
         }
       }
@@ -523,25 +357,16 @@ abstract class Mapper<T> {
 
   static bool isEqual(dynamic value, Object? other) {
     var type = _typeOf(value.runtimeType);
-    if (_mappers[type] != null) {
-      return _mappers[type]!.equals(value, other);
-    } else {
-      throw MapperException(
-          'Cannot compare value of type $type for equality. Unknown type. Did you forgot to include the class or register a custom mapper?');
-    }
+    return _mappers[type]?.equals(value, other) ?? value == other;
   }
 
   static String asString(dynamic value) {
     var type = _typeOf(value.runtimeType);
-    if (_mappers[type] != null) {
-      return _mappers[type]!.stringify(value);
-    } else {
-      throw MapperException(
-          'Cannot stringify value of type $type. Unknown type. Did you forgot to include the class or register a custom mapper?');
-    }
+    return _mappers[type]?.stringify(value) ?? value.toString();
   }
 
-  static void use<T>(Mapper<T> mapper) => _mappers[_typeOf<T>()] = mapper;
+  static void use<T>(BaseMapper<T> mapper) => _mappers[_typeOf<T>()] = mapper;
+  static BaseMapper<T>? unuse<T>() => _mappers.remove(_typeOf<T>()) as BaseMapper<T>?;
 }
 
 String _typeOf<T>([Type? t]) {
@@ -556,7 +381,7 @@ void _clearType(Map<String, dynamic> map) {
 }
 
 mixin Mappable {
-  Mapper? get _mapper => _mappers[_typeOf(runtimeType)];
+  BaseMapper? get _mapper => _mappers[_typeOf(runtimeType)];
 
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
@@ -564,9 +389,8 @@ mixin Mappable {
   @override
   String toString() => _mapper?.stringify(this) ?? super.toString();
   @override
-  bool operator ==(Object other) => _mapper != null
-      ? identical(this, other) || runtimeType == other.runtimeType && _mapper!.equals(this, other)
-      : super == other;
+  bool operator ==(Object other) =>
+      identical(this, other) || (runtimeType == other.runtimeType && (_mapper?.equals(this, other) ?? super == other));
   @override
   int get hashCode => _mapper?.hash(this) ?? super.hashCode;
 }
@@ -580,21 +404,8 @@ T _checked<T, U>(dynamic v, T Function(U) fn) {
   }
 }
 
-abstract class BaseMapper<T> implements Mapper<T> {
+class DateTimeMapper extends SimpleMapper<DateTime> {
   @override
-  bool equals(T self, Object? other) => self == other;
-  @override
-  int hash(T self) => self.hashCode;
-  @override
-  String stringify(T self) => self.toString();
-  @override
-  Function get typeFactory => (f) => f<T>();
-}
-
-class _DateTimeMapper extends BaseMapper<DateTime> {
-  @override
-  Function get decoder => decode;
-
   DateTime decode(dynamic d) {
     if (d is String) {
       return DateTime.parse(d);
@@ -607,7 +418,9 @@ class _DateTimeMapper extends BaseMapper<DateTime> {
   }
 
   @override
-  String encode(DateTime self) => self.toUtc().toIso8601String();
+  String encode(DateTime self) {
+    return self.toUtc().toIso8601String();
+  }
 }
 
 class IterableMapper<I extends Iterable> extends BaseMapper<I> {
@@ -615,10 +428,10 @@ class IterableMapper<I extends Iterable> extends BaseMapper<I> {
   IterableMapper(this.fromIterable, this.typeFactory);
 
   @override
-  Function get decoder => decode;
-  Iterable<T> decode<T>(dynamic l) => _checked(l, (Iterable l) => fromIterable(l.map((v) => Mapper.fromValue<T>(v))));
+  Function get decoder =>
+      <T>(dynamic l) => _checked(l, (Iterable l) => fromIterable(l.map((v) => Mapper.fromValue<T>(v))));
   @override
-  List encode(I self) => self.map((v) => Mapper.toValue(v)).toList();
+  Function get encoder => (I self) => self.map((v) => Mapper.toValue(v)).toList();
   @override
   Function typeFactory;
 }
@@ -628,90 +441,38 @@ class MapMapper<M extends Map> extends BaseMapper<M> {
   MapMapper(this.fromMap, this.typeFactory);
 
   @override
-  Function get decoder => decode;
-  Map<K, V> decode<K, V>(dynamic m) => _checked(
+  Function get decoder => <K, V>(dynamic m) => _checked(
       m, (Map m) => fromMap(m.map((key, value) => MapEntry(Mapper.fromValue<K>(key), Mapper.fromValue<V>(value)))));
   @override
-  Map encode(M self) => self.map((key, value) => MapEntry(Mapper.toValue(key), Mapper.toValue(value)));
+  Function get encoder => (M self) => self.map((key, value) => MapEntry(Mapper.toValue(key), Mapper.toValue(value)));
   @override
   Function typeFactory;
 }
 
-class _PrimitiveMapper<T> with BaseMapper<T> implements Mapper<T> {
-  const _PrimitiveMapper(this.decoder);
+class PrimitiveMapper<T> extends BaseMapper<T> {
+  const PrimitiveMapper(this.decoder);
 
   @override
   final T Function(dynamic value) decoder;
   @override
-  dynamic encode(T value) => value;
-}
-
-class _EnumMapper<T> with BaseMapper<T> implements Mapper<T> {
-  _EnumMapper(this.strDecoder, this.encoder);
+  Function get encoder => (T value) => value;
+  @override
+  Function get typeFactory => (f) => f<T>();
 
   @override
-  Function get decoder => (dynamic v) => _checked(v, strDecoder);
+  bool isFor(dynamic v) => v.runtimeType == T;
+}
 
-  final T Function(String value) strDecoder;
-  final String Function(T value) encoder;
+class EnumMapper<T> extends SimpleMapper<T> {
+  EnumMapper(this._decoder, this._encoder);
+
+  final T Function(String value) _decoder;
+  final String Function(T value) _encoder;
 
   @override
-  String encode(T self) => encoder(self);
-}
-
-class MapperException implements Exception {
-  final String message;
-  const MapperException(this.message);
-
+  T decode(dynamic v) => _checked(v, _decoder);
   @override
-  String toString() => 'MapperException: $message';
-}
-
-class TypeInfo {
-  String type = '';
-  List<TypeInfo> params = [];
-  TypeInfo? parent;
-
-  @override
-  String toString() => '$type${params.isNotEmpty ? '<${params.join(', ')}>' : ''}';
-}
-
-TypeInfo getTypeInfoFor(dynamic value) {
-  var info = getTypeInfo(value.runtimeType.toString());
-  if (value is List) {
-    return info..type = 'List';
-  } else if (value is Map) {
-    return info..type = 'Map';
-  } else {
-    return info;
-  }
-}
-
-TypeInfo getTypeInfo<T>([String? type]) {
-  var typeString = type ?? T.toString();
-  var curr = TypeInfo();
-
-  for (var i = 0; i < typeString.length; i++) {
-    var c = typeString[i];
-    if (c == '<') {
-      var t = TypeInfo();
-      curr.params.add(t..parent = curr);
-      curr = t;
-    } else if (c == '>') {
-      curr = curr.parent!;
-    } else if (c == ' ') {
-      continue;
-    } else if (c == ',') {
-      var t = TypeInfo();
-      curr = curr.parent!;
-      curr.params.add(t..parent = curr);
-      curr = t;
-    } else {
-      curr.type += c;
-    }
-  }
-
-  return curr;
+  dynamic encode(T value) => _encoder(value);
 }
 
 dynamic genericCall(TypeInfo info, Function fn, dynamic value) {
@@ -720,7 +481,7 @@ dynamic genericCall(TypeInfo info, Function fn, dynamic value) {
   dynamic call(dynamic Function<T>() next) {
     var t = params.removeAt(0);
     if (_mappers[t.type] != null) {
-      return genericCall(t, _mappers[t.type]!.typeFactory, next);
+      return genericCall(t, _mappers[t.type]!.typeFactory ?? (f) => f(), next);
     } else {
       throw MapperException('Cannot find generic wrapper for type $t.');
     }
@@ -740,52 +501,82 @@ dynamic genericCall(TypeInfo info, Function fn, dynamic value) {
   }
 }
 
-extension on Map<String, dynamic> {
-  T get<T>(String key) {
-    if (this[key] == null) {
-      throw MapperException('Parameter $key is required.');
-    }
-    return Mapper.fromValue<T>(this[key]!);
-  }
+T _hookedDecode<T>(MappingHooks hooks, dynamic value, T Function(dynamic value) fn) {
+  var v = hooks.beforeDecode(value);
+  if (v is! T) v = fn(v);
+  return hooks.afterDecode(v) as T;
+}
 
-  T? getOpt<T>(String key) {
-    if (this[key] == null) {
-      return null;
-    }
-    return get<T>(key);
-  }
+dynamic _hookedEncode<T>(MappingHooks hooks, T value, dynamic Function(T value) fn) {
+  var v = hooks.beforeEncode(value);
+  if (v is T) v = fn(v);
+  return hooks.afterEncode(v);
+}
 
-  List<T> getList<T>(String key) {
-    if (this[key] == null) {
-      throw MapperException('Parameter $key is required.');
-    } else if (this[key] is! List) {
-      throw MapperException('Parameter ${this[key]} with key $key is not a List');
-    }
-    List value = this[key] as List<dynamic>;
-    return value.map((dynamic item) => Mapper.fromValue<T>(item)).toList();
+dynamic _toValue(dynamic value, {MappingHooks? hooks}) {
+  if (hooks == null) {
+    return Mapper.toValue(value);
+  } else {
+    return hooks.afterEncode(Mapper.toValue(hooks.beforeEncode(value)));
   }
+}
 
-  List<T>? getListOpt<T>(String key) {
-    if (this[key] == null) {
-      return null;
-    }
-    return getList<T>(key);
-  }
+extension MapGet on Map<String, dynamic> {
+  T get<T>(String key, {MappingHooks? hooks}) => hooked(hooks, key, (v) {
+        if (v == null) {
+          throw MapperException('Parameter $key is required.');
+        }
+        return Mapper.fromValue<T>(v);
+      });
 
-  Map<K, V> getMap<K, V>(String key) {
-    if (this[key] == null) {
-      throw MapperException('Parameter $key is required.');
-    } else if (this[key] is! Map) {
-      throw MapperException('Parameter ${this[key]} with key $key is not a Map');
-    }
-    Map value = this[key] as Map<dynamic, dynamic>;
-    return value.map((dynamic key, dynamic value) => MapEntry(Mapper.fromValue<K>(key), Mapper.fromValue<V>(value)));
-  }
+  T? getOpt<T>(String key, {MappingHooks? hooks}) => hooked(hooks, key, (v) {
+        if (v == null) {
+          return null;
+        }
+        return Mapper.fromValue<T>(v);
+      });
 
-  Map<K, V>? getMapOpt<K, V>(String key) {
-    if (this[key] == null) {
-      return null;
+  List<T> getList<T>(String key, {MappingHooks? hooks}) => hooked(hooks, key, (v) {
+        if (v == null) {
+          throw MapperException('Parameter $key is required.');
+        } else if (v is! List) {
+          throw MapperException('Parameter $v with key $key is not a List');
+        }
+        return v.map((dynamic item) => Mapper.fromValue<T>(item)).toList();
+      });
+
+  List<T>? getListOpt<T>(String key, {MappingHooks? hooks}) => hooked(hooks, key, (v) {
+        if (v == null) {
+          return null;
+        } else if (v is! List) {
+          throw MapperException('Parameter $v with key $key is not a List');
+        }
+        return v.map((dynamic item) => Mapper.fromValue<T>(item)).toList();
+      });
+
+  Map<K, V> getMap<K, V>(String key, {MappingHooks? hooks}) => hooked(hooks, key, (v) {
+        if (v == null) {
+          throw MapperException('Parameter $key is required.');
+        } else if (v is! Map) {
+          throw MapperException('Parameter $v with key $key is not a Map');
+        }
+        return v.map((dynamic key, dynamic value) => MapEntry(Mapper.fromValue<K>(key), Mapper.fromValue<V>(value)));
+      });
+
+  Map<K, V>? getMapOpt<K, V>(String key, {MappingHooks? hooks}) => hooked(hooks, key, (v) {
+        if (v == null) {
+          return null;
+        } else if (v is! Map) {
+          throw MapperException('Parameter $v with key $key is not a Map');
+        }
+        return v.map((dynamic key, dynamic value) => MapEntry(Mapper.fromValue<K>(key), Mapper.fromValue<V>(value)));
+      });
+
+  T hooked<T>(MappingHooks? hooks, String key, T Function(dynamic v) fn) {
+    if (hooks == null) {
+      return fn(this[key]);
+    } else {
+      return hooks.afterDecode(fn(hooks.beforeDecode(this[key]))) as T;
     }
-    return getMap<K, V>(key);
   }
 }

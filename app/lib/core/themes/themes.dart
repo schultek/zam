@@ -50,6 +50,9 @@ class TripTheme extends StatelessWidget {
       child: Theme(
         data: ThemeData(
           scaffoldBackgroundColor: theme.currentFillColor,
+          inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(color: theme.computeTextColor()),
+          ),
         ),
         child: DefaultTextStyle(
           style: TextStyle(
@@ -65,10 +68,17 @@ class TripTheme extends StatelessWidget {
 class FillColor extends StatefulWidget {
   final ColorPreference? preference;
   final bool filled;
+  final bool matchTextColor;
   final Widget Function(BuildContext context, Color fillColor) builder;
   final ValueNotifier<ThemeState?>? themeNotifier;
 
-  const FillColor({required this.builder, this.preference, this.filled = true, this.themeNotifier, Key? key})
+  const FillColor(
+      {required this.builder,
+      this.preference,
+      this.filled = true,
+      this.matchTextColor = false,
+      this.themeNotifier,
+      Key? key})
       : super(key: key);
 
   @override
@@ -84,7 +94,8 @@ class _FillColorState extends State<FillColor> {
     if (inheritedTheme.reuseTheme) {
       theme = inheritedTheme.theme.copy();
     } else {
-      theme = inheritedTheme.theme.computeFillColor(context: context, preference: widget.preference);
+      theme = inheritedTheme.theme
+          .computeFillColor(context: context, preference: widget.preference, matchTextColor: widget.matchTextColor);
       theme.addListener(() => setState(() {
             widget.themeNotifier?.value = theme.copy();
           }));

@@ -15,10 +15,9 @@ class ImageTheme extends ThemeState {
   }) : belowColors = colors ?? [palette.dominantColor!];
 
   @override
-  ImageTheme computeFillColor({required BuildContext context, ColorPreference? preference}) {
-    print("GEt FILL FOR ${context.widget}");
+  ImageTheme computeFillColor(
+      {required BuildContext context, ColorPreference? preference, bool matchTextColor = false}) {
     if (belowColors.isEmpty) {
-      print("USE IMAGE PALETTE");
       var theme = ImageTheme(
         image: image,
         provider: provider,
@@ -51,9 +50,8 @@ class ImageTheme extends ThemeState {
       var position = renderBox.localToGlobal(Offset.zero);
       var rect = position & renderBox.size;
       palette = await PaletteGenerator.fromImage(image, region: rect, maximumColorCount: 1);
-      print("PRE $currentFillColor");
+
       belowColors = [palette.dominantColor!];
-      print("POST $currentFillColor");
       notifyListeners();
     });
   }

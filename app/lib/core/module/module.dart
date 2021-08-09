@@ -1,36 +1,12 @@
 library module;
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:reflectable/reflectable.dart';
-
-import '../../main.reflectable.dart';
-import '../../models/models.dart';
-// ignore: UNUSED_IMPORT
-import '../../modules/modules.dart';
 
 export '../elements/elements.dart';
 export '../themes/themes.dart';
+export 'module_annotations.dart';
 
-part 'module_registry.dart';
-
-class Module extends Reflectable {
-  const Module()
-      : super(reflectedTypeCapability, newInstanceCapability, staticInvokeCapability, typeCapability,
-            declarationsCapability, metadataCapability, instanceInvokeCapability);
-}
-
-class ModuleWidgetReflectable extends Reflectable {
-  const ModuleWidgetReflectable()
-      : super(reflectedTypeCapability, typeCapability, typeRelationsCapability, subtypeQuantifyCapability);
-}
-
-class ModuleItem {
-  final String id;
-  const ModuleItem({required this.id});
-}
-
-@ModuleWidgetReflectable()
 abstract class ModuleElement extends StatelessWidget {
   @override
   final Key key; // ignore: overridden_fields
@@ -38,9 +14,47 @@ abstract class ModuleElement extends StatelessWidget {
 
   late final String _id;
   String get id => _id;
+
+  void onRemoved(BuildContext context) {}
 }
 
-class ModuleData {
-  Trip trip;
-  ModuleData({required this.trip});
+class ModuleRegistry {
+  final Map<String, ModuleInstance> moduleMap;
+  ModuleRegistry(this.moduleMap);
+
+  ModuleElement? getWidget(BuildContext context, String id) {
+    return moduleMap[id.split('/').firstOrNull]?.getWidget(context, id);
+  }
+
+  List<T> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
+    return moduleMap.entries.expand((e) => e.value.getWidgetsOf<T>(context, e.key)).whereNotNull().toList();
+  }
+}
+
+class ModuleInstance<T> {
+  final T module;
+  final Map<String, ModuleFactory<T, ModuleElement>> factories;
+
+  ModuleInstance(this.module, this.factories);
+
+  ModuleElement? getWidget(BuildContext context, String id) {
+    return factories[id.split('/').skip(1).firstOrNull]?.getWidget(context, module, id);
+  }
+
+  Iterable<U?> getWidgetsOf<U extends ModuleElement>(BuildContext context, String moduleId) {
+    return factories.entries
+        .where((e) => e.value is ModuleFactory<T, U>)
+        .map((e) => (e.value as ModuleFactory<T, U>).getWidget(context, module, '$moduleId/${e.key}'));
+  }
+}
+
+class ModuleFactory<M, T extends ModuleElement> {
+  T? Function(BuildContext context, M m, String? id) factory;
+  Type get type => T;
+
+  ModuleFactory(this.factory);
+
+  T? getWidget(BuildContext context, M m, String id) {
+    return factory(context, m, id.split('/').skip(2).firstOrNull)?.._id = id;
+  }
 }

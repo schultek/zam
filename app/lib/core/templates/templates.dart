@@ -3,18 +3,21 @@ library templates;
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../bloc/trip_bloc.dart';
+import '../../providers/trips/logic_provider.dart';
+import '../../providers/trips/selected_trip_provider.dart';
 import '../areas/areas.dart';
 import '../module/module.dart';
-import '../reorderable/reorderable_manager.dart';
+import '../module/module.g.dart';
 import '../themes/themes.dart';
 import '../widgets/reorder_toggle.dart';
 import '../widgets/template_navigator.dart';
 import '../widgets/widget_selector.dart';
 
-part 'grid_template.dart';
-part 'swipe_template.dart';
+part 'grid/grid_template.dart';
+part 'swipe/swipe_template.dart';
+part 'swipe/swipe_template_settings.dart';
 
 @MappableClass(discriminatorKey: 'type')
 abstract class TemplateModel {
@@ -22,7 +25,7 @@ abstract class TemplateModel {
   TemplateModel(this.type);
 
   String get name;
-  WidgetTemplate builder(ModuleData moduleData);
+  WidgetTemplate builder();
 }
 
 class InheritedWidgetTemplate extends InheritedWidget {
@@ -40,8 +43,7 @@ class InheritedWidgetTemplate extends InheritedWidget {
 
 abstract class WidgetTemplate<T extends TemplateModel> extends StatefulWidget {
   final T config;
-  final ModuleData moduleData;
-  const WidgetTemplate(this.config, this.moduleData);
+  const WidgetTemplate(this.config);
 
   Widget build(BuildContext context, WidgetTemplateState state);
 
@@ -66,8 +68,6 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
   bool _isEditing = false;
 
-  late List<ModuleWidgetFactory> widgetFactories;
-
   final Map<String, WidgetAreaState> widgetAreas = {};
   String? _selectedArea;
   WidgetSelectorController? widgetSelector;
@@ -78,25 +78,17 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   bool get isEditing => _isEditing;
   String? get selectedArea => _selectedArea;
 
-  late ReorderableManager _reorderableManager;
-  ReorderableManager get reorderable => _reorderableManager;
-
   @override
   void initState() {
     super.initState();
-
     _transitionController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
     _wiggleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
-
-    widgetFactories = ModuleRegistry.getModuleWidgetFactories(widget.moduleData);
-    _reorderableManager = ReorderableManager(this);
   }
 
   @override
   void dispose() {
     _transitionController.dispose();
     _wiggleController.dispose();
-    _reorderableManager.dispose();
     super.dispose();
   }
 
@@ -129,14 +121,12 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   }
 
   List<T> getWidgetsForArea<T extends ModuleElement>(String areaId) {
-    var selectedModules = context.trip!.modules[areaId];
-    var selectedFactories = widgetFactories
-        .where((f) => f.type == T && (selectedModules == null || selectedModules.contains(f.id)))
+    var selectedModules = context.read(areaModulesProvider(areaId));
+    return selectedModules
+        .map((id) => registry.getWidget(context, id))
+        .where((e) => e != null && e is T)
+        .cast<T>()
         .toList();
-    if (selectedModules != null) {
-      selectedFactories.sort((a, b) => selectedModules.indexOf(a.id) - selectedModules.indexOf(b.id));
-    }
-    return selectedFactories.map((f) => f.getWidget() as T).toList();
   }
 
   void selectWidgetArea<T extends ModuleElement>(WidgetAreaState<WidgetArea<T>, T>? area) {
@@ -179,7 +169,10 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
   void onWidgetRemoved<T extends ModuleElement>(WidgetAreaState<WidgetArea<T>, T> area, T widget) {
     if (widgetSelector != null && widgetSelector!.isForArea(area)) {
-      widgetSelector!.state!.addWidget(null, widget);
+      if (widget.id.split('/').length < 3) {
+        // Don't add specialized widgets
+        widgetSelector!.state!.addWidget(null, widget);
+      }
     }
   }
 

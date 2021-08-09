@@ -7,13 +7,11 @@ class GridTemplateModel extends TemplateModel {
   @override
   String get name => "Grid Template";
   @override
-  WidgetTemplate<TemplateModel> builder(ModuleData moduleData) {
-    return GridTemplate(this, moduleData);
-  }
+  WidgetTemplate<TemplateModel> builder() => GridTemplate(this);
 }
 
 class GridTemplate extends WidgetTemplate<GridTemplateModel> {
-  GridTemplate(GridTemplateModel model, ModuleData moduleData) : super(model, moduleData);
+  GridTemplate(GridTemplateModel model) : super(model);
 
   final _scrollController = ScrollController();
 
@@ -31,16 +29,21 @@ class GridTemplate extends WidgetTemplate<GridTemplateModel> {
                   child: Container(
                     padding:
                         EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const SizedBox(width: 50),
-                        Text(
-                          moduleData.trip.name,
-                          style: Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
-                        ),
-                        SizedBox(width: 50, child: ReorderToggle()),
-                      ],
+                    child: Consumer(
+                      builder: (context, watch, _) {
+                        var trip = watch(selectedTripProvider)!;
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const SizedBox(width: 50),
+                            Text(
+                              trip.name,
+                              style: Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
+                            ),
+                            const SizedBox(width: 50, child: ReorderToggle()),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ),

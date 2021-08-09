@@ -140,6 +140,22 @@ export const onLinkReceived = functions.https.onCall(async (data, context) => {
 
 });
 
+export const sendPushMessage = functions.firestore.document("trips/{tripId}/modules/announcements/announcements/{announcementId}").onCreate(async (snapshot, context) => {
+
+  var tripId = context.params.tripId;
+  var announcementId = context.params.announcementId;
+
+  var data = snapshot.data();
+
+  admin.messaging().sendToTopic(`/topics/trip.${tripId}.announcements`, {
+    notification: {
+      title: "New announcement",
+      body: data["message"]
+    }
+  });
+
+});
+
 function hashLink(link) {
   let hash = sha256.hmac(SECRET_KEY, link);
   return link+"&hmac="+hash;

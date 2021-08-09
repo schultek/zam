@@ -1,8 +1,8 @@
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../bloc/auth_bloc.dart';
+import '../../providers/auth/claims_provider.dart';
 import '../../widgets/ju_background.dart';
 import '../create_trip/create_trip_screen.dart';
 
@@ -12,6 +12,10 @@ class NoTripScreen extends StatefulWidget {
 
   static Route route() {
     return MaterialPageRoute(builder: (context) => NoTripScreen());
+  }
+
+  static MaterialPage page() {
+    return MaterialPage(child: NoTripScreen());
   }
 }
 
@@ -24,8 +28,10 @@ class _NoTripScreenState extends State<NoTripScreen> {
         child: Padding(
           padding: const EdgeInsets.all(40.0),
           child: Center(
-            child: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
+            child: Consumer(
+              builder: (context, watch, _) {
+                var claims = watch(claimsProvider);
+
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -33,7 +39,7 @@ class _NoTripScreenState extends State<NoTripScreen> {
                       "Dein Ausflug.\n\nSo wie du ihn willst.",
                       style: TextStyle(color: Colors.white, fontSize: 80, height: 1),
                     ),
-                    if (state.user != null && (state.claims.isOrganizer || state.claims.isAdmin))
+                    if (claims.isOrganizer || claims.isAdmin)
                       CupertinoCard(
                         elevation: 8.0,
                         radius: const BorderRadius.all(Radius.circular(50.0)),
@@ -53,7 +59,17 @@ class _NoTripScreenState extends State<NoTripScreen> {
                         ),
                       )
                     else
-                      _invitationPreview(),
+                      CupertinoCard(
+                        elevation: 8.0,
+                        padding: const EdgeInsets.all(30.0),
+                        radius: const BorderRadius.all(Radius.circular(80.0)),
+                        child: const Center(
+                            child: Text(
+                          "Du benötigst einen Einladungslink von deinem Organisator.",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        )),
+                      ),
                   ],
                 );
               },
@@ -61,20 +77,6 @@ class _NoTripScreenState extends State<NoTripScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _invitationPreview() {
-    return CupertinoCard(
-      elevation: 8.0,
-      padding: const EdgeInsets.all(30.0),
-      radius: const BorderRadius.all(Radius.circular(80.0)),
-      child: const Center(
-          child: Text(
-        "Du benötigst einen Einladungslink von deinem Organisator.",
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        textAlign: TextAlign.center,
-      )),
     );
   }
 }

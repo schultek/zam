@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../templates/templates.dart';
-import 'reorderable_manager.dart';
+import 'drag_provider.dart';
+import 'items_provider.dart';
+import 'logic_provider.dart';
 
 enum ReorderableState { normal, placeholder, dragging }
+
+typedef DecorationBuilder = Widget Function(Widget widget, double opacity);
+typedef ReorderableBuilder = Widget Function(BuildContext context, ReorderableState state, Widget child);
 
 class ReorderableItem extends StatefulWidget {
   const ReorderableItem({
@@ -14,60 +19,61 @@ class ReorderableItem extends StatefulWidget {
   }) : super(key: key);
 
   final Widget child;
-  final Widget Function(BuildContext context, ReorderableState state, Widget child) builder;
-  final Widget Function(Widget widget, double opacity) decorationBuilder;
+  final ReorderableBuilder builder;
+  final DecorationBuilder decorationBuilder;
 
   @override
   ReorderableItemState createState() => ReorderableItemState();
 }
 
 class ReorderableItemState extends State<ReorderableItem> {
-  ReorderableManager? _manager;
+  late ReorderableLogic logic;
 
   Key get key => widget.key!;
 
   @override
-  Widget build(BuildContext context) {
-    _manager = WidgetTemplate.of(context, listen: false).reorderable;
-    _manager!.registerItem(this);
-
-    Widget child;
-    if (_manager!.dragging == key) {
-      child = SizedBox.fromSize(
-        size: _manager!.dragSize,
-        child: widget.builder(context, ReorderableState.placeholder, widget.child),
-      );
-    } else {
-      child = widget.builder(context, ReorderableState.normal, widget.child);
-    }
-
-    Offset translation = _manager!.itemTranslation(key);
-    return Transform(
-      transform: Matrix4.translationValues(translation.dx, translation.dy, 0.0),
-      child: child,
-    );
+  void initState() {
+    super.initState();
+    logic = context.read(reorderableLogicProvider);
+    logic.register(this);
   }
 
   @override
   void didUpdateWidget(ReorderableItem oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    _manager = WidgetTemplate.of(context, listen: false).reorderable;
-    if (_manager!.dragging == key) {
-      _manager!.draggedItemWidgetUpdated();
-    }
-  }
-
-  void update() {
-    if (mounted) {
-      setState(() {});
+    if (context.read(isDraggingProvider(key))) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        context.read(dragWidgetProvider).state = widget.builder(context, ReorderableState.dragging, widget.child);
+      });
     }
   }
 
   @override
-  void deactivate() {
-    _manager?.unregisterItem(this);
-    _manager = null;
-    super.deactivate();
+  void dispose() {
+    logic.unregister(this);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, watch, _) {
+        var isDragging = watch(isDraggingProvider(key));
+        var animation = watch(itemAnimationProvider(key));
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) => Transform(
+            transform: Matrix4.translationValues(animation.value.dx, animation.value.dy, 0.0),
+            child: child,
+          ),
+          child: isDragging
+              ? SizedBox.fromSize(
+                  size: context.read(dragSizeProvider).state,
+                  child: widget.builder(context, ReorderableState.placeholder, widget.child),
+                )
+              : widget.builder(context, ReorderableState.normal, widget.child),
+        );
+      },
+    );
   }
 }

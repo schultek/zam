@@ -1,32 +1,45 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share/share.dart';
 
 import '../../core/module/module.dart';
-import '../../helpers/locator.dart';
 import '../../models/models.dart';
-import '../../service/dynamic_link_service.dart';
+import '../../providers/links/links_provider.dart';
+import '../../providers/trips/selected_trip_provider.dart';
 
 @Module()
 class UsersModule {
-  ModuleData moduleData;
-  UsersModule(this.moduleData);
-
   @ModuleItem(id: "users")
   ContentSegment getUsers() {
     return ContentSegment(
       builder: (context) => Container(
         padding: const EdgeInsets.all(10),
-        child: const Center(child: Text("Users")),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.supervised_user_circle,
+                color: context.getTextColor(),
+                size: 50,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Users",
+                style: Theme.of(context).textTheme.headline6!.copyWith(color: context.getTextColor()),
+              ),
+            ],
+          ),
+        ),
       ),
-      onNavigate: (context) => UsersPage(moduleData.trip),
+      onNavigate: (context) => const UsersPage(),
     );
   }
 }
 
 class UsersPage extends StatelessWidget {
-  final Trip trip;
-  const UsersPage(this.trip);
+  const UsersPage();
 
   IconData? getIconForUser(String role) {
     if (role == "organizer") {
@@ -43,49 +56,57 @@ class UsersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+      ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(trip.name, style: Theme.of(context).textTheme.headline5),
+              Text("Users", style: Theme.of(context).textTheme.headline5!.copyWith(color: context.getTextColor())),
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {
-                  String link = await locator<DynamicLinkService>().createTripInvitationLink(tripId: trip.id);
+                  var trip = context.read(selectedTripProvider)!;
+                  String link = await context.read(linkLogicProvider).createTripInvitationLink(tripId: trip.id);
                   Share.share("Um dich bei dem Ausflug anzumelden, klicke auf den Link: $link");
                 },
                 child: const Text("Einladungslink für Teilnehmer erstellen"),
               ),
               ElevatedButton(
                 onPressed: () async {
-                  String link = await locator<DynamicLinkService>()
+                  var trip = context.read(selectedTripProvider)!;
+                  String link = await context
+                      .read(linkLogicProvider)
                       .createTripInvitationLink(tripId: trip.id, role: UserRoles.Leader);
                   Share.share("Um dich als Leiter bei dem Ausflug anzumelden, klicke auf den Link: $link");
                 },
                 child: const Text("Einladungslink für Leiter erstellen"),
               ),
               const SizedBox(height: 20),
-              const Text("Teilnehmerliste"),
+              Text(
+                "Teilnehmerliste",
+                style: TextStyle(color: context.getTextColor()),
+              ),
               const SizedBox(height: 5),
               Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.grey,
-                  ),
-                  child: ListView(
-                    children: trip.users.entries
-                        .map<Widget>(
-                          (e) => ListTile(
-                            leading: Icon(getIconForUser(e.value.role)),
-                            title: Text(e.key),
-                          ),
-                        )
-                        .toList(),
-                  ),
+                child: Consumer(
+                  builder: (context, watch, _) {
+                    var trip = watch(selectedTripProvider)!;
+                    return ListView(
+                      children: trip.users.entries
+                          .map<Widget>(
+                            (e) => ListTile(
+                              leading: Icon(getIconForUser(e.value.role), color: context.getTextColor()),
+                              title: Text(e.value.nickname ?? e.key, style: TextStyle(color: context.getTextColor())),
+                            ),
+                          )
+                          .toList(),
+                    );
+                  },
                 ),
               ),
             ],

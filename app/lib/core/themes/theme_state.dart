@@ -5,7 +5,8 @@ abstract class ThemeState with ChangeNotifier {
 
   Color get baseColor;
 
-  ThemeState computeFillColor({required BuildContext context, ColorPreference? preference});
+  ThemeState computeFillColor(
+      {required BuildContext context, ColorPreference? preference, bool matchTextColor = false});
 
   Color computeTextColor({ColorPreference? preference});
 

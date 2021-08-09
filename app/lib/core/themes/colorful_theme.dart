@@ -1,7 +1,7 @@
 part of themes;
 
 class ColorfulTheme extends ThemeState {
-  static final base = Colors.white;
+  static const base = Colors.white;
   static final colors = <Color>[
     Colors.red,
     Colors.blue,
@@ -24,7 +24,8 @@ class ColorfulTheme extends ThemeState {
   Color get currentFillColor => belowColors.last;
 
   @override
-  ColorfulTheme computeFillColor({required BuildContext context, ColorPreference? preference}) {
+  ColorfulTheme computeFillColor(
+      {required BuildContext context, ColorPreference? preference, bool matchTextColor = false}) {
     if (belowColors.last == base) {
       if (belowColors.length >= 2) {
         var secToLast = belowColors[belowColors.length - 2];

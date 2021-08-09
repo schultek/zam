@@ -1,12 +1,10 @@
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../bloc/auth_bloc.dart';
-import '../../helpers/locator.dart';
-import '../../service/auth_service.dart';
-import '../../service/dynamic_link_service.dart';
+import '../../providers/auth/logic_provider.dart';
+import '../../providers/links/links_provider.dart';
 import '../../widgets/ju_background.dart';
 import 'sms_code_screen.dart';
 
@@ -19,10 +17,21 @@ class SignInScreen extends StatefulWidget {
   static Route route(Uri invitationLink) {
     return MaterialPageRoute(builder: (context) => SignInScreen(invitationLink));
   }
+
+  static MaterialPage page(Uri link) {
+    return MaterialPage(child: SignInScreen(link));
+  }
 }
 
 class _SignInScreenState extends State<SignInScreen> {
   String phoneNumber = "";
+
+  Future<void> _onSignedIn(User user) async {
+    if (widget.invitationLink != null) {
+      print('HANDLING INVITATION LINK');
+      await context.read(linkProvider.notifier).handleReceivedLink(widget.invitationLink!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,10 +85,11 @@ class _SignInScreenState extends State<SignInScreen> {
                 radius: const BorderRadius.all(Radius.circular(50.0)),
                 child: InkWell(
                   onTap: () {
-                    AuthService.signIn(phoneNumber, (String verificationId) {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) => SmsCodeScreen(verificationId, _onSignedIn)));
-                    }, _onSignedIn);
+                    context.read(authLogicProvider).verifyPhoneNumber(phoneNumber, onSent: (String verificationId) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SmsCodeScreen(verificationId, _onSignedIn),
+                      ));
+                    }, onCompleted: _onSignedIn);
                   },
                   child: const Center(
                     child: Padding(
@@ -107,14 +117,6 @@ class _SignInScreenState extends State<SignInScreen> {
       return "Werde Administrator.";
     } else {
       return "Mit Telefonnummer anmelden.";
-    }
-  }
-
-  Future<void> _onSignedIn(User user) async {
-    await context.read<AuthBloc>().updateUser(user, removeLink: true);
-    if (widget.invitationLink != null) {
-      print('HANDLING INVITATION LINK');
-      await locator<DynamicLinkService>().handleReceivedLink(widget.invitationLink!);
     }
   }
 }

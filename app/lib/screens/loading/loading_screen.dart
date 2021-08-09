@@ -3,6 +3,10 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LoadingScreen extends StatelessWidget {
+  static MaterialPage page() {
+    return MaterialPage(child: LoadingScreen());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

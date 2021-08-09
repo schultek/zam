@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../bloc/auth_bloc.dart';
-import '../../bloc/trip_bloc.dart';
 import '../../core/templates/templates.dart';
-import '../../helpers/locator.dart';
 import '../../models/models.dart';
+import '../../providers/auth/user_provider.dart';
+import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/ju_background.dart';
 
 class CreateTripScreen extends StatefulWidget {
@@ -62,9 +62,8 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                 child: InkWell(
                   onTap: () async {
                     if (tripName == null) return;
-                    DocumentReference doc = await createNewTrip(tripName!, locator<AuthBloc>().state.user!.uid);
-                    locator<TripBloc>().selectTrip(doc.id);
-                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    DocumentReference doc = await createNewTrip(tripName!, context.read(userIdProvider)!);
+                    context.read(selectedTripIdProvider.notifier).id = doc.id;
                   },
                   child: const Center(
                     child: Padding(

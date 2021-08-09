@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../areas/areas.dart';
 import '../module/module.dart';
+import '../module/module.g.dart';
+import '../reorderable/logic_provider.dart';
 import '../templates/templates.dart';
 import '../themes/themes.dart';
 
@@ -32,10 +35,9 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
     WidgetAreaState<WidgetArea<T>, T> widgetArea =
         template.widgetAreas[template.selectedArea]! as WidgetAreaState<WidgetArea<T>, T>;
 
-    List<T> widgets = template.widgetFactories
-        .where((f) => f.type == T)
-        .map((f) => f.getWidget() as T)
-        .where((w) => !widgetArea.getWidgets().any((ww) => ww.id == w.id) && widgetArea.isAllowed(w))
+    List<T> widgets = registry
+        .getWidgetsOf<T>(template.context)
+        .where((w) => !widgetArea.getWidgets().any((ww) => ww.id == w.id))
         .toList();
 
     var widgetSelector = WidgetSelector<T>(selectorKey, widgets, widgetArea);
@@ -82,45 +84,44 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
     });
   }
 
-  void addWidget(Offset? offset, T widget) {
-    var manager = WidgetTemplate.of(context, listen: false).reorderable;
-
+  void addWidget(Offset? offset, T toAdd) {
+    var logic = context.read(reorderableLogicProvider);
     int beforeIndex;
     if (offset == null) {
       beforeIndex = 0;
     } else {
       beforeIndex = widgets.indexWhere((w) {
-        var size = manager.itemSize(w.key);
-        return manager.itemOffset(w.key).dx + itemHeight / size.height * size.width / 2 > offset.dx;
+        var size = logic.itemSize(w.key);
+        return logic.itemOffset(w.key).dx + itemHeight / size.height * size.width / 2 > offset.dx;
       });
       if (beforeIndex == -1) beforeIndex = widgets.length;
     }
 
-    var itemSize = manager.itemSize(widget.key);
+    var itemSize = logic.itemSize(toAdd.key);
     var paddingX = itemSize.height / itemHeight * 20;
 
     for (int i = beforeIndex; i < widgets.length; i++) {
-      manager.translateItemX(widgets[i].key, -itemSize.width - paddingX);
+      logic.translateItemX(widget.widgetArea, widgets[i].key, -itemSize.width - paddingX);
     }
 
     setState(() {
-      widgets.insert(beforeIndex, widget);
+      widgets.insert(beforeIndex, toAdd);
     });
   }
 
-  void removeWidget(T widget) {
-    var index = widgets.indexOf(widget);
+  void removeWidget(T toRemove) {
+    var logic = context.read(reorderableLogicProvider);
 
-    var manager = WidgetTemplate.of(context, listen: false).reorderable;
-    var itemSize = manager.itemSize(widget.key);
+    var index = widgets.indexOf(toRemove);
+    var itemSize = logic.itemSize(toRemove.key);
     var paddingX = itemSize.height / itemHeight * 20;
 
     for (int i = index + 1; i < widgets.length; i++) {
-      manager.translateItemX(widgets[i].key, itemSize.width + paddingX);
+      logic.translateItemX(widget.widgetArea, widgets[i].key, itemSize.width + paddingX);
     }
 
     setState(() {
-      widgets.remove(widget);
+      widgets.remove(toRemove);
     });
   }
 
