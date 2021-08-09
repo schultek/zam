@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../widgets/nested_will_pop_scope.dart';
+
 class TemplateNavigator extends StatefulWidget {
   final Widget home;
   const TemplateNavigator({required this.home, Key? key}) : super(key: key);
@@ -14,7 +16,7 @@ class _TemplateNavigatorState extends State<TemplateNavigator> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return NestedWillPopScope(
       onWillPop: () async => !(await _navigatorKey.currentState?.maybePop() ?? true),
       child: Navigator(
         key: _navigatorKey,

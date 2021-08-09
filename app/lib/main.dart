@@ -38,8 +38,8 @@ class _JufaAppState extends State<JufaApp> {
             var isLoading = watch(isLoadingProvider);
             var selectedTrip = watch(selectedTripProvider);
             var link = watch(linkProvider);
-
             return Navigator(
+              restorationScopeId: 'nav',
               pages: [
                 if (isLoading)
                   LoadingScreen.page()

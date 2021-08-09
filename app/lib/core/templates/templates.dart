@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
+import '../../widgets/nested_will_pop_scope.dart';
 import '../areas/areas.dart';
 import '../module/module.dart';
 import '../module/module.g.dart';

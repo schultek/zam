@@ -38,7 +38,7 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
       theme: DarkTheme(),
       child: TemplateNavigator(
         home: Scaffold(
-          body: WillPopScope(
+          body: NestedWillPopScope(
             onWillPop: () async {
               if (pageController.page != 1) {
                 pageController.animateToPage(1, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
