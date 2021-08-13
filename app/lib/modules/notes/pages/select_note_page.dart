@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' show Document;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'notes_provider.dart';
+import '../notes_provider.dart';
 
 class SelectNotePage extends StatefulWidget {
   final Function(String) onSelect;

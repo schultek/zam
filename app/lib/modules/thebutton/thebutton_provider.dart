@@ -72,7 +72,7 @@ class TheButtonLogic {
   }
 
   void resetHealth() {
-    if (ref.read(tripUserProvider)!.isOrganizer) {
+    if (ref.read(isOrganizerProvider)) {
       doc.set({
         "lastReset": Timestamp.now(),
       }, SetOptions(merge: true));
@@ -80,7 +80,7 @@ class TheButtonLogic {
   }
 
   void resetLeaderboard() {
-    if (ref.read(tripUserProvider)!.isOrganizer) {
+    if (ref.read(isOrganizerProvider)) {
       doc.set({
         "leaderboard": {},
       }, SetOptions(merge: true));

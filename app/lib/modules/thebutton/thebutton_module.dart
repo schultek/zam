@@ -21,8 +21,7 @@ class TheButtonModule {
               child: TheButton(),
             ),
           ),
-          if (context.read(tripUserProvider)!.isOrganizer)
-            Positioned.fill(child: TheButtonSettings(key: buttonSettingsKey)),
+          if (context.read(isOrganizerProvider)) Positioned.fill(child: TheButtonSettings(key: buttonSettingsKey)),
           Positioned.fill(child: TheButtonHelp(key: buttonHelpKey)),
         ],
       ),

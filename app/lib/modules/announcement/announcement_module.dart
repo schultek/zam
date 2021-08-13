@@ -16,7 +16,7 @@ class AnnouncementModule {
   @ModuleItem(id: "announcement")
   ContentSegment? getAnnouncement(BuildContext context, String? id) {
     if (id == null) {
-      if (context.read(tripUserProvider)!.isOrganizer) {
+      if (context.read(isOrganizerProvider)) {
         var idProvider = IdProvider();
         return ContentSegment(
           size: SegmentSize.Wide,

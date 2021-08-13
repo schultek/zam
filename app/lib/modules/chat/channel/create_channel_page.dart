@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jufa/modules/chat/channel/add_members_page.dart';
-import 'package:jufa/modules/chat/chat_provider.dart';
-import 'package:jufa/providers/auth/user_provider.dart';
+
+import '../../../providers/auth/user_provider.dart';
+import '../chat_provider.dart';
+import 'add_members_page.dart';
 
 class CreateChannelPage extends StatefulWidget {
   const CreateChannelPage({Key? key}) : super(key: key);

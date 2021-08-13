@@ -5,11 +5,11 @@ import '../../core/areas/areas.dart';
 import '../../core/module/module.dart';
 import '../../core/route/route.dart';
 import '../../providers/trips/selected_trip_provider.dart';
-import 'edit_note_page.dart';
-import 'note_preview.dart';
-import 'notes_page.dart';
 import 'notes_provider.dart';
-import 'select_note_page.dart';
+import 'pages/edit_note_page.dart';
+import 'pages/notes_page.dart';
+import 'pages/select_note_page.dart';
+import 'widgets/note_preview.dart';
 
 @Module()
 class NotesModule {
@@ -43,7 +43,7 @@ class NotesModule {
   @ModuleItem(id: "note")
   ContentSegment? getNote(BuildContext context, String? id) {
     if (id == null) {
-      if (context.read(tripUserProvider)!.isOrganizer) {
+      if (context.read(isOrganizerProvider)) {
         var idProvider = IdProvider();
         return ContentSegment(
           idProvider: idProvider,

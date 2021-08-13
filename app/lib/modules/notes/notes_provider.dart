@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:jufa/providers/auth/user_provider.dart';
 
 import '../../models/models.dart';
+import '../../providers/auth/user_provider.dart';
 import '../../providers/firebase/doc_provider.dart';
 
 export '../../main.mapper.g.dart' show NoteMapperExtension;
@@ -43,7 +43,7 @@ final foldersProvider = Provider((ref) =>
         .watch(notesProvider)
         .data
         ?.value
-        .fold<Set<String>>({}, (folders, note) => {...folders, if (note.folder != null) note.folder!}).toList() ??
+        .fold<Set<String?>>({null}, (folders, note) => {...folders, note.folder}).toList() ??
     []);
 
 final notesLogicProvider = Provider((ref) => NotesLogic(ref));

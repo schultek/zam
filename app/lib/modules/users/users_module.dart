@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -59,6 +60,9 @@ class UsersPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
+        iconTheme: IconThemeData(
+          color: context.getTextColor(),
+        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -68,30 +72,6 @@ class UsersPage extends StatelessWidget {
             children: [
               Text("Users", style: Theme.of(context).textTheme.headline5!.copyWith(color: context.getTextColor())),
               const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  var trip = context.read(selectedTripProvider)!;
-                  String link = await context.read(linkLogicProvider).createTripInvitationLink(tripId: trip.id);
-                  Share.share("Um dich bei dem Ausflug anzumelden, klicke auf den Link: $link");
-                },
-                child: const Text("Einladungslink für Teilnehmer erstellen"),
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  var trip = context.read(selectedTripProvider)!;
-                  String link = await context
-                      .read(linkLogicProvider)
-                      .createTripInvitationLink(tripId: trip.id, role: UserRoles.Leader);
-                  Share.share("Um dich als Leiter bei dem Ausflug anzumelden, klicke auf den Link: $link");
-                },
-                child: const Text("Einladungslink für Leiter erstellen"),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                "Teilnehmerliste",
-                style: TextStyle(color: context.getTextColor()),
-              ),
-              const SizedBox(height: 5),
               Expanded(
                 child: Consumer(
                   builder: (context, watch, _) {
@@ -100,14 +80,59 @@ class UsersPage extends StatelessWidget {
                       children: trip.users.entries
                           .map<Widget>(
                             (e) => ListTile(
-                              leading: Icon(getIconForUser(e.value.role), color: context.getTextColor()),
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.grey,
+                                backgroundImage:
+                                    e.value.profileUrl != null ? CachedNetworkImageProvider(e.value.profileUrl!) : null,
+                              ),
                               title: Text(e.value.nickname ?? e.key, style: TextStyle(color: context.getTextColor())),
+                              subtitle: Text(e.value.role),
                             ),
                           )
                           .toList(),
                     );
                   },
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const SizedBox(width: 20),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: context.getTextColor(),
+                        onPrimary: context.getFillColor(),
+                      ),
+                      onPressed: () async {
+                        var trip = context.read(selectedTripProvider)!;
+                        String link = await context.read(linkLogicProvider).createTripInvitationLink(tripId: trip.id);
+                        Share.share("Um dich bei dem Ausflug anzumelden, klicke auf den Link: $link");
+                      },
+                      child: const Text("Teilnehmer einladen"),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: context.getTextColor(),
+                        onPrimary: context.getFillColor(),
+                      ),
+                      onPressed: () async {
+                        var trip = context.read(selectedTripProvider)!;
+                        String link = await context
+                            .read(linkLogicProvider)
+                            .createTripInvitationLink(tripId: trip.id, role: UserRoles.Leader);
+                        Share.share("Um dich als Leiter bei dem Ausflug anzumelden, klicke auf den Link: $link");
+                      },
+                      child: const Text("Leiter einladen"),
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                ],
               ),
             ],
           ),

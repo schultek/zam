@@ -14,14 +14,12 @@ extension DocumentMap on DocumentSnapshot {
   Map<String, dynamic> toMap() {
     return (data() ?? {})..addAll({"id": id});
   }
-}
 
-T decodeDocument<T>(DocumentSnapshot doc) {
-  return Mapper.fromMap<T>(doc.toMap());
+  T decode<T>() => Mapper.fromMap<T>(toMap());
 }
 
 extension QueryDecoder on QuerySnapshot {
   List<T> toList<T>() {
-    return docs.map<T>(decodeDocument).toList();
+    return docs.map((d) => d.decode<T>()).toList();
   }
 }

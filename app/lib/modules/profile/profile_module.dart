@@ -51,6 +51,9 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
+        iconTheme: IconThemeData(
+          color: context.getTextColor(),
+        ),
       ),
       body: Center(
         child: Padding(

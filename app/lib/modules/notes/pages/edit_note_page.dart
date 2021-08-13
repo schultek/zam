@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/areas/areas.dart';
-import '../../core/module/module.dart' hide Brightness;
-import '../../providers/auth/user_provider.dart';
+import '../../../core/areas/areas.dart';
+import '../../../core/module/module.dart' hide Brightness;
+import '../../../providers/auth/user_provider.dart';
+import '../../../providers/trips/selected_trip_provider.dart';
+import '../notes_provider.dart';
 import 'note_info_page.dart';
-import 'notes_provider.dart';
 
 class EditNotePage extends StatefulWidget {
   final Note note;
@@ -15,6 +16,10 @@ class EditNotePage extends StatefulWidget {
 
   @override
   _EditNotePageState createState() => _EditNotePageState();
+
+  static Route route(Note note) {
+    return MaterialPageRoute(builder: (_) => EditNotePage(note));
+  }
 }
 
 class _EditNotePageState extends State<EditNotePage> {
@@ -24,7 +29,7 @@ class _EditNotePageState extends State<EditNotePage> {
   String? _title;
 
   bool get isEditor => widget.note.editors.contains(context.read(userIdProvider));
-  bool get isAuthor => widget.note.author == context.read(userIdProvider);
+  bool get isAuthor => context.read(isOrganizerProvider) || widget.note.author == context.read(userIdProvider);
 
   @override
   void initState() {
