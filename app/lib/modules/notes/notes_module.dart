@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/areas/areas.dart';
 import '../../core/module/module.dart';
-import '../../providers/firebase/doc_provider.dart';
+import '../../core/route/route.dart';
 import '../../providers/trips/selected_trip_provider.dart';
+import 'edit_note_page.dart';
+import 'note_preview.dart';
 import 'notes_page.dart';
+import 'notes_provider.dart';
 import 'select_note_page.dart';
 
 @Module()
@@ -45,12 +49,21 @@ class NotesModule {
           idProvider: idProvider,
           builder: (context) => Padding(
             padding: const EdgeInsets.all(10),
-            child: Center(
-              child: Icon(
-                Icons.add,
-                color: context.getTextColor(),
-                size: 50,
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.add,
+                  color: context.getTextColor(),
+                  size: 50,
+                ),
+                const SizedBox(height: 5),
+                const Text(
+                  "Add Note\n(Tap to select)",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
           ),
           onNavigate: (context) {
@@ -65,27 +78,31 @@ class NotesModule {
     }
 
     return ContentSegment(
-      builder: (context) => Padding(
-        padding: const EdgeInsets.all(10),
-        child: Center(
-          child: FutureBuilder<Map<String, dynamic>?>(
-            future: loadNote(context, id),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Text((snapshot.data?["title"] as String?) ?? "Untitled Note",
-                    style: TextStyle(color: context.getTextColor()));
-              } else {
-                return const CircularProgressIndicator();
+      builder: (context) => Consumer(
+        builder: (context, watch, _) {
+          var note = watch(noteProvider(id));
+          return note.when(
+            data: (data) {
+              if (data == null) {
+                return const Center(
+                  child: Icon(Icons.note),
+                );
               }
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(ModulePageRoute(
+                    context,
+                    child: EditNotePage(data, area: WidgetArea.of<ContentSegment>(context)),
+                  ));
+                },
+                child: AbsorbPointer(child: NotePreview(note: data)),
+              );
             },
-          ),
-        ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, st) => Center(child: Text("Error $e")),
+          );
+        },
       ),
     );
-  }
-
-  Future<Map<String, dynamic>?> loadNote(BuildContext context, String id) async {
-    var doc = await context.read(moduleDocProvider('notes')).collection("notes").doc(id).get();
-    return doc.data();
   }
 }

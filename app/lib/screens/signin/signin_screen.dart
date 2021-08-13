@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../helpers/input_formatters.dart';
 import '../../providers/auth/logic_provider.dart';
 import '../../providers/links/links_provider.dart';
 import '../../widgets/ju_background.dart';
@@ -24,6 +27,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  bool isLoading = false;
   String phoneNumber = "";
 
   Future<void> _onSignedIn(User user) async {
@@ -61,6 +65,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         hintText: "Telefonnummer eingeben",
                         border: InputBorder.none,
                       ),
+                      inputFormatters: phoneNumberInputFormatters,
                       onChanged: (text) {
                         setState(() {
                           phoneNumber = text;
@@ -84,20 +89,33 @@ class _SignInScreenState extends State<SignInScreen> {
                 elevation: 8.0,
                 radius: const BorderRadius.all(Radius.circular(50.0)),
                 child: InkWell(
-                  onTap: () {
-                    context.read(authLogicProvider).verifyPhoneNumber(phoneNumber, onSent: (String verificationId) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => SmsCodeScreen(verificationId, _onSignedIn),
-                      ));
-                    }, onCompleted: _onSignedIn);
+                  onTap: () async {
+                    setState(() => isLoading = true);
+                    var completer = Completer();
+                    await context.read(authLogicProvider).verifyPhoneNumber(
+                      phoneNumber,
+                      onSent: (String verificationId) {
+                        completer.complete();
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SmsCodeScreen(verificationId, _onSignedIn),
+                        ));
+                      },
+                      onCompleted: _onSignedIn,
+                    );
+                    await completer.future;
+                    setState(() => isLoading = false);
                   },
-                  child: const Center(
+                  child: Center(
                     child: Padding(
-                      padding: EdgeInsets.all(28.0),
-                      child: Text(
-                        "Code Senden",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+                      padding: const EdgeInsets.all(28.0),
+                      child: isLoading
+                          ? const CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation(Colors.black87),
+                            )
+                          : const Text(
+                              "Code Senden",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
                     ),
                   ),
                 ),
@@ -112,7 +130,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
   String _getTitleText() {
     if (widget.invitationLink?.path.endsWith('/organizer') ?? false) {
-      return "Werde Organisator*in. (${widget.invitationLink!.queryParameters['phoneNumber']})";
+      return "Werde Organisator*in.";
     } else if (widget.invitationLink?.path.endsWith('/admin') ?? false) {
       return "Werde Administrator.";
     } else {

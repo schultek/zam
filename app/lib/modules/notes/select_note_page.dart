@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' show Document;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'notes_provider.dart';
@@ -17,29 +16,39 @@ class _SelectNotePageState extends State<SelectNotePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(50),
-        child: Consumer(
-          builder: (context, watch, _) {
-            var notes = watch(notesProvider);
-            return notes.when(
-                data: (data) => ListView(
-                      children: [
-                        for (var note in data)
-                          ListTile(
-                            title: Text(note.title),
-                            subtitle: Text(note.content.substring(0, min(note.content.length, 20))),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              Future.delayed(const Duration(milliseconds: 300), () => widget.onSelect(note.id));
-                            },
+      body: Consumer(
+        builder: (context, watch, _) {
+          var notes = watch(notesProvider);
+          print(notes);
+          return notes.when(
+              data: (data) => ListView(
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text(
+                          "Select a note",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      for (var note in data)
+                        ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                          title: Text(note.title ?? 'Untitled'),
+                          subtitle: Text(
+                            Document.fromJson(note.content).toPlainText().replaceAll('\n', '  '),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                      ],
-                    ),
-                loading: () => const Text("Loading"),
-                error: (e, st) => Text("Error $e"));
-          },
-        ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            Future.delayed(const Duration(milliseconds: 300), () => widget.onSelect(note.id));
+                          },
+                        ),
+                    ],
+                  ),
+              loading: () => const Text("Loading..."),
+              error: (e, st) => Text("Error $e"));
+        },
       ),
     );
   }

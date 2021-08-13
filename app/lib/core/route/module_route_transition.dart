@@ -17,7 +17,11 @@ class ModuleRouteTransition extends StatefulWidget {
   State<StatefulWidget> createState() => _ModuleRouteTransitionState();
 
   static _ModuleRouteTransitionState? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<_InheritedModuleRouteTransition>()?.state;
+    try {
+      return context.dependOnInheritedWidgetOfExactType<_InheritedModuleRouteTransition>()?.state;
+    } catch (_) {
+      return null;
+    }
   }
 }
 

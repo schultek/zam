@@ -17,6 +17,7 @@ class SmsCodeScreen extends StatefulWidget {
 }
 
 class _EnterCodeState extends State<SmsCodeScreen> {
+  bool isLoading = false;
   String code = "";
 
   @override
@@ -70,16 +71,22 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                 radius: const BorderRadius.all(Radius.circular(50.0)),
                 child: InkWell(
                   onTap: () async {
+                    setState(() => isLoading = true);
                     var user = await context.read(authLogicProvider).verifyCode(code, widget.verificationId);
                     await widget.onSignedIn(user);
+                    setState(() => isLoading = false);
                   },
-                  child: const Center(
+                  child: Center(
                     child: Padding(
-                      padding: EdgeInsets.all(28.0),
-                      child: Text(
-                        "Bestätigen",
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+                      padding: const EdgeInsets.all(28.0),
+                      child: isLoading
+                          ? const CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation(Colors.black87),
+                            )
+                          : const Text(
+                              "Bestätigen",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
                     ),
                   ),
                 ),

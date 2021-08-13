@@ -20,6 +20,12 @@ class DarkTheme extends ThemeState {
   ];
 
   @override
+  ThemeData get themeData => ThemeData(
+        primaryColor: d[2],
+        brightness: ui.Brightness.dark,
+      );
+
+  @override
   DarkTheme computeFillColor(
       {required BuildContext context, ColorPreference? preference, bool matchTextColor = false}) {
     if (matchTextColor) {

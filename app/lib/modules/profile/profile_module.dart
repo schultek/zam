@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -72,7 +73,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: CircleAvatar(
                           radius: MediaQuery.of(context).size.width / 5,
                           backgroundColor: Colors.grey,
-                          backgroundImage: user?.profileUrl != null ? NetworkImage(user!.profileUrl!) : null,
+                          backgroundImage:
+                              user?.profileUrl != null ? CachedNetworkImageProvider(user!.profileUrl!) : null,
                           child: user?.profileUrl == null
                               ? Center(
                                   child: Text(

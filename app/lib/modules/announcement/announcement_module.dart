@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,12 +25,21 @@ class AnnouncementModule {
             aspectRatio: 2,
             child: Padding(
               padding: const EdgeInsets.all(10),
-              child: Center(
-                child: Text(
-                  "New Announcement\n(Tap to Create)",
-                  style: TextStyle(color: context.getTextColor()),
-                  textAlign: TextAlign.center,
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.add,
+                    color: context.getTextColor(),
+                    size: 50,
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    "New Announcement\n(Tap to create)",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
           ),
@@ -51,14 +61,21 @@ class AnnouncementModule {
       builder: (context) => AspectRatio(
         aspectRatio: 2,
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(30),
           child: Center(
             child: Consumer(
               builder: (context, watch, _) {
                 var announcement = watch(announcementProvider(id));
                 return announcement.when(
-                  data: (data) => Text((data?["message"] as String?) ?? "No Message",
-                      style: TextStyle(color: context.getTextColor())),
+                  data: (data) => AutoSizeText(
+                    (data?["message"] as String?) ?? "No Message",
+                    style: const TextStyle(fontSize: 70, fontWeight: FontWeight.bold),
+                    maxLines: 5,
+                    stepGranularity: 10,
+                    minFontSize: 10,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
                   loading: () => const CircularProgressIndicator(),
                   error: (e, st) => Text("Error $e"),
                 );

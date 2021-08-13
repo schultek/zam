@@ -159,6 +159,12 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     updateWidgetsInTrip();
   }
 
+  void removeWidgetWithId(String id) {
+    for (var w in getWidgets().where((w) => w.id.endsWith(id))) {
+      removeWidget(w.key);
+    }
+  }
+
   Future<void> updateWidgetsInTrip() async {
     context.read(tripsLogicProvider).updateTrip({
       "modules.$id": getWidgets().map((w) => w.id).toList(),

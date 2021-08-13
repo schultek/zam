@@ -43,15 +43,30 @@ class TripTheme extends StatelessWidget {
 
   const TripTheme({required this.theme, required this.child});
 
+  factory TripTheme.of(BuildContext context, {required Widget child}) {
+    return TripTheme(
+      theme: InheritedThemeState.of(context)!.theme,
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return InheritedThemeState(
       theme: theme,
       child: Theme(
-        data: ThemeData(
+        data: theme.themeData.copyWith(
           scaffoldBackgroundColor: theme.currentFillColor,
           inputDecorationTheme: InputDecorationTheme(
             labelStyle: TextStyle(color: theme.computeTextColor()),
+            hintStyle: TextStyle(color: theme.computeTextColor().withOpacity(0.3)),
+            fillColor: theme.computeTextColor(),
+            focusColor: theme.computeTextColor(),
+            hoverColor: theme.computeTextColor(),
+          ),
+          checkboxTheme: CheckboxThemeData(
+            checkColor: MaterialStateProperty.all(theme.currentFillColor),
+            fillColor: MaterialStateProperty.all(theme.computeTextColor()),
           ),
         ),
         child: DefaultTextStyle(

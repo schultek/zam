@@ -48,3 +48,6 @@ final tripUserProvider = Provider<TripUser?>((ref) {
 
   return selectedTrip.users[userId];
 });
+
+final tripUserByIdProvider = Provider.family((ref, String id) => ref.watch(selectedTripProvider)?.users[id]);
+final nicknameProvider = Provider.family((ref, String id) => ref.watch(tripUserByIdProvider(id))?.nickname);

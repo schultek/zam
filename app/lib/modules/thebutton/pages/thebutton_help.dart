@@ -72,11 +72,11 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
             children: [
               Text(
                 "The Button",
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: context.getTextColor()),
               ),
               Text(
                 "The Button is a social game where you have to keep the button alive.",
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
                 textAlign: TextAlign.center,
               ),
               TextButton(
@@ -111,36 +111,38 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
   Widget howToPlayLayer() {
     return ClipLayer(
       isOpen: instructionsOpen,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20, top: 30, right: 20, bottom: 10),
-        child: ListView(
-          padding: const EdgeInsets.only(bottom: 10),
-          physics: const BouncingScrollPhysics(),
-          children: [
-            Text(
-              "How to play",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.subtitle2,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              "The main goal is to never let the button die. The button will slowly loose health until it's dead. You can heal the button anytime while it is still alive by tapping on it for two seconds. But once it's dead, it can never be brought back, so stay alert.",
-              textAlign: TextAlign.justify,
-              style: Theme.of(context).textTheme.caption,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              "The buttons health is synchronized across all players, so it is a group efford to keep it alive.",
-              textAlign: TextAlign.justify,
-              style: Theme.of(context).textTheme.caption,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              "You will receive points when you save the button from its demise. The lower the buttons health is the more points you get. But don't wait too long, someone else might just come along and save the button before you have the chance.",
-              textAlign: TextAlign.justify,
-              style: Theme.of(context).textTheme.caption,
-            )
-          ],
+      child: Builder(
+        builder: (context) => Padding(
+          padding: const EdgeInsets.only(left: 20, top: 30, right: 20, bottom: 10),
+          child: ListView(
+            padding: const EdgeInsets.only(bottom: 10),
+            physics: const BouncingScrollPhysics(),
+            children: [
+              Text(
+                "How to play",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "The main goal is to never let the button die. The button will slowly loose health until it's dead. You can heal the button anytime while it is still alive by tapping on it for two seconds. But once it's dead, it can never be brought back, so stay alert.",
+                textAlign: TextAlign.justify,
+                style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "The buttons health is synchronized across all players, so it is a group efford to keep it alive.",
+                textAlign: TextAlign.justify,
+                style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "You will receive points when you save the button from its demise. The lower the buttons health is the more points you get. But don't wait too long, someone else might just come along and save the button before you have the chance.",
+                textAlign: TextAlign.justify,
+                style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -159,7 +161,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
               Text(
                 "Leaderboard",
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
               ),
               const SizedBox(height: 12),
               for (var entry in watch(theButtonLeaderboardProvider)) ...[
@@ -171,7 +173,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                       fit: FlexFit.tight,
                       child: Text(
                         entry.name,
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: context.getTextColor()),
                         overflow: TextOverflow.ellipsis,
                         softWrap: false,
                       ),
@@ -182,7 +184,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                       fit: FlexFit.tight,
                       child: Text(
                         "${entry.points} P",
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: context.getTextColor()),
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,
                       ),

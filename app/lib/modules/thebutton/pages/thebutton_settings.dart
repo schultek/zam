@@ -124,7 +124,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
   }
 
   Widget timerIcon() {
-    return const Positioned(
+    return Positioned(
       top: 0,
       bottom: 0,
       left: 0,
@@ -132,7 +132,12 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
       child: Opacity(
         opacity: 0.3,
         child: Center(
-          child: Icon(Icons.timer),
+          child: Builder(
+            builder: (context) => Icon(
+              Icons.timer,
+              color: context.getTextColor(),
+            ),
+          ),
         ),
       ),
     );
@@ -147,10 +152,12 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
       child: Opacity(
         opacity: 0.3,
         child: Center(
-          child: Text(
-            "h",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline5!.apply(fontSizeFactor: 1.2),
+          child: Builder(
+            builder: (context) => Text(
+              "h",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline5!.apply(fontSizeFactor: 1.2, color: context.getTextColor()),
+            ),
           ),
         ),
       ),
@@ -184,7 +191,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                   Center(
                     child: Text(
                       option,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headline5!.copyWith(color: context.getTextColor()),
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -319,6 +326,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
             children: [
               Text(
                 "Do you want to\nreset the ${isResettingHealth == true ? 'health' : 'leaderboard'}?",
+                style: TextStyle(color: context.getTextColor()),
                 textAlign: TextAlign.center,
               ),
               Row(

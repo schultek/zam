@@ -21,6 +21,8 @@ environment:
   sdk: '>=2.13.0-0 <3.0.0'
 
 dependencies:
+  auto_size_text: ^3.0.0-nullsafety.0
+  cached_network_image: ^3.1.0
   cloud_firestore: ^1.0.3
   cloud_functions: ^1.0.2
   cupertino_rounded_corners: ^2.0.0
@@ -31,9 +33,11 @@ dependencies:
   firebase_dynamic_links: ^2.0.0-dev.0
   firebase_messaging: ^10.0.4
   firebase_storage: ^10.0.1
+  flutter_chat_ui: ^1.1.9
   flare_flutter: ^3.0.0-nullsafety.1
   flutter:
     sdk: flutter
+  flutter_quill: ^1.9.0
   flutter_riverpod: ^0.14.0+3
   flutter_speed_dial: ^3.0.5
   flutter_staggered_animations: ^1.0.0

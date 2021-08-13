@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/module/module.dart';
-import 'channel_page.dart';
+import 'channel/add_channel_page.dart';
+import 'channel/channel_page.dart';
 import 'chat_provider.dart';
 
 class ChatPage extends ConsumerWidget {
@@ -12,65 +13,35 @@ class ChatPage extends ConsumerWidget {
     return channels.when(
       data: (data) {
         return ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           children: [
             const Padding(
               padding: EdgeInsets.only(top: 40, left: 16.0, bottom: 20),
-              child: Text("Channels"),
+              child: Text("Channels", style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             for (var channel in data)
-              Dismissible(
-                direction: DismissDirection.endToStart,
-                background: Container(
-                  color: Colors.red,
+              ListTile(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                leading: const Icon(Icons.tag),
+                minLeadingWidth: 0,
+                title: Text(
+                  channel.name,
+                  style: TextStyle(color: context.getTextColor()),
                 ),
-                onDismissed: (DismissDirection direction) {
-                  context.read(chatLogicProvider).delete(channel.id);
+                onTap: () {
+                  Navigator.of(context).push(ChannelPage.route(channel));
                 },
-                key: ValueKey(channel.id),
-                child: ListTile(
-                  title: Text(
-                    "# ${channel.name}",
-                    style: TextStyle(color: context.getTextColor()),
-                  ),
-                  onTap: () {
-                    Navigator.of(context).push(ChannelPage.route(channel));
-                  },
-                ),
               ),
             ListTile(
-              title: Text("Channel Hinzufügen", style: TextStyle(color: context.getTextColor().withOpacity(0.5))),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              minLeadingWidth: 0,
+              leading: const Icon(Icons.add_box),
+              title: Text(
+                "Channel hinzufügen",
+                style: TextStyle(color: context.getTextColor().withOpacity(0.5)),
+              ),
               onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    String? name;
-                    return StatefulBuilder(
-                      builder: (context, setState) => AlertDialog(
-                        title: const Text("Neuer Channel"),
-                        content: TextFormField(
-                          decoration: const InputDecoration(hintText: "Name"),
-                          onChanged: (text) => setState(() => name = text),
-                          autofocus: true,
-                          onFieldSubmitted: (text) {
-                            context.read(chatLogicProvider).addChannel(text);
-                            Navigator.pop(context);
-                          },
-                        ),
-                        actions: [
-                          ElevatedButton(
-                            onPressed: name != null
-                                ? () {
-                                    context.read(chatLogicProvider).addChannel(name!);
-                                    Navigator.pop(context);
-                                  }
-                                : null,
-                            child: const Text("Erstellen"),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
+                Navigator.of(context).push(AddChannelPage.route());
               },
             )
           ],
