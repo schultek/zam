@@ -7,6 +7,7 @@ import 'models/models.dart';
 import 'modules/chat/chat_provider.dart';
 import 'modules/elimination/game_provider.dart';
 import 'modules/notes/notes_provider.dart';
+import 'providers/photos/photos_provider.dart';
 
 // === ALL STATICALLY REGISTERED MAPPERS ===
 
@@ -25,14 +26,15 @@ var _mappers = <String, BaseMapper>{
   // class mappers
   _typeOf<Trip>(): TripMapper._(),
   _typeOf<TripUser>(): TripUserMapper._(),
+  _typeOf<PhotosConfig>(): PhotosConfigMapper._(),
+  _typeOf<EliminationGame>(): EliminationGameMapper._(),
+  _typeOf<EliminationEntry>(): EliminationEntryMapper._(),
   _typeOf<Note>(): NoteMapper._(),
   _typeOf<TemplateModel>(): TemplateModelMapper._(),
   _typeOf<GridTemplateModel>(): GridTemplateModelMapper._(),
   _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
   _typeOf<ChannelInfo>(): ChannelInfoMapper._(),
   _typeOf<ChatMessage>(): ChatMessageMapper._(),
-  _typeOf<EliminationGame>(): EliminationGameMapper._(),
-  _typeOf<EliminationEntry>(): EliminationEntryMapper._(),
   // enum mappers
   // custom mappers
 };
@@ -134,6 +136,115 @@ extension TripUserMapperExtension on TripUser {
   Map<String, dynamic> toMap() => Mapper.toMap(this);
   TripUser copyWith({String? role, String? nickname, String? profileUrl}) =>
       TripUser(role: role ?? this.role, nickname: nickname ?? this.nickname, profileUrl: profileUrl ?? this.profileUrl);
+}
+
+class PhotosConfigMapper extends BaseMapper<PhotosConfig> {
+  PhotosConfigMapper._();
+
+  @override
+  Function get decoder => decode;
+  PhotosConfig decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  PhotosConfig fromMap(Map<String, dynamic> map) => PhotosConfig(map.getOpt('albumId'), map.getOpt('shareToken'));
+
+  @override
+  Function get encoder => (PhotosConfig v) => encode(v);
+  dynamic encode(PhotosConfig v) => toMap(v);
+  Map<String, dynamic> toMap(PhotosConfig p) =>
+      {'albumId': Mapper.toValue(p.albumId), 'shareToken': Mapper.toValue(p.shareToken)};
+
+  @override
+  String? stringify(PhotosConfig self) => 'PhotosConfig(albumId: ${self.albumId}, shareToken: ${self.shareToken})';
+  @override
+  int? hash(PhotosConfig self) => self.albumId.hashCode ^ self.shareToken.hashCode;
+  @override
+  bool? equals(PhotosConfig self, PhotosConfig other) =>
+      self.albumId == other.albumId && self.shareToken == other.shareToken;
+
+  @override
+  Function get typeFactory => (f) => f<PhotosConfig>();
+}
+
+extension PhotosConfigMapperExtension on PhotosConfig {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  PhotosConfig copyWith({String? albumId, String? shareToken}) =>
+      PhotosConfig(albumId ?? this.albumId, shareToken ?? this.shareToken);
+}
+
+class EliminationGameMapper extends BaseMapper<EliminationGame> {
+  EliminationGameMapper._();
+
+  @override
+  Function get decoder => decode;
+  EliminationGame decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  EliminationGame fromMap(Map<String, dynamic> map) =>
+      EliminationGame(map.get('id'), map.getMap('initialTargets'), map.getList('eliminations'));
+
+  @override
+  Function get encoder => (EliminationGame v) => encode(v);
+  dynamic encode(EliminationGame v) => toMap(v);
+  Map<String, dynamic> toMap(EliminationGame e) => {
+        'id': Mapper.toValue(e.id),
+        'initialTargets': Mapper.toValue(e.initialTargets),
+        'eliminations': Mapper.toValue(e.eliminations)
+      };
+
+  @override
+  String? stringify(EliminationGame self) =>
+      'EliminationGame(id: ${self.id}, initialTargets: ${self.initialTargets}, eliminations: ${self.eliminations})';
+  @override
+  int? hash(EliminationGame self) => self.id.hashCode ^ self.initialTargets.hashCode ^ self.eliminations.hashCode;
+  @override
+  bool? equals(EliminationGame self, EliminationGame other) =>
+      self.id == other.id && self.initialTargets == other.initialTargets && self.eliminations == other.eliminations;
+
+  @override
+  Function get typeFactory => (f) => f<EliminationGame>();
+}
+
+extension EliminationGameMapperExtension on EliminationGame {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  EliminationGame copyWith({String? id, Map<String, String>? initialTargets, List<EliminationEntry>? eliminations}) =>
+      EliminationGame(id ?? this.id, initialTargets ?? this.initialTargets, eliminations ?? this.eliminations);
+}
+
+class EliminationEntryMapper extends BaseMapper<EliminationEntry> {
+  EliminationEntryMapper._();
+
+  @override
+  Function get decoder => decode;
+  EliminationEntry decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  EliminationEntry fromMap(Map<String, dynamic> map) =>
+      EliminationEntry(map.get('target'), map.get('eliminatedBy'), map.get('description'));
+
+  @override
+  Function get encoder => (EliminationEntry v) => encode(v);
+  dynamic encode(EliminationEntry v) => toMap(v);
+  Map<String, dynamic> toMap(EliminationEntry e) => {
+        'target': Mapper.toValue(e.target),
+        'eliminatedBy': Mapper.toValue(e.eliminatedBy),
+        'description': Mapper.toValue(e.description)
+      };
+
+  @override
+  String? stringify(EliminationEntry self) =>
+      'EliminationEntry(target: ${self.target}, eliminatedBy: ${self.eliminatedBy}, description: ${self.description})';
+  @override
+  int? hash(EliminationEntry self) => self.target.hashCode ^ self.eliminatedBy.hashCode ^ self.description.hashCode;
+  @override
+  bool? equals(EliminationEntry self, EliminationEntry other) =>
+      self.target == other.target && self.eliminatedBy == other.eliminatedBy && self.description == other.description;
+
+  @override
+  Function get typeFactory => (f) => f<EliminationEntry>();
+}
+
+extension EliminationEntryMapperExtension on EliminationEntry {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  EliminationEntry copyWith({String? target, String? eliminatedBy, String? description}) =>
+      EliminationEntry(target ?? this.target, eliminatedBy ?? this.eliminatedBy, description ?? this.description);
 }
 
 class NoteMapper extends BaseMapper<Note> {
@@ -388,82 +499,6 @@ extension ChatMessageMapperExtension on ChatMessage {
   Map<String, dynamic> toMap() => Mapper.toMap(this);
   ChatMessage copyWith({String? sender, String? text, DateTime? sentAt}) =>
       ChatMessage(sender: sender ?? this.sender, text: text ?? this.text, sentAt: sentAt ?? this.sentAt);
-}
-
-class EliminationGameMapper extends BaseMapper<EliminationGame> {
-  EliminationGameMapper._();
-
-  @override
-  Function get decoder => decode;
-  EliminationGame decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  EliminationGame fromMap(Map<String, dynamic> map) =>
-      EliminationGame(map.get('id'), map.getMap('initialTargets'), map.getList('eliminations'));
-
-  @override
-  Function get encoder => (EliminationGame v) => encode(v);
-  dynamic encode(EliminationGame v) => toMap(v);
-  Map<String, dynamic> toMap(EliminationGame e) => {
-        'id': Mapper.toValue(e.id),
-        'initialTargets': Mapper.toValue(e.initialTargets),
-        'eliminations': Mapper.toValue(e.eliminations)
-      };
-
-  @override
-  String? stringify(EliminationGame self) =>
-      'EliminationGame(id: ${self.id}, initialTargets: ${self.initialTargets}, eliminations: ${self.eliminations})';
-  @override
-  int? hash(EliminationGame self) => self.id.hashCode ^ self.initialTargets.hashCode ^ self.eliminations.hashCode;
-  @override
-  bool? equals(EliminationGame self, EliminationGame other) =>
-      self.id == other.id && self.initialTargets == other.initialTargets && self.eliminations == other.eliminations;
-
-  @override
-  Function get typeFactory => (f) => f<EliminationGame>();
-}
-
-extension EliminationGameMapperExtension on EliminationGame {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  EliminationGame copyWith({String? id, Map<String, String>? initialTargets, List<EliminationEntry>? eliminations}) =>
-      EliminationGame(id ?? this.id, initialTargets ?? this.initialTargets, eliminations ?? this.eliminations);
-}
-
-class EliminationEntryMapper extends BaseMapper<EliminationEntry> {
-  EliminationEntryMapper._();
-
-  @override
-  Function get decoder => decode;
-  EliminationEntry decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  EliminationEntry fromMap(Map<String, dynamic> map) =>
-      EliminationEntry(map.get('target'), map.get('eliminatedBy'), map.get('description'));
-
-  @override
-  Function get encoder => (EliminationEntry v) => encode(v);
-  dynamic encode(EliminationEntry v) => toMap(v);
-  Map<String, dynamic> toMap(EliminationEntry e) => {
-        'target': Mapper.toValue(e.target),
-        'eliminatedBy': Mapper.toValue(e.eliminatedBy),
-        'description': Mapper.toValue(e.description)
-      };
-
-  @override
-  String? stringify(EliminationEntry self) =>
-      'EliminationEntry(target: ${self.target}, eliminatedBy: ${self.eliminatedBy}, description: ${self.description})';
-  @override
-  int? hash(EliminationEntry self) => self.target.hashCode ^ self.eliminatedBy.hashCode ^ self.description.hashCode;
-  @override
-  bool? equals(EliminationEntry self, EliminationEntry other) =>
-      self.target == other.target && self.eliminatedBy == other.eliminatedBy && self.description == other.description;
-
-  @override
-  Function get typeFactory => (f) => f<EliminationEntry>();
-}
-
-extension EliminationEntryMapperExtension on EliminationEntry {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  EliminationEntry copyWith({String? target, String? eliminatedBy, String? description}) =>
-      EliminationEntry(target ?? this.target, eliminatedBy ?? this.eliminatedBy, description ?? this.description);
 }
 
 // === GENERATED ENUM MAPPERS AND EXTENSIONS ===

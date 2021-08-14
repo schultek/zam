@@ -8,6 +8,8 @@ final registry = ModuleRegistry({
       {'getProfileCard': ModuleFactory<ProfileModule, ContentSegment>((c, m, id) => m.getProfileCard())}),
   'ChatModule': ModuleInstance<ChatModule>(
       ChatModule(), {'getChatPage': ModuleFactory<ChatModule, PageSegment>((c, m, id) => m.getChatPage())}),
+  'CameraModule': ModuleInstance<CameraModule>(
+      CameraModule(), {'getCameraPage': ModuleFactory<CameraModule, PageSegment>((c, m, id) => m.getCameraPage())}),
   'EliminationModule': ModuleInstance<EliminationModule>(EliminationModule(),
       {'getGame': ModuleFactory<EliminationModule, ContentSegment>((c, m, id) => m.getGame(c, id))}),
   'WelcomeModule': ModuleInstance<WelcomeModule>(WelcomeModule(), {
@@ -16,10 +18,10 @@ final registry = ModuleRegistry({
   }),
   'AnnouncementModule': ModuleInstance<AnnouncementModule>(AnnouncementModule(),
       {'getAnnouncement': ModuleFactory<AnnouncementModule, ContentSegment>((c, m, id) => m.getAnnouncement(c, id))}),
+  'UsersModule': ModuleInstance<UsersModule>(
+      UsersModule(), {'getUsers': ModuleFactory<UsersModule, ContentSegment>((c, m, id) => m.getUsers())}),
   'NotesModule': ModuleInstance<NotesModule>(NotesModule(), {
     'getNotes': ModuleFactory<NotesModule, ContentSegment>((c, m, id) => m.getNotes()),
     'getNote': ModuleFactory<NotesModule, ContentSegment>((c, m, id) => m.getNote(c, id))
-  }),
-  'UsersModule': ModuleInstance<UsersModule>(
-      UsersModule(), {'getUsers': ModuleFactory<UsersModule, ContentSegment>((c, m, id) => m.getUsers())})
+  })
 });

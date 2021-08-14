@@ -13,7 +13,7 @@ class PageSegment extends ModuleElement with ModuleElementBuilder<PageSegment> {
 
   @override
   Widget buildElement(BuildContext context) {
-    return WidgetArea.of<PageSegment>(context)?.decorateElement(context, this) ?? _defaultDecorator(builder(context));
+    return builder(context);
   }
 
   @override
@@ -31,18 +31,7 @@ class PageSegment extends ModuleElement with ModuleElementBuilder<PageSegment> {
   }
 
   Widget _defaultDecorator([Widget? child]) {
-    var w = ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: FillColor(
-        preference: ColorPreference(id: id),
-        builder: (context, fillColor) => Material(
-          textStyle: TextStyle(color: context.getTextColor()),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: fillColor.withOpacity(child != null ? 1 : 0.4),
-          child: child ?? Container(),
-        ),
-      ),
-    );
+    var w = child ?? Container();
     return w;
   }
 }

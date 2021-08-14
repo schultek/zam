@@ -21,13 +21,17 @@ environment:
   sdk: '>=2.13.0-0 <3.0.0'
 
 dependencies:
+  _discoveryapis_commons: ^1.0.1
   auto_size_text: ^3.0.0-nullsafety.0
   cached_network_image: ^3.1.0
+  camera: ^0.8.1+7
+  camera_camera: ^2.0.2
   cloud_firestore: ^1.0.3
   cloud_functions: ^1.0.2
   cupertino_rounded_corners: ^2.0.0
   custom_refresh_indicator: ^1.0.0
   dart_mappable: ^0.6.4
+  discoveryapis_generator: ^1.0.0
   firebase_auth: ^1.0.1
   firebase_core: ^1.0.2
   firebase_dynamic_links: ^2.0.0-dev.0
@@ -43,8 +47,11 @@ dependencies:
   flutter_staggered_animations: ^1.0.0
   flutter_typeahead: ^3.1.0
   get_it: ^7.0.0
+  google_sign_in: ^5.0.7
+  http: ^0.13.3
   image_picker: ^0.8.2
   palette_generator: ^0.3.0
+  path_provider: ^2.0.2
   rive: ^0.7.26
   share: ^2.0.0-nullsafety
   shimmer: ^2.0.0-nullsafety.0

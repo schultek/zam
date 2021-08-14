@@ -123,13 +123,13 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
           child: Container(
             margin: getMargin(),
             padding: getPadding(),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: isSelected ? backgroundColor : Colors.transparent,
-              border: Border.all(
-                color: isSelected ? borderColor : Colors.transparent,
-              ),
-            ),
+            decoration: isSelected
+                ? BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: backgroundColor,
+                    border: Border.all(color: borderColor),
+                  )
+                : null,
             child: Container(key: _areaKey, child: buildArea(context)),
           ),
         ),

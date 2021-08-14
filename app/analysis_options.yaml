@@ -4,6 +4,7 @@ analyzer:
   exclude:
     - lib/**.g.dart
     - lib/modules/supply**
+    - lib/api_client/**
   strong-mode:
     implicit-casts: false
     implicit-dynamic: true
