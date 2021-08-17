@@ -2,7 +2,7 @@ part of areas;
 
 class BodyWidgetArea extends WidgetArea<ContentSegment> {
   final ScrollController scrollController;
-  const BodyWidgetArea(this.scrollController) : super("body");
+  const BodyWidgetArea(this.scrollController) : super('body');
 
   @override
   State<StatefulWidget> createState() => BodyWidgetAreaState();
@@ -195,7 +195,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
             translateY(aboveRow[0].key, -itemSize.height - 20);
             translateY(siblingItem.key, itemSize.height + 20);
           } else {
-            print("FOUND ELSE?? WHAT IS THIS");
+            print('FOUND ELSE?? WHAT IS THIS');
           }
         }
 

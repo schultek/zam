@@ -23,7 +23,7 @@ final channelsToJoinProvider = StreamProvider<List<ChannelInfo>>((ref) => ref
 
 final channelMessagesProvider = StreamProvider.family((ref, String id) => ref
     .watch(moduleDocProvider('chat'))
-    .collection("channels/$id/messages")
+    .collection('channels/$id/messages')
     .orderBy('sentAt', descending: true)
     .snapshots()
     .map((s) => s.docs.map((doc) => Mapper.fromValue<ChatMessage>(doc.toMap())).toList()));
@@ -36,35 +36,35 @@ class ChatLogic {
   ChatLogic(this.ref) : chat = ref.watch(moduleDocProvider('chat'));
 
   Future<ChannelInfo> addChannel(String name, {bool isOpen = true, List<String> members = const []}) async {
-    var doc = await chat.collection("channels").add({
-      "name": name,
-      "isOpen": isOpen,
-      "members": members,
+    var doc = await chat.collection('channels').add({
+      'name': name,
+      'isOpen': isOpen,
+      'members': members,
     });
     return Mapper.fromValue<ChannelInfo>((await doc.get()).toMap());
   }
 
   Future<void> delete(String id) async {
-    await chat.collection("channels").doc(id).delete();
+    await chat.collection('channels').doc(id).delete();
   }
 
   void send(String channelId, String text) {
-    chat.collection("channels/$channelId/messages").add({
-      "sender": ref.read(userIdProvider),
-      "text": text,
-      "sentAt": DateTime.now().toUtc().toIso8601String(),
+    chat.collection('channels/$channelId/messages').add({
+      'sender': ref.read(userIdProvider),
+      'text': text,
+      'sentAt': DateTime.now().toUtc().toIso8601String(),
     });
   }
 
   Future<void> joinChannel(ChannelInfo channel) async {
-    await chat.collection("channels").doc(channel.id).update({
-      "members": FieldValue.arrayUnion([ref.read(userIdProvider)]),
+    await chat.collection('channels').doc(channel.id).update({
+      'members': FieldValue.arrayUnion([ref.read(userIdProvider)]),
     });
   }
 
   Future<void> addMembers(String id, List<String> members) async {
-    await chat.collection("channels").doc(id).update({
-      "members": FieldValue.arrayUnion(members),
+    await chat.collection('channels').doc(id).update({
+      'members': FieldValue.arrayUnion(members),
     });
   }
 }

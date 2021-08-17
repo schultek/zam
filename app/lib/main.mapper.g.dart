@@ -26,7 +26,6 @@ var _mappers = <String, BaseMapper>{
   // class mappers
   _typeOf<Trip>(): TripMapper._(),
   _typeOf<TripUser>(): TripUserMapper._(),
-  _typeOf<PhotosConfig>(): PhotosConfigMapper._(),
   _typeOf<EliminationGame>(): EliminationGameMapper._(),
   _typeOf<EliminationEntry>(): EliminationEntryMapper._(),
   _typeOf<Note>(): NoteMapper._(),
@@ -35,6 +34,7 @@ var _mappers = <String, BaseMapper>{
   _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
   _typeOf<ChannelInfo>(): ChannelInfoMapper._(),
   _typeOf<ChatMessage>(): ChatMessageMapper._(),
+  _typeOf<PhotosConfig>(): PhotosConfigMapper._(),
   // enum mappers
   // custom mappers
 };
@@ -50,6 +50,7 @@ class TripMapper extends BaseMapper<Trip> {
   Trip fromMap(Map<String, dynamic> map) => Trip(
       id: map.get('id'),
       name: map.get('name'),
+      pictureUrl: map.getOpt('pictureUrl'),
       template: map.get('template'),
       users: map.getMapOpt('users') ?? const {},
       modules: map.getMapOpt('modules') ?? const {});
@@ -60,6 +61,7 @@ class TripMapper extends BaseMapper<Trip> {
   Map<String, dynamic> toMap(Trip t) => {
         'id': Mapper.toValue(t.id),
         'name': Mapper.toValue(t.name),
+        'pictureUrl': Mapper.toValue(t.pictureUrl),
         'template': Mapper.toValue(t.template),
         'users': Mapper.toValue(t.users),
         'modules': Mapper.toValue(t.modules)
@@ -67,14 +69,20 @@ class TripMapper extends BaseMapper<Trip> {
 
   @override
   String? stringify(Trip self) =>
-      'Trip(name: ${self.name}, id: ${self.id}, template: ${self.template}, users: ${self.users}, modules: ${self.modules})';
+      'Trip(name: ${self.name}, id: ${self.id}, pictureUrl: ${self.pictureUrl}, template: ${self.template}, users: ${self.users}, modules: ${self.modules})';
   @override
   int? hash(Trip self) =>
-      self.id.hashCode ^ self.name.hashCode ^ self.template.hashCode ^ self.users.hashCode ^ self.modules.hashCode;
+      self.id.hashCode ^
+      self.name.hashCode ^
+      self.pictureUrl.hashCode ^
+      self.template.hashCode ^
+      self.users.hashCode ^
+      self.modules.hashCode;
   @override
   bool? equals(Trip self, Trip other) =>
       self.id == other.id &&
       self.name == other.name &&
+      self.pictureUrl == other.pictureUrl &&
       self.template == other.template &&
       self.users == other.users &&
       self.modules == other.modules;
@@ -89,12 +97,14 @@ extension TripMapperExtension on Trip {
   Trip copyWith(
           {String? id,
           String? name,
+          String? pictureUrl,
           TemplateModel? template,
           Map<String, TripUser>? users,
           Map<String, List<String>>? modules}) =>
       Trip(
           id: id ?? this.id,
           name: name ?? this.name,
+          pictureUrl: pictureUrl ?? this.pictureUrl,
           template: template ?? this.template,
           users: users ?? this.users,
           modules: modules ?? this.modules);
@@ -136,39 +146,6 @@ extension TripUserMapperExtension on TripUser {
   Map<String, dynamic> toMap() => Mapper.toMap(this);
   TripUser copyWith({String? role, String? nickname, String? profileUrl}) =>
       TripUser(role: role ?? this.role, nickname: nickname ?? this.nickname, profileUrl: profileUrl ?? this.profileUrl);
-}
-
-class PhotosConfigMapper extends BaseMapper<PhotosConfig> {
-  PhotosConfigMapper._();
-
-  @override
-  Function get decoder => decode;
-  PhotosConfig decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  PhotosConfig fromMap(Map<String, dynamic> map) => PhotosConfig(map.getOpt('albumId'), map.getOpt('shareToken'));
-
-  @override
-  Function get encoder => (PhotosConfig v) => encode(v);
-  dynamic encode(PhotosConfig v) => toMap(v);
-  Map<String, dynamic> toMap(PhotosConfig p) =>
-      {'albumId': Mapper.toValue(p.albumId), 'shareToken': Mapper.toValue(p.shareToken)};
-
-  @override
-  String? stringify(PhotosConfig self) => 'PhotosConfig(albumId: ${self.albumId}, shareToken: ${self.shareToken})';
-  @override
-  int? hash(PhotosConfig self) => self.albumId.hashCode ^ self.shareToken.hashCode;
-  @override
-  bool? equals(PhotosConfig self, PhotosConfig other) =>
-      self.albumId == other.albumId && self.shareToken == other.shareToken;
-
-  @override
-  Function get typeFactory => (f) => f<PhotosConfig>();
-}
-
-extension PhotosConfigMapperExtension on PhotosConfig {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  PhotosConfig copyWith({String? albumId, String? shareToken}) =>
-      PhotosConfig(albumId ?? this.albumId, shareToken ?? this.shareToken);
 }
 
 class EliminationGameMapper extends BaseMapper<EliminationGame> {
@@ -499,6 +476,39 @@ extension ChatMessageMapperExtension on ChatMessage {
   Map<String, dynamic> toMap() => Mapper.toMap(this);
   ChatMessage copyWith({String? sender, String? text, DateTime? sentAt}) =>
       ChatMessage(sender: sender ?? this.sender, text: text ?? this.text, sentAt: sentAt ?? this.sentAt);
+}
+
+class PhotosConfigMapper extends BaseMapper<PhotosConfig> {
+  PhotosConfigMapper._();
+
+  @override
+  Function get decoder => decode;
+  PhotosConfig decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  PhotosConfig fromMap(Map<String, dynamic> map) => PhotosConfig(map.getOpt('albumId'), map.getOpt('shareToken'));
+
+  @override
+  Function get encoder => (PhotosConfig v) => encode(v);
+  dynamic encode(PhotosConfig v) => toMap(v);
+  Map<String, dynamic> toMap(PhotosConfig p) =>
+      {'albumId': Mapper.toValue(p.albumId), 'shareToken': Mapper.toValue(p.shareToken)};
+
+  @override
+  String? stringify(PhotosConfig self) => 'PhotosConfig(albumId: ${self.albumId}, shareToken: ${self.shareToken})';
+  @override
+  int? hash(PhotosConfig self) => self.albumId.hashCode ^ self.shareToken.hashCode;
+  @override
+  bool? equals(PhotosConfig self, PhotosConfig other) =>
+      self.albumId == other.albumId && self.shareToken == other.shareToken;
+
+  @override
+  Function get typeFactory => (f) => f<PhotosConfig>();
+}
+
+extension PhotosConfigMapperExtension on PhotosConfig {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  PhotosConfig copyWith({String? albumId, String? shareToken}) =>
+      PhotosConfig(albumId ?? this.albumId, shareToken ?? this.shareToken);
 }
 
 // === GENERATED ENUM MAPPERS AND EXTENSIONS ===

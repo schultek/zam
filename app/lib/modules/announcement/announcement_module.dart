@@ -9,11 +9,11 @@ import '../../providers/trips/selected_trip_provider.dart';
 import 'announcement_create_page.dart';
 
 final announcementProvider = FutureProvider.family((ref, String id) =>
-    ref.read(moduleDocProvider("announcements")).collection("announcements").doc(id).get().then((d) => d.data()));
+    ref.read(moduleDocProvider('announcements')).collection('announcements').doc(id).get().then((d) => d.data()));
 
-@Module()
+@Module('announcement')
 class AnnouncementModule {
-  @ModuleItem(id: "announcement")
+  @ModuleItem('announcement')
   ContentSegment? getAnnouncement(BuildContext context, String? id) {
     if (id == null) {
       if (context.read(isOrganizerProvider)) {
@@ -35,7 +35,7 @@ class AnnouncementModule {
                   ),
                   const SizedBox(height: 5),
                   const Text(
-                    "New Announcement\n(Tap to create)",
+                    'New Announcement\n(Tap to create)',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -68,7 +68,7 @@ class AnnouncementModule {
                 var announcement = watch(announcementProvider(id));
                 return announcement.when(
                   data: (data) => AutoSizeText(
-                    (data?["message"] as String?) ?? "No Message",
+                    (data?['message'] as String?) ?? 'No Message',
                     style: const TextStyle(fontSize: 70, fontWeight: FontWeight.bold),
                     maxLines: 5,
                     stepGranularity: 10,
@@ -77,7 +77,7 @@ class AnnouncementModule {
                     textAlign: TextAlign.center,
                   ),
                   loading: () => const CircularProgressIndicator(),
-                  error: (e, st) => Text("Error $e"),
+                  error: (e, st) => Text('Error $e'),
                 );
               },
             ),
@@ -88,11 +88,11 @@ class AnnouncementModule {
   }
 
   Future<Map<String, dynamic>?> loadAnnouncement(BuildContext context, String id) async {
-    var doc = await context.read(moduleDocProvider("announcements")).collection("announcements").doc(id).get();
+    var doc = await context.read(moduleDocProvider('announcements')).collection('announcements').doc(id).get();
     return doc.data();
   }
 
   Future<void> removeAnnouncement(BuildContext context, String id) async {
-    await context.read(moduleDocProvider("announcements")).collection("announcements").doc(id).delete();
+    await context.read(moduleDocProvider('announcements')).collection('announcements').doc(id).delete();
   }
 }

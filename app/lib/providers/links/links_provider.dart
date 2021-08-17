@@ -8,12 +8,26 @@ import '../auth/logic_provider.dart';
 import '../auth/user_provider.dart';
 import '../firebase/firebase_provider.dart';
 
-final linkProvider = StateNotifierProvider<LinkState, Uri?>((ref) => LinkState(ref));
+final linkStateProvider = StateNotifierProvider<LinkStateNotifier, LinkState>((ref) => LinkStateNotifier(ref));
 
-class LinkState extends StateNotifier<Uri?> {
+final linkProvider = Provider((ref) => ref.watch(linkStateProvider).uri);
+
+final isLoadingLinkProvider = Provider((ref) => ref.watch(linkStateProvider).isLoading);
+
+final isProcessingLinkProvider = Provider((ref) => ref.watch(linkStateProvider).isProcessing);
+
+class LinkState {
+  final Uri? uri;
+  final bool isLoading;
+  final bool isProcessing;
+
+  LinkState(this.uri, {this.isLoading = false, this.isProcessing = false});
+}
+
+class LinkStateNotifier extends StateNotifier<LinkState> {
   final ProviderReference ref;
 
-  LinkState(this.ref) : super(null) {
+  LinkStateNotifier(this.ref) : super(LinkState(null, isLoading: true)) {
     setup();
   }
 
@@ -22,27 +36,32 @@ class LinkState extends StateNotifier<Uri?> {
 
     var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
-      _handleDynamicLink(link);
+      await _handleDynamicLink(link);
+    }
+    if (state.isLoading) {
+      state = LinkState(state.uri);
     }
 
     FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData? link) async {
+      if (link == null) return;
       await _handleDynamicLink(link);
     });
   }
 
-  Future<void> _handleDynamicLink(PendingDynamicLinkData? link) async {
-    if (link == null) return;
-
+  Future<void> _handleDynamicLink(PendingDynamicLinkData link) async {
     var uri = link.link;
     if (uri.path.startsWith('/invitation')) {
       if (uri.path.endsWith('/organizer') || uri.path.endsWith('/admin')) {
-        state = uri;
+        state = LinkState(uri);
       } else if (uri.path.endsWith('/trip')) {
-        var user = ref.read(userProvider);
-        if (user.data?.value == null) {
-          await ref.read(authLogicProvider).signInAnonymously();
-        }
-        handleReceivedLink(uri);
+        state = LinkState(null, isProcessing: true);
+        (() async {
+          var user = ref.read(userProvider);
+          if (user.data?.value == null) {
+            await ref.read(authLogicProvider).signInAnonymously();
+          }
+          await handleReceivedLink(uri);
+        })();
       }
     }
   }
@@ -52,11 +71,9 @@ class LinkState extends StateNotifier<Uri?> {
     var res = await callable.call({'link': link.toString()});
     var claimsChanged = res.data as bool;
     if (claimsChanged) {
-      if (state == link) {
-        state = null;
-      }
       await ref.read(claimsProvider.notifier).refresh();
     }
+    state = LinkState(null);
   }
 }
 
@@ -72,9 +89,9 @@ class LinkLogic {
     return _buildDynamicLink(
       link: res.data as String,
       meta: SocialMetaTagParameters(
-        title: "Werde Organisator",
-        description: "Erstelle und manage Ausflüge und andere Gruppen-Events.",
-        imageUrl: Uri.parse("https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200"),
+        title: 'Werde Organisator',
+        description: 'Erstelle und manage Ausflüge und andere Gruppen-Events.',
+        imageUrl: Uri.parse('https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
       ),
     );
   }
@@ -85,31 +102,34 @@ class LinkLogic {
     return _buildDynamicLink(
       link: res.data as String,
       meta: SocialMetaTagParameters(
-        title: "Werde Admin",
-        description: "Erhalte Admin Rechte in der Jufa App.",
-        imageUrl: Uri.parse("https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200"),
+        title: 'Werde Admin',
+        description: 'Erhalte Admin Rechte in der Jufa App.',
+        imageUrl: Uri.parse('https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
       ),
     );
   }
 
-  Future<String> createTripInvitationLink({required String tripId, String role = UserRoles.Participant}) async {
+  Future<String> createTripInvitationLink({required Trip trip, String role = UserRoles.Participant}) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createTripInvitationLink');
-    var res = await callable.call({'tripId': tripId, 'role': role});
+    var res = await callable.call({'tripId': trip.id, 'role': role});
     return _buildDynamicLink(
       link: res.data as String,
       meta: SocialMetaTagParameters(
-        title: role == UserRoles.Leader ? "Werde Ausflugs-Leiter" : "Ausflugs-Einladung",
-        description: "Trete dem Ausflug bei.",
-        imageUrl: Uri.parse("https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200"),
+        title: role == UserRoles.Participant
+            ? trip.name
+            : "Werde ${role == UserRoles.Organizer ? 'Organisator' : 'Leiter'} bei ${trip.name}",
+        description: 'Trete dem Ausflug bei.',
+        imageUrl: Uri.parse(
+            trip.pictureUrl ?? 'https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
       ),
     );
   }
 
   Future<String> _buildDynamicLink({required String link, SocialMetaTagParameters? meta}) async {
     var parameters = DynamicLinkParameters(
-      uriPrefix: "https://jufa.page.link",
-      androidParameters: AndroidParameters(packageName: "de.schultek.jufa"),
-      iosParameters: IosParameters(appStoreId: "1517699311", bundleId: "io.upride.jufa"),
+      uriPrefix: 'https://jufa.page.link',
+      androidParameters: AndroidParameters(packageName: 'de.schultek.jufa'),
+      iosParameters: IosParameters(appStoreId: '1517699311', bundleId: 'io.upride.jufa'),
       socialMetaTagParameters: meta,
       link: Uri.parse(link),
     );

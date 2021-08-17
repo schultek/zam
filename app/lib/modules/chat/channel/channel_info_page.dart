@@ -19,7 +19,7 @@ class _ChannelInfoPageState extends State<ChannelInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Channel details"),
+        title: const Text('Channel details'),
       ),
     );
   }

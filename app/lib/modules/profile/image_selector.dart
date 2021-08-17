@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 
 class ImageSelector {
@@ -53,7 +54,7 @@ class _CropDialogState extends State<CropDialog> {
             Container(
               padding: const EdgeInsets.all(30),
               child: const Text(
-                "Adjust image",
+                'Adjust image',
                 style: TextStyle(color: CupertinoColors.white),
               ),
             ),
@@ -107,12 +108,21 @@ class _CropDialogState extends State<CropDialog> {
               child: CupertinoButton.filled(
                 onPressed: () async {
                   RenderRepaintBoundary? boundary = scr.currentContext!.findRenderObject() as RenderRepaintBoundary?;
-                  ui.Image? image = await boundary?.toImage();
-                  ByteData? byteData = await image?.toByteData(format: ui.ImageByteFormat.png);
-                  Uint8List? pngBytes = byteData?.buffer.asUint8List();
-                  Navigator.of(context).pop(pngBytes);
+                  Uint8List? bytes;
+                  if (boundary != null) {
+                    var origBytes = await (await boundary.toImage()).toByteData(format: ui.ImageByteFormat.png);
+                    if (origBytes != null) {
+                      var origImg = img.decodeImage(origBytes.buffer.asUint8List());
+                      if (origImg != null) {
+                        var thumbnail = img.copyResize(origImg, width: 300);
+                        bytes = Uint8List.fromList(img.encodePng(thumbnail));
+                      }
+                    }
+                  }
+
+                  Navigator.of(context).pop(bytes);
                 },
-                child: const Text("Next"),
+                child: const Text('Next'),
               ),
             ),
           ],

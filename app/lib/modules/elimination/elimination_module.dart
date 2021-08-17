@@ -37,9 +37,9 @@ import 'pages/elimination_help.dart';
 import 'pages/elimination_stats.dart';
 import 'widgets/elimination_game_card.dart';
 
-@Module()
+@Module('elimination')
 class EliminationModule {
-  @ModuleItem(id: "game")
+  @ModuleItem('game')
   ContentSegment? getGame(BuildContext context, String? id) {
     if (id == null) {
       if (!context.read(isOrganizerProvider)) {
@@ -65,7 +65,7 @@ class EliminationModule {
                 ),
                 const SizedBox(height: 5),
                 const Text(
-                  "New game\n(Tap to setup)",
+                  'New game\n(Tap to setup)',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),

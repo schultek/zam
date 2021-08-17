@@ -71,11 +71,11 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                "The Button",
+                'The Button',
                 style: Theme.of(context).textTheme.bodyText2!.copyWith(color: context.getTextColor()),
               ),
               Text(
-                "The Button is a social game where you have to keep the button alive.",
+                'The Button is a social game where you have to keep the button alive.',
                 style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
                 textAlign: TextAlign.center,
               ),
@@ -86,7 +86,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                 ),
                 onPressed: () => setState(() => instructionsOpen = true),
                 child: Text(
-                  "How to play?",
+                  'How to play?',
                   style: TextStyle(color: context.getTextColor()),
                 ),
               ),
@@ -97,7 +97,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                 ),
                 onPressed: () => setState(() => leaderboardOpen = true),
                 child: Text(
-                  "Leaderboard",
+                  'Leaderboard',
                   style: TextStyle(color: context.getTextColor()),
                 ),
               ),
@@ -119,7 +119,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
             physics: const BouncingScrollPhysics(),
             children: [
               Text(
-                "How to play",
+                'How to play',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
               ),
@@ -131,7 +131,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
               ),
               const SizedBox(height: 10),
               Text(
-                "The buttons health is synchronized across all players, so it is a group efford to keep it alive.",
+                'The buttons health is synchronized across all players, so it is a group efford to keep it alive.',
                 textAlign: TextAlign.justify,
                 style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
               ),
@@ -159,7 +159,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
             physics: const BouncingScrollPhysics(),
             children: [
               Text(
-                "Leaderboard",
+                'Leaderboard',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
               ),
@@ -183,7 +183,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                       flex: 2,
                       fit: FlexFit.tight,
                       child: Text(
-                        "${entry.points} P",
+                        '${entry.points} P',
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(color: context.getTextColor()),
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,

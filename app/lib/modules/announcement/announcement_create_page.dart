@@ -24,7 +24,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
           children: [
             TextFormField(
               decoration: const InputDecoration(
-                labelText: "Message",
+                labelText: 'Message',
               ),
               style: TextStyle(color: context.getTextColor()),
               onChanged: (text) => setState(() => message = text),
@@ -38,7 +38,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                     }
                   : null,
               child: Text(
-                "OK",
+                'OK',
                 style: TextStyle(color: context.getTextColor()),
               ),
             ),
@@ -49,8 +49,8 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   }
 
   Future<String> createAnnouncement() async {
-    var doc = await context.read(moduleDocProvider("announcements")).collection("announcements").add({
-      "message": message,
+    var doc = await context.read(moduleDocProvider('announcements')).collection('announcements').add({
+      'message': message,
     });
     return doc.id;
   }

@@ -22,7 +22,7 @@ class _AddChannelPageState extends State<AddChannelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Channels"),
+        title: const Text('Channels'),
       ),
       body: Consumer(
         builder: (context, watch, _) {
@@ -44,7 +44,7 @@ class _AddChannelPageState extends State<AddChannelPage> {
               separatorBuilder: (context, _) => const Divider(),
             ),
             loading: () => const CircularProgressIndicator(),
-            error: (e, st) => Text("Error $e"),
+            error: (e, st) => Text('Error $e'),
           );
         },
       ),

@@ -26,8 +26,8 @@ class ClaimsNotifier extends StateNotifier<UserClaims> {
     } else {
       var result = await user.getIdTokenResult(forceRefresh);
       state = UserClaims(
-        isOrganizer: result.claims?["isOrganizer"] as bool? ?? false,
-        isAdmin: result.claims?["isAdmin"] as bool? ?? false,
+        isOrganizer: result.claims?['isOrganizer'] as bool? ?? false,
+        isAdmin: result.claims?['isAdmin'] as bool? ?? false,
       );
     }
   }

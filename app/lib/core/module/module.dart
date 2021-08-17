@@ -3,6 +3,7 @@ library module;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+export '../../models/segment_size.dart';
 export '../elements/elements.dart';
 export '../themes/themes.dart';
 export 'module_annotations.dart';

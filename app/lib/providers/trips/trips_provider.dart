@@ -13,9 +13,9 @@ final tripsProvider = StreamProvider<List<Trip>>((ref) {
       var claims = ref.watch(claimsProvider);
 
       var query = claims.isAdmin
-          ? FirebaseFirestore.instance.collection("trips")
-          : FirebaseFirestore.instance.collection("trips").where(
-              "users.$userId.role",
+          ? FirebaseFirestore.instance.collection('trips')
+          : FirebaseFirestore.instance.collection('trips').where(
+              'users.$userId.role',
               whereIn: [
                 UserRoles.Participant,
                 UserRoles.Leader,
@@ -30,5 +30,5 @@ final tripsProvider = StreamProvider<List<Trip>>((ref) {
   );
 });
 
-final isLoadingProvider =
+final isLoadingTripsProvider =
     Provider((ref) => ref.watch(tripsProvider).maybeWhen(loading: () => true, orElse: () => false));

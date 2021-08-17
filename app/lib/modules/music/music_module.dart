@@ -1,0 +1,36 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../core/elements/elements.dart';
+import '../../core/module/module.dart';
+import 'music_providers.dart';
+import 'widgets/signed_out_player.dart';
+import 'widgets/spotify_player.dart';
+
+@Module('music')
+class MusicModule {
+  @ModuleItem('player')
+  ContentSegment? getPlayer(BuildContext context, String? id) {
+    return ContentSegment(
+      whenRemoved: (context) {
+        context.read(musicLogicProvider).signOut();
+      },
+      builder: (context) => Consumer(
+        builder: (context, watch, _) {
+          var signedInValue = watch(spotifyIsSignedInProvider);
+          return signedInValue.when(
+            data: (signedIn) {
+              if (!signedIn) {
+                return const SignedOutPlayer();
+              } else {
+                return const SpotifyPlayer();
+              }
+            },
+            loading: () => const CircularProgressIndicator(),
+            error: (e, st) => Text('Error: $e'),
+          );
+        },
+      ),
+    );
+  }
+}

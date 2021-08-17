@@ -12,7 +12,7 @@ part 'trip.dart';
 
 extension DocumentMap on DocumentSnapshot {
   Map<String, dynamic> toMap() {
-    return (data() ?? {})..addAll({"id": id});
+    return (data() ?? {})..addAll({'id': id});
   }
 
   T decode<T>() => Mapper.fromMap<T>(toMap());

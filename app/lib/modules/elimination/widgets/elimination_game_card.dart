@@ -24,24 +24,24 @@ class _EliminationGameCardState extends State<EliminationGameCard> {
             var userId = watch(userIdProvider)!;
             var myTarget = data.currentTargets[userId];
             if (myTarget == null) {
-              return const Center(child: Text("Eliminated"));
+              return const Center(child: Text('Eliminated'));
             } else if (myTarget == watch(userIdProvider)!) {
-              return const Center(child: Text("Untouchable"));
+              return const Center(child: Text('Untouchable'));
             } else {
               return GestureDetector(
                 onTap: () {
                   context
                       .read(gameLogicProvider)
-                      .addEliminationEntry(data.id, EliminationEntry(myTarget, userId, "Eliminated"));
+                      .addEliminationEntry(data.id, EliminationEntry(myTarget, userId, 'Eliminated'));
                 },
                 child: Center(
-                  child: Text("Target: ${watch(nicknameProvider(myTarget))}"),
+                  child: Text('Target: ${watch(nicknameProvider(myTarget))}'),
                 ),
               );
             }
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (e, st) => Center(child: Text("Error $e")),
+          error: (e, st) => Center(child: Text('Error $e')),
         );
       },
     );

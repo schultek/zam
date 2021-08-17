@@ -35,7 +35,7 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Change Folder"),
+        title: const Text('Change Folder'),
       ),
       body: Consumer(
         builder: (context, watch, _) {
@@ -60,7 +60,7 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
                   return ListTile(
                       title: TextField(
                     decoration: const InputDecoration(
-                      labelText: "Folder",
+                      labelText: 'Folder',
                     ),
                     autofocus: true,
                     onSubmitted: (text) {
@@ -71,7 +71,7 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
                 } else {
                   return ListTile(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    title: const Text("Create new folder"),
+                    title: const Text('Create new folder'),
                     onTap: () {
                       setState(() => createFolder = true);
                     },

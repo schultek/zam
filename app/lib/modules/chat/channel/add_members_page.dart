@@ -31,11 +31,11 @@ class _AddMembersPageState extends State<AddMembersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Mitglieder hinzufügen"),
+        title: const Text('Mitglieder hinzufügen'),
         actions: [
           TextButton(
             onPressed: selectedUsers.isNotEmpty ? addMembers : null,
-            child: const Text("Hinzufügen"),
+            child: const Text('Hinzufügen'),
           )
         ],
       ),

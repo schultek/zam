@@ -92,7 +92,7 @@ class ImageTheme extends ThemeState {
 
   static Future<ImageTheme> load() async {
     var url =
-        "https://images.pexels.com/photos/1666021/pexels-photo-1666021.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940";
+        'https://images.pexels.com/photos/1666021/pexels-photo-1666021.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940';
 
     Completer<ImageInfo> completer = Completer();
     var img = NetworkImage(url);

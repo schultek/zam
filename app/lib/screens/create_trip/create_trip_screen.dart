@@ -27,7 +27,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
             children: [
               const Spacer(),
               const Text(
-                "Neuen Ausflug erstellen.",
+                'Neuen Ausflug erstellen.',
                 style: TextStyle(color: Colors.white, fontSize: 45),
               ),
               const Spacer(
@@ -41,7 +41,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
                     child: TextField(
                       decoration: const InputDecoration(
-                        hintText: "Ausflugsname eingeben",
+                        hintText: 'Ausflugsname eingeben',
                         border: InputBorder.none,
                       ),
                       onChanged: (text) {
@@ -69,7 +69,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                     child: Padding(
                       padding: EdgeInsets.all(28.0),
                       child: Text(
-                        "Erstellen",
+                        'Erstellen',
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -91,6 +91,6 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
       users: {userId: TripUser(role: UserRoles.Organizer)},
       template: SwipeTemplateModel(),
     );
-    return FirebaseFirestore.instance.collection("trips").add(trip.toMap());
+    return FirebaseFirestore.instance.collection('trips').add(trip.toMap());
   }
 }

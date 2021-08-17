@@ -72,13 +72,13 @@ class _EliminationStatsState extends State<EliminationStats> {
             child: Column(
               children: [
                 Text(
-                  "Statistics",
+                  'Statistics',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
                 ),
                 const Spacer(),
                 Text(
-                  "$alive/$players alive",
+                  '$alive/$players alive',
                   textAlign: TextAlign.justify,
                   style: Theme.of(context).textTheme.headline6!.copyWith(color: context.getTextColor()),
                 ),

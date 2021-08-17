@@ -62,13 +62,13 @@ class _EliminationHelpState extends State<EliminationHelp> {
             physics: const BouncingScrollPhysics(),
             children: [
               Text(
-                "How to play",
+                'How to play',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
               ),
               const SizedBox(height: 10),
               Text(
-                "Eliminate your target by the agreed way in real live. Then add the elimination to the list and receive a new target, until everyone is eliminated.",
+                'Eliminate your target by the agreed way in real live. Then add the elimination to the list and receive a new target, until everyone is eliminated.',
                 textAlign: TextAlign.justify,
                 style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
               ),

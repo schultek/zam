@@ -1,7 +1,5 @@
 part of elements;
 
-enum SegmentSize { Square, Wide }
-
 class IdProvider {
   String? _id;
 

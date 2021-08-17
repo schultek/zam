@@ -5,7 +5,7 @@ class GridTemplateModel extends TemplateModel {
   GridTemplateModel({String? type}) : super(type ?? 'grid');
 
   @override
-  String get name => "Grid Template";
+  String get name => 'Grid Template';
   @override
   WidgetTemplate<TemplateModel> builder() => GridTemplate(this);
 }

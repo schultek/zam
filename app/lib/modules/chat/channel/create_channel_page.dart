@@ -33,11 +33,11 @@ class _CreateChannelPageState extends State<CreateChannelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Neuer Channel"),
+        title: const Text('Neuer Channel'),
         actions: [
           TextButton(
             onPressed: name != null && name!.isNotEmpty ? createChannel : null,
-            child: const Text("Erstellen"),
+            child: const Text('Erstellen'),
           ),
         ],
       ),
@@ -47,7 +47,7 @@ class _CreateChannelPageState extends State<CreateChannelPage> {
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
               decoration: const InputDecoration(
-                labelText: "Name",
+                labelText: 'Name',
                 prefixIcon: Icon(Icons.tag),
                 border: InputBorder.none,
               ),

@@ -25,7 +25,7 @@ class _ChannelPageState extends State<ChannelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("# ${widget.channel.name}"),
+        title: Text('# ${widget.channel.name}'),
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),

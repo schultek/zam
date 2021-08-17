@@ -17,7 +17,7 @@ class ChatPage extends ConsumerWidget {
           children: [
             const Padding(
               padding: EdgeInsets.only(top: 40, left: 16.0, bottom: 20),
-              child: Text("Channels", style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text('Channels', style: TextStyle(fontWeight: FontWeight.bold)),
             ),
             for (var channel in data)
               ListTile(
@@ -37,7 +37,7 @@ class ChatPage extends ConsumerWidget {
               minLeadingWidth: 0,
               leading: const Icon(Icons.add_box),
               title: Text(
-                "Channel hinzufügen",
+                'Channel hinzufügen',
                 style: TextStyle(color: context.getTextColor().withOpacity(0.5)),
               ),
               onTap: () {
@@ -47,8 +47,8 @@ class ChatPage extends ConsumerWidget {
           ],
         );
       },
-      loading: () => const Text("Loading"),
-      error: (e, st) => Text("Error $e"),
+      loading: () => const Text('Loading'),
+      error: (e, st) => Text('Error $e'),
     );
   }
 }

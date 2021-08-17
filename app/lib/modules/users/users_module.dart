@@ -9,9 +9,9 @@ import '../../models/models.dart';
 import '../../providers/links/links_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 
-@Module()
+@Module('users')
 class UsersModule {
-  @ModuleItem(id: "users")
+  @ModuleItem('users')
   ContentSegment getUsers() {
     return ContentSegment(
       builder: (context) => Container(
@@ -27,7 +27,7 @@ class UsersModule {
               ),
               const SizedBox(height: 10),
               Text(
-                "Users",
+                'Users',
                 style: Theme.of(context).textTheme.headline6!.copyWith(color: context.getTextColor()),
               ),
             ],
@@ -43,11 +43,11 @@ class UsersPage extends StatelessWidget {
   const UsersPage();
 
   IconData? getIconForUser(String role) {
-    if (role == "organizer") {
+    if (role == 'organizer') {
       return Icons.account_box;
-    } else if (role == "leader") {
+    } else if (role == 'leader') {
       return Icons.account_circle;
-    } else if (role == "participant") {
+    } else if (role == 'participant') {
       return Icons.account_circle_outlined;
     } else {
       return null;
@@ -63,6 +63,7 @@ class UsersPage extends StatelessWidget {
         iconTheme: IconThemeData(
           color: context.getTextColor(),
         ),
+        title: Text('Users', style: TextStyle(color: context.getTextColor())),
       ),
       body: SafeArea(
         child: Padding(
@@ -70,8 +71,6 @@ class UsersPage extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Users", style: Theme.of(context).textTheme.headline5!.copyWith(color: context.getTextColor())),
-              const SizedBox(height: 10),
               Expanded(
                 child: Consumer(
                   builder: (context, watch, _) {
@@ -94,46 +93,75 @@ class UsersPage extends StatelessWidget {
                   },
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const SizedBox(width: 20),
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: context.getTextColor(),
-                        onPrimary: context.getFillColor(),
+              if (context.read(isOrganizerProvider))
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const SizedBox(width: 10),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: context.getTextColor(),
+                          onPrimary: context.getFillColor(),
+                        ),
+                        onPressed: () async {
+                          var trip = context.read(selectedTripProvider)!;
+                          String link = await context.read(linkLogicProvider).createTripInvitationLink(trip: trip);
+                          Share.share('Um dich bei ${trip.name} anzumelden, klicke auf den Link: $link');
+                        },
+                        child: const Text(
+                          'Teilnehmer\neinladen',
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      onPressed: () async {
-                        var trip = context.read(selectedTripProvider)!;
-                        String link = await context.read(linkLogicProvider).createTripInvitationLink(tripId: trip.id);
-                        Share.share("Um dich bei dem Ausflug anzumelden, klicke auf den Link: $link");
-                      },
-                      child: const Text("Teilnehmer einladen"),
                     ),
-                  ),
-                  const SizedBox(width: 20),
-                  Flexible(
-                    fit: FlexFit.tight,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: context.getTextColor(),
-                        onPrimary: context.getFillColor(),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: context.getTextColor(),
+                          onPrimary: context.getFillColor(),
+                        ),
+                        onPressed: () async {
+                          var trip = context.read(selectedTripProvider)!;
+                          String link = await context
+                              .read(linkLogicProvider)
+                              .createTripInvitationLink(trip: trip, role: UserRoles.Leader);
+                          Share.share('Um dich als Leiter bei ${trip.name} anzumelden, klicke auf den Link: $link');
+                        },
+                        child: const Text(
+                          'Leiter\neinladen',
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      onPressed: () async {
-                        var trip = context.read(selectedTripProvider)!;
-                        String link = await context
-                            .read(linkLogicProvider)
-                            .createTripInvitationLink(tripId: trip.id, role: UserRoles.Leader);
-                        Share.share("Um dich als Leiter bei dem Ausflug anzumelden, klicke auf den Link: $link");
-                      },
-                      child: const Text("Leiter einladen"),
                     ),
-                  ),
-                  const SizedBox(width: 20),
-                ],
-              ),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: context.getTextColor(),
+                          onPrimary: context.getFillColor(),
+                        ),
+                        onPressed: () async {
+                          var trip = context.read(selectedTripProvider)!;
+                          String link = await context
+                              .read(linkLogicProvider)
+                              .createTripInvitationLink(trip: trip, role: UserRoles.Organizer);
+                          Share.share(
+                              'Um dich als Organisator bei ${trip.name} anzumelden, klicke auf den Link: $link');
+                        },
+                        child: const Text(
+                          'Organisator\neinladen',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                ),
             ],
           ),
         ),

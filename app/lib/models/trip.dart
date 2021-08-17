@@ -4,11 +4,18 @@ part of models;
 class Trip with Mappable {
   final String name;
   final String id;
+  final String? pictureUrl;
   final TemplateModel template;
   final Map<String, TripUser> users;
   final Map<String, List<String>> modules;
 
-  Trip({required this.id, required this.name, required this.template, this.users = const {}, this.modules = const {}});
+  Trip(
+      {required this.id,
+      required this.name,
+      this.pictureUrl,
+      required this.template,
+      this.users = const {},
+      this.modules = const {}});
 }
 
 @MappableClass()
@@ -23,7 +30,7 @@ class TripUser with Mappable {
 }
 
 class UserRoles {
-  static const Organizer = "organizer";
-  static const Leader = "leader";
-  static const Participant = "participant";
+  static const Organizer = 'organizer';
+  static const Leader = 'leader';
+  static const Participant = 'participant';
 }

@@ -26,7 +26,7 @@ class _SelectNotePageState extends State<SelectNotePage> {
                       const Padding(
                         padding: EdgeInsets.all(20),
                         child: Text(
-                          "Select a note",
+                          'Select a note',
                           style: TextStyle(fontSize: 20),
                         ),
                       ),
@@ -46,8 +46,8 @@ class _SelectNotePageState extends State<SelectNotePage> {
                         ),
                     ],
                   ),
-              loading: () => const Text("Loading..."),
-              error: (e, st) => Text("Error $e"));
+              loading: () => const Text('Loading...'),
+              error: (e, st) => Text('Error $e'));
         },
       ),
     );

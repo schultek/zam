@@ -5,21 +5,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../helpers/input_formatters.dart';
 import '../../providers/auth/logic_provider.dart';
 import '../../providers/links/links_provider.dart';
 import '../../widgets/ju_background.dart';
 import 'sms_code_screen.dart';
 
 class SignInScreen extends StatefulWidget {
-  final Uri? invitationLink;
+  final Uri invitationLink;
   const SignInScreen(this.invitationLink);
   @override
   _SignInScreenState createState() => _SignInScreenState();
-
-  static Route route(Uri invitationLink) {
-    return MaterialPageRoute(builder: (context) => SignInScreen(invitationLink));
-  }
 
   static MaterialPage page(Uri link) {
     return MaterialPage(child: SignInScreen(link));
@@ -28,13 +23,16 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   bool isLoading = false;
-  String phoneNumber = "";
+  late String phoneNumber;
+
+  @override
+  void initState() {
+    super.initState();
+    phoneNumber = widget.invitationLink.queryParameters['phoneNumber'] ?? '';
+  }
 
   Future<void> _onSignedIn(User user) async {
-    if (widget.invitationLink != null) {
-      print('HANDLING INVITATION LINK');
-      await context.read(linkProvider.notifier).handleReceivedLink(widget.invitationLink!);
-    }
+    await context.read(linkStateProvider.notifier).handleReceivedLink(widget.invitationLink);
   }
 
   @override
@@ -59,50 +57,37 @@ class _SignInScreenState extends State<SignInScreen> {
                 radius: const BorderRadius.all(Radius.circular(50.0)),
                 child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        hintText: "Telefonnummer eingeben",
-                        border: InputBorder.none,
-                      ),
-                      inputFormatters: phoneNumberInputFormatters,
-                      onChanged: (text) {
-                        setState(() {
-                          phoneNumber = text;
-                        });
-                      },
-                      keyboardType: TextInputType.phone,
+                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
+                    child: Text(
+                      phoneNumber,
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 10),
               Text(
-                "Wenn du fortfährst, akzeptierst du Jufas Nutzungsbedingungen und bestätigst, dass du Jufas Datenschutzerklärung gelesen hast. Wenn du dich per SMS registrierst, können SMS-Gebühren anfallen",
+                'Nicht deine Nummer? Dann brauchst du einen anderen Einladungs-Link.',
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white.withOpacity(0.95)),
               ),
               const Spacer(
                 flex: 3,
               ),
+              Text(
+                'Wenn du fortfährst, akzeptierst du Jufas Nutzungsbedingungen und bestätigst, dass du Jufas Datenschutzerklärung gelesen hast. Wenn du dich per SMS registrierst, können SMS-Gebühren anfallen',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white.withOpacity(0.95)),
+              ),
+              const SizedBox(height: 20),
               CupertinoCard(
                 elevation: 8.0,
                 radius: const BorderRadius.all(Radius.circular(50.0)),
                 child: InkWell(
                   onTap: () async {
                     setState(() => isLoading = true);
-                    var completer = Completer();
-                    await context.read(authLogicProvider).verifyPhoneNumber(
-                      phoneNumber,
-                      onSent: (String verificationId) {
-                        completer.complete();
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => SmsCodeScreen(verificationId, _onSignedIn),
-                        ));
-                      },
-                      onCompleted: _onSignedIn,
-                    );
-                    await completer.future;
+                    await verifyPhoneNumber();
+
                     setState(() => isLoading = false);
                   },
                   child: Center(
@@ -113,7 +98,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               valueColor: AlwaysStoppedAnimation(Colors.black87),
                             )
                           : const Text(
-                              "Code Senden",
+                              'Code Senden',
                               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                     ),
@@ -129,12 +114,34 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   String _getTitleText() {
-    if (widget.invitationLink?.path.endsWith('/organizer') ?? false) {
-      return "Werde Organisator*in.";
-    } else if (widget.invitationLink?.path.endsWith('/admin') ?? false) {
-      return "Werde Administrator.";
+    if (widget.invitationLink.path.endsWith('/organizer')) {
+      return 'Werde Organisator*in.';
+    } else if (widget.invitationLink.path.endsWith('/admin')) {
+      return 'Werde Administrator.';
     } else {
-      return "Mit Telefonnummer anmelden.";
+      return 'Mit Telefonnummer anmelden.';
     }
+  }
+
+  Future<void> verifyPhoneNumber([int? resendToken]) async {
+    var completer = Completer();
+    await context.read(authLogicProvider).verifyPhoneNumber(
+      phoneNumber,
+      resendToken: resendToken,
+      onSent: (String verificationId, int? resendToken) async {
+        completer.complete();
+        if (resendToken == null) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => SmsCodeScreen(
+              verificationId,
+              _onSignedIn,
+              () => verifyPhoneNumber(resendToken),
+            ),
+          ));
+        }
+      },
+      onCompleted: _onSignedIn,
+    );
+    await completer.future;
   }
 }

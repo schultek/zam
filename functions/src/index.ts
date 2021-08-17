@@ -140,20 +140,39 @@ export const onLinkReceived = functions.https.onCall(async (data, context) => {
 
 });
 
-export const sendPushMessage = functions.firestore.document("trips/{tripId}/modules/announcements/announcements/{announcementId}").onCreate(async (snapshot, context) => {
+export const sendAnnouncementNotification = functions.firestore.document("trips/{tripId}/modules/announcements/announcements/{announcementId}").onCreate(async (snapshot, context) => {
 
   var tripId = context.params.tripId;
-  var announcementId = context.params.announcementId;
 
   var data = snapshot.data();
 
-  admin.messaging().sendToTopic(`/topics/trip.${tripId}.announcements`, {
+  await admin.messaging().sendToTopic(`/topics/trip.${tripId}.announcements`, {
     notification: {
       title: "New announcement",
-      body: data["message"]
+      body: data.message
     }
   });
 
+});
+
+export const sendChannelNotification = functions.firestore.document("trips/{tripId}/modules/chat/channels/{channelId}/messages/{messageId}").onCreate(async (snapshot, context) => {
+
+  var tripId = context.params.tripId;
+  var channelId = context.params.channelId;
+
+  var trip = (await admin.firestore().doc(`trips/${tripId}`).get()).data();
+  var channel = (await admin.firestore().doc(`trips/${tripId}/modules/chat/channels/${channelId}`).get()).data();
+
+  var data = snapshot.data();
+
+  var tokens = channel.members.map((id) => trip.users[id].token).filter((t) => t != null);
+
+  await admin.messaging().sendToDevice(tokens, {
+    notification: {
+      title: `New message in ${channel.name}`,
+      body: data.text
+    }
+  });
 });
 
 function hashLink(link) {

@@ -33,7 +33,7 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
   FlutterActorArtboard? artboard;
   ActorAnimation? iconAnimation;
 
-  static MyAssetProvider iconProvider = MyAssetProvider("assets/animations/reorder_icon.flr");
+  static MyAssetProvider iconProvider = MyAssetProvider('assets/animations/reorder_icon.flr');
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +72,7 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
   @override
   void initialize(FlutterActorArtboard artboard) {
     this.artboard = artboard;
-    iconAnimation = artboard.getAnimation("go");
+    iconAnimation = artboard.getAnimation('go');
     var time = WidgetTemplate.of(context, listen: false).transition.value * iconAnimation!.duration;
     iconAnimation!.apply(time, artboard, 1.0);
   }

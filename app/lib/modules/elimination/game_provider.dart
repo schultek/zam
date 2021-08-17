@@ -42,7 +42,7 @@ class EliminationEntry {
 
 final gameProvider = StreamProvider.family((ref, String id) => ref
     .watch(moduleDocProvider('elimination'))
-    .collection("games")
+    .collection('games')
     .doc(id)
     .snapshots()
     .map((s) => s.decode<EliminationGame>()));
@@ -55,7 +55,7 @@ class GameLogic {
   GameLogic(this.ref) : doc = ref.watch(moduleDocProvider('elimination'));
 
   Future<EliminationGame> createGame() async {
-    var gameDoc = doc.collection("games").doc();
+    var gameDoc = doc.collection('games').doc();
     var game = EliminationGame(gameDoc.id, _generateTargetMap(), []);
     await gameDoc.set(game.toMap());
     return game;
@@ -84,12 +84,12 @@ class GameLogic {
   }
 
   Future<void> addEliminationEntry(String id, EliminationEntry entry) async {
-    await doc.collection("games").doc(id).update({
+    await doc.collection('games').doc(id).update({
       'eliminations': FieldValue.arrayUnion([entry.toMap()]),
     });
   }
 
   Future<void> deleteGame(String id) async {
-    await doc.collection("games").doc(id).delete();
+    await doc.collection('games').doc(id).delete();
   }
 }

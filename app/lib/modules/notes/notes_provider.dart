@@ -33,7 +33,7 @@ class Note {
 }
 
 final notesProvider = StreamProvider(
-    (ref) => ref.watch(moduleDocProvider('notes')).collection("notes").snapshots().map((s) => s.toList<Note>()));
+    (ref) => ref.watch(moduleDocProvider('notes')).collection('notes').snapshots().map((s) => s.toList<Note>()));
 
 final noteProvider = Provider.family(
     (ref, String id) => ref.watch(notesProvider).whenData((value) => value.where((n) => n.id == id).firstOrNull));
@@ -54,28 +54,28 @@ class NotesLogic {
   NotesLogic(this.ref) : doc = ref.watch(moduleDocProvider('notes'));
 
   Future<Note> createEmptyNote() async {
-    var note = doc.collection("notes").doc();
+    var note = doc.collection('notes').doc();
     var author = ref.read(userIdProvider)!;
     return Note(note.id, null, [], author: author, editors: [author]);
   }
 
   Future<void> updateNote(String id, Note note) async {
-    await doc.collection("notes").doc(id).set(note.toMap(), SetOptions(merge: true));
+    await doc.collection('notes').doc(id).set(note.toMap(), SetOptions(merge: true));
   }
 
   Future<void> setEditors(String id, List<String> editors) async {
-    await doc.collection("notes").doc(id).update({
-      "editors": editors,
+    await doc.collection('notes').doc(id).update({
+      'editors': editors,
     });
   }
 
   Future<void> deleteNote(String id) {
-    return doc.collection("notes").doc(id).delete();
+    return doc.collection('notes').doc(id).delete();
   }
 
   Future<void> changeFolder(String id, String? folder) async {
-    await doc.collection("notes").doc(id).update({
-      "folder": folder,
+    await doc.collection('notes').doc(id).update({
+      'folder': folder,
     });
   }
 }

@@ -18,8 +18,8 @@ class TripsLogic {
   String? get _userId => ref.read(userIdProvider);
 
   Future<void> setUserName(String text) {
-    return FirebaseFirestore.instance.collection("trips").doc(_tripId).update({
-      "users.$_userId.nickname": text,
+    return FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+      'users.$_userId.nickname': text,
     });
   }
 
@@ -27,13 +27,34 @@ class TripsLogic {
     var ref = FirebaseStorage.instance.ref('images/$_userId/profile.png');
     await ref.putData(bytes);
     var link = await ref.getDownloadURL();
-    return FirebaseFirestore.instance.collection("trips").doc(_tripId).update({
-      "users.$_userId.profileUrl": link,
+    return FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+      'users.$_userId.profileUrl': link,
+    });
+  }
+
+  Future<void> setTripPicture(Uint8List bytes) async {
+    var ref = FirebaseStorage.instance.ref('images/$_tripId/picture.png');
+    await ref.putData(bytes);
+    var link = await ref.getDownloadURL();
+    return FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+      'pictureUrl': link,
     });
   }
 
   Future<void> updateTrip(Map<String, dynamic> map) async {
     if (ref.read(tripUserProvider)?.role != UserRoles.Organizer) return;
-    return FirebaseFirestore.instance.collection("trips").doc(_tripId).update(map);
+    return FirebaseFirestore.instance.collection('trips').doc(_tripId).update(map);
+  }
+
+  Future<void> leaveSelectedTrip() async {
+    await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+      'users.$_userId': FieldValue.delete(),
+    });
+  }
+
+  Future<void> setPushToken(String? token) async {
+    await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+      'users.$_userId.token': token,
+    });
   }
 }

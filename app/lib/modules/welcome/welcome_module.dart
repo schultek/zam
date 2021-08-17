@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../core/module/module.dart';
 
-@Module()
+@Module('welcome')
 class WelcomeModule {
-  @ModuleItem(id: "action1")
+  @ModuleItem('action1')
   QuickAction getAction1() {
     return QuickAction(
       icon: Icons.ac_unit,
-      text: "Hallo",
+      text: 'Hallo',
     );
   }
 
-  @ModuleItem(id: "welcome")
+  @ModuleItem('welcome')
   ContentSegment? getWelcomeBanner(String? id) {
     if (id == null) {
       var idProvider = IdProvider();
@@ -24,13 +24,13 @@ class WelcomeModule {
             aspectRatio: 2,
             child: GestureDetector(
               onTap: () {
-                idProvider.provide(context, "tap");
+                idProvider.provide(context, 'tap');
               },
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Center(
                   child: Text(
-                    "Willkommen",
+                    'Willkommen',
                     style: TextStyle(color: context.getTextColor()),
                   ),
                 ),
@@ -48,7 +48,7 @@ class WelcomeModule {
             padding: const EdgeInsets.all(10),
             child: Center(
               child: Text(
-                "Willkommen $id",
+                'Willkommen $id',
                 style: TextStyle(color: context.getTextColor()),
               ),
             ),

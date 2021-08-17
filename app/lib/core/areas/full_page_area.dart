@@ -25,7 +25,7 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment> {
 
   @override
   Widget buildArea(BuildContext context) {
-    return content ?? const Center(child: Text("No Content"));
+    return content ?? const Center(child: Text('No Content'));
   }
 
   @override

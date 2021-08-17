@@ -31,18 +31,18 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
         body: ListView(
           children: [
             ListTile(
-              title: const Text("Folder"),
+              title: const Text('Folder'),
               subtitle: Text(note.folder ?? 'No Folder'),
               onTap: () {
                 Navigator.of(context).push(ChangeFolderPage.route(note));
               },
             ),
             ListTile(
-              title: const Text("Author"),
+              title: const Text('Author'),
               subtitle: Text(context.read(nicknameProvider(note.author)) ?? 'Anonym'),
             ),
             ListTile(
-              title: const Text("Editors"),
+              title: const Text('Editors'),
               subtitle: Text(note.editors.map((e) => context.read(nicknameProvider(e)) ?? 'Anonym').join(', ')),
               onTap: () {
                 Navigator.of(context).push(AddEditorsPage.route(note));
@@ -50,7 +50,7 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
             ),
             ListTile(
               title: const Text(
-                "Delete",
+                'Delete',
                 style: TextStyle(color: Colors.red),
               ),
               onTap: () async {

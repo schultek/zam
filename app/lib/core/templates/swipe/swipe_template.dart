@@ -5,7 +5,7 @@ class SwipeTemplateModel extends TemplateModel {
   SwipeTemplateModel({String? type}) : super(type ?? 'swipe');
 
   @override
-  String get name => "Swipe Template";
+  String get name => 'Swipe Template';
   @override
   WidgetTemplate<TemplateModel> builder() => SwipeTemplate(this);
 }
@@ -57,11 +57,11 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                 },
                 children: [
                   const KeepAlive(
-                    key: ValueKey("left"),
-                    child: ThemedBackground(child: FullPageArea(id: "left")),
+                    key: ValueKey('left'),
+                    child: ThemedBackground(child: FullPageArea(id: 'left')),
                   ),
                   KeepAlive(
-                    key: const ValueKey("body"),
+                    key: const ValueKey('body'),
                     child: ThemedBackground(
                       child: CustomScrollView(
                         physics: const BouncingScrollPhysics(),
@@ -121,8 +121,8 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                     ),
                   ),
                   const KeepAlive(
-                    key: ValueKey("right"),
-                    child: ThemedBackground(child: FullPageArea(id: "right")),
+                    key: ValueKey('right'),
+                    child: ThemedBackground(child: FullPageArea(id: 'right')),
                   ),
                 ],
               ),

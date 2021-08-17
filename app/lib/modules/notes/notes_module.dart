@@ -11,9 +11,9 @@ import 'pages/notes_page.dart';
 import 'pages/select_note_page.dart';
 import 'widgets/note_preview.dart';
 
-@Module()
+@Module('notes')
 class NotesModule {
-  @ModuleItem(id: "notes")
+  @ModuleItem('notes')
   ContentSegment getNotes() {
     return ContentSegment(
       builder: (context) => Container(
@@ -29,7 +29,7 @@ class NotesModule {
               ),
               const SizedBox(height: 10),
               Text(
-                "Notes",
+                'Notes',
                 style: Theme.of(context).textTheme.headline6!.copyWith(color: context.getTextColor()),
               ),
             ],
@@ -40,7 +40,7 @@ class NotesModule {
     );
   }
 
-  @ModuleItem(id: "note")
+  @ModuleItem('note')
   ContentSegment? getNote(BuildContext context, String? id) {
     if (id == null) {
       if (context.read(isOrganizerProvider)) {
@@ -59,7 +59,7 @@ class NotesModule {
                 ),
                 const SizedBox(height: 5),
                 const Text(
-                  "Add Note\n(Tap to select)",
+                  'Add Note\n(Tap to select)',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
@@ -99,7 +99,7 @@ class NotesModule {
               );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, st) => Center(child: Text("Error $e")),
+            error: (e, st) => Center(child: Text('Error $e')),
           );
         },
       ),

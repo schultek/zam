@@ -23,7 +23,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
 
   final scrollController = ScrollController();
 
-  final options = ["0:10", "0:20", "0:30", "0:45", "1", "2", "5", "10", "24"];
+  final options = ['0:10', '0:20', '0:30', '0:45', '1', '2', '5', '10', '24'];
   int selectedIndex = 0;
 
   void animateSnap({double? pixel, required double itemSize}) {
@@ -68,7 +68,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
     if (aliveHours == null) return null;
     var h = aliveHours.floor();
     var m = ((aliveHours - h) * 60).round();
-    return h == 0 ? "0:$m" : "$h";
+    return h == 0 ? '0:$m' : '$h';
   }
 
   Widget settingsButton(BuildContext context, BoxConstraints constraints) {
@@ -154,7 +154,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
         child: Center(
           child: Builder(
             builder: (context) => Text(
-              "h",
+              'h',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headline5!.apply(fontSizeFactor: 1.2, color: context.getTextColor()),
             ),
@@ -284,7 +284,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                   });
                 },
                 child: Text(
-                  "Reset\nHealth",
+                  'Reset\nHealth',
                   style: TextStyle(color: context.getTextColor()),
                   textAlign: TextAlign.center,
                 ),
@@ -302,7 +302,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                   });
                 },
                 child: Text(
-                  "Reset\nLeaderboard",
+                  'Reset\nLeaderboard',
                   style: TextStyle(color: context.getTextColor()),
                   textAlign: TextAlign.center,
                 ),

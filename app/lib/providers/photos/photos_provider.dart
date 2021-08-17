@@ -74,7 +74,7 @@ class PhotosLogic {
         ..pageSize = 100);
       items += response.mediaItems ?? [];
       pageToken = response.nextPageToken;
-      print("ITEMS ${response.mediaItems}");
+      print('ITEMS ${response.mediaItems}');
     } while (pageToken != null);
 
     return items;
@@ -127,7 +127,7 @@ class PhotosLogic {
     var config = ref.read(photosConfigProvider).data?.value;
     if (config == null || config.albumId == null) return;
 
-    print("Upload files: $files");
+    print('Upload files: $files');
 
     ref.read(fileUploadingStatusProvider).state = {
       ...ref.read(fileUploadingStatusProvider).state,
@@ -139,11 +139,11 @@ class PhotosLogic {
         file
             .readAsBytes()
             .then((bytes) => client.post(
-                  Uri.parse("https://photoslibrary.googleapis.com/v1/uploads"),
+                  Uri.parse('https://photoslibrary.googleapis.com/v1/uploads'),
                   headers: {
-                    "Content-type": "application/octet-stream",
-                    "X-Goog-Upload-Content-Type": "image/jpeg",
-                    "X-Goog-Upload-Protocol": "raw",
+                    'Content-type': 'application/octet-stream',
+                    'X-Goog-Upload-Content-Type': 'image/jpeg',
+                    'X-Goog-Upload-Protocol': 'raw',
                   },
                   body: bytes,
                 ))
@@ -167,7 +167,7 @@ class PhotosLogic {
     ]);
 
     var uploadTokens = responses.whereType<String>();
-    print("Upload Tokens: $uploadTokens");
+    print('Upload Tokens: $uploadTokens');
 
     var i = 0;
     var createResponse = await api.mediaItems.batchCreate(BatchCreateMediaItemsRequest()

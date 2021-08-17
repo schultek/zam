@@ -52,8 +52,8 @@ class _GalleryPageState extends State<GalleryPage> {
 
   Future<bool> showSignInWithGooglePrompt() async {
     var didSignIn = await showPrompt<bool>(
-      title: "SignIn with Google",
-      body: "In order to use the shared photos album, you have to sign in with your google account.",
+      title: 'SignIn with Google',
+      body: 'In order to use the shared photos album, you have to sign in with your google account.',
       onContinue: () => context.read(googleAccountProvider.notifier).signInWithGoogle(),
     );
     return didSignIn ?? false;
@@ -61,8 +61,8 @@ class _GalleryPageState extends State<GalleryPage> {
 
   Future<bool> showCreateSharedAlbumPrompt() async {
     var album = await showPrompt<Album?>(
-      title: "Create shared album",
-      body: "There exists currently no shared album for this trip. Continue to create a shared album in Google Photos.",
+      title: 'Create shared album',
+      body: 'There exists currently no shared album for this trip. Continue to create a shared album in Google Photos.',
       onContinue: () => context.read(photosLogicProvider).createSharedAlbum(context.read(selectedTripProvider)!.name),
     );
     return album != null;
@@ -70,15 +70,15 @@ class _GalleryPageState extends State<GalleryPage> {
 
   Future<void> showMissingSharedAlbumPrompt() async {
     await showPrompt(
-        title: "No shared album",
-        body: "There exists currently no shared album for this trip. Ask your organizer to create one.",
+        title: 'No shared album',
+        body: 'There exists currently no shared album for this trip. Ask your organizer to create one.',
         onContinue: () {});
   }
 
   Future<bool> showJoinSharedAlbumPrompt() async {
     var album = await showPrompt<Album?>(
-      title: "Join shared album",
-      body: "You have not yet joined the shared album for this trip. Continue to join the shared album.",
+      title: 'Join shared album',
+      body: 'You have not yet joined the shared album for this trip. Continue to join the shared album.',
       onContinue: () => context.read(photosLogicProvider).joinSharedAlbum(),
     );
     return album != null;
@@ -96,7 +96,7 @@ class _GalleryPageState extends State<GalleryPage> {
               var result = await onContinue();
               Navigator.of(context).pop(result);
             },
-            child: const Text("Continue"),
+            child: const Text('Continue'),
           ),
         ],
       ),
@@ -108,7 +108,7 @@ class _GalleryPageState extends State<GalleryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Gallery"),
+        title: const Text('Gallery'),
         actions: [
           IconButton(
             icon: Icon(selectForUpload ? Icons.check : Icons.cloud_upload),
@@ -149,7 +149,7 @@ class _GalleryPageState extends State<GalleryPage> {
       body: Consumer(
         builder: (context, watch, _) {
           var fileStatus = watch(fileStatusProvider);
-          print("FILE STATUS $fileStatus");
+          print('FILE STATUS $fileStatus');
           return GridView.count(
             crossAxisCount: 3,
             children: [

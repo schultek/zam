@@ -13,10 +13,14 @@ linter:
   rules:
     avoid_classes_with_only_static_members: false
     avoid_positional_boolean_parameters: false
+
     constant_identifier_names: false
     prefer_relative_imports: true
+    prefer_single_quotes: true
+
     unnecessary_final: true
     prefer_final_locals: false
     prefer_final_in_for_each: false
     use_late_for_private_fields_and_variables: false
+
     avoid_print: false # TODO remove in production

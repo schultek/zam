@@ -1,9 +1,9 @@
 import '../../core/module/module.dart';
 import 'chat_page.dart';
 
-@Module()
+@Module('chat')
 class ChatModule {
-  @ModuleItem(id: "chat")
+  @ModuleItem('chat')
   PageSegment getChatPage() {
     return PageSegment(
       builder: (context) => ChatPage(),

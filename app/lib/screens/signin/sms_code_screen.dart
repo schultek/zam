@@ -1,5 +1,6 @@
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,8 +10,9 @@ import '../../widgets/ju_background.dart';
 class SmsCodeScreen extends StatefulWidget {
   final String verificationId;
   final Function(User user) onSignedIn;
+  final Future<void> Function() onResend;
 
-  const SmsCodeScreen(this.verificationId, this.onSignedIn);
+  const SmsCodeScreen(this.verificationId, this.onSignedIn, this.onResend);
 
   @override
   _EnterCodeState createState() => _EnterCodeState();
@@ -18,7 +20,7 @@ class SmsCodeScreen extends StatefulWidget {
 
 class _EnterCodeState extends State<SmsCodeScreen> {
   bool isLoading = false;
-  String code = "";
+  String code = '';
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class _EnterCodeState extends State<SmsCodeScreen> {
             children: [
               const Spacer(),
               const Text(
-                "SMS-Code eingeben.",
+                'SMS-Code eingeben.',
                 style: TextStyle(color: Colors.white, fontSize: 45),
               ),
               const Spacer(
@@ -45,7 +47,7 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
                     child: TextField(
                       decoration: const InputDecoration(
-                        hintText: "Code eingeben",
+                        hintText: 'Code eingeben',
                         border: InputBorder.none,
                       ),
                       onChanged: (text) {
@@ -58,10 +60,24 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                 ),
               ),
               const SizedBox(height: 40),
-              Text(
-                "Keine SMS erhalten? Nochmal senden",
+              RichText(
+                text: TextSpan(
+                  text: 'Keine SMS erhalten? ',
+                  children: [
+                    TextSpan(
+                      text: 'Nochmal senden',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () async {
+                          setState(() => isLoading = true);
+                          await widget.onResend();
+                          setState(() => isLoading = false);
+                        },
+                    ),
+                  ],
+                  style: TextStyle(color: Colors.white.withOpacity(0.95)),
+                ),
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white.withOpacity(0.95)),
               ),
               const Spacer(
                 flex: 3,
@@ -84,7 +100,7 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                               valueColor: AlwaysStoppedAnimation(Colors.black87),
                             )
                           : const Text(
-                              "Bestätigen",
+                              'Bestätigen',
                               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                     ),

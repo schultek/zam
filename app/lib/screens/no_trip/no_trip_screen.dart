@@ -36,27 +36,37 @@ class _NoTripScreenState extends State<NoTripScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Text(
-                      "Dein Ausflug.\n\nSo wie du ihn willst.",
+                      'Dein Ausflug.\n\nSo wie du ihn willst.',
                       style: TextStyle(color: Colors.white, fontSize: 80, height: 1),
                     ),
                     if (claims.isOrganizer || claims.isAdmin)
-                      CupertinoCard(
-                        elevation: 8.0,
-                        radius: const BorderRadius.all(Radius.circular(50.0)),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateTripScreen()));
-                          },
-                          child: const Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(28.0),
-                              child: Text(
-                                "Neuen Ausflug erstellen",
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CupertinoCard(
+                            elevation: 8.0,
+                            radius: const BorderRadius.all(Radius.circular(50.0)),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateTripScreen()));
+                              },
+                              child: const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(28.0),
+                                  child: Text(
+                                    'Neuen Ausflug erstellen',
+                                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 15),
+                          const Text(
+                            'oder Einladungslink verwenden.',
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          )
+                        ],
                       )
                     else
                       CupertinoCard(
@@ -65,7 +75,7 @@ class _NoTripScreenState extends State<NoTripScreen> {
                         radius: const BorderRadius.all(Radius.circular(80.0)),
                         child: const Center(
                             child: Text(
-                          "Du benötigst einen Einladungslink von deinem Organisator.",
+                          'Du benötigst einen Einladungslink von deinem Organisator.',
                           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         )),

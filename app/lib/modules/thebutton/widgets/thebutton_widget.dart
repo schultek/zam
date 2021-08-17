@@ -110,7 +110,7 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
 
     var artboard = file.mainArtboard;
 
-    var waveController = SimpleAnimation("Wave");
+    var waveController = SimpleAnimation('Wave');
     artboard.addController(waveController);
     waveController.instance!.animation.speed = 0.1;
 
@@ -124,7 +124,7 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
     super.initState();
     if (artboard == null) {
       loadAnimation().catchError((e) {
-        print("ERROR ON BUTTON $e");
+        print('ERROR ON BUTTON $e');
       });
     }
   }
@@ -137,8 +137,8 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
 
     SimpleAnimation deadController, deadEntryController;
 
-    deadController = SimpleAnimation("Dead");
-    deadEntryController = SimpleAnimation("Dead Entry");
+    deadController = SimpleAnimation('Dead');
+    deadEntryController = SimpleAnimation('Dead Entry');
 
     void runDeadAnimation() {
       artboard!.addController(deadController);

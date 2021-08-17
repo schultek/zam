@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/models.dart';
 import '../auth/user_provider.dart';
 import '../helpers.dart';
+import '../notifications/notifications_provider.dart';
 import 'trips_provider.dart';
 
 final selectedTripIdProvider = StateNotifierProvider<IdNotifier, String?>((ref) => IdNotifier(ref));
@@ -36,6 +37,8 @@ final selectedTripProvider = StateNotifierProvider<StreamNotifier<Trip?>, Trip?>
   return StreamNotifier.from(
     CombinedStream(selectedTripIdStream, tripsStream, get),
     initialValue: get(ref.read(selectedTripIdProvider), ref.read(tripsProvider).data?.value),
+    onValue: (value) =>
+        value != null ? ref.read(notificationsProvider).subscribe('trip.${value.id}.announcements') : null,
   );
 });
 

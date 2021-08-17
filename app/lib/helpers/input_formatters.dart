@@ -6,9 +6,9 @@ final phoneNumberInputFormatters = [
 ];
 
 TextEditingValue formatPhoneNumberInput(TextEditingValue oldValue, TextEditingValue newValue) {
-  var text = "";
+  var text = '';
   var selection = newValue.selection.baseOffset;
-  var newText = newValue.text.split("");
+  var newText = newValue.text.split('');
   var i = 0;
   while (newText.isNotEmpty) {
     var char = newText.removeAt(0);

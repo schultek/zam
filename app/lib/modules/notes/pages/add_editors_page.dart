@@ -39,7 +39,7 @@ class _AddEditorsPageState extends State<AddEditorsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Editors"),
+        title: const Text('Add Editors'),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),

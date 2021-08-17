@@ -167,7 +167,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   Future<void> updateWidgetsInTrip() async {
     context.read(tripsLogicProvider).updateTrip({
-      "modules.$id": getWidgets().map((w) => w.id).toList(),
+      'modules.$id': getWidgets().map((w) => w.id).toList(),
     });
   }
 
@@ -228,7 +228,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
       var n = 0;
       while (n++ < 100 && didReorderItem(offset, item.key)) {}
       if (n >= 100) {
-        print("WARNING: REORDERING DID NOT FINISH AFTER 100 STEPS");
+        print('WARNING: REORDERING DID NOT FINISH AFTER 100 STEPS');
       }
       _scheduledRebuild = false;
     });

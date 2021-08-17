@@ -22,7 +22,7 @@ class _NotesPageState extends State<NotesPage> {
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
         iconTheme: IconThemeData(color: context.getTextColor()),
-        title: Text("Notes", style: TextStyle(color: context.getTextColor())),
+        title: Text('Notes', style: TextStyle(color: context.getTextColor())),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -59,8 +59,8 @@ class _NotesPageState extends State<NotesPage> {
                   ],
                 );
               },
-              loading: () => const Text("Loading"),
-              error: (e, st) => Text("Error $e"),
+              loading: () => const Text('Loading'),
+              error: (e, st) => Text('Error $e'),
             );
           },
         ),

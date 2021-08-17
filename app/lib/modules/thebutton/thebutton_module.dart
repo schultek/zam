@@ -7,9 +7,9 @@ import 'pages/thebutton_help.dart';
 import 'pages/thebutton_settings.dart';
 import 'widgets/thebutton_widget.dart';
 
-@Module()
+@Module('thebutto')
 class TheButtonModule {
-  @ModuleItem(id: "thebutton")
+  @ModuleItem('thebutton')
   ContentSegment getButtonCard() {
     var buttonHelpKey = GlobalKey(), buttonSettingsKey = GlobalKey();
     return ContentSegment(

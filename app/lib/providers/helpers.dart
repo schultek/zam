@@ -8,8 +8,13 @@ class StreamNotifier<T> extends StateNotifier<T> {
   StreamNotifier.from(
     Stream<T> stream, {
     required T initialValue,
+    void Function(T)? onValue,
   }) : super(initialValue) {
-    _subscription = stream.listen((value) => state = value);
+    onValue?.call(initialValue);
+    _subscription = stream.listen((value) {
+      onValue?.call(value);
+      state = value;
+    });
   }
 
   @override

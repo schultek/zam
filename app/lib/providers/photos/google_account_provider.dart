@@ -22,9 +22,9 @@ class GoogleAccountNotifier extends StateNotifier<GoogleSignInAccount?> {
         ]),
         super(null) {
     state = signIn.currentUser;
-    print("user init $state");
+    print('user init $state');
     _userSubscription = signIn.onCurrentUserChanged.listen((user) {
-      print("user $user");
+      print('user $user');
       state = user;
     });
   }

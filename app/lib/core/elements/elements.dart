@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../../models/segment_size.dart';
 import '../areas/areas.dart';
 import '../module/module.dart';
 import '../reorderable/reorderable_item.dart';

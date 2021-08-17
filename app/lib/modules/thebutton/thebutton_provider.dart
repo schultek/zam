@@ -20,9 +20,9 @@ class TheButtonState {
 final theButtonProvider = StateNotifierProvider<StreamNotifier<TheButtonState>, TheButtonState>((ref) {
   return StreamNotifier.from(
     ref.watch(moduleDocProvider('thebutton')).snapshots().map((s) => TheButtonState(
-          (s.data()?["lastReset"] as Timestamp?)?.toDate() ?? DateTime.now(),
-          (s.data()?["aliveHours"] ?? 0.1) * 1.0 as double?,
-          (s.data()?["leaderboard"] as Map<String, dynamic>? ?? {})
+          (s.data()?['lastReset'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          (s.data()?['aliveHours'] ?? 0.1) * 1.0 as double?,
+          (s.data()?['leaderboard'] as Map<String, dynamic>? ?? {})
               .map((key, value) => MapEntry(key, (value as num).toDouble())),
         )),
     initialValue: TheButtonState(null, null, {}),
@@ -53,18 +53,18 @@ class TheButtonLogic {
   bool? get isAlive => value != null ? value! < 1 : null;
 
   void setAlive(String time) {
-    var d = time.split(":");
+    var d = time.split(':');
     int h = int.parse(d[0]);
     int m = d.length == 2 ? int.parse(d[1]) : 0;
 
-    doc.set({"aliveHours": h + m / 60}, SetOptions(merge: true));
+    doc.set({'aliveHours': h + m / 60}, SetOptions(merge: true));
   }
 
   void resetState() {
     if (isAlive ?? false) {
       doc.set({
-        "lastReset": Timestamp.now(),
-        "leaderboard": {
+        'lastReset': Timestamp.now(),
+        'leaderboard': {
           ref.read(userIdProvider): FieldValue.increment((value! * 100).floor()),
         },
       }, SetOptions(merge: true));
@@ -74,7 +74,7 @@ class TheButtonLogic {
   void resetHealth() {
     if (ref.read(isOrganizerProvider)) {
       doc.set({
-        "lastReset": Timestamp.now(),
+        'lastReset': Timestamp.now(),
       }, SetOptions(merge: true));
     }
   }
@@ -82,7 +82,7 @@ class TheButtonLogic {
   void resetLeaderboard() {
     if (ref.read(isOrganizerProvider)) {
       doc.set({
-        "leaderboard": {},
+        'leaderboard': {},
       }, SetOptions(merge: true));
     }
   }

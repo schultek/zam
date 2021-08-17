@@ -5,14 +5,14 @@ import '../../core/module/module.dart';
 import '../../core/widgets/widget_selector.dart';
 import 'pages/camera_page.dart';
 
-@Module()
+@Module('camera')
 class CameraModule {
-  @ModuleItem(id: "camera")
+  @ModuleItem('camera')
   PageSegment getCameraPage() {
     return PageSegment(
       builder: (context) {
         if (WidgetSelector.existsIn(context)) {
-          return const Center(child: Text("Camera"));
+          return const Center(child: Text('Camera'));
         }
         return const CameraPage();
       },

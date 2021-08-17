@@ -9,25 +9,27 @@ class AuthLogic {
 
   Future<void> verifyPhoneNumber(
     String phoneNumber, {
-    void Function(String)? onSent,
+    int? resendToken,
+    void Function(String, int?)? onSent,
     void Function(User)? onCompleted,
   }) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phoneNumber,
+      forceResendingToken: resendToken,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        print("VERIFY COMPLETED");
+        print('VERIFY COMPLETED');
         var user = await signInUser(credential);
         onCompleted?.call(user);
       },
       verificationFailed: (FirebaseAuthException exception) {
-        print("VERIFY ERROR");
+        print('VERIFY ERROR');
         print(exception.message);
       },
       codeSent: (String verificationId, int? resendToken) {
-        onSent?.call(verificationId);
+        onSent?.call(verificationId, resendToken);
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        print("VERIFY TIMEOUT");
+        print('VERIFY TIMEOUT');
       },
     );
   }

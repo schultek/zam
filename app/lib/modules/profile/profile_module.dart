@@ -7,9 +7,9 @@ import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import 'image_selector.dart';
 
-@Module()
+@Module('profile')
 class ProfileModule {
-  @ModuleItem(id: "profile")
+  @ModuleItem('profile')
   ContentSegment getProfileCard() {
     return ContentSegment(
       builder: (context) => Container(
@@ -25,7 +25,7 @@ class ProfileModule {
               ),
               const SizedBox(height: 10),
               Text(
-                "Profil",
+                'Profil',
                 style: Theme.of(context).textTheme.headline6!.copyWith(color: context.getTextColor()),
               ),
             ],
@@ -51,9 +51,8 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
-        iconTheme: IconThemeData(
-          color: context.getTextColor(),
-        ),
+        iconTheme: IconThemeData(color: context.getTextColor()),
+        title: Text('Profil', style: TextStyle(color: context.getTextColor())),
       ),
       body: Center(
         child: Padding(
@@ -78,14 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           backgroundColor: Colors.grey,
                           backgroundImage:
                               user?.profileUrl != null ? CachedNetworkImageProvider(user!.profileUrl!) : null,
-                          child: user?.profileUrl == null
-                              ? Center(
-                                  child: Text(
-                                    "KS",
-                                    style: Theme.of(context).textTheme.headline2,
-                                  ),
-                                )
-                              : null,
+                          child: user?.profileUrl == null ? const Center(child: Icon(Icons.add, size: 60)) : null,
                         ),
                       ),
                     ),
@@ -93,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   TextFormField(
                     initialValue: user?.nickname,
                     decoration: const InputDecoration(
-                      labelText: "Name",
+                      labelText: 'Name',
                     ),
                     style: TextStyle(color: context.getTextColor()),
                     onFieldSubmitted: (text) {
