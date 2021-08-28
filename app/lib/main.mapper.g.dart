@@ -484,21 +484,26 @@ class PhotosConfigMapper extends BaseMapper<PhotosConfig> {
   @override
   Function get decoder => decode;
   PhotosConfig decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  PhotosConfig fromMap(Map<String, dynamic> map) => PhotosConfig(map.getOpt('albumId'), map.getOpt('shareToken'));
+  PhotosConfig fromMap(Map<String, dynamic> map) =>
+      PhotosConfig(map.getOpt('albumId'), map.getOpt('shareToken'), map.getOpt('albumUrl'));
 
   @override
   Function get encoder => (PhotosConfig v) => encode(v);
   dynamic encode(PhotosConfig v) => toMap(v);
-  Map<String, dynamic> toMap(PhotosConfig p) =>
-      {'albumId': Mapper.toValue(p.albumId), 'shareToken': Mapper.toValue(p.shareToken)};
+  Map<String, dynamic> toMap(PhotosConfig p) => {
+        'albumId': Mapper.toValue(p.albumId),
+        'shareToken': Mapper.toValue(p.shareToken),
+        'albumUrl': Mapper.toValue(p.albumUrl)
+      };
 
   @override
-  String? stringify(PhotosConfig self) => 'PhotosConfig(albumId: ${self.albumId}, shareToken: ${self.shareToken})';
+  String? stringify(PhotosConfig self) =>
+      'PhotosConfig(albumId: ${self.albumId}, shareToken: ${self.shareToken}, albumUrl: ${self.albumUrl})';
   @override
-  int? hash(PhotosConfig self) => self.albumId.hashCode ^ self.shareToken.hashCode;
+  int? hash(PhotosConfig self) => self.albumId.hashCode ^ self.shareToken.hashCode ^ self.albumUrl.hashCode;
   @override
   bool? equals(PhotosConfig self, PhotosConfig other) =>
-      self.albumId == other.albumId && self.shareToken == other.shareToken;
+      self.albumId == other.albumId && self.shareToken == other.shareToken && self.albumUrl == other.albumUrl;
 
   @override
   Function get typeFactory => (f) => f<PhotosConfig>();
@@ -507,8 +512,8 @@ class PhotosConfigMapper extends BaseMapper<PhotosConfig> {
 extension PhotosConfigMapperExtension on PhotosConfig {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-  PhotosConfig copyWith({String? albumId, String? shareToken}) =>
-      PhotosConfig(albumId ?? this.albumId, shareToken ?? this.shareToken);
+  PhotosConfig copyWith({String? albumId, String? shareToken, String? albumUrl}) =>
+      PhotosConfig(albumId ?? this.albumId, shareToken ?? this.shareToken, albumUrl ?? this.albumUrl);
 }
 
 // === GENERATED ENUM MAPPERS AND EXTENSIONS ===

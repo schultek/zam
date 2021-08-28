@@ -11,6 +11,9 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment> {
   PageSegment? content;
 
   @override
+  bool get wantKeepAlive => content?.keepAlive ?? super.wantKeepAlive;
+
+  @override
   void initArea(List<PageSegment> widgets) => content = widgets.isNotEmpty ? widgets.first : null;
 
   @override

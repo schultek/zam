@@ -53,7 +53,7 @@ abstract class WidgetArea<T extends ModuleElement> extends StatefulWidget {
 }
 
 abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement> extends State<U>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   bool _isInitialized = false;
 
   StreamSubscription<List<String>?>? _modulesSubscription;
@@ -72,6 +72,9 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   WidgetTemplateState get template => WidgetTemplate.of(context, listen: false);
 
   Type get elementType => T;
+
+  @override
+  bool get wantKeepAlive => false;
 
   @override
   void didChangeDependencies() {
@@ -103,6 +106,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     var templateState = WidgetTemplate.of(context);
     templateState.registerArea(this);
 

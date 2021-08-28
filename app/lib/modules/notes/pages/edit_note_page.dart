@@ -43,6 +43,14 @@ class _EditNotePageState extends State<EditNotePage> {
     });
   }
 
+  Future<void> saveNote() async {
+    var content = _controller.document.toDelta().toJson();
+    await context.read(notesLogicProvider).updateNote(
+          widget.note.id,
+          widget.note.copyWith(title: _title, content: content),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,6 +59,7 @@ class _EditNotePageState extends State<EditNotePage> {
           if (isAuthor)
             IconButton(
               onPressed: () async {
+                await saveNote();
                 var nav = Navigator.of(context);
                 var wasDeleted = await nav.push<bool>(NoteInfoPage.route(widget.note));
                 if (wasDeleted == true) {
@@ -62,11 +71,8 @@ class _EditNotePageState extends State<EditNotePage> {
             ),
           if (isEditor)
             IconButton(
-              onPressed: () {
-                var content = _controller.document.toDelta().toJson();
-                context
-                    .read(notesLogicProvider)
-                    .updateNote(widget.note.id, widget.note.copyWith(title: _title, content: content));
+              onPressed: () async {
+                await saveNote();
                 Navigator.of(context).pop();
               },
               icon: const Icon(Icons.save),
@@ -80,32 +86,44 @@ class _EditNotePageState extends State<EditNotePage> {
           children: [
             Builder(
               builder: (context) => Expanded(
-                child: ListView(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: TextFormField(
-                        decoration: const InputDecoration(hintText: 'Title'),
-                        style: TextStyle(fontSize: 30, color: context.getTextColor()),
-                        initialValue: widget.note.title,
-                        onChanged: (text) => _title = text,
-                        textInputAction: TextInputAction.next,
-                        onFieldSubmitted: (_) => editorFocusNode.requestFocus(),
-                        readOnly: !isEditor,
-                      ),
+                child: GestureDetector(
+                  onTap: () {
+                    if (!editorFocusNode.hasPrimaryFocus) {
+                      editorFocusNode.requestFocus();
+                    }
+                  },
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: ListView(
+                      shrinkWrap: true,
+                      reverse: true,
+                      children: [
+                        QuillEditor(
+                          controller: _controller,
+                          scrollController: ScrollController(),
+                          scrollable: false,
+                          focusNode: editorFocusNode,
+                          autoFocus: false,
+                          readOnly: !isEditor,
+                          expands: false,
+                          padding: const EdgeInsets.all(20.0),
+                          keyboardAppearance: Brightness.dark,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: TextFormField(
+                            decoration: const InputDecoration(hintText: 'Title'),
+                            style: TextStyle(fontSize: 30, color: context.getTextColor()),
+                            initialValue: widget.note.title,
+                            onChanged: (text) => _title = text,
+                            textInputAction: TextInputAction.next,
+                            onFieldSubmitted: (_) => editorFocusNode.requestFocus(),
+                            readOnly: !isEditor,
+                          ),
+                        ),
+                      ],
                     ),
-                    QuillEditor(
-                      controller: _controller,
-                      scrollController: ScrollController(),
-                      scrollable: false,
-                      focusNode: editorFocusNode,
-                      autoFocus: false,
-                      readOnly: !isEditor,
-                      expands: false,
-                      padding: const EdgeInsets.all(20.0),
-                      keyboardAppearance: Brightness.dark,
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),

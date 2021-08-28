@@ -2,9 +2,10 @@ part of elements;
 
 @ModuleWidgetReflectable()
 class PageSegment extends ModuleElement with ModuleElementBuilder<PageSegment> {
+  final bool keepAlive;
   final Widget Function(BuildContext context) builder;
 
-  PageSegment({required this.builder}) : super(key: UniqueKey());
+  PageSegment({required this.builder, this.keepAlive = true}) : super(key: UniqueKey());
 
   @override
   Widget buildPlaceholder(BuildContext context) {

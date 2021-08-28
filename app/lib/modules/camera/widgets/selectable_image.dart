@@ -26,6 +26,7 @@ class SelectableImage extends StatelessWidget {
             child: Image.file(
               file,
               fit: BoxFit.cover,
+              gaplessPlayback: true,
             ),
           ),
           Positioned(

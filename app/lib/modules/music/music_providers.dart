@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:oauth2/oauth2.dart' as oauth;
 import 'package:spotify/spotify.dart';
 
 import '../../providers/firebase/doc_provider.dart';
@@ -25,7 +26,9 @@ final spotifyApiProvider = StreamProvider<SpotifyApi?>(
               scopes: apiScopes,
               expiration: (d['credentials']!['expiration'] as Timestamp).toDate(),
             );
-            return SpotifyApi(spotifyCredentials, onCredentialsRefreshed: (cred) {});
+            return SpotifyApi(spotifyCredentials, onCredentialsRefreshed: (cred) {
+              print('CREDENTIALS REFRESHED $cred');
+            });
           }
         }));
 
@@ -40,7 +43,16 @@ class PlayerNotifier extends StateNotifier<Player?> {
   Future<void> reload() async {
     var api = ref.watch(spotifyApiProvider).data?.value;
     if (api != null) {
-      state = await api.me.player();
+      try {
+        state = await api.me.player();
+      } on oauth.AuthorizationException catch (e) {
+        if (e.error == 'invalid_grant') {
+          await ref.read(musicLogicProvider).signOut();
+          state = null;
+        } else {
+          rethrow;
+        }
+      }
     }
   }
 }

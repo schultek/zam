@@ -53,10 +53,10 @@ class NotesLogic {
   final DocumentReference doc;
   NotesLogic(this.ref) : doc = ref.watch(moduleDocProvider('notes'));
 
-  Future<Note> createEmptyNote() async {
+  Future<Note> createEmptyNote({String? folder}) async {
     var note = doc.collection('notes').doc();
     var author = ref.read(userIdProvider)!;
-    return Note(note.id, null, [], author: author, editors: [author]);
+    return Note(note.id, null, [], folder: folder, author: author, editors: [author]);
   }
 
   Future<void> updateNote(String id, Note note) async {

@@ -55,7 +55,7 @@ class _SwipeTemplateSettingsState extends State<SwipeTemplateSettings> {
                 ),
                 const SizedBox(height: 20),
                 ListTile(
-                  title: const Text('Leave'),
+                  title: const Text('Leave', style: TextStyle(color: Colors.red)),
                   onTap: () {
                     context.read(tripsLogicProvider).leaveSelectedTrip();
                   },

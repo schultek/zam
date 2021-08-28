@@ -12,6 +12,20 @@ final photosApiClientProvider = Provider((ref) => ((GoogleSignInAccount? user) =
 final photosApiProvider = Provider((ref) =>
     ((BaseClient? client) => client != null ? PhotosLibraryApi(client) : null)(ref.watch(photosApiClientProvider)));
 
+final refreshablePhotosApiProvider =
+    StateNotifierProvider.family<RefreshablePhotosApiNotifier, PhotosLibraryApi?, String>(
+        (ref, key) => RefreshablePhotosApiNotifier(ref, key));
+
+class RefreshablePhotosApiNotifier extends StateNotifier<PhotosLibraryApi?> {
+  final ProviderReference ref;
+  final String key;
+  RefreshablePhotosApiNotifier(this.ref, this.key) : super(ref.watch(photosApiProvider));
+
+  void refresh() {
+    state = state;
+  }
+}
+
 class AuthenticatedClient extends BaseClient {
   final Client baseClient;
   final Future<Map<String, String>> Function() getAuthHeaders;

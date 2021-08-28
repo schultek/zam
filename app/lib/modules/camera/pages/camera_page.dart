@@ -25,21 +25,18 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void initState() {
     super.initState();
-
-    camerasFuture.then((cameras) async {
-      await initController(cameras[0]);
-    });
+    camerasFuture.then((cameras) => initController(cameras[0]));
   }
 
   Future<void> initController(CameraDescription camera) async {
+    if (!mounted) return;
     controller = CameraController(camera, ResolutionPreset.max);
     await controller!.initialize();
+    if (!mounted) return;
     minZoom = await controller!.getMinZoomLevel();
+    if (!mounted) return;
     maxZoom = await controller!.getMaxZoomLevel();
-
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -53,6 +50,7 @@ class _CameraPageState extends State<CameraPage> {
       [Icons.flash_off, Icons.flash_auto, Icons.flash_on][FlashMode.values.indexOf(flashMode)];
 
   void toggleFlashMode() {
+    if (!controllerIsInitialized) return;
     var i = FlashMode.values.indexOf(flashMode);
     flashMode = FlashMode.values[(i + 1) % 3];
     controller?.setFlashMode(flashMode);
@@ -66,7 +64,10 @@ class _CameraPageState extends State<CameraPage> {
     });
   }
 
+  bool get controllerIsInitialized => controller != null && controller!.value.isInitialized;
+
   Future<void> takePicture() async {
+    if (!controllerIsInitialized) return;
     setState(() => takingPicture = true);
     var file = await controller!.takePicture();
     print(file.path);
@@ -75,34 +76,46 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null || !controller!.value.isInitialized) {
-      return Container();
-    }
     return Container(
       color: Colors.black,
       child: Stack(
         children: [
           Column(
             children: [
-              GestureDetector(
-                onTapUp: (details) {
-                  controller!.setFocusPoint(Offset(
-                    details.globalPosition.dx / MediaQuery.of(context).size.width,
-                    details.globalPosition.dy / MediaQuery.of(context).size.height,
-                  ));
-                },
-                onScaleUpdate: (details) {
-                  print(details.scale);
-                  nextZoom = zoom * details.scale;
-                  nextZoom = min(max(nextZoom, minZoom), maxZoom);
-                  controller!.setZoomLevel(nextZoom);
-                },
-                onScaleEnd: (details) {
-                  zoom = nextZoom;
-                },
-                child: CameraPreview(controller!),
-              ),
-              Expanded(
+              const Spacer(),
+              if (controllerIsInitialized)
+                GestureDetector(
+                  onTapUp: (details) {
+                    controller!.setFocusPoint(Offset(
+                      details.globalPosition.dx / MediaQuery.of(context).size.width,
+                      details.globalPosition.dy / MediaQuery.of(context).size.height,
+                    ));
+                  },
+                  onScaleUpdate: (details) {
+                    print(details.scale);
+                    nextZoom = zoom * details.scale;
+                    nextZoom = min(max(nextZoom, minZoom), maxZoom);
+                    controller!.setZoomLevel(nextZoom);
+                  },
+                  onScaleEnd: (details) {
+                    zoom = nextZoom;
+                  },
+                  child: CameraPreview(
+                    controller!,
+                    child: TweenAnimationBuilder<double>(
+                      key: ValueKey(takingPicture),
+                      tween: Tween(begin: takingPicture ? 0 : 1, end: 0),
+                      duration: const Duration(milliseconds: 200),
+                      builder: (context, value, _) {
+                        return Container(
+                          color: Colors.black.withOpacity(value > 0.5 ? 1 : value * 2),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              SizedBox(
+                height: 120,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [

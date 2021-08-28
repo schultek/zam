@@ -56,74 +56,65 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                   }
                 },
                 children: [
-                  const KeepAlive(
-                    key: ValueKey('left'),
-                    child: ThemedBackground(child: FullPageArea(id: 'left')),
-                  ),
-                  KeepAlive(
-                    key: const ValueKey('body'),
-                    child: ThemedBackground(
-                      child: CustomScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        controller: _scrollController,
-                        slivers: [
-                          SliverTemplateHeader(
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
-                              child: Consumer(
-                                builder: (context, watch, _) {
-                                  var trip = watch(selectedTripProvider)!;
-                                  var user = watch(tripUserProvider)!;
-                                  return Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      if (user.isOrganizer)
-                                        const SizedBox(
-                                          width: 50,
-                                          child: ReorderToggle(),
-                                        )
-                                      else
-                                        const SizedBox(width: 50),
-                                      Text(
-                                        trip.name,
-                                        style:
-                                            Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
-                                      ),
-                                      if (user.isOrganizer)
-                                        SizedBox(
-                                          width: 50,
-                                          child: IconButton(
-                                            icon: Icon(
-                                              Icons.settings,
-                                              color: context.getTextColor(),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.of(context).push(SwipeTemplateSettings.route());
-                                            },
+                  const ThemedBackground(child: FullPageArea(id: 'left')),
+                  ThemedBackground(
+                    child: CustomScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      controller: _scrollController,
+                      slivers: [
+                        SliverTemplateHeader(
+                          child: Container(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
+                            child: Consumer(
+                              builder: (context, watch, _) {
+                                var trip = watch(selectedTripProvider)!;
+                                var user = watch(tripUserProvider)!;
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    if (user.isOrganizer)
+                                      const SizedBox(
+                                        width: 50,
+                                        child: ReorderToggle(),
+                                      )
+                                    else
+                                      const SizedBox(width: 50),
+                                    Text(
+                                      trip.name,
+                                      style:
+                                          Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
+                                    ),
+                                    if (user.isOrganizer)
+                                      SizedBox(
+                                        width: 50,
+                                        child: IconButton(
+                                          icon: Icon(
+                                            Icons.settings,
+                                            color: context.getTextColor(),
                                           ),
-                                        )
-                                      else
-                                        const SizedBox(width: 50),
-                                    ],
-                                  );
-                                },
-                              ),
+                                          onPressed: () {
+                                            Navigator.of(context).push(SwipeTemplateSettings.route());
+                                          },
+                                        ),
+                                      )
+                                    else
+                                      const SizedBox(width: 50),
+                                  ],
+                                );
+                              },
                             ),
                           ),
-                          SliverPadding(
-                            padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
-                            sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
-                          ),
-                          if (state.isEditing) SliverToBoxAdapter(child: Container(height: 130)),
-                        ],
-                      ),
+                        ),
+                        SliverPadding(
+                          padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
+                          sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
+                        ),
+                        if (state.isEditing) SliverToBoxAdapter(child: Container(height: 130)),
+                      ],
                     ),
                   ),
-                  const KeepAlive(
-                    key: ValueKey('right'),
-                    child: ThemedBackground(child: FullPageArea(id: 'right')),
-                  ),
+                  const ThemedBackground(child: FullPageArea(id: 'right')),
                 ],
               ),
             ),
@@ -131,24 +122,5 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
         ),
       ),
     );
-  }
-}
-
-class KeepAlive extends StatefulWidget {
-  final Widget child;
-  const KeepAlive({Key? key, required this.child}) : super(key: key);
-
-  @override
-  _KeepAliveState createState() => _KeepAliveState();
-}
-
-class _KeepAliveState extends State<KeepAlive> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return widget.child;
   }
 }

@@ -4,9 +4,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api_client/photoslibrary.dart';
+import '../../../core/themes/themes.dart';
 import '../../../providers/photos/google_account_provider.dart';
+import '../../../providers/photos/photos_logic_provider.dart';
 import '../../../providers/photos/photos_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../widgets/selectable_image.dart';
@@ -24,7 +27,7 @@ class GalleryPage extends StatefulWidget {
 
 class _GalleryPageState extends State<GalleryPage> {
   List<File> files = [];
-  bool selectForUpload = false;
+  bool selectForUpload = false, loadingUploadMode = false;
   Map<String, bool> selectedFiles = {};
 
   @override
@@ -40,7 +43,7 @@ class _GalleryPageState extends State<GalleryPage> {
     setState(() {
       this.files = files;
     });
-    context.read(itemsInAlbumProvider.notifier).reload();
+    context.read(itemsApiProvider.notifier).refresh();
   }
 
   Future<void> uploadFiles() async {
@@ -54,7 +57,7 @@ class _GalleryPageState extends State<GalleryPage> {
     var didSignIn = await showPrompt<bool>(
       title: 'SignIn with Google',
       body: 'In order to use the shared photos album, you have to sign in with your google account.',
-      onContinue: () => context.read(googleAccountProvider.notifier).signInWithGoogle(),
+      onContinue: () => context.read(googleAccountProvider.notifier).signIn(),
     );
     return didSignIn ?? false;
   }
@@ -104,44 +107,73 @@ class _GalleryPageState extends State<GalleryPage> {
     return result;
   }
 
+  Future<void> toggleUploadMode() async {
+    var isSignedIn = await context.read(isSignedInWithGoogleProvider.future);
+    if (!isSignedIn) {
+      isSignedIn = await showSignInWithGooglePrompt();
+      if (!isSignedIn) return;
+    }
+
+    var hasAlbum = await context.read(hasSharedAlbumProvider.future);
+    if (!hasAlbum) {
+      if (context.read(isOrganizerProvider)) {
+        hasAlbum = await showCreateSharedAlbumPrompt();
+        if (!hasAlbum) return;
+      } else {
+        await showMissingSharedAlbumPrompt();
+        return;
+      }
+    }
+
+    var didJoinAlbum = await context.read(didJoinSharedAlbumProvider.future);
+    if (!didJoinAlbum) {
+      didJoinAlbum = await showJoinSharedAlbumPrompt();
+      if (!didJoinAlbum) return;
+    }
+
+    setState(() {
+      selectForUpload = !selectForUpload;
+    });
+    if (!selectForUpload) {
+      uploadFiles();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Gallery'),
         actions: [
+          Consumer(builder: (context, watch, _) {
+            var config = watch(photosConfigProvider).data?.value;
+            if (config?.albumUrl != null) {
+              return IconButton(
+                icon: const Icon(Icons.open_in_new),
+                onPressed: () {
+                  launch(config!.albumUrl!);
+                },
+              );
+            } else {
+              return Container();
+            }
+          }),
           IconButton(
-            icon: Icon(selectForUpload ? Icons.check : Icons.cloud_upload),
+            icon: loadingUploadMode
+                ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(context.getTextColor()),
+                  )
+                : Icon(selectForUpload ? Icons.check : Icons.cloud_upload),
             onPressed: () async {
-              var isSignedIn = context.read(isSignedInWithGoogleProvider);
-              if (!isSignedIn) {
-                isSignedIn = await showSignInWithGooglePrompt();
-                if (!isSignedIn) return;
-              }
-
-              var hasAlbum = context.read(hasSharedAlbumProvider);
-              if (!hasAlbum) {
-                if (context.read(isOrganizerProvider)) {
-                  hasAlbum = await showCreateSharedAlbumPrompt();
-                  if (!hasAlbum) return;
-                } else {
-                  await showMissingSharedAlbumPrompt();
-                  return;
-                }
-              }
-
-              var didJoinAlbum = context.read(didJoinSharedAlbumProvider).data?.value ?? false;
-              if (!didJoinAlbum) {
-                didJoinAlbum = await showJoinSharedAlbumPrompt();
-                if (!didJoinAlbum) return;
-              }
-
-              setState(() {
-                selectForUpload = !selectForUpload;
-              });
               if (!selectForUpload) {
-                uploadFiles();
+                setState(() {
+                  loadingUploadMode = true;
+                });
               }
+              await toggleUploadMode();
+              setState(() {
+                loadingUploadMode = false;
+              });
             },
           )
         ],

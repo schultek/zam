@@ -3,34 +3,34 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+final googleSignInProvider = Provider((ref) => GoogleSignIn(scopes: <String>[
+      'profile',
+      'https://www.googleapis.com/auth/photoslibrary',
+      'https://www.googleapis.com/auth/photoslibrary.sharing'
+    ]));
+
 final googleAccountProvider =
     StateNotifierProvider<GoogleAccountNotifier, GoogleSignInAccount?>((ref) => GoogleAccountNotifier(ref));
 
-final isSignedInWithGoogleProvider = Provider((ref) => ref.watch(googleAccountProvider) != null);
+final googleSignInFutureProvider = FutureProvider((ref) => ref.watch(googleSignInProvider).signInSilently());
+
+final isSignedInWithGoogleProvider = FutureProvider((ref) =>
+    ref.watch(googleSignInFutureProvider.future).then((acc) => (ref.watch(googleAccountProvider) ?? acc) != null));
 
 class GoogleAccountNotifier extends StateNotifier<GoogleSignInAccount?> {
   final ProviderReference ref;
-  final GoogleSignIn signIn;
-
   late StreamSubscription<GoogleSignInAccount?> _userSubscription;
 
-  GoogleAccountNotifier(this.ref)
-      : signIn = GoogleSignIn(scopes: <String>[
-          'profile',
-          'https://www.googleapis.com/auth/photoslibrary',
-          'https://www.googleapis.com/auth/photoslibrary.sharing'
-        ]),
-        super(null) {
-    state = signIn.currentUser;
-    print('user init $state');
-    _userSubscription = signIn.onCurrentUserChanged.listen((user) {
+  GoogleAccountNotifier(this.ref) : super(ref.read(googleSignInProvider).currentUser) {
+    ref.watch(googleSignInFutureProvider);
+    _userSubscription = ref.watch(googleSignInProvider).onCurrentUserChanged.listen((user) {
       print('user $user');
       state = user;
     });
   }
 
-  Future<bool> signInWithGoogle() async {
-    state = await signIn.signIn();
+  Future<bool> signIn() async {
+    state = await ref.read(googleSignInProvider).signIn();
     return state != null;
   }
 

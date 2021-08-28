@@ -10,6 +10,7 @@ class CameraModule {
   @ModuleItem('camera')
   PageSegment getCameraPage() {
     return PageSegment(
+      keepAlive: false,
       builder: (context) {
         if (WidgetSelector.existsIn(context)) {
           return const Center(child: Text('Camera'));

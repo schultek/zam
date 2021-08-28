@@ -46,7 +46,7 @@ class _NotesPageState extends State<NotesPage> {
                         },
                       ),
                     for (var folder in folders.keys)
-                      if (folder != null) folderCard(folder, folders[folder]!),
+                      if (folder != null) folderCard(folder),
                     noteCard(
                       child: const Center(
                         child: Icon(Icons.add, size: 60),
@@ -79,10 +79,10 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  Widget folderCard(String folder, List<Note> notes) {
+  Widget folderCard(String folder) {
     return GestureDetector(
       onTap: () {
-        showDialog(context: context, builder: (context) => folderDialog(folder, notes), useRootNavigator: false);
+        showDialog(context: context, builder: (context) => folderDialog(folder), useRootNavigator: false);
       },
       child: Card(
         margin: EdgeInsets.zero,
@@ -110,7 +110,7 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 
-  Widget folderDialog(String folder, List<Note> notes) {
+  Widget folderDialog(String folder) {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
@@ -122,27 +122,42 @@ class _NotesPageState extends State<NotesPage> {
               onTap: () {
                 Navigator.of(context).pop();
               },
-              child: GridView.count(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                crossAxisCount: 3,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                children: [
-                  for (var note in notes)
-                    FittedBox(
-                      child: ConstrainedBox(
-                        constraints: constraints.scale(0.5),
-                        child: noteCard(
-                          child: NotePreview(note: note),
-                          onTap: () async {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).push(EditNotePage.route(note));
-                          },
+              child: Consumer(
+                builder: (context, watch, _) {
+                  var notes = watch(notesProvider).data?.value.where((n) => n.folder == folder) ?? [];
+
+                  return GridView.count(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    children: [
+                      for (var note in notes)
+                        FittedBox(
+                          child: ConstrainedBox(
+                            constraints: constraints.scale(0.5),
+                            child: noteCard(
+                              child: NotePreview(note: note),
+                              onTap: () async {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).push(EditNotePage.route(note));
+                              },
+                            ),
+                          ),
                         ),
+                      noteCard(
+                        child: const Center(
+                          child: Icon(Icons.add, size: 30),
+                        ),
+                        onTap: () async {
+                          var note = await context.read(notesLogicProvider).createEmptyNote(folder: folder);
+                          Navigator.of(context).push(EditNotePage.route(note));
+                        },
                       ),
-                    )
-                ],
+                    ],
+                  );
+                },
               ),
             ),
           ),
