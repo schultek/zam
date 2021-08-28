@@ -1,0 +1,107 @@
+on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'app/**'
+
+name: Test and Build App
+
+jobs:
+  test:
+    name: Test App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Cache Flutter Dependencies
+        uses: actions/cache@v1
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: app-ubuntu-latest-flutter
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+
+      - name: Install Packages
+        run: |
+          cd app
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+          flutter pub get
+
+      - name: Check Formatting
+        run: flutter format --dry-run --set-exit-if-changed -l 120 app
+
+      - name: Analyze Code
+        run: |
+          cd app
+          flutter analyze
+
+      - name: Run Tests
+        run: |
+          cd app
+          flutter test --no-sound-null-safety
+
+  build_android:
+    name: Build Android App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+
+      - name: Cache Flutter Dependencies
+        uses: actions/cache@v1
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ubuntu-latest-flutter
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: beta
+
+      - name: Write Google-Services File
+        run: 'echo "$GOOGLE_SERVICES" > app/android/app/google-services.json'
+        shell: bash
+        env:
+          GOOGLE_SERVICES: ${{ secrets.ANDROID_GOOGLE_SERVICES }}
+
+      - name: Build Android App
+        run: |
+          cd app
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+          flutter build apk --no-sound-null-safety
+
+  build_ios:
+    name: Build IOS App
+    if: false
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Cache Flutter Dependencies
+        uses: actions/cache@v1
+        with:
+          path: /Users/runner/hostedtoolcache/flutter
+          key: macos-latest-flutter
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: beta
+
+      - name: Build IOS App
+        run: |
+          cd app
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+          flutter build ios --release --no-codesign --no-sound-null-safety

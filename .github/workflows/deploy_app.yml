@@ -1,0 +1,135 @@
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+
+name: Build and Deploy App
+
+jobs:
+  deploy_android:
+    name: Deploy Android App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+
+      - name: Cache Flutter Dependencies
+        uses: actions/cache@v1
+        with:
+          path: /opt/hostedtoolcache/flutter
+          key: ubuntu-latest-flutter
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+
+      - name: Run Flutter Doctor
+        run: flutter doctor
+
+      - name: Write Google-Services File
+        run: 'echo "$GOOGLE_SERVICES" > app/android/app/google-services.json'
+        shell: bash
+        env:
+          GOOGLE_SERVICES: ${{ secrets.ANDROID_GOOGLE_SERVICES }}
+
+      - name: Build Android App
+        run: |
+          cd app
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+          flutter build appbundle --no-sound-null-safety
+
+      - uses: r0adkll/sign-android-release@fix/bundle-signing
+        name: Sign Android Build
+        id: sign_app
+        with:
+          releaseDirectory: app/build/app/outputs/apk/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - name: Upload to Play Console
+        if: false
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+          packageName: de.schultek.jufa
+          releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
+          track: internal
+          whatsNewDirectory: app/whats_new
+          mappingFile: app/build/app/outputs/mapping/release/mapping.txt
+
+      - name: Upload to Internal App Sharing
+        uses: sagar-viradiya/internal-app-sharing-action@{latest_version}
+        id: upload-app
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+          packageName: de.schultek.jufa
+          aabFilePath: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Output Download URl
+        run: |
+          ${{steps.upload-app.outputs.downloadUrl}}
+
+  deploy_ios:
+    name: Deploy IOS App
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Cache Flutter Dependencies
+        uses: actions/cache@v1
+        with:
+          path: /Users/runner/hostedtoolcache/flutter
+          key: macos-latest-flutter
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v1
+
+      - name: Run Flutter Doctor
+        run: |
+          flutter doctor
+          xcodebuild -version
+
+      - name: Write Google-Services File
+        run: 'echo "$GOOGLE_SERVICES" > app/ios/Runner/GoogleService-Info.plist'
+        shell: bash
+        env:
+          GOOGLE_SERVICES: ${{ secrets.IOS_GOOGLE_SERVICES }}
+
+      - name: Import CodeSign Certificates
+        uses: Apple-Actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.CERTIFICATES_FILE_BASE64 }}
+          p12-password: ${{ secrets.CERTIFICATES_PASSWORD }}
+
+      - name: Download Provisioning Profiles
+        uses: Apple-Actions/download-provisioning-profiles@v1
+        with:
+          bundle-id: de.schultek.jufa
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+
+      - name: Build IOS App
+        run: |
+          cd app
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+          flutter build ipa --no-sound-null-safety --export-options-plist=ios/ExportOptions.plist
+
+      - name: Upload to TestFlight
+        uses: Apple-Actions/upload-testflight-build@master
+        with:
+          app-path: app/build/ios/ipa/app.ipa
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_PRIVATE_KEY }}
