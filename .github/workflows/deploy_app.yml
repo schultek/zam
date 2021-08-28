@@ -3,6 +3,7 @@ on:
     branches:
       - main
     paths:
+      - '.github/**'
       - 'app/**'
 
 name: Build and Deploy App
@@ -38,22 +39,26 @@ jobs:
         env:
           GOOGLE_SERVICES: ${{ secrets.ANDROID_GOOGLE_SERVICES }}
 
+      - name: Configure Keystore
+        run: |
+          echo "$ANDROID_SIGNING_KEY" | base64 --decode > app/upload-keystore.jks
+          echo "storeFile=upload-keystore.jks" >> key.properties
+          echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> key.properties
+          echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
+          echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> key.properties
+        env:
+          ANDROID_SIGNING_KEY: ${{ secrets.ANDROID_SIGNING_KEY }}
+          KEYSTORE_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEYSTORE_STORE_PASSWORD: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
+        working-directory: app/android
+
       - name: Build Android App
         run: |
           cd app
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
           flutter build appbundle --no-sound-null-safety
-
-      - uses: r0adkll/sign-android-release@fix/bundle-signing
-        name: Sign Android Build
-        id: sign_app
-        with:
-          releaseDirectory: app/build/app/outputs/apk/release
-          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEY_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
       - name: Upload to Play Console
         if: false

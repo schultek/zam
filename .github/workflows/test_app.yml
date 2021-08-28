@@ -3,6 +3,7 @@ on:
     branches:
       - develop
     paths:
+      - '.github/**'
       - 'app/**'
 
 name: Test and Build App
