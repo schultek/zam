@@ -67,7 +67,7 @@ jobs:
           mappingFile: app/build/app/outputs/mapping/release/mapping.txt
 
       - name: Upload to Internal App Sharing
-        uses: sagar-viradiya/internal-app-sharing-action@{latest_version}
+        uses: sagar-viradiya/internal-app-sharing-action@v1.1.0
         id: upload-app
         with:
           serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_KEY }}
@@ -121,7 +121,9 @@ jobs:
 
       - name: Build IOS App
         run: |
-          cd app
+          cd app/ios
+          pod repo update
+          cd ..
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
           flutter build ipa --no-sound-null-safety --export-options-plist=ios/ExportOptions.plist
