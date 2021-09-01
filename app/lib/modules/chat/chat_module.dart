@@ -1,5 +1,5 @@
 import '../../core/module/module.dart';
-import 'chat_page.dart';
+import 'pages/chat_page.dart';
 
 @Module('chat')
 class ChatModule {

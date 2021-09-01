@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../chat_provider.dart';
+import '../../../../providers/trips/selected_trip_provider.dart';
+import '../../chat_provider.dart';
 
 class AddMembersPage extends StatefulWidget {
   final ChannelInfo channel;

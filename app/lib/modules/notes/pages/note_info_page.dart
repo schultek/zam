@@ -22,7 +22,10 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer(builder: (context, watch, _) {
-      var note = watch(noteProvider(widget.note.id)).data!.value!;
+      var note = watch(noteProvider(widget.note.id)).data!.value;
+      if (note == null) {
+        return Container();
+      }
 
       return Scaffold(
         appBar: AppBar(
@@ -54,7 +57,6 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
                 style: TextStyle(color: Colors.red),
               ),
               onTap: () async {
-                await context.read(notesLogicProvider).deleteNote(note.id);
                 Navigator.pop(context, true);
               },
             )

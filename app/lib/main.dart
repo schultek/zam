@@ -51,10 +51,10 @@ class _JufaAppState extends State<JufaApp> {
                 key: _navigatorKey,
                 restorationScopeId: 'nav',
                 pages: [
-                  if (isLoadingTrips || isLoadingLink)
-                    LoadingScreen.page()
-                  else if (isProcessingLink)
+                  if (isProcessingLink)
                     LoadingLinkScreen.page()
+                  else if (isLoadingTrips || isLoadingLink)
+                    LoadingScreen.page()
                   else if (link != null)
                     SignInScreen.page(link)
                   else if (selectedTrip != null)

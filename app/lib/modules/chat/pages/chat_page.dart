@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../core/module/module.dart';
+import '../../../core/module/module.dart';
+import '../chat_provider.dart';
 import 'channel/add_channel_page.dart';
-import 'channel/channel_page.dart';
-import 'chat_provider.dart';
+import 'channel_page.dart';
 
 class ChatPage extends ConsumerWidget {
   @override

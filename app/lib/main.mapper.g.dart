@@ -34,6 +34,9 @@ var _mappers = <String, BaseMapper>{
   _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
   _typeOf<ChannelInfo>(): ChannelInfoMapper._(),
   _typeOf<ChatMessage>(): ChatMessageMapper._(),
+  _typeOf<ChatTextMessage>(): ChatTextMessageMapper._(),
+  _typeOf<ChatImageMessage>(): ChatImageMessageMapper._(),
+  _typeOf<ChatFileMessage>(): ChatFileMessageMapper._(),
   _typeOf<PhotosConfig>(): PhotosConfigMapper._(),
   // enum mappers
   // custom mappers
@@ -448,13 +451,35 @@ class ChatMessageMapper extends BaseMapper<ChatMessage> {
 
   @override
   Function get decoder => decode;
-  ChatMessage decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ChatMessage decode(dynamic v) => _checked(v, (Map<String, dynamic> map) {
+        switch (map['type']) {
+          case 'file':
+            return ChatFileMessageMapper._().decode(map);
+          case 'image':
+            return ChatImageMessageMapper._().decode(map);
+          case 'text':
+            return ChatTextMessageMapper._().decode(map);
+          default:
+            return fromMap(map);
+        }
+      });
   ChatMessage fromMap(Map<String, dynamic> map) =>
       ChatMessage(sender: map.get('sender'), text: map.get('text'), sentAt: map.get('sentAt'));
 
   @override
   Function get encoder => (ChatMessage v) => encode(v);
-  dynamic encode(ChatMessage v) => toMap(v);
+  dynamic encode(ChatMessage v) {
+    if (v is ChatTextMessage) {
+      return ChatTextMessageMapper._().encode(v);
+    } else if (v is ChatImageMessage) {
+      return ChatImageMessageMapper._().encode(v);
+    } else if (v is ChatFileMessage) {
+      return ChatFileMessageMapper._().encode(v);
+    } else {
+      return toMap(v);
+    }
+  }
+
   Map<String, dynamic> toMap(ChatMessage c) =>
       {'sender': Mapper.toValue(c.sender), 'text': Mapper.toValue(c.text), 'sentAt': Mapper.toValue(c.sentAt)};
 
@@ -476,6 +501,154 @@ extension ChatMessageMapperExtension on ChatMessage {
   Map<String, dynamic> toMap() => Mapper.toMap(this);
   ChatMessage copyWith({String? sender, String? text, DateTime? sentAt}) =>
       ChatMessage(sender: sender ?? this.sender, text: text ?? this.text, sentAt: sentAt ?? this.sentAt);
+}
+
+class ChatTextMessageMapper extends BaseMapper<ChatTextMessage> {
+  ChatTextMessageMapper._();
+
+  @override
+  Function get decoder => decode;
+  ChatTextMessage decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ChatTextMessage fromMap(Map<String, dynamic> map) =>
+      ChatTextMessage(sender: map.get('sender'), text: map.get('text'), sentAt: map.get('sentAt'));
+
+  @override
+  Function get encoder => (ChatTextMessage v) => encode(v);
+  dynamic encode(ChatTextMessage v) => toMap(v);
+  Map<String, dynamic> toMap(ChatTextMessage c) => {
+        'sender': Mapper.toValue(c.sender),
+        'text': Mapper.toValue(c.text),
+        'sentAt': Mapper.toValue(c.sentAt),
+        'type': 'text'
+      };
+
+  @override
+  String? stringify(ChatTextMessage self) =>
+      'ChatTextMessage(sender: ${self.sender}, text: ${self.text}, sentAt: ${self.sentAt})';
+  @override
+  int? hash(ChatTextMessage self) => self.sender.hashCode ^ self.text.hashCode ^ self.sentAt.hashCode;
+  @override
+  bool? equals(ChatTextMessage self, ChatTextMessage other) =>
+      self.sender == other.sender && self.text == other.text && self.sentAt == other.sentAt;
+
+  @override
+  Function get typeFactory => (f) => f<ChatTextMessage>();
+}
+
+extension ChatTextMessageMapperExtension on ChatTextMessage {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  ChatTextMessage copyWith({String? sender, String? text, DateTime? sentAt}) =>
+      ChatTextMessage(sender: sender ?? this.sender, text: text ?? this.text, sentAt: sentAt ?? this.sentAt);
+}
+
+class ChatImageMessageMapper extends BaseMapper<ChatImageMessage> {
+  ChatImageMessageMapper._();
+
+  @override
+  Function get decoder => decode;
+  ChatImageMessage decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ChatImageMessage fromMap(Map<String, dynamic> map) => ChatImageMessage(
+      uri: map.get('uri'),
+      size: map.get('size'),
+      sender: map.get('sender'),
+      text: map.get('text'),
+      sentAt: map.get('sentAt'));
+
+  @override
+  Function get encoder => (ChatImageMessage v) => encode(v);
+  dynamic encode(ChatImageMessage v) => toMap(v);
+  Map<String, dynamic> toMap(ChatImageMessage c) => {
+        'uri': Mapper.toValue(c.uri),
+        'size': Mapper.toValue(c.size),
+        'sender': Mapper.toValue(c.sender),
+        'text': Mapper.toValue(c.text),
+        'sentAt': Mapper.toValue(c.sentAt),
+        'type': 'image'
+      };
+
+  @override
+  String? stringify(ChatImageMessage self) =>
+      'ChatImageMessage(sender: ${self.sender}, text: ${self.text}, sentAt: ${self.sentAt}, uri: ${self.uri}, size: ${self.size})';
+  @override
+  int? hash(ChatImageMessage self) =>
+      self.uri.hashCode ^ self.size.hashCode ^ self.sender.hashCode ^ self.text.hashCode ^ self.sentAt.hashCode;
+  @override
+  bool? equals(ChatImageMessage self, ChatImageMessage other) =>
+      self.uri == other.uri &&
+      self.size == other.size &&
+      self.sender == other.sender &&
+      self.text == other.text &&
+      self.sentAt == other.sentAt;
+
+  @override
+  Function get typeFactory => (f) => f<ChatImageMessage>();
+}
+
+extension ChatImageMessageMapperExtension on ChatImageMessage {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  ChatImageMessage copyWith({String? uri, int? size, String? sender, String? text, DateTime? sentAt}) =>
+      ChatImageMessage(
+          uri: uri ?? this.uri,
+          size: size ?? this.size,
+          sender: sender ?? this.sender,
+          text: text ?? this.text,
+          sentAt: sentAt ?? this.sentAt);
+}
+
+class ChatFileMessageMapper extends BaseMapper<ChatFileMessage> {
+  ChatFileMessageMapper._();
+
+  @override
+  Function get decoder => decode;
+  ChatFileMessage decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ChatFileMessage fromMap(Map<String, dynamic> map) => ChatFileMessage(
+      uri: map.get('uri'),
+      size: map.get('size'),
+      sender: map.get('sender'),
+      text: map.get('text'),
+      sentAt: map.get('sentAt'));
+
+  @override
+  Function get encoder => (ChatFileMessage v) => encode(v);
+  dynamic encode(ChatFileMessage v) => toMap(v);
+  Map<String, dynamic> toMap(ChatFileMessage c) => {
+        'uri': Mapper.toValue(c.uri),
+        'size': Mapper.toValue(c.size),
+        'sender': Mapper.toValue(c.sender),
+        'text': Mapper.toValue(c.text),
+        'sentAt': Mapper.toValue(c.sentAt),
+        'type': 'file'
+      };
+
+  @override
+  String? stringify(ChatFileMessage self) =>
+      'ChatFileMessage(sender: ${self.sender}, text: ${self.text}, sentAt: ${self.sentAt}, uri: ${self.uri}, size: ${self.size})';
+  @override
+  int? hash(ChatFileMessage self) =>
+      self.uri.hashCode ^ self.size.hashCode ^ self.sender.hashCode ^ self.text.hashCode ^ self.sentAt.hashCode;
+  @override
+  bool? equals(ChatFileMessage self, ChatFileMessage other) =>
+      self.uri == other.uri &&
+      self.size == other.size &&
+      self.sender == other.sender &&
+      self.text == other.text &&
+      self.sentAt == other.sentAt;
+
+  @override
+  Function get typeFactory => (f) => f<ChatFileMessage>();
+}
+
+extension ChatFileMessageMapperExtension on ChatFileMessage {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  ChatFileMessage copyWith({String? uri, int? size, String? sender, String? text, DateTime? sentAt}) => ChatFileMessage(
+      uri: uri ?? this.uri,
+      size: size ?? this.size,
+      sender: sender ?? this.sender,
+      text: text ?? this.text,
+      sentAt: sentAt ?? this.sentAt);
 }
 
 class PhotosConfigMapper extends BaseMapper<PhotosConfig> {

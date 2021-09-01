@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart' show XFile;
 
 import '../../models/models.dart';
 import '../../providers/auth/user_provider.dart';
@@ -49,11 +54,11 @@ class ChatLogic {
   }
 
   void send(String channelId, String text) {
-    chat.collection('channels/$channelId/messages').add({
-      'sender': ref.read(userIdProvider),
-      'text': text,
-      'sentAt': DateTime.now().toUtc().toIso8601String(),
-    });
+    chat.collection('channels/$channelId/messages').add(ChatTextMessage(
+          sender: ref.read(userIdProvider)!,
+          text: text,
+          sentAt: DateTime.now(),
+        ).toMap());
   }
 
   Future<void> joinChannel(ChannelInfo channel) async {
@@ -62,10 +67,61 @@ class ChatLogic {
     });
   }
 
+  Future<void> leaveChannel(String channelId) async {
+    await chat.collection('channels').doc(channelId).update({
+      'members': FieldValue.arrayRemove([ref.read(userIdProvider)]),
+    });
+  }
+
   Future<void> addMembers(String id, List<String> members) async {
     await chat.collection('channels').doc(id).update({
       'members': FieldValue.arrayUnion(members),
     });
+  }
+
+  Future<void> sendImage(String channelId, XFile res) async {
+    var file = File(res.path);
+    var size = file.lengthSync();
+    var name = res.name;
+
+    try {
+      var reference = FirebaseStorage.instance.ref('chat/images/$name');
+      await reference.putFile(file);
+      var uri = await reference.getDownloadURL();
+
+      chat.collection('channels/$channelId/messages').add(ChatImageMessage(
+            sender: ref.read(userIdProvider)!,
+            text: '',
+            sentAt: DateTime.now(),
+            uri: uri,
+            size: size,
+          ).toMap());
+    } on FirebaseException catch (e) {
+      print('ERROR ON SENDING IMAGE $e');
+      return;
+    }
+  }
+
+  Future<void> sendFile(String channelId, FilePickerResult res) async {
+    var resFile = res.files.single;
+    var file = File(resFile.path!);
+
+    try {
+      var reference = FirebaseStorage.instance.ref('chat/files/${resFile.name}');
+      await reference.putFile(file);
+      var uri = await reference.getDownloadURL();
+      // lookupMimeType(filePath ?? '')
+      chat.collection('channels/$channelId/messages').add(ChatFileMessage(
+            sender: ref.read(userIdProvider)!,
+            text: '',
+            sentAt: DateTime.now(),
+            uri: uri,
+            size: resFile.size,
+          ).toMap());
+    } on FirebaseException catch (e) {
+      print('ERROR ON SENDING FILE $e');
+      return;
+    }
   }
 }
 
@@ -81,11 +137,45 @@ class ChannelInfo {
   StreamProvider<List<ChatMessage>> get messages => channelMessagesProvider(id);
 }
 
-@MappableClass()
+@MappableClass(discriminatorKey: 'type')
 class ChatMessage {
   final String sender;
   final String text;
   final DateTime sentAt;
 
   ChatMessage({required this.sender, required this.text, required this.sentAt});
+}
+
+@MappableClass(discriminatorValue: 'text')
+class ChatTextMessage extends ChatMessage {
+  ChatTextMessage({required String sender, required String text, required DateTime sentAt})
+      : super(sender: sender, text: text, sentAt: sentAt);
+}
+
+@MappableClass(discriminatorValue: 'image')
+class ChatImageMessage extends ChatMessage {
+  final String uri;
+  final int size;
+
+  ChatImageMessage({
+    required this.uri,
+    required this.size,
+    required String sender,
+    required String text,
+    required DateTime sentAt,
+  }) : super(sender: sender, text: text, sentAt: sentAt);
+}
+
+@MappableClass(discriminatorValue: 'file')
+class ChatFileMessage extends ChatMessage {
+  final String uri;
+  final int size;
+
+  ChatFileMessage({
+    required this.uri,
+    required this.size,
+    required String sender,
+    required String text,
+    required DateTime sentAt,
+  }) : super(sender: sender, text: text, sentAt: sentAt);
 }
