@@ -11,8 +11,6 @@ db.settings({timestampsInSnapshots: true});
 const USER_ROLES = ["participant", "leader", "organizer"];
 const SECRET_KEY = "ilovejufa";
 
-console.log(hashLink(`https://jufa20.web.app/invitation/organizer?phoneNumber=${encodeURIComponent("+4915787693846")}`));
-
 export const createOrganizerLink = functions.https.onCall(async (data, context) => {
 
   let isAdmin = context.auth.token.isAdmin || false;
