@@ -20,6 +20,7 @@ jobs:
       - name: Install Packages
         run: |
           npm install
+          npm install -g typescript
 
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
