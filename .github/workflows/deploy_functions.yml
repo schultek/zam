@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/deploy_functions.yml'
+      - '.github/workflows/deploy_functions.yml'
       - 'functions/**'
 
 name: Build and Deploy Functions
@@ -17,10 +17,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Install Packages
+      - name: Write ServiceAccountKey File
+        run: 'echo "$SERVICE_ACCOUNT_KEY" > functions/serviceAccountKey.json'
+        shell: bash
+        env:
+          SERVICE_ACCOUNT_KEY: ${{ secrets.FUNCTIONS_SERVICE_ACCOUNT_KEY }}
+
+      - name: Build Functions
         run: |
-          npm install
+          npm --prefix functions install
           npm install -g typescript
+          npm --prefix functions run build
 
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
@@ -28,3 +35,4 @@ jobs:
           args: deploy --only functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          GOOGLE_APPLICATION_CREDENTIALS: functions/serviceAccountKey.json

@@ -3,7 +3,7 @@ on:
     branches:
       - develop
     paths:
-      - '.github/**'
+      - '.github/workflows/test_app.yml'
       - 'app/**'
 
 name: Test and Build App

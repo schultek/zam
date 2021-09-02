@@ -3,10 +3,7 @@ import * as admin from 'firebase-admin';
 import { sha256 } from 'js-sha256';
 import {URL} from 'url';
 
-admin.initializeApp({
-  credential: admin.credential.cert('serviceAccountKey.json'),
-  databaseURL: "https://jufa20.firebaseio.com"
-});
+admin.initializeApp();
 
 const db = admin.firestore();
 db.settings({timestampsInSnapshots: true});
