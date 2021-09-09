@@ -57,4 +57,10 @@ class TripsLogic {
       'users.$_userId.token': token,
     });
   }
+
+  Future<void> deleteUser(String id) async {
+    await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+      'users.$id': FieldValue.delete(),
+    });
+  }
 }

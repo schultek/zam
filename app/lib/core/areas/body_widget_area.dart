@@ -31,7 +31,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
   }
 
   @override
-  EdgeInsetsGeometry getPadding() => const EdgeInsets.all(0);
+  EdgeInsetsGeometry getPadding() => EdgeInsets.zero;
 
   @override
   Widget buildArea(BuildContext context) {
@@ -374,7 +374,8 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
 }
 
 class GridIndex {
-  int row, column;
+  int row;
+  int column;
   SegmentSize size;
   GridIndex(this.row, this.column, this.size);
 }

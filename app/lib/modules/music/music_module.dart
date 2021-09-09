@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/elements/elements.dart';
 import '../../core/module/module.dart';
+import '../../widgets/loading_shimmer.dart';
 import 'music_providers.dart';
 import 'widgets/signed_out_player.dart';
 import 'widgets/spotify_player.dart';
@@ -26,7 +27,7 @@ class MusicModule {
                 return const SpotifyPlayer();
               }
             },
-            loading: () => const CircularProgressIndicator(),
+            loading: () => const LoadingShimmer(),
             error: (e, st) => Text('Error: $e'),
           );
         },

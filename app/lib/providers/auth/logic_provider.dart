@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_udid/flutter_udid.dart';
 
 final authLogicProvider = Provider((ref) => AuthLogic(ref));
 
@@ -45,6 +49,14 @@ class AuthLogic {
   }
 
   Future<void> signInAnonymously() async {
-    await FirebaseAuth.instance.signInAnonymously();
+    String udid = await FlutterUdid.udid;
+    String idHash = sha1.convert(utf8.encode(udid)).toString();
+    var email = '$idHash@jufa20.web.app';
+    var results = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
+    if (results.isEmpty) {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: udid);
+    } else {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: udid);
+    }
   }
 }

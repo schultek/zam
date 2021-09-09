@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api_client/photoslibrary.dart';
+import '../../modules/camera/files_provider.dart';
 import '../firebase/doc_provider.dart';
 import 'photos_api_provider.dart';
 import 'photos_provider.dart';
@@ -43,7 +44,7 @@ class PhotosLogic {
     }
   }
 
-  Future<void> uploadPhotos(List<File> files) async {
+  Future<void> uploadPhotos(List<PhotoItem> files) async {
     var client = ref.read(photosApiClientProvider);
     var api = ref.read(photosApiProvider);
     if (api == null || client == null) return;
@@ -55,12 +56,12 @@ class PhotosLogic {
 
     ref.read(fileUploadingStatusProvider).state = {
       ...ref.read(fileUploadingStatusProvider).state,
-      for (var file in files) file.uri.pathSegments.last: FileUploadStatus.uploading,
+      for (var file in files) Uri.parse(file.filePath).pathSegments.last: FileUploadStatus.uploading,
     };
 
     var responses = await Future.wait([
       for (var file in files)
-        file
+        File(file.filePath)
             .readAsBytes()
             .then((bytes) => client.post(
                   Uri.parse('https://photoslibrary.googleapis.com/v1/uploads'),
@@ -75,7 +76,7 @@ class PhotosLogic {
           if (r.statusCode == 200) {
             ref.read(fileUploadingStatusProvider).state = {
               ...ref.read(fileUploadingStatusProvider).state,
-              file.uri.pathSegments.last: FileUploadStatus.completed,
+              Uri.parse(file.filePath).pathSegments.last: FileUploadStatus.completed,
             };
             return r.body;
           } else {
@@ -84,7 +85,7 @@ class PhotosLogic {
         }).catchError((_) {
           ref.read(fileUploadingStatusProvider).state = {
             ...ref.read(fileUploadingStatusProvider).state,
-            file.uri.pathSegments.last: FileUploadStatus.failed,
+            Uri.parse(file.filePath).pathSegments.last: FileUploadStatus.failed,
           };
           return null;
         }),
@@ -100,7 +101,7 @@ class PhotosLogic {
         for (var uploadToken in uploadTokens)
           NewMediaItem()
             ..simpleMediaItem = (SimpleMediaItem()
-              ..fileName = files[i++].uri.pathSegments.last
+              ..fileName = Uri.parse(files[i++].filePath).pathSegments.last
               ..uploadToken = uploadToken)
       ]);
 

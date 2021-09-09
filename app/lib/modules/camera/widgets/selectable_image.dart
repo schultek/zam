@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../../../providers/photos/photos_provider.dart';
+import '../files_provider.dart';
 
 class SelectableImage extends StatelessWidget {
-  final File file;
+  final PhotoItem file;
   final bool selected;
   final FileUploadStatus? status;
   final void Function(bool selected) onSelect;
@@ -23,8 +22,8 @@ class SelectableImage extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-            child: Image.file(
-              file,
+            child: Image.memory(
+              file.thumbData,
               fit: BoxFit.cover,
               gaplessPlayback: true,
             ),

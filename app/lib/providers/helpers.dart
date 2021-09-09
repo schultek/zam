@@ -48,7 +48,9 @@ class CombinedStream<A, B, R> extends StreamView<R> {
       sync: true,
       onListen: () {
         var values = List<T?>.filled(len, null);
-        var triggered = 0, completed = 0, index = 0;
+        var triggered = 0;
+        var completed = 0;
+        var index = 0;
 
         bool allHaveEvent() => triggered == len;
 

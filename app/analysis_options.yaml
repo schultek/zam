@@ -22,5 +22,6 @@ linter:
     prefer_final_locals: false
     prefer_final_in_for_each: false
     use_late_for_private_fields_and_variables: false
+    use_build_context_synchronously: false
 
     avoid_print: false # TODO remove in production

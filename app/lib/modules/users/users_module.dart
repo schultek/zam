@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +7,8 @@ import '../../core/module/module.dart';
 import '../../models/models.dart';
 import '../../providers/links/links_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
+import '../../widgets/user_avatar.dart';
+import 'widgets/user_options_dialog.dart';
 
 @Module('users')
 class UsersModule {
@@ -42,18 +43,6 @@ class UsersModule {
 class UsersPage extends StatelessWidget {
   const UsersPage();
 
-  IconData? getIconForUser(String role) {
-    if (role == 'organizer') {
-      return Icons.account_box;
-    } else if (role == 'leader') {
-      return Icons.account_circle;
-    } else if (role == 'participant') {
-      return Icons.account_circle_outlined;
-    } else {
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,20 +64,24 @@ class UsersPage extends StatelessWidget {
                 child: Consumer(
                   builder: (context, watch, _) {
                     var trip = watch(selectedTripProvider)!;
+                    var isOrganizer = watch(isOrganizerProvider);
                     return ListView(
-                      children: trip.users.entries
-                          .map<Widget>(
-                            (e) => ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.grey,
-                                backgroundImage:
-                                    e.value.profileUrl != null ? CachedNetworkImageProvider(e.value.profileUrl!) : null,
-                              ),
-                              title: Text(e.value.nickname ?? e.key, style: TextStyle(color: context.getTextColor())),
-                              subtitle: Text(e.value.role),
-                            ),
-                          )
-                          .toList(),
+                      children: [
+                        for (var e in trip.users.entries)
+                          ListTile(
+                            leading: UserAvatar(id: e.key),
+                            title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.getTextColor())),
+                            subtitle: Text(e.value.role.capitalize()),
+                            trailing: isOrganizer
+                                ? IconButton(
+                                    onPressed: () {
+                                      UserOptionsDialog.show(context, userId: e.key);
+                                    },
+                                    icon: const Icon(Icons.more_vert),
+                                  )
+                                : null,
+                          ),
+                      ],
                     );
                   },
                 ),
@@ -168,4 +161,8 @@ class UsersPage extends StatelessWidget {
       ),
     );
   }
+}
+
+extension on String {
+  String capitalize() => this[0].toUpperCase() + substring(1);
 }

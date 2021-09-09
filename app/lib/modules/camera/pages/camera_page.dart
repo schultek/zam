@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../files_provider.dart';
 import '../widgets/gallery_preview.dart';
 
 class CameraPage extends StatefulWidget {
@@ -12,12 +14,14 @@ class CameraPage extends StatefulWidget {
   _CameraPageState createState() => _CameraPageState();
 }
 
-class _CameraPageState extends State<CameraPage> {
+class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
   static Future<List<CameraDescription>> camerasFuture = availableCameras();
   CameraController? controller;
 
-  late double minZoom, maxZoom;
-  double zoom = 1, nextZoom = 1;
+  double minZoom = 1;
+  double maxZoom = 1;
+  double zoom = 1;
+  double nextZoom = 1;
 
   FlashMode flashMode = FlashMode.off;
   bool takingPicture = false;
@@ -25,24 +29,63 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     camerasFuture.then((cameras) => initController(cameras[0]));
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    CameraController? cameraController = controller;
+
+    // App state changed before we got the chance to initialize.
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      cameraController.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      initController(cameraController.description);
+    }
+  }
+
   Future<void> initController(CameraDescription camera) async {
-    if (!mounted) return;
-    controller = CameraController(camera, ResolutionPreset.max);
-    await controller!.initialize();
-    if (!mounted) return;
-    minZoom = await controller!.getMinZoomLevel();
-    if (!mounted) return;
-    maxZoom = await controller!.getMaxZoomLevel();
-    if (!mounted) return;
-    setState(() {});
+    if (controller != null) {
+      await controller!.dispose();
+    }
+
+    CameraController cameraController = CameraController(
+      camera,
+      ResolutionPreset.max,
+      imageFormatGroup: ImageFormatGroup.jpeg,
+    );
+
+    controller = cameraController;
+
+    // If the controller is updated then update the UI.
+    cameraController.addListener(() {
+      if (mounted) setState(() {});
+    });
+
+    try {
+      await cameraController.initialize();
+      await Future.wait([
+        cameraController.getMaxZoomLevel().then((value) => maxZoom = value),
+        cameraController.getMinZoomLevel().then((value) => minZoom = value),
+      ]);
+    } on CameraException catch (e) {
+      print(e);
+    }
+
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   void dispose() {
     controller?.dispose();
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -70,7 +113,7 @@ class _CameraPageState extends State<CameraPage> {
     if (!controllerIsInitialized) return;
     setState(() => takingPicture = true);
     var file = await controller!.takePicture();
-    print(file.path);
+    await context.read(filesLogicProvider).addPicture(file);
     setState(() => takingPicture = false);
   }
 

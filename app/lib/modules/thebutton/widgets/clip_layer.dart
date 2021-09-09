@@ -6,7 +6,8 @@ import 'expand_clipper.dart';
 class ClipLayer extends StatelessWidget {
   final Corner corner;
   final Widget child;
-  final bool isOpen, matchColor;
+  final bool isOpen;
+  final bool matchColor;
 
   const ClipLayer({
     Key? key,

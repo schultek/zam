@@ -1,8 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../providers/trips/selected_trip_provider.dart';
+import '../../../../widgets/user_avatar.dart';
 import '../../chat_provider.dart';
 
 class AddMembersPage extends StatefulWidget {
@@ -54,12 +54,7 @@ class _AddMembersPageState extends State<AddMembersPage> {
               },
               title: Text(users[index].value.nickname ?? 'Anonym'),
               controlAffinity: ListTileControlAffinity.trailing,
-              secondary: CircleAvatar(
-                backgroundColor: Colors.grey,
-                backgroundImage: users[index].value.profileUrl != null
-                    ? CachedNetworkImageProvider(users[index].value.profileUrl!)
-                    : null,
-              ),
+              secondary: UserAvatar(id: users[index].key),
             ),
             separatorBuilder: (context, index) => const SizedBox(height: 10),
           );

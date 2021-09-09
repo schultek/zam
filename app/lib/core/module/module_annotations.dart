@@ -51,12 +51,12 @@ void buildModuleFactories(LibraryBuilder library) {
                           for (var p in method.requiredParameters)
                             if (p.type?.symbol == 'BuildContext')
                               refer('c')
-                            else if (p.type?.symbol == 'String?')
+                            else if (p.type?.symbol == 'String')
                               refer('id')
                         ]).code).closure
                     ], {}, [
                       refer(module.value.name),
-                      refer(method.returns!.symbol!.replaceFirst('?', ''))
+                      refer(method.returns!.symbol!)
                     ]),
               }),
             ], {}, [

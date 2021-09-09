@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,9 +6,8 @@ import '../../core/module/module.dart';
 import '../../providers/firebase/doc_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import 'announcement_create_page.dart';
-
-final announcementProvider = FutureProvider.family((ref, String id) =>
-    ref.read(moduleDocProvider('announcements')).collection('announcements').doc(id).get().then((d) => d.data()));
+import 'announcement_provider.dart';
+import 'widgets/announcement_card.dart';
 
 @Module('announcement')
 class AnnouncementModule {
@@ -58,31 +56,11 @@ class AnnouncementModule {
       whenRemoved: (context) {
         removeAnnouncement(context, id);
       },
-      builder: (context) => AspectRatio(
-        aspectRatio: 2,
-        child: Padding(
-          padding: const EdgeInsets.all(30),
-          child: Center(
-            child: Consumer(
-              builder: (context, watch, _) {
-                var announcement = watch(announcementProvider(id));
-                return announcement.when(
-                  data: (data) => AutoSizeText(
-                    (data?['message'] as String?) ?? 'No Message',
-                    style: const TextStyle(fontSize: 70, fontWeight: FontWeight.bold),
-                    maxLines: 5,
-                    stepGranularity: 10,
-                    minFontSize: 10,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                  ),
-                  loading: () => const CircularProgressIndicator(),
-                  error: (e, st) => Text('Error $e'),
-                );
-              },
-            ),
-          ),
-        ),
+      builder: (context) => Consumer(
+        builder: (context, watch, _) {
+          var announcement = watch(announcementProvider(id));
+          return AnnouncementCard(announcement: announcement);
+        },
       ),
     );
   }

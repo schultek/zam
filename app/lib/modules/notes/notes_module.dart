@@ -5,6 +5,7 @@ import '../../core/areas/areas.dart';
 import '../../core/module/module.dart';
 import '../../core/route/route.dart';
 import '../../providers/trips/selected_trip_provider.dart';
+import '../../widgets/loading_shimmer.dart';
 import 'notes_provider.dart';
 import 'pages/edit_note_page.dart';
 import 'pages/notes_page.dart';
@@ -98,7 +99,7 @@ class NotesModule {
                 child: AbsorbPointer(child: NotePreview(note: data)),
               );
             },
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const LoadingShimmer(),
             error: (e, st) => Center(child: Text('Error $e')),
           );
         },

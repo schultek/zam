@@ -135,7 +135,8 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
     var fillController = TheButtonAnimationController();
     artboard!.addController(fillController);
 
-    SimpleAnimation deadController, deadEntryController;
+    SimpleAnimation deadController;
+    SimpleAnimation deadEntryController;
 
     deadController = SimpleAnimation('Dead');
     deadEntryController = SimpleAnimation('Dead Entry');

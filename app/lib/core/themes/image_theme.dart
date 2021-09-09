@@ -96,7 +96,7 @@ class ImageTheme extends ThemeState {
 
     Completer<ImageInfo> completer = Completer();
     var img = NetworkImage(url);
-    img.resolve(const ImageConfiguration()).addListener(ImageStreamListener((ImageInfo info, bool _) {
+    img.resolve(ImageConfiguration.empty).addListener(ImageStreamListener((ImageInfo info, bool _) {
       completer.complete(info);
     }));
     ImageInfo imageInfo = await completer.future;

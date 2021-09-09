@@ -36,8 +36,9 @@ class EliminationEntry {
   String target;
   String eliminatedBy;
   String description;
+  DateTime time;
 
-  EliminationEntry(this.target, this.eliminatedBy, this.description);
+  EliminationEntry(this.target, this.eliminatedBy, this.description, this.time);
 }
 
 final gameProvider = StreamProvider.family((ref, String id) => ref

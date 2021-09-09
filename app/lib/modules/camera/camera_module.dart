@@ -13,7 +13,14 @@ class CameraModule {
       keepAlive: false,
       builder: (context) {
         if (WidgetSelector.existsIn(context)) {
-          return const Center(child: Text('Camera'));
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              color: context.getTextColor(),
+            ),
+            alignment: Alignment.center,
+            child: Icon(Icons.camera_alt, size: MediaQuery.of(context).size.width / 2),
+          );
         }
         return const CameraPage();
       },

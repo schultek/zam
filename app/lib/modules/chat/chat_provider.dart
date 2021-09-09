@@ -104,7 +104,7 @@ class ChatLogic {
 
   Future<void> sendFile(String channelId, FilePickerResult res) async {
     var resFile = res.files.single;
-    var file = File(resFile.path!);
+    var file = File(resFile.path);
 
     try {
       var reference = FirebaseStorage.instance.ref('chat/files/${resFile.name}');

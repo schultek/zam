@@ -1,10 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart';
 
 import '../../../core/themes/themes.dart';
 import '../music_providers.dart';
-import '../pages/search_track_page.dart';
+import '../pages/manage_playlist_page.dart';
+import 'select_device_dialog.dart';
 
 class SpotifyPlayer extends StatelessWidget {
   const SpotifyPlayer({Key? key}) : super(key: key);
@@ -13,41 +14,139 @@ class SpotifyPlayer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, watch, _) {
-        var isPaused = watch(spotifyIsPausedProvider);
+        var _ = watch(spotifySyncProvider);
+        var player = watch(playerProvider);
 
-        return Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        var trackName = player?.track.name;
+        var artistName = player?.track.artists.map((a) => a.name).join(', ');
+        var albumUrl = player?.track.album.images.firstOrNull?.url;
+
+        return Container(
+          decoration: BoxDecoration(
+            image: albumUrl != null
+                ? DecorationImage(
+                    colorFilter: const ColorFilter.mode(Colors.black45, BlendMode.multiply),
+                    image: NetworkImage(albumUrl),
+                    fit: BoxFit.cover,
+                  )
+                : null,
+          ),
+          child: Stack(
             children: [
-              IconButton(
-                iconSize: 50,
-                icon: Icon(
-                  isPaused ? Icons.play_arrow : Icons.pause,
-                  color: context.getTextColor(),
+              if (player != null)
+                Positioned(
+                  top: 10,
+                  left: 10,
+                  right: 10,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      OverflowScrollText(
+                        trackName!,
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      OverflowScrollText(artistName!),
+                    ],
+                  ),
                 ),
-                onPressed: () {
-                  if (isPaused) {
-                    context.read(musicLogicProvider).resume();
-                  } else {
-                    context.read(musicLogicProvider).pause();
-                  }
-                },
+              Positioned.fill(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      iconSize: 25,
+                      icon: Icon(
+                        Icons.skip_previous,
+                        color: context.getTextColor().withOpacity(player != null ? 1 : 0.5),
+                      ),
+                      onPressed: player != null
+                          ? () {
+                              context.read(musicLogicProvider).skipPrevious();
+                            }
+                          : null,
+                    ),
+                    IconButton(
+                      iconSize: 40,
+                      icon: Icon(
+                        player?.isPlaying ?? true ? Icons.pause : Icons.play_arrow,
+                        color: context.getTextColor().withOpacity(player != null ? 1 : 0.5),
+                      ),
+                      onPressed: player != null
+                          ? () {
+                              if (player.isPlaying) {
+                                context.read(musicLogicProvider).pause();
+                              } else {
+                                context.read(musicLogicProvider).resume();
+                              }
+                            }
+                          : null,
+                    ),
+                    IconButton(
+                      iconSize: 25,
+                      icon: Icon(
+                        Icons.skip_next,
+                        color: context.getTextColor().withOpacity(player != null ? 1 : 0.5),
+                      ),
+                      onPressed: player != null
+                          ? () {
+                              context.read(musicLogicProvider).skipNext();
+                            }
+                          : null,
+                    ),
+                  ],
+                ),
               ),
-              IconButton(
-                iconSize: 20,
-                icon: const Icon(Icons.search),
-                onPressed: () async {
-                  var track = await Navigator.of(context).push<Track>(SearchTrackPage.route());
-                  if (track != null) {
-                    context.read(musicLogicProvider).play(track.uri!);
-                  }
-                },
-              )
+              Positioned(
+                right: 5,
+                bottom: 5,
+                child: player != null
+                    ? IconButton(
+                        iconSize: 22,
+                        icon: Icon(
+                          Icons.playlist_play,
+                          color: context.getTextColor(),
+                        ),
+                        onPressed: () async {
+                          context.read(musicLogicProvider).getDevices();
+                          Navigator.of(context).push(ManagePlaylistPage.route(context));
+                        },
+                      )
+                    : IconButton(
+                        iconSize: 22,
+                        icon: Icon(
+                          Icons.devices,
+                          color: context.getTextColor(),
+                        ),
+                        onPressed: () async {
+                          await SelectDeviceDialog.show(context);
+                        },
+                      ),
+              ),
             ],
           ),
         );
       },
+    );
+  }
+}
+
+class OverflowScrollText extends StatefulWidget {
+  final String text;
+  final TextStyle? style;
+  const OverflowScrollText(this.text, {this.style, Key? key}) : super(key: key);
+
+  @override
+  _OverflowScrollTextState createState() => _OverflowScrollTextState();
+}
+
+class _OverflowScrollTextState extends State<OverflowScrollText> {
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      widget.text,
+      style: widget.style,
+      softWrap: false,
+      overflow: TextOverflow.fade,
     );
   }
 }

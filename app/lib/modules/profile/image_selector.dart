@@ -32,8 +32,12 @@ class _CropDialogState extends State<CropDialog> {
   double? width;
   double scale = 1.0;
   double? previousScale;
-  double? startX, startY, previousX, previousY;
-  double x = 0, y = 0;
+  double? startX;
+  double? startY;
+  double? previousX;
+  double? previousY;
+  double x = 0;
+  double y = 0;
 
   GlobalKey scr = GlobalKey();
 

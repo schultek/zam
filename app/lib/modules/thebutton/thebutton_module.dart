@@ -7,11 +7,12 @@ import 'pages/thebutton_help.dart';
 import 'pages/thebutton_settings.dart';
 import 'widgets/thebutton_widget.dart';
 
-@Module('thebutto')
+@Module('thebutton')
 class TheButtonModule {
   @ModuleItem('thebutton')
   ContentSegment getButtonCard() {
-    var buttonHelpKey = GlobalKey(), buttonSettingsKey = GlobalKey();
+    var buttonHelpKey = GlobalKey();
+    var buttonSettingsKey = GlobalKey();
     return ContentSegment(
       builder: (context) => Stack(
         children: [

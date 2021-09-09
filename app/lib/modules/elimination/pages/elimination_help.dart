@@ -4,7 +4,7 @@ import '../../../core/themes/themes.dart';
 import '../../thebutton/widgets/clip_layer.dart';
 
 class EliminationHelp extends StatefulWidget {
-  const EliminationHelp({required Key key}) : super(key: key);
+  const EliminationHelp({Key? key}) : super(key: key);
 
   @override
   _EliminationHelpState createState() => _EliminationHelpState();
@@ -68,7 +68,7 @@ class _EliminationHelpState extends State<EliminationHelp> {
               ),
               const SizedBox(height: 10),
               Text(
-                'Eliminate your target by the agreed way in real live. Then add the elimination to the list and receive a new target, until everyone is eliminated.',
+                '"Eliminate" your target by the agreed way in real live. Then add the elimination to the list and receive a new target, until everyone but the last player is eliminated.',
                 textAlign: TextAlign.justify,
                 style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
               ),

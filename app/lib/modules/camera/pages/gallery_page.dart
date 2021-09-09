@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api_client/photoslibrary.dart';
@@ -12,7 +10,9 @@ import '../../../providers/photos/google_account_provider.dart';
 import '../../../providers/photos/photos_logic_provider.dart';
 import '../../../providers/photos/photos_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
+import '../files_provider.dart';
 import '../widgets/selectable_image.dart';
+import 'file_view_page.dart';
 
 class GalleryPage extends StatefulWidget {
   const GalleryPage({Key? key}) : super(key: key);
@@ -26,30 +26,13 @@ class GalleryPage extends StatefulWidget {
 }
 
 class _GalleryPageState extends State<GalleryPage> {
-  List<File> files = [];
-  bool selectForUpload = false, loadingUploadMode = false;
-  Map<String, bool> selectedFiles = {};
-
-  @override
-  void initState() {
-    super.initState();
-    loadImages();
-  }
-
-  Future<void> loadImages() async {
-    var dir = await getTemporaryDirectory();
-    var files = await dir.list().where((e) => e.path.endsWith('.jpg')).asyncMap((e) => File(e.path)).toList()
-      ..sort((a, b) => b.statSync().modified.compareTo(a.statSync().modified));
-    setState(() {
-      this.files = files;
-    });
-    context.read(itemsApiProvider.notifier).refresh();
-  }
+  bool selectForUpload = false;
+  bool loadingUploadMode = false;
+  Set<PhotoItem> selectedFiles = {};
 
   Future<void> uploadFiles() async {
-    var filesToUpload = files.where((f) => selectedFiles[f.path] ?? false);
-    if (filesToUpload.isNotEmpty) {
-      await context.read(photosLogicProvider).uploadPhotos(filesToUpload.toList());
+    if (selectedFiles.isNotEmpty) {
+      await context.read(photosLogicProvider).uploadPhotos(selectedFiles.toList());
     }
   }
 
@@ -142,6 +125,7 @@ class _GalleryPageState extends State<GalleryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         title: const Text('Gallery'),
         actions: [
@@ -180,38 +164,48 @@ class _GalleryPageState extends State<GalleryPage> {
       ),
       body: Consumer(
         builder: (context, watch, _) {
+          var files = watch(orderedFilesProvider);
           var fileStatus = watch(fileStatusProvider);
-          print('FILE STATUS $fileStatus');
           return GridView.count(
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             crossAxisCount: 3,
             children: [
               for (var file in files)
                 if (selectForUpload)
                   SelectableImage(
                     file: file,
-                    selected: selectedFiles[file.path] ?? false,
-                    status: fileStatus[file.uri.pathSegments.last],
+                    selected: selectedFiles.contains(file),
+                    status: fileStatus[Uri.parse(file.filePath).pathSegments.last],
                     onSelect: (selected) {
                       setState(() {
-                        selectedFiles[file.path] = selected;
+                        if (selected) {
+                          selectedFiles.add(file);
+                        } else {
+                          selectedFiles.remove(file);
+                        }
                       });
                     },
                   )
                 else
-                  Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Image.file(
-                          file,
-                          fit: BoxFit.cover,
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(FileViewPage.route(files.indexOf(file)));
+                    },
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Image.memory(
+                            file.thumbData,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        top: 5,
-                        left: 5,
-                        child: iconForFileStatus(fileStatus[file.uri.pathSegments.last]),
-                      ),
-                    ],
+                        Positioned(
+                          top: 5,
+                          left: 5,
+                          child: iconForFileStatus(fileStatus[Uri.parse(file.filePath).pathSegments.last]),
+                        ),
+                      ],
+                    ),
                   ),
             ],
           );
