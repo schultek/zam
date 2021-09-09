@@ -69,7 +69,7 @@ jobs:
 
       - name: Upload to Play Console
         run: |
-          cd android
+          cd app/android
           fastlane upload
 
   deploy_ios:
