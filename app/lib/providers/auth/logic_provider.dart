@@ -51,6 +51,7 @@ class AuthLogic {
   Future<void> signInAnonymously() async {
     String udid = await FlutterUdid.udid;
     String idHash = sha1.convert(utf8.encode(udid)).toString();
+    print('URI: $udid ($idHash)');
     var email = '$idHash@jufa20.web.app';
     var results = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
     if (results.isEmpty) {

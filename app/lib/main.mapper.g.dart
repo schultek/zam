@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:dart_mappable/dart_mappable.dart';
 
@@ -53,6 +54,7 @@ var _mappers = <String, BaseMapper>{
   _typeOf<PhotosConfig>(): PhotosConfigMapper._(),
   // enum mappers
   // custom mappers
+  _typeOf<Color>(): ColorMapper(),
 };
 
 // === GENERATED CLASS MAPPERS AND EXTENSIONS ===
@@ -132,8 +134,10 @@ class TripUserMapper extends BaseMapper<TripUser> {
   @override
   Function get decoder => decode;
   TripUser decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  TripUser fromMap(Map<String, dynamic> map) =>
-      TripUser(role: map.get('role'), nickname: map.getOpt('nickname'), profileUrl: map.getOpt('profileUrl'));
+  TripUser fromMap(Map<String, dynamic> map) => TripUser(
+      role: map.getOpt('role') ?? UserRoles.Participant,
+      nickname: map.getOpt('nickname'),
+      profileUrl: map.getOpt('profileUrl'));
 
   @override
   Function get encoder => (TripUser v) => encode(v);
@@ -260,19 +264,41 @@ class AnnouncementMapper extends BaseMapper<Announcement> {
   @override
   Function get decoder => decode;
   Announcement decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  Announcement fromMap(Map<String, dynamic> map) => Announcement(map.get('message'));
+  Announcement fromMap(Map<String, dynamic> map) => Announcement(
+      title: map.getOpt('title'),
+      message: map.get('message'),
+      textColor: map.getOpt('textColor'),
+      backgroundColor: map.getOpt('backgroundColor'),
+      isDismissible: map.getOpt('isDismissible') ?? false);
 
   @override
   Function get encoder => (Announcement v) => encode(v);
   dynamic encode(Announcement v) => toMap(v);
-  Map<String, dynamic> toMap(Announcement a) => {'message': Mapper.toValue(a.message)};
+  Map<String, dynamic> toMap(Announcement a) => {
+        'title': Mapper.toValue(a.title),
+        'message': Mapper.toValue(a.message),
+        'textColor': Mapper.toValue(a.textColor),
+        'backgroundColor': Mapper.toValue(a.backgroundColor),
+        'isDismissible': Mapper.toValue(a.isDismissible)
+      };
 
   @override
-  String? stringify(Announcement self) => 'Announcement(message: ${Mapper.asString(self.message)})';
+  String? stringify(Announcement self) =>
+      'Announcement(title: ${Mapper.asString(self.title)}, message: ${Mapper.asString(self.message)}, textColor: ${Mapper.asString(self.textColor)}, backgroundColor: ${Mapper.asString(self.backgroundColor)}, isDismissible: ${Mapper.asString(self.isDismissible)})';
   @override
-  int? hash(Announcement self) => Mapper.hash(self.message);
+  int? hash(Announcement self) =>
+      Mapper.hash(self.title) ^
+      Mapper.hash(self.message) ^
+      Mapper.hash(self.textColor) ^
+      Mapper.hash(self.backgroundColor) ^
+      Mapper.hash(self.isDismissible);
   @override
-  bool? equals(Announcement self, Announcement other) => Mapper.isEqual(self.message, other.message);
+  bool? equals(Announcement self, Announcement other) =>
+      Mapper.isEqual(self.title, other.title) &&
+      Mapper.isEqual(self.message, other.message) &&
+      Mapper.isEqual(self.textColor, other.textColor) &&
+      Mapper.isEqual(self.backgroundColor, other.backgroundColor) &&
+      Mapper.isEqual(self.isDismissible, other.isDismissible);
 
   @override
   Function get typeFactory => (f) => f<Announcement>();
@@ -281,7 +307,14 @@ class AnnouncementMapper extends BaseMapper<Announcement> {
 extension AnnouncementMapperExtension on Announcement {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-  Announcement copyWith({String? message}) => Announcement(message ?? this.message);
+  Announcement copyWith(
+          {String? title, String? message, Color? textColor, Color? backgroundColor, bool? isDismissible}) =>
+      Announcement(
+          title: title ?? this.title,
+          message: message ?? this.message,
+          textColor: textColor ?? this.textColor,
+          backgroundColor: backgroundColor ?? this.backgroundColor,
+          isDismissible: isDismissible ?? this.isDismissible);
 }
 
 class NoteMapper extends BaseMapper<Note> {

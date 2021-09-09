@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/areas/areas.dart';
 import '../../core/elements/elements.dart';
 import '../../core/module/module.dart';
-import '../../providers/firebase/doc_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import 'announcement_create_page.dart';
 import 'announcement_provider.dart';
@@ -51,26 +51,41 @@ class AnnouncementModule {
         return null;
       }
     }
+
+    if (context.read(isDismissedProvider(id)) ?? false) {
+      return null;
+    }
+
     return ContentSegment(
       size: SegmentSize.Wide,
       whenRemoved: (context) {
-        removeAnnouncement(context, id);
+        context.read(announcementLogicProvider).removeAnnouncement(id);
       },
       builder: (context) => Consumer(
         builder: (context, watch, _) {
           var announcement = watch(announcementProvider(id));
-          return AnnouncementCard(announcement: announcement);
+          var isDismissed = watch(isDismissedProvider(id));
+
+          if (isDismissed ?? true) {
+            if (isDismissed != null) {
+              WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                WidgetArea.of<ContentSegment>(context)?.reload();
+              });
+            }
+            return Container();
+          }
+
+          return AnnouncementCard(
+            announcement: announcement,
+            onDismissed: !context.read(isOrganizerProvider)
+                ? () {
+                    context.read(announcementLogicProvider).dismiss(id);
+                    WidgetArea.of<ContentSegment>(context)?.reload();
+                  }
+                : null,
+          );
         },
       ),
     );
-  }
-
-  Future<Map<String, dynamic>?> loadAnnouncement(BuildContext context, String id) async {
-    var doc = await context.read(moduleDocProvider('announcements')).collection('announcements').doc(id).get();
-    return doc.data();
-  }
-
-  Future<void> removeAnnouncement(BuildContext context, String id) async {
-    await context.read(moduleDocProvider('announcements')).collection('announcements').doc(id).delete();
   }
 }

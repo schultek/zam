@@ -47,6 +47,7 @@ abstract class WidgetArea<T extends ModuleElement> extends StatefulWidget {
   const WidgetArea(this.id);
 
   static WidgetAreaState<WidgetArea<T>, T>? of<T extends ModuleElement>(BuildContext context) {
+    assert(T != ModuleElement, 'WidgetArea.of was called with default type parameter. This is probably not right.');
     var element = context.getElementForInheritedWidgetOfExactType<InheritedWidgetArea<T>>();
     return element != null ? (element.widget as InheritedWidgetArea<T>).state : null;
   }
@@ -82,11 +83,15 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     if (_isInitialized) return;
     _isInitialized = true;
 
-    initArea(template.getWidgetsForArea<T>(id));
+    reload(rebuild: false);
     _modulesSubscription = context.read(areaModulesProvider(id).notifier).stream.listen((event) {
-      initArea(template.getWidgetsForArea<T>(widget.id));
-      setState(() {});
+      reload();
     });
+  }
+
+  void reload({bool rebuild = true}) {
+    initArea(template.getWidgetsForArea<T>(widget.id));
+    if (rebuild) setState(() {});
   }
 
   void initArea(List<T> widgets);

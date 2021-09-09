@@ -24,7 +24,7 @@ class TripUser with Mappable {
   String? nickname;
   String? profileUrl;
 
-  TripUser({required this.role, this.nickname, this.profileUrl});
+  TripUser({this.role = UserRoles.Participant, this.nickname, this.profileUrl});
 
   bool get isOrganizer => role == UserRoles.Organizer;
 }

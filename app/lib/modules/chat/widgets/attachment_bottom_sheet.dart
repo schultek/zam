@@ -27,11 +27,11 @@ class AttachmentBottomSheet extends StatelessWidget {
                 icon: Icons.photo,
                 option: AttachmentOption.image,
               ),
-              _attachmentButton(
-                context: context,
-                icon: Icons.attach_file,
-                option: AttachmentOption.file,
-              ),
+              // _attachmentButton(
+              //   context: context,
+              //   icon: Icons.attach_file,
+              //   option: AttachmentOption.file,
+              // ),
             ],
           ),
         ),

@@ -37,6 +37,8 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
     var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
       await _handleDynamicLink(link);
+    } else {
+      await ref.read(authLogicProvider).signInAnonymously();
     }
     if (state.isLoading) {
       state = LinkState(state.uri);

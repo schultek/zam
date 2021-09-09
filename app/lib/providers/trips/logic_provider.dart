@@ -53,9 +53,12 @@ class TripsLogic {
   }
 
   Future<void> setPushToken(String? token) async {
-    await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
-      'users.$_userId.token': token,
-    });
+    var trip = ref.read(selectedTripProvider);
+    if (trip?.users.containsKey(_userId) ?? false) {
+      await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+        'users.$_userId.token': token,
+      });
+    }
   }
 
   Future<void> deleteUser(String id) async {
