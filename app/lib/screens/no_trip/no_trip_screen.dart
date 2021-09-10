@@ -37,7 +37,7 @@ class _NoTripScreenState extends State<NoTripScreen> {
                   children: [
                     const Text(
                       'Dein Ausflug.\n\nSo wie du ihn willst.',
-                      style: TextStyle(color: Colors.white, fontSize: 80, height: 1),
+                      style: TextStyle(color: Colors.white, fontSize: 60, height: 1),
                     ),
                     if (claims.isOrganizer || claims.isAdmin)
                       Column(

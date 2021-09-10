@@ -38,7 +38,7 @@ class _AddChannelPageState extends State<AddChannelPage> {
                 minLeadingWidth: 0,
                 onTap: () async {
                   await context.read(chatLogicProvider).joinChannel(channels[index]);
-                  Navigator.of(context).pushReplacement(ChannelPage.route(channels[index]));
+                  Navigator.of(context).pushReplacement(ChannelPage.route(channels[index].id));
                 },
               ),
               separatorBuilder: (context, _) => const Divider(),

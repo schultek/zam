@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/nested_will_pop_scope.dart';
+import '../module/module.g.dart';
 
 class TemplateNavigator extends StatefulWidget {
   final Widget home;
@@ -13,6 +14,14 @@ class TemplateNavigator extends StatefulWidget {
 
 class _TemplateNavigatorState extends State<TemplateNavigator> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      registry.preloadWidgets(_navigatorKey.currentContext!);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

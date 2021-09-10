@@ -55,39 +55,40 @@ class UsersPage extends StatelessWidget {
         title: Text('Users', style: TextStyle(color: context.getTextColor())),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: Consumer(
-                  builder: (context, watch, _) {
-                    var trip = watch(selectedTripProvider)!;
-                    var isOrganizer = watch(isOrganizerProvider);
-                    return ListView(
-                      children: [
-                        for (var e in trip.users.entries)
-                          ListTile(
-                            leading: UserAvatar(id: e.key),
-                            title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.getTextColor())),
-                            subtitle: Text(e.value.role.capitalize()),
-                            trailing: isOrganizer
-                                ? IconButton(
-                                    onPressed: () {
-                                      UserOptionsDialog.show(context, userId: e.key);
-                                    },
-                                    icon: const Icon(Icons.more_vert),
-                                  )
-                                : null,
-                          ),
-                      ],
-                    );
-                  },
-                ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: Consumer(
+                builder: (context, watch, _) {
+                  var trip = watch(selectedTripProvider)!;
+                  var isOrganizer = watch(isOrganizerProvider);
+                  return ListView(
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                    children: [
+                      for (var e in trip.users.entries)
+                        ListTile(
+                          leading: UserAvatar(id: e.key),
+                          title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.getTextColor())),
+                          subtitle: Text(e.value.role.capitalize()),
+                          trailing: isOrganizer
+                              ? IconButton(
+                                  onPressed: () {
+                                    UserOptionsDialog.show(context, userId: e.key);
+                                  },
+                                  icon: const Icon(Icons.more_vert),
+                                )
+                              : null,
+                        ),
+                    ],
+                  );
+                },
               ),
-              if (context.read(isOrganizerProvider))
-                Row(
+            ),
+            if (context.read(isOrganizerProvider))
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const SizedBox(width: 10),
@@ -155,8 +156,8 @@ class UsersPage extends StatelessWidget {
                     const SizedBox(width: 10),
                   ],
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );

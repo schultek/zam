@@ -75,8 +75,8 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                 style: Theme.of(context).textTheme.bodyText2!.copyWith(color: context.getTextColor()),
               ),
               Text(
-                'The Button is a social game where you have to keep the button alive.',
-                style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
+                'A social game where you have to keep the button alive.',
+                style: Theme.of(context).textTheme.caption!.apply(color: context.getTextColor(), fontSizeFactor: 0.9),
                 textAlign: TextAlign.center,
               ),
               TextButton(

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../trips/logic_provider.dart';
 
+final messageProvider = StateProvider<RemoteMessage?>((ref) => null);
+
 final notificationsProvider = Provider((ref) => NotificationLogic(ref));
 
 class NotificationLogic {
@@ -35,6 +37,7 @@ class NotificationLogic {
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message opened App: ${message.data}');
+      ref.read(messageProvider).state = message;
     });
   }
 

@@ -928,14 +928,16 @@ class SpotifyPlaylistMapper extends BaseMapper<SpotifyPlaylist> {
   @override
   Function get decoder => decode;
   SpotifyPlaylist decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SpotifyPlaylist fromMap(Map<String, dynamic> map) =>
-      SpotifyPlaylist(map.get('id'), map.get('uri'), map.get('spotifyUrl'), map.getList('tracks'));
+  SpotifyPlaylist fromMap(Map<String, dynamic> map) => SpotifyPlaylist(map.get('id'), map.get('name'),
+      map.getList('images'), map.get('uri'), map.get('spotifyUrl'), map.getList('tracks'));
 
   @override
   Function get encoder => (SpotifyPlaylist v) => encode(v);
   dynamic encode(SpotifyPlaylist v) => toMap(v);
   Map<String, dynamic> toMap(SpotifyPlaylist s) => {
         'id': Mapper.toValue(s.id),
+        'name': Mapper.toValue(s.name),
+        'images': Mapper.toValue(s.images),
         'uri': Mapper.toValue(s.uri),
         'spotifyUrl': Mapper.toValue(s.spotifyUrl),
         'tracks': Mapper.toValue(s.tracks)
@@ -943,13 +945,20 @@ class SpotifyPlaylistMapper extends BaseMapper<SpotifyPlaylist> {
 
   @override
   String? stringify(SpotifyPlaylist self) =>
-      'SpotifyPlaylist(id: ${Mapper.asString(self.id)}, uri: ${Mapper.asString(self.uri)}, spotifyUrl: ${Mapper.asString(self.spotifyUrl)}, tracks: ${Mapper.asString(self.tracks)})';
+      'SpotifyPlaylist(id: ${Mapper.asString(self.id)}, name: ${Mapper.asString(self.name)}, images: ${Mapper.asString(self.images)}, uri: ${Mapper.asString(self.uri)}, spotifyUrl: ${Mapper.asString(self.spotifyUrl)}, tracks: ${Mapper.asString(self.tracks)})';
   @override
   int? hash(SpotifyPlaylist self) =>
-      Mapper.hash(self.id) ^ Mapper.hash(self.uri) ^ Mapper.hash(self.spotifyUrl) ^ Mapper.hash(self.tracks);
+      Mapper.hash(self.id) ^
+      Mapper.hash(self.name) ^
+      Mapper.hash(self.images) ^
+      Mapper.hash(self.uri) ^
+      Mapper.hash(self.spotifyUrl) ^
+      Mapper.hash(self.tracks);
   @override
   bool? equals(SpotifyPlaylist self, SpotifyPlaylist other) =>
       Mapper.isEqual(self.id, other.id) &&
+      Mapper.isEqual(self.name, other.name) &&
+      Mapper.isEqual(self.images, other.images) &&
       Mapper.isEqual(self.uri, other.uri) &&
       Mapper.isEqual(self.spotifyUrl, other.spotifyUrl) &&
       Mapper.isEqual(self.tracks, other.tracks);
@@ -961,8 +970,15 @@ class SpotifyPlaylistMapper extends BaseMapper<SpotifyPlaylist> {
 extension SpotifyPlaylistMapperExtension on SpotifyPlaylist {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SpotifyPlaylist copyWith({String? id, String? uri, String? spotifyUrl, List<SpotifyTrack>? tracks}) =>
-      SpotifyPlaylist(id ?? this.id, uri ?? this.uri, spotifyUrl ?? this.spotifyUrl, tracks ?? this.tracks);
+  SpotifyPlaylist copyWith(
+          {String? id,
+          String? name,
+          List<SpotifyImage>? images,
+          String? uri,
+          String? spotifyUrl,
+          List<SpotifyTrack>? tracks}) =>
+      SpotifyPlaylist(id ?? this.id, name ?? this.name, images ?? this.images, uri ?? this.uri,
+          spotifyUrl ?? this.spotifyUrl, tracks ?? this.tracks);
 }
 
 class SpotifyTrackMapper extends BaseMapper<SpotifyTrack> {

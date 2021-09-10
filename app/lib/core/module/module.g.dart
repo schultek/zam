@@ -7,7 +7,7 @@ final registry = ModuleRegistry({
   'profile': ModuleInstance<ProfileModule>(
       ProfileModule(), {'profile': ModuleFactory<ProfileModule, ContentSegment>((c, m, id) => m.getProfileCard())}),
   'chat': ModuleInstance<ChatModule>(
-      ChatModule(), {'chat': ModuleFactory<ChatModule, PageSegment>((c, m, id) => m.getChatPage())}),
+      ChatModule(), {'chat': ModuleFactory<ChatModule, PageSegment>((c, m, id) => m.getChatPage(c))}),
   'camera': ModuleInstance<CameraModule>(
       CameraModule(), {'camera': ModuleFactory<CameraModule, PageSegment>((c, m, id) => m.getCameraPage())}),
   'elimination': ModuleInstance<EliminationModule>(

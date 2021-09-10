@@ -123,64 +123,67 @@ class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
       color: Colors.black,
       child: Stack(
         children: [
-          Column(
-            children: [
-              const Spacer(),
-              if (controllerIsInitialized)
-                GestureDetector(
-                  onTapUp: (details) {
-                    controller!.setFocusPoint(Offset(
-                      details.globalPosition.dx / MediaQuery.of(context).size.width,
-                      details.globalPosition.dy / MediaQuery.of(context).size.height,
-                    ));
-                  },
-                  onScaleUpdate: (details) {
-                    print(details.scale);
-                    nextZoom = zoom * details.scale;
-                    nextZoom = min(max(nextZoom, minZoom), maxZoom);
-                    controller!.setZoomLevel(nextZoom);
-                  },
-                  onScaleEnd: (details) {
-                    zoom = nextZoom;
-                  },
-                  child: CameraPreview(
-                    controller!,
-                    child: TweenAnimationBuilder<double>(
-                      key: ValueKey(takingPicture),
-                      tween: Tween(begin: takingPicture ? 0 : 1, end: 0),
-                      duration: const Duration(milliseconds: 200),
-                      builder: (context, value, _) {
-                        return Container(
-                          color: Colors.black.withOpacity(value > 0.5 ? 1 : value * 2),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              SizedBox(
-                height: 120,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                      icon: Icon(flashModeIcon),
-                      onPressed: toggleFlashMode,
-                    ),
-                    InkWell(
-                      onTap: takePicture,
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: takingPicture ? Colors.black : Colors.white,
+          SafeArea(
+            top: false,
+            child: Column(
+              children: [
+                const Spacer(),
+                if (controllerIsInitialized)
+                  GestureDetector(
+                    onTapUp: (details) {
+                      controller!.setFocusPoint(Offset(
+                        details.globalPosition.dx / MediaQuery.of(context).size.width,
+                        details.globalPosition.dy / MediaQuery.of(context).size.height,
+                      ));
+                    },
+                    onScaleUpdate: (details) {
+                      print(details.scale);
+                      nextZoom = zoom * details.scale;
+                      nextZoom = min(max(nextZoom, minZoom), maxZoom);
+                      controller!.setZoomLevel(nextZoom);
+                    },
+                    onScaleEnd: (details) {
+                      zoom = nextZoom;
+                    },
+                    child: CameraPreview(
+                      controller!,
+                      child: TweenAnimationBuilder<double>(
+                        key: ValueKey(takingPicture),
+                        tween: Tween(begin: takingPicture ? 0 : 1, end: 0),
+                        duration: const Duration(milliseconds: 200),
+                        builder: (context, value, _) {
+                          return Container(
+                            color: Colors.black.withOpacity(value > 0.5 ? 1 : value * 2),
+                          );
+                        },
                       ),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.flip_camera_android),
-                      onPressed: switchCamera,
-                    ),
-                  ],
+                  ),
+                SizedBox(
+                  height: 120,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        icon: Icon(flashModeIcon),
+                        onPressed: toggleFlashMode,
+                      ),
+                      InkWell(
+                        onTap: takePicture,
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: takingPicture ? Colors.black : Colors.white,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.flip_camera_android),
+                        onPressed: switchCamera,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const Positioned(
             top: 20,

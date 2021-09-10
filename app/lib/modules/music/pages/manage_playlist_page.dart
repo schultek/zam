@@ -1,11 +1,14 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/route/route.dart';
+import '../../../providers/trips/selected_trip_provider.dart';
 import '../music_providers.dart';
 import '../widgets/track_tile.dart';
 import 'search_track_page.dart';
+import 'select_playlist_page.dart';
 
 class ManagePlaylistPage extends StatelessWidget {
   const ManagePlaylistPage({Key? key}) : super(key: key);
@@ -23,8 +26,38 @@ class ManagePlaylistPage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Playlist'),
+            title: Row(
+              children: [
+                if (playlist?.images.lastOrNull != null) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.network(
+                      playlist!.images.last.url,
+                      height: 40,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+                Expanded(
+                  child: Text(
+                    playlist?.name ?? 'Playlist',
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+              ],
+            ),
             actions: [
+              if (context.read(isOrganizerProvider))
+                IconButton(
+                  icon: const Icon(Icons.playlist_add_check),
+                  onPressed: () async {
+                    var logic = context.read(spotifySyncProvider);
+                    var playlist = await Navigator.of(context).push(SelectPlaylistPage.route());
+                    if (playlist != null) {
+                      logic.syncPlaylist(playlist.id);
+                    }
+                  },
+                ),
               IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () async {
@@ -57,7 +90,7 @@ class ManagePlaylistPage extends StatelessWidget {
                     onPressed: () {
                       context.read(musicLogicProvider).createSharedPlaylist();
                     },
-                    child: const Text('Create Playlist'),
+                    child: const Text('Create Shared Playlist'),
                   ),
                 )
               : ListView(

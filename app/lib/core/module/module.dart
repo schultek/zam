@@ -30,6 +30,16 @@ class ModuleRegistry {
   List<T> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
     return moduleMap.entries.expand((e) => e.value.getWidgetsOf<T>(context, e.key)).whereNotNull().toList();
   }
+
+  void preloadWidgets(BuildContext context) {
+    for (var module in moduleMap.values.whereType<ModuleInstance<ModulePreloadMixin>>()) {
+      module.module.preload(context);
+    }
+  }
+}
+
+mixin ModulePreloadMixin {
+  void preload(BuildContext context);
 }
 
 class ModuleInstance<T> {

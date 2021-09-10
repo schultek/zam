@@ -29,7 +29,7 @@ class ChatPage extends ConsumerWidget {
                   style: TextStyle(color: context.getTextColor()),
                 ),
                 onTap: () {
-                  Navigator.of(context).push(ChannelPage.route(channel));
+                  Navigator.of(context).push(ChannelPage.route(channel.id));
                 },
               ),
             ListTile(

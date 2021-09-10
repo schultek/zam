@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,6 +18,9 @@ final channelsProvider = StreamProvider<List<ChannelInfo>>((ref) => ref
     .where('members', arrayContains: ref.watch(userIdProvider))
     .snapshots()
     .map((s) => s.toList()));
+
+final channelProvider =
+    Provider.family((ref, String id) => ref.watch(channelsProvider).data?.value.where((c) => c.id == id).firstOrNull);
 
 final channelsToJoinProvider = StreamProvider<List<ChannelInfo>>((ref) => ref
     .watch(moduleDocProvider('chat'))

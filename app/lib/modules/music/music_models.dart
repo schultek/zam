@@ -40,16 +40,23 @@ class SpotifyCredentials with Mappable {
 @MappableClass()
 class SpotifyPlaylist {
   final String id;
+  final String name;
+  final List<SpotifyImage> images;
   final String uri;
   final String spotifyUrl;
   final List<SpotifyTrack> tracks;
 
-  SpotifyPlaylist(this.id, this.uri, this.spotifyUrl, this.tracks);
+  SpotifyPlaylist(this.id, this.name, this.images, this.uri, this.spotifyUrl, this.tracks);
 }
 
 extension ToSpotifyPlaylist on Playlist {
-  SpotifyPlaylist toSpotifyPlaylist(Iterable<Track> tracks) =>
-      SpotifyPlaylist(id!, uri!, externalUrls!.spotify!, tracks.map((t) => t.toSpotifyTrack()).toList());
+  SpotifyPlaylist toSpotifyPlaylist(Iterable<Track> tracks) => SpotifyPlaylist(
+      id!,
+      name!,
+      images!.map((i) => i.toSpotifyImage()).toList(),
+      uri!,
+      externalUrls!.spotify!,
+      tracks.map((t) => t.toSpotifyTrack()).toList());
 }
 
 @MappableClass()
@@ -93,7 +100,7 @@ class SpotifyImage {
 }
 
 extension ToSpotifyImage on Image {
-  SpotifyImage toSpotifyImage() => SpotifyImage(height!, width!, url!);
+  SpotifyImage toSpotifyImage() => SpotifyImage(height ?? 0, width ?? 0, url!);
 }
 
 @MappableClass()

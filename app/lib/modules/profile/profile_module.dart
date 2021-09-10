@@ -54,49 +54,48 @@ class _ProfilePageState extends State<ProfilePage> {
         iconTheme: IconThemeData(color: context.getTextColor()),
         title: Text('Profil', style: TextStyle(color: context.getTextColor())),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(50),
-          child: Consumer(
-            builder: (context, watch, _) {
-              var user = watch(tripUserProvider);
-              return Column(
-                children: [
-                  AspectRatio(
+      body: Consumer(
+        builder: (context, watch, _) {
+          var user = watch(tripUserProvider);
+          return ListView(
+            padding: const EdgeInsets.all(50),
+            children: [
+              Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: AspectRatio(
                     aspectRatio: 1,
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: () async {
-                          var pngBytes = await ImageSelector.fromGallery(context);
-                          if (pngBytes != null) {
-                            context.read(tripsLogicProvider).uploadProfileImage(pngBytes);
-                          }
-                        },
-                        child: CircleAvatar(
-                          radius: MediaQuery.of(context).size.width / 5,
-                          backgroundColor: Colors.grey,
-                          backgroundImage:
-                              user?.profileUrl != null ? CachedNetworkImageProvider(user!.profileUrl!) : null,
-                          child: user?.profileUrl == null ? const Center(child: Icon(Icons.add, size: 60)) : null,
-                        ),
+                    child: GestureDetector(
+                      onTap: () async {
+                        var pngBytes = await ImageSelector.fromGallery(context);
+                        if (pngBytes != null) {
+                          context.read(tripsLogicProvider).uploadProfileImage(pngBytes);
+                        }
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        backgroundImage:
+                            user?.profileUrl != null ? CachedNetworkImageProvider(user!.profileUrl!) : null,
+                        child: user?.profileUrl == null ? const Center(child: Icon(Icons.add, size: 60)) : null,
                       ),
                     ),
                   ),
-                  TextFormField(
-                    initialValue: user?.nickname,
-                    decoration: const InputDecoration(
-                      labelText: 'Name',
-                    ),
-                    style: TextStyle(color: context.getTextColor()),
-                    onFieldSubmitted: (text) {
-                      context.read(tripsLogicProvider).setUserName(text);
-                    },
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
+                ),
+              ),
+              const SizedBox(height: 40),
+              TextFormField(
+                initialValue: user?.nickname,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                ),
+                style: TextStyle(color: context.getTextColor()),
+                onFieldSubmitted: (text) {
+                  context.read(tripsLogicProvider).setUserName(text);
+                },
+              ),
+            ],
+          );
+        },
       ),
     );
   }

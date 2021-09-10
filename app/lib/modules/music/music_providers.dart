@@ -16,7 +16,13 @@ import 'music_models.dart';
 const clientId = 'aa587b50876f4c5c979890ed4425d9e2';
 const clientSecret = '9d2bc5b37080475b83ae2cce64bec39c';
 
-const apiScopes = ['user-modify-playback-state', 'user-read-playback-state', 'playlist-modify-private'];
+const apiScopes = [
+  'user-modify-playback-state',
+  'user-read-playback-state',
+  'playlist-modify-private',
+  'playlist-read-private',
+  'playlist-read-collaborative'
+];
 const redirectUri = 'https://jufa20.web.app/spotify/auth';
 
 final musicLogicProvider = Provider((ref) => MusicLogic(ref));
@@ -116,19 +122,19 @@ class SpotifyApiSync with WidgetsBindingObserver {
     return _update({'player': player?.toMap()});
   }
 
-  Future<void> syncPlaylist() async {
+  Future<void> syncPlaylist([String? id]) async {
     if (api == null) return;
     print('RELOAD PLAYLIST');
     try {
-      var curPlaylistId = ref.read(playlistProvider)?.id;
+      var curPlaylistId = id ?? ref.read(playlistProvider)?.id;
       if (curPlaylistId == null) return;
 
       var playlist = await api!.playlists.get(curPlaylistId);
       var tracks = await api!.playlists.getTracksByPlaylistId(curPlaylistId).all();
 
       _updatePlaylist(playlist, tracks);
-    } catch (e) {
-      print('ERROR ON PLAYLIST: $e');
+    } catch (e, st) {
+      print('ERROR ON PLAYLIST: $e\n$st');
     }
   }
 
@@ -269,6 +275,14 @@ class MusicLogic {
     var result = spotify!.search.get(search, types: [SearchType.track]);
     var page = await result.first();
     return page.expand((p) => p.items ?? []).cast<Track>().toList();
+  }
+
+  Future<Iterable<PlaylistSimple>> myPlaylists() async {
+    if (spotify == null) return [];
+    return Future.wait([
+      spotify!.playlists.me.all(),
+      // spotify!.playlists.featured.all(),
+    ]).then((l) => l.expand((d) => d));
   }
 
   Future<Playlist?> createSharedPlaylist() async {

@@ -413,7 +413,7 @@ PODS:
   - Firebase/Storage (8.6.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 8.6.0)
-  - firebase_auth (3.1.0):
+  - firebase_auth (3.1.1):
     - Firebase/Auth (= 8.6.0)
     - firebase_core
     - Flutter
@@ -424,7 +424,7 @@ PODS:
     - Firebase/DynamicLinks (= 8.6.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (10.0.6):
+  - firebase_messaging (10.0.7):
     - Firebase/Messaging (= 8.6.0)
     - firebase_core
     - Flutter
@@ -693,10 +693,10 @@ SPEC CHECKSUMS:
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Firebase: 21ac9f28b09a8bdfc005f34c984fca84e7e8786d
-  firebase_auth: 2dfa8e886191c24ddcf4da34463d47b72e6d19dc
+  firebase_auth: a5da789c2876fda3ad7407bd2828e502dfeebc42
   firebase_core: c21ac09a8d23afd3594b56ed786bad12e5266bba
   firebase_dynamic_links: ef0989cdc7e7d2aaed5814a81f7ca0ec7a6028ee
-  firebase_messaging: 0da89f644566bce5822fa3a5d47c764c44f1cf1d
+  firebase_messaging: 0fddeca6fcfee0bed23c66210391d782af8f8d0e
   firebase_storage: 75fc62b16cfbb268ea4e90729be5729e3dc38b1e
   FirebaseAuth: 223adeeb2262b417532e89bf06a960e3a0a1e9e4
   FirebaseCore: 620b677f70f5470a8e59cb77f3ddc666f6f09785
@@ -707,7 +707,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: ede6fb72bb6337914e5888b399271259d0c4910c
   FirebaseMessaging: ce0a5ee974f7bfe83b6cc5acce88c2d969e37c41
   FirebaseStorage: 2765944230981e63f8bd2938d9d5819158b7c34c
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_udid: 0848809dbed4c055175747ae6a45a8b4f6771e1c
