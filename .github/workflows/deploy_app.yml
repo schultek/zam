@@ -28,6 +28,11 @@ jobs:
           path: /opt/hostedtoolcache/flutter
           key: ubuntu-latest-flutter
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
 
