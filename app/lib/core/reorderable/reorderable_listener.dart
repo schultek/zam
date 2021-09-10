@@ -35,7 +35,7 @@ class ReorderableListener<T extends ModuleElement> extends StatelessWidget {
           key: state.key,
           event: event,
           widgetArea: widgetArea,
-          recognizer: DelayedMultiDragGestureRecognizer(delay: delay, debugOwner: this, kind: event.kind),
+          recognizer: DelayedMultiDragGestureRecognizer(delay: delay, debugOwner: this, supportedDevices: {event.kind}),
         );
   }
 }

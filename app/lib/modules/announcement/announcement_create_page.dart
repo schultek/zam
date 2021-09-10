@@ -16,6 +16,7 @@ class AnnouncementPage extends StatefulWidget {
 
 class _AnnouncementPageState extends State<AnnouncementPage> {
   Announcement announcement = Announcement(message: '');
+  bool isCreating = false;
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +25,18 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
         title: const Text('Create Announcement'),
         actions: [
           IconButton(
-            onPressed: () async {
-              var id = await context.read(announcementLogicProvider).createAnnouncement(announcement);
-              Navigator.pop(context);
-              Future.delayed(const Duration(milliseconds: 300), () => widget.onCreate(id));
-            },
+            onPressed: isCreating
+                ? null
+                : () async {
+                    setState(() => isCreating = true);
+                    try {
+                      var id = await context.read(announcementLogicProvider).createAnnouncement(announcement);
+                      Navigator.pop(context);
+                      Future.delayed(const Duration(milliseconds: 300), () => widget.onCreate(id));
+                    } finally {
+                      setState(() => isCreating = false);
+                    }
+                  },
             icon: const Icon(Icons.check),
           ),
         ],

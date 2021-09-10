@@ -21,6 +21,11 @@ or alternatively using `brew install fastlane`
 fastlane android upload
 ```
 Upload a new version to the Google Play
+### android upload_app_center
+```
+fastlane android upload_app_center
+```
+Upload to VS App Center
 
 ----
 

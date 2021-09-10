@@ -18,7 +18,7 @@ final theButtonLeaderboardProvider = Provider.autoDispose((ref) {
   return state.leaderboard.entries
       .map((e) => LeaderboardEntry(trip?.users[e.key]?.nickname ?? 'Anonym', e.value.round()))
       .toList()
-        ..sort((a, b) => b.points.compareTo(a.points));
+    ..sort((a, b) => b.points.compareTo(a.points));
 });
 
 class TheButtonHelp extends StatefulWidget {

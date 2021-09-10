@@ -21,4 +21,17 @@ platform :android do
   lane :upload do
     upload_to_play_store(aab: "../build/app/outputs/bundle/release/app-release.aab", track: 'internal', release_status: "draft")
   end
+
+  desc "Upload to VS App Center"
+  lane :upload_app_center do
+    appcenter_upload(
+      owner_name: "schultek",
+      owner_type: "user",
+      app_name: "Jufa",
+      destinations: "Testers",
+      file: "../build/app/outputs/flutter-apk/app-release.apk",
+      notify_testers: true
+    )
+  end
+
 end

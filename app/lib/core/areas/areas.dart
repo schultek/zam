@@ -54,7 +54,7 @@ abstract class WidgetArea<T extends ModuleElement> extends StatefulWidget {
 }
 
 abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement> extends State<U>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin {
   bool _isInitialized = false;
 
   StreamSubscription<List<String>?>? _modulesSubscription;

@@ -59,18 +59,14 @@ jobs:
           cd app
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
-          flutter build appbundle --no-sound-null-safety
+          flutter build apk --no-sound-null-safety
 
-      - name: Write ServiceAccountKey File
-        run: 'echo "$SERVICE_ACCOUNT_KEY" > app/android/serviceAccountKey.json'
-        shell: bash
-        env:
-          SERVICE_ACCOUNT_KEY: ${{ secrets.SERVICE_ACCOUNT_KEY }}
-
-      - name: Upload to Play Console
+      - name: Upload to App Center
         run: |
           cd app/android
-          fastlane upload
+          fastlane upload_app_center
+        env:
+          APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
 
   deploy_ios:
     name: Deploy IOS App

@@ -36,7 +36,6 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
   @override
   Widget buildArea(BuildContext context) {
     return AnimatedSize(
-      vsync: this,
       duration: const Duration(milliseconds: 300),
       alignment: Alignment.topCenter,
       curve: Curves.easeInOut,

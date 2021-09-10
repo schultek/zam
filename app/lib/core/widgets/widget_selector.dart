@@ -65,7 +65,7 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
   }
 }
 
-class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<T>> with TickerProviderStateMixin {
+class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<T>> {
   late List<T> widgets;
   late ScrollController _scrollController;
 
@@ -138,7 +138,6 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
         child: AnimatedSize(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-          vsync: this,
           child: SizedBox(
             height: widgets.isNotEmpty ? 130 : 0,
             child: Padding(
