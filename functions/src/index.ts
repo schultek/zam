@@ -166,6 +166,10 @@ export const sendChannelNotification = functions.firestore.document("trips/{trip
     notification: {
       title: `${channel.name} - ${trip.users[data.sender]?.nickname ?? 'Anonym'}`,
       body: data.text
+    },
+    data: {
+      tripId: tripId,
+      channelId: channelId,
     }
   });
 });
