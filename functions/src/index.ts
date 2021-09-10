@@ -160,7 +160,7 @@ export const sendChannelNotification = functions.firestore.document("trips/{trip
 
   var data = snapshot.data();
 
-  var tokens = channel.members.filter((id) => id != data.sender).map((id) => trip.users[id].token).filter((t) => t != null);
+  var tokens = channel.members.filter((id) => id != data.sender).map((id) => trip.users[id]?.token).filter((t) => t != null);
 
   await admin.messaging().sendToDevice(tokens, {
     notification: {
