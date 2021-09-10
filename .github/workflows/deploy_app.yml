@@ -64,7 +64,7 @@ jobs:
       - name: Upload to App Center
         run: |
           cd app/android
-          fastlane upload_app_center
+          bundle exec fastlane upload_app_center
         env:
           APPCENTER_API_TOKEN: ${{ secrets.APPCENTER_API_TOKEN }}
 

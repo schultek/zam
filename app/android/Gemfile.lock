@@ -208,6 +208,7 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
+  dotenv
   fastlane
   fastlane-plugin-appcenter
 
