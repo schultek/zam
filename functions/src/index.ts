@@ -165,7 +165,8 @@ export const sendChannelNotification = functions.firestore.document("trips/{trip
   await admin.messaging().sendToDevice(tokens, {
     notification: {
       title: `${channel.name} - ${trip.users[data.sender]?.nickname ?? 'Anonym'}`,
-      body: data.text
+      body: data.text,
+      tag: `${tripId}_${channelId}`,
     },
     data: {
       tripId: tripId,
