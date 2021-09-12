@@ -133,6 +133,7 @@ class _EditNotePageState extends State<EditNotePage> {
               ValueListenableBuilder<bool>(
                 valueListenable: editorFocusListenable,
                 builder: (context, value, _) {
+                  var logic = context.read(notesLogicProvider);
                   if (value) {
                     return FillColor(
                       builder: (context, fillColor) => Container(
@@ -140,7 +141,13 @@ class _EditNotePageState extends State<EditNotePage> {
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.all(20),
                           scrollDirection: Axis.horizontal,
-                          child: QuillToolbar.basic(controller: _controller),
+                          child: QuillToolbar.basic(
+                            controller: _controller,
+                            onImagePickCallback: (file) async {
+                              return logic.uploadImage(widget.note.id, file);
+                            },
+                            showCameraButton: false,
+                          ),
                         ),
                       ),
                     );

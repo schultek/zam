@@ -62,24 +62,14 @@ class UsersPage extends StatelessWidget {
               child: Consumer(
                 builder: (context, watch, _) {
                   var trip = watch(selectedTripProvider)!;
-                  var isOrganizer = watch(isOrganizerProvider);
+                  var organizers = trip.users.entries.where((e) => e.value.role == UserRoles.Organizer);
+                  var participants = trip.users.entries.where((e) => e.value.role != UserRoles.Organizer);
                   return ListView(
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     children: [
-                      for (var e in trip.users.entries)
-                        ListTile(
-                          leading: UserAvatar(id: e.key),
-                          title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.getTextColor())),
-                          subtitle: Text(e.value.role.capitalize()),
-                          trailing: isOrganizer
-                              ? IconButton(
-                                  onPressed: () {
-                                    UserOptionsDialog.show(context, userId: e.key);
-                                  },
-                                  icon: const Icon(Icons.more_vert),
-                                )
-                              : null,
-                        ),
+                      for (var e in organizers) userTile(context, e),
+                      const Divider(),
+                      for (var e in participants) userTile(context, e),
                     ],
                   );
                 },
@@ -160,6 +150,22 @@ class UsersPage extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget userTile(BuildContext context, MapEntry<String, TripUser> e) {
+    return ListTile(
+      leading: UserAvatar(id: e.key),
+      title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.getTextColor())),
+      subtitle: Text(e.value.role.capitalize()),
+      trailing: context.read(isOrganizerProvider)
+          ? IconButton(
+              onPressed: () {
+                UserOptionsDialog.show(context, userId: e.key);
+              },
+              icon: const Icon(Icons.more_vert),
+            )
+          : null,
     );
   }
 }

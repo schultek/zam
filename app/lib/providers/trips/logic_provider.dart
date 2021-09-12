@@ -66,4 +66,10 @@ class TripsLogic {
       'users.$id': FieldValue.delete(),
     });
   }
+
+  Future<void> updateUserRole(String id, String role) async {
+    await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+      'users.$id.role': role,
+    });
+  }
 }

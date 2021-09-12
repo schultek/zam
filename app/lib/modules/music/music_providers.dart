@@ -83,7 +83,7 @@ class SpotifyApiSync with WidgetsBindingObserver {
     playerTimer = null;
 
     if (api == null) return;
-    print('RELOAD PLAYER ${StackTrace.current}');
+    print('RELOAD PLAYER');
     try {
       var player = (await api!.me.player())?.toSpotifyPlayer();
       var curPlayer = ref.read(playerProvider);

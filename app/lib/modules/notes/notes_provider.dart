@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/models.dart';
@@ -77,5 +79,13 @@ class NotesLogic {
     await doc.collection('notes').doc(id).update({
       'folder': folder,
     });
+  }
+
+  Future<String?> uploadImage(String noteId, File file) async {
+    var fileName = Uri.parse(file.path).pathSegments.last;
+    var ref = FirebaseStorage.instance.ref('notes/$noteId/$fileName');
+    await ref.putFile(file);
+    var link = await ref.getDownloadURL();
+    return link;
   }
 }
