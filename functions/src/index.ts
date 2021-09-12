@@ -143,7 +143,7 @@ export const sendAnnouncementNotification = functions.firestore.document("trips/
 
   await admin.messaging().sendToTopic(`/topics/trip.${tripId}.announcements`, {
     notification: {
-      title: "New announcement",
+      title: data.title ?? "New announcement",
       body: data.message
     }
   });
