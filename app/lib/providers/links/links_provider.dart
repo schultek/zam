@@ -131,7 +131,7 @@ class LinkLogic {
     var parameters = DynamicLinkParameters(
       uriPrefix: 'https://jufa.page.link',
       androidParameters: AndroidParameters(packageName: 'de.schultek.jufa'),
-      iosParameters: IosParameters(appStoreId: '1517699311', bundleId: 'io.upride.jufa'),
+      iosParameters: IosParameters(appStoreId: '1582879434', bundleId: 'de.schultek.jufa'),
       socialMetaTagParameters: meta,
       link: Uri.parse(link),
     );
