@@ -1,30 +1,27 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../models/models.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/firebase/doc_provider.dart';
 import '../../providers/helpers.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 
+@MappableClass()
 class TheButtonState {
-  DateTime? lastReset;
+  Timestamp? lastReset;
   double? aliveHours;
   Map<String, double> leaderboard = {};
 
   TheButtonState(this.lastReset, this.aliveHours, this.leaderboard);
-  // TODO make mappable
 }
 
 final theButtonProvider = StateNotifierProvider<StreamNotifier<TheButtonState>, TheButtonState>((ref) {
   return StreamNotifier.from(
-    ref.watch(moduleDocProvider('thebutton')).snapshots().map((s) => TheButtonState(
-          (s.data()?['lastReset'] as Timestamp?)?.toDate() ?? DateTime.now(),
-          (s.data()?['aliveHours'] ?? 0.1) * 1.0 as double?,
-          (s.data()?['leaderboard'] as Map<String, dynamic>? ?? {})
-              .map((key, value) => MapEntry(key, (value as num).toDouble())),
-        )),
+    ref.watch(moduleDocProvider('thebutton')).snapshots().map((s) => s.decode<TheButtonState>()),
     initialValue: TheButtonState(null, null, {}),
   );
 });
@@ -44,9 +41,12 @@ class TheButtonLogic {
   TheButtonLogic(this.ref) : doc = ref.watch(moduleDocProvider('thebutton'));
 
   double? get value {
-    var state = ref.read(theButtonProvider);
+    return getValue(ref.read(theButtonProvider));
+  }
+
+  double? getValue(TheButtonState state) {
     if (state.lastReset == null) return null;
-    var hours = DateTime.now().difference(state.lastReset!).inSeconds / 3600.0;
+    var hours = DateTime.now().difference(state.lastReset!.toDate()).inSeconds / 3600.0;
     return hours >= state.aliveHours! ? 1 : hours / state.aliveHours!;
   }
 
@@ -60,15 +60,25 @@ class TheButtonLogic {
     doc.set({'aliveHours': h + m / 60}, SetOptions(merge: true));
   }
 
-  void resetState() {
-    if (isAlive ?? false) {
-      doc.set({
-        'lastReset': Timestamp.now(),
-        'leaderboard': {
-          ref.read(userIdProvider): FieldValue.increment((value! * 100).floor()),
-        },
-      }, SetOptions(merge: true));
-    }
+  Future<int?> resetState() async {
+    int? points;
+    await doc.firestore.runTransaction((transaction) async {
+      var snapshot = await transaction.get(doc);
+      var state = snapshot.decode<TheButtonState>();
+      var value = getValue(state);
+      if (value != null && value < 1) {
+        points = (value * 100).floor();
+        transaction.set(
+          doc,
+          {
+            'lastReset': Timestamp.now(),
+            'leaderboard': {ref.read(userIdProvider): FieldValue.increment(points!)},
+          },
+          SetOptions(merge: true),
+        );
+      }
+    });
+    return points;
   }
 
   void resetHealth() {

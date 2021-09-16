@@ -11,6 +11,7 @@ import 'modules/chat/chat_provider.dart';
 import 'modules/elimination/game_provider.dart';
 import 'modules/music/music_models.dart';
 import 'modules/notes/notes_provider.dart';
+import 'modules/thebutton/thebutton_provider.dart';
 import 'providers/photos/photos_provider.dart';
 
 // === ALL STATICALLY REGISTERED MAPPERS ===
@@ -37,6 +38,7 @@ var _mappers = <String, BaseMapper>{
   _typeOf<TemplateModel>(): TemplateModelMapper._(),
   _typeOf<GridTemplateModel>(): GridTemplateModelMapper._(),
   _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
+  _typeOf<TheButtonState>(): TheButtonStateMapper._(),
   _typeOf<ChannelInfo>(): ChannelInfoMapper._(),
   _typeOf<ChatMessage>(): ChatMessageMapper._(),
   _typeOf<ChatTextMessage>(): ChatTextMessageMapper._(),
@@ -492,6 +494,47 @@ extension SwipeTemplateModelMapperExtension on SwipeTemplateModel {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
   SwipeTemplateModel copyWith({String? type}) => SwipeTemplateModel(type: type ?? this.type);
+}
+
+class TheButtonStateMapper extends BaseMapper<TheButtonState> {
+  TheButtonStateMapper._();
+
+  @override
+  Function get decoder => decode;
+  TheButtonState decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  TheButtonState fromMap(Map<String, dynamic> map) =>
+      TheButtonState(map.getOpt('lastReset'), map.getOpt('aliveHours'), map.getMap('leaderboard'));
+
+  @override
+  Function get encoder => (TheButtonState v) => encode(v);
+  dynamic encode(TheButtonState v) => toMap(v);
+  Map<String, dynamic> toMap(TheButtonState t) => {
+        'lastReset': Mapper.toValue(t.lastReset),
+        'aliveHours': Mapper.toValue(t.aliveHours),
+        'leaderboard': Mapper.toValue(t.leaderboard)
+      };
+
+  @override
+  String? stringify(TheButtonState self) =>
+      'TheButtonState(lastReset: ${Mapper.asString(self.lastReset)}, aliveHours: ${Mapper.asString(self.aliveHours)}, leaderboard: ${Mapper.asString(self.leaderboard)})';
+  @override
+  int? hash(TheButtonState self) =>
+      Mapper.hash(self.lastReset) ^ Mapper.hash(self.aliveHours) ^ Mapper.hash(self.leaderboard);
+  @override
+  bool? equals(TheButtonState self, TheButtonState other) =>
+      Mapper.isEqual(self.lastReset, other.lastReset) &&
+      Mapper.isEqual(self.aliveHours, other.aliveHours) &&
+      Mapper.isEqual(self.leaderboard, other.leaderboard);
+
+  @override
+  Function get typeFactory => (f) => f<TheButtonState>();
+}
+
+extension TheButtonStateMapperExtension on TheButtonState {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  TheButtonState copyWith({Timestamp? lastReset, double? aliveHours, Map<String, double>? leaderboard}) =>
+      TheButtonState(lastReset ?? this.lastReset, aliveHours ?? this.aliveHours, leaderboard ?? this.leaderboard);
 }
 
 class ChannelInfoMapper extends BaseMapper<ChannelInfo> {
@@ -1276,6 +1319,9 @@ class Mapper<T> {
   }
 
   static bool isEqual(dynamic value, Object? other) {
+    if (value == null || other == null) {
+      return value == other;
+    }
     var type = TypeInfo.fromValue(value);
     return _mappers[type.type]?.equals(value, other) ?? value == other;
   }

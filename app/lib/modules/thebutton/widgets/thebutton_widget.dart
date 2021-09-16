@@ -17,11 +17,14 @@ class TheButton extends StatefulWidget {
 
 class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
   late AnimationController tapAnimation;
+  late AnimationController pointsAnimation;
+  int? points;
 
   @override
   void initState() {
     super.initState();
     tapAnimation = AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    pointsAnimation = AnimationController(vsync: this, duration: const Duration(seconds: 1));
   }
 
   @override
@@ -34,8 +37,14 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
       },
       onTapUp: (event) {
         if (tapAnimation.value == 1) {
-          context.read(theButtonLogicProvider).resetState();
-          tapAnimation.value = 0;
+          context.read(theButtonLogicProvider).resetState().then((points) {
+            if (points != null) {
+              this.points = points;
+              pointsAnimation.forward(from: 0);
+            }
+          }).whenComplete(() {
+            tapAnimation.value = 0;
+          });
         } else {
           tapAnimation.reverse();
         }
@@ -51,13 +60,33 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
             child: child,
           );
         },
-        child: AbsorbPointer(
-          child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black26,
+        child: AnimatedBuilder(
+          animation: pointsAnimation,
+          builder: (context, child) {
+            return Stack(
+              children: [
+                child!,
+                if (points != null && pointsAnimation.isAnimating)
+                  Center(
+                    child: Text(
+                      '+ $points',
+                      style: TextStyle(
+                        fontSize: Curves.easeOut.transform(pointsAnimation.value) * 25,
+                        color: Colors.white.withOpacity(1 - Curves.easeInExpo.transform(pointsAnimation.value)),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
+          child: AbsorbPointer(
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black26,
+              ),
+              child: const TheButtonAnimation(),
             ),
-            child: const TheButtonAnimation(),
           ),
         ),
       ),
@@ -89,7 +118,7 @@ class TapProgressPainter extends CustomPainter {
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 4
-        ..color = Colors.white,
+        ..color = value == 1 ? Colors.green : Colors.white,
     );
   }
 
