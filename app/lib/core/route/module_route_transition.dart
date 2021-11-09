@@ -11,7 +11,7 @@ class _InheritedModuleRouteTransition extends InheritedWidget {
 
 class ModuleRouteTransition extends StatefulWidget {
   final Widget child;
-  const ModuleRouteTransition({required this.child});
+  const ModuleRouteTransition({required this.child, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _ModuleRouteTransitionState();

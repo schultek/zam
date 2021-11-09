@@ -12,7 +12,7 @@ class NotificationLogic {
 
   bool _isSetup = false;
 
-  final ProviderReference ref;
+  final Ref ref;
   NotificationLogic(this.ref);
 
   Future<void> setup() async {
@@ -37,7 +37,7 @@ class NotificationLogic {
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message opened App: ${message.data}');
-      ref.read(messageProvider).state = message;
+      ref.read(messageProvider.state).state = message;
     });
   }
 

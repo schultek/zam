@@ -16,8 +16,8 @@ import 'reorderable_item.dart';
 final dragProvider = StateProvider<ReorderableDrag?>((ref) => null);
 final isDragActiveProvider = StateProvider((ref) => false);
 
-final isDraggingProvider = Provider.family(
-    (ref, Key key) => ref.watch(dragProvider).state?.key == key && ref.watch(isDragActiveProvider).state);
+final isDraggingProvider =
+    Provider.family((ref, Key key) => ref.watch(dragProvider)?.key == key && ref.watch(isDragActiveProvider));
 
 final dragWidgetProvider = StateProvider<Widget?>((ref) => null);
 final dragDecorationOpacityProvider = StateProvider<double>((ref) => 0);
@@ -53,14 +53,14 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
   WidgetSelectorState? get widgetSelector => area.template.widgetSelector?.state;
 
-  Offset? get dragOffset => read(dragOffsetProvider).state;
-  set dragOffset(Offset? offset) => read(dragOffsetProvider).state = offset;
+  Offset? get dragOffset => read(dragOffsetProvider);
+  set dragOffset(Offset? offset) => read(dragOffsetProvider.state).state = offset;
 
-  Size? get dragSize => read(dragSizeProvider).state;
-  set dragSize(Size? size) => read(dragSizeProvider).state = size;
+  Size? get dragSize => read(dragSizeProvider);
+  set dragSize(Size? size) => read(dragSizeProvider.state).state = size;
 
-  double get dragDecorationOpacity => read(dragDecorationOpacityProvider).state;
-  set dragDecorationOpacity(double opacity) => read(dragDecorationOpacityProvider).state = opacity;
+  double get dragDecorationOpacity => read(dragDecorationOpacityProvider.state).state;
+  set dragDecorationOpacity(double opacity) => read(dragDecorationOpacityProvider.state).state = opacity;
 
   Drag onStart(Offset position) {
     if (widgetSelector == null) {
@@ -74,7 +74,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
     var draggedItem = read(reorderableLogicProvider).items[key]!;
 
-    read(dragWidgetProvider).state =
+    read(dragWidgetProvider.state).state =
         draggedItem.widget.builder(draggedItem.context, ReorderableState.dragging, draggedItem.widget.child);
     moduleElement = draggedItem.context.findAncestorWidgetOfExactType<T>();
 
@@ -108,7 +108,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
     );
     overlayState.insert(entry!);
 
-    read(isDragActiveProvider).state = true;
+    read(isDragActiveProvider.state).state = true;
 
     return this;
   }
@@ -205,9 +205,9 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
     entry?.remove();
     entry = null;
 
-    if (read(dragProvider).state == this) {
-      read(dragProvider).state = null;
-      read(isDragActiveProvider).state = false;
+    if (read(dragProvider) == this) {
+      read(dragProvider.state).state = null;
+      read(isDragActiveProvider.state).state = false;
     }
   }
 }

@@ -1,9 +1,16 @@
+@CodeGen(runAfter: [buildModuleFactories])
 library module;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:super_annotations/super_annotations.dart';
+
+// ignore: UNUSED_IMPORT
+import '../../modules/modules.dart';
+import 'module_annotations.dart';
 
 export '../../models/segment_size.dart';
+export '../../modules/modules.dart';
 export '../elements/elements.dart';
 export '../themes/themes.dart';
 export 'module_annotations.dart';
@@ -11,7 +18,7 @@ export 'module_annotations.dart';
 abstract class ModuleElement extends StatelessWidget {
   @override
   final Key key; // ignore: overridden_fields
-  ModuleElement({required this.key}); // ignore: prefer_const_constructors_in_immutables
+  ModuleElement({required this.key}) : super(key: key); // ignore: prefer_const_constructors_in_immutables
 
   late final String _id;
   String get id => _id;

@@ -11,7 +11,7 @@ class GridTemplateModel extends TemplateModel {
 }
 
 class GridTemplate extends WidgetTemplate<GridTemplateModel> {
-  GridTemplate(GridTemplateModel model) : super(model);
+  GridTemplate(GridTemplateModel model, {Key? key}) : super(model, key: key);
 
   final _scrollController = ScrollController();
 
@@ -30,8 +30,8 @@ class GridTemplate extends WidgetTemplate<GridTemplateModel> {
                     padding:
                         EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
                     child: Consumer(
-                      builder: (context, watch, _) {
-                        var trip = watch(selectedTripProvider)!;
+                      builder: (context, ref, _) {
+                        var trip = ref.watch(selectedTripProvider)!;
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

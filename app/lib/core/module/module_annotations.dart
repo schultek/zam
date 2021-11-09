@@ -9,23 +9,11 @@ class Module extends ClassAnnotation {
   static Map<String, Class> modules = {};
 
   @override
-  void apply(Class target, LibraryBuilder library) {
+  void apply(Class target, LibraryBuilder output) {
     modules[id] = target;
   }
 }
 
-class ModuleWidgetReflectable extends ClassAnnotation {
-  const ModuleWidgetReflectable();
-
-  static List<Class> moduleElements = [];
-
-  @override
-  void apply(Class target, LibraryBuilder library) {
-    moduleElements.add(target);
-  }
-}
-
-@CodeGen.runAfter()
 void buildModuleFactories(LibraryBuilder library) {
   library.directives.add(Directive.import(CodeGen.currentFile));
   library.directives.add(Directive.import('module.dart'));

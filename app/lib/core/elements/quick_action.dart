@@ -1,6 +1,5 @@
 part of elements;
 
-@ModuleWidgetReflectable()
 class QuickAction extends ModuleElement with ModuleElementBuilder<QuickAction> {
   final IconData icon;
   final String text;

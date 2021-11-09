@@ -7,9 +7,11 @@ import 'channel/add_channel_page.dart';
 import 'channel_page.dart';
 
 class ChatPage extends ConsumerWidget {
+  const ChatPage({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    var channels = watch(channelsProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    var channels = ref.watch(channelsProvider);
     return channels.when(
       data: (data) {
         return ListView(

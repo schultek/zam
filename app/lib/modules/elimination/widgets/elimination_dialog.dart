@@ -37,8 +37,8 @@ class _EliminationDialogState extends State<EliminationDialog> {
           height: 400,
           width: 400,
           child: Consumer(
-            builder: (context, watch, _) {
-              var game = watch(gameProvider(widget.gameId)).data!.value;
+            builder: (context, ref, _) {
+              var game = ref.watch(gameProvider(widget.gameId)).asData!.value;
               var availableTargets = game.currentTargets.entries.where((e) => e.value != null && e.value != e.key);
 
               return ListView(
@@ -47,7 +47,7 @@ class _EliminationDialogState extends State<EliminationDialog> {
                     ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 26),
                       leading: UserAvatar(id: entry.value!),
-                      title: Text(watch(nicknameProvider(entry.value!)) ?? 'Anonym'),
+                      title: Text(ref.watch(nicknameProvider(entry.value!)) ?? 'Anonym'),
                       onTap: () {
                         setState(() {
                           targetEntry = MapEntry(entry.key, entry.value!);

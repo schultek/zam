@@ -28,12 +28,12 @@ const redirectUri = 'https://jufa20.web.app/spotify/auth';
 final musicLogicProvider = Provider((ref) => MusicLogic(ref));
 
 final musicConfigProvider =
-    StreamProvider((ref) => ref.watch(moduleDocProvider('music')).snapshots().map((s) => s.decode<MusicConfig>()));
+    StreamProvider((ref) => ref.watch(moduleDocProvider('music')).snapshotsMapped<MusicConfig>());
 
 final credentialsProvider = StreamProvider<SpotifyCredentials?>(
     (ref) => ref.watch(musicConfigProvider.stream).map((d) => d.credentials).distinct());
-final playlistProvider = Provider<SpotifyPlaylist?>((ref) => ref.watch(musicConfigProvider).data?.value.playlist);
-final playerProvider = Provider<SpotifyPlayer?>((ref) => ref.watch(musicConfigProvider).data?.value.player);
+final playlistProvider = Provider<SpotifyPlaylist?>((ref) => ref.watch(musicConfigProvider).asData?.value.playlist);
+final playerProvider = Provider<SpotifyPlayer?>((ref) => ref.watch(musicConfigProvider).asData?.value.player);
 
 final spotifyApiProvider = StreamProvider<SpotifyApi?>((ref) {
   return ref.watch(credentialsProvider.stream).map((credentials) {
@@ -58,14 +58,14 @@ final spotifyApiProvider = StreamProvider<SpotifyApi?>((ref) {
 final spotifySyncProvider = Provider((ref) => SpotifyApiSync(ref));
 
 class SpotifyApiSync with WidgetsBindingObserver {
-  final ProviderReference ref;
+  final Ref ref;
 
   final SpotifyApi? api;
 
   Timer? playerTimer;
   int backoffSeconds = 1;
 
-  SpotifyApiSync(this.ref) : api = ref.watch(spotifyApiProvider).data?.value {
+  SpotifyApiSync(this.ref) : api = ref.watch(spotifyApiProvider).asData?.value {
     WidgetsBinding.instance!.addObserver(this);
     ref.onDispose(dispose);
     syncAll();
@@ -163,9 +163,9 @@ final spotifyIsSignedInProvider =
     StreamProvider((ref) => ref.watch(spotifyApiProvider.stream).map((api) => api != null));
 
 class MusicLogic {
-  final ProviderReference ref;
+  final Ref ref;
   final SpotifyApi? spotify;
-  MusicLogic(this.ref) : spotify = ref.watch(spotifyApiProvider).data?.value;
+  MusicLogic(this.ref) : spotify = ref.watch(spotifyApiProvider).asData?.value;
 
   Future<void> play(String? uri, {String? context, dynamic offset}) async {
     if (spotify == null) return;

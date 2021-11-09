@@ -12,7 +12,7 @@ import '../templates/templates.dart';
 
 class ReorderToggle extends StatefulWidget {
   final void Function()? onPressed;
-  const ReorderToggle({this.onPressed});
+  const ReorderToggle({this.onPressed, Key? key}) : super(key: key);
   @override
   _ReorderToggleState createState() => _ReorderToggleState();
 }

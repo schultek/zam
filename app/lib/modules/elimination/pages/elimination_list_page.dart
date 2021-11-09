@@ -19,8 +19,8 @@ class EliminationListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (context, watch, _) {
-        var game = watch(gameProvider(gameId)).data!.value;
+      builder: (context, ref, _) {
+        var game = ref.watch(gameProvider(gameId)).asData!.value;
 
         var curTargets = game.currentTargets;
 
@@ -34,7 +34,7 @@ class EliminationListPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Elimination List'),
             actions: [
-              if (watch(isOrganizerProvider))
+              if (ref.watch(isOrganizerProvider))
                 IconButton(
                   onPressed: () async {
                     AllTargetsDialog.show(context, gameId: gameId);
@@ -77,7 +77,7 @@ class EliminationListPage extends StatelessWidget {
                               UserAvatar(id: elim.eliminatedBy),
                               const SizedBox(height: 5),
                               Text(
-                                watch(nicknameProvider(elim.eliminatedBy)) ?? 'Anonym',
+                                ref.watch(nicknameProvider(elim.eliminatedBy)) ?? 'Anonym',
                                 style: Theme.of(context).textTheme.caption,
                               ),
                             ],
@@ -95,7 +95,7 @@ class EliminationListPage extends StatelessWidget {
                               UserAvatar(id: elim.target),
                               const SizedBox(height: 5),
                               Text(
-                                watch(nicknameProvider(elim.target)) ?? 'Anonym',
+                                ref.watch(nicknameProvider(elim.target)) ?? 'Anonym',
                                 style: Theme.of(context).textTheme.caption,
                               ),
                             ],
@@ -139,7 +139,7 @@ class EliminationListPage extends StatelessWidget {
                   onTap: () async {
                     var elimination = await EliminationDialog.show(context, gameId: gameId);
                     if (elimination != null) {
-                      context.read(gameLogicProvider).addEliminationEntry(gameId, elimination);
+                      ref.read(gameLogicProvider).addEliminationEntry(gameId, elimination);
                     }
                   },
                 ),

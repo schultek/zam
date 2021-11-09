@@ -30,9 +30,9 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
           theme: area.theme,
           reuseTheme: true,
           child: Consumer(
-            builder: (context, watch, child) {
-              var offset = watch(dragOffsetProvider).state!;
-              var size = watch(dragSizeProvider).state!;
+            builder: (context, ref, child) {
+              var offset = ref.watch(dragOffsetProvider)!;
+              var size = ref.watch(dragSizeProvider)!;
               return AnimatedBuilder(
                 animation: scaleAnimation,
                 builder: (context, child) {
@@ -55,8 +55,8 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
               );
             },
             child: Consumer(
-              builder: (context, watch, child) {
-                var decOpacity = watch(dragDecorationOpacityProvider).state;
+              builder: (context, ref, child) {
+                var decOpacity = ref.watch(dragDecorationOpacityProvider);
                 return decorationBuilder(child!, decOpacity);
               },
               child: IgnorePointer(
@@ -64,7 +64,7 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
                   context: context,
                   removeTop: true,
                   removeBottom: true,
-                  child: Consumer(builder: (context, watch, _) => watch(dragWidgetProvider).state!),
+                  child: Consumer(builder: (context, ref, _) => ref.watch(dragWidgetProvider)!),
                 ),
               ),
             ),

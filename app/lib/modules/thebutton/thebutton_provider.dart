@@ -21,7 +21,7 @@ class TheButtonState {
 
 final theButtonProvider = StateNotifierProvider<StreamNotifier<TheButtonState>, TheButtonState>((ref) {
   return StreamNotifier.from(
-    ref.watch(moduleDocProvider('thebutton')).snapshots().map((s) => s.decode<TheButtonState>()),
+    ref.watch(moduleDocProvider('thebutton')).snapshotsMapped<TheButtonState>(),
     initialValue: TheButtonState(null, null, {}),
   );
 });
@@ -36,8 +36,8 @@ final theButtonValueProvider = StreamProvider<double>((ref) {
 final theButtonLogicProvider = Provider((ref) => TheButtonLogic(ref));
 
 class TheButtonLogic {
-  final ProviderReference ref;
-  final DocumentReference doc;
+  final Ref ref;
+  final DocumentReference<Map<String, dynamic>> doc;
   TheButtonLogic(this.ref) : doc = ref.watch(moduleDocProvider('thebutton'));
 
   double? get value {
@@ -63,8 +63,8 @@ class TheButtonLogic {
   Future<int?> resetState() async {
     int? points;
     await doc.firestore.runTransaction((transaction) async {
-      var snapshot = await transaction.get(doc);
-      var state = snapshot.decode<TheButtonState>();
+      var snapshot = await transaction.get(doc.mapped<TheButtonState>());
+      var state = snapshot.data()!;
       var value = getValue(state);
       if (value != null && value < 1) {
         points = (value * 100).floor();

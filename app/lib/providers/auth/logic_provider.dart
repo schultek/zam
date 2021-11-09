@@ -8,7 +8,7 @@ import 'package:flutter_udid/flutter_udid.dart';
 final authLogicProvider = Provider((ref) => AuthLogic(ref));
 
 class AuthLogic {
-  final ProviderReference ref;
+  final Ref ref;
   AuthLogic(this.ref);
 
   Future<void> verifyPhoneNumber(

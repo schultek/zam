@@ -36,7 +36,7 @@ class ReorderableLogic {
     required MultiDragGestureRecognizer recognizer,
     required WidgetAreaState<WidgetArea<T>, T> widgetArea,
   }) {
-    var dragState = read(dragProvider);
+    var dragState = read(dragProvider.state);
     dragState.state?.dispose();
     dragState.state = ReorderableDrag<T>(
       read: read,
@@ -77,7 +77,7 @@ class ReorderableLogic {
     double current = 0.0;
     double max = delta.abs();
 
-    var itemTranslation = read(itemTranslationProvider(key)).state;
+    var itemTranslation = read(itemTranslationProvider(key));
     var target = getItem(itemTranslation);
 
     if (target != null) {
@@ -98,14 +98,14 @@ class ReorderableLogic {
     newController.addStatusListener((AnimationStatus s) {
       if (s == AnimationStatus.completed || s == AnimationStatus.dismissed) {
         newController.dispose();
-        var itemTranslation = read(itemTranslationProvider(key)).state;
+        var itemTranslation = read(itemTranslationProvider(key));
         if (getItem(itemTranslation) == newController) {
-          read(itemTranslationProvider(key)).state = withItem(itemTranslation, null);
+          read(itemTranslationProvider(key).state).state = withItem(itemTranslation, null);
         }
       }
     });
 
-    read(itemTranslationProvider(key)).state = withItem(itemTranslation, newController);
+    read(itemTranslationProvider(key).state).state = withItem(itemTranslation, newController);
     newController.animateTo(0.0, curve: Curves.easeInOut);
   }
 }

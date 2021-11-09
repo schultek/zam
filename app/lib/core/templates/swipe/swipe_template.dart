@@ -11,7 +11,7 @@ class SwipeTemplateModel extends TemplateModel {
 }
 
 class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
-  SwipeTemplate(SwipeTemplateModel model) : super(model);
+  SwipeTemplate(SwipeTemplateModel model, {Key? key}) : super(model, key: key);
 
   final _scrollController = ScrollController();
   final pageController = PageController(initialPage: 1);
@@ -67,9 +67,9 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                             padding: EdgeInsets.only(
                                 top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
                             child: Consumer(
-                              builder: (context, watch, _) {
-                                var trip = watch(selectedTripProvider)!;
-                                var user = watch(tripUserProvider)!;
+                              builder: (context, ref, _) {
+                                var trip = ref.watch(selectedTripProvider)!;
+                                var user = ref.watch(tripUserProvider)!;
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [

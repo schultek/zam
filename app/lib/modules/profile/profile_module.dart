@@ -38,7 +38,7 @@ class ProfileModule {
 }
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage();
+  const ProfilePage({Key? key}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -55,8 +55,8 @@ class _ProfilePageState extends State<ProfilePage> {
         title: Text('Profil', style: TextStyle(color: context.getTextColor())),
       ),
       body: Consumer(
-        builder: (context, watch, _) {
-          var user = watch(tripUserProvider);
+        builder: (context, ref, _) {
+          var user = ref.watch(tripUserProvider);
           return ListView(
             padding: const EdgeInsets.all(50),
             children: [
@@ -69,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: () async {
                         var pngBytes = await ImageSelector.fromGallery(context);
                         if (pngBytes != null) {
-                          context.read(tripsLogicProvider).uploadProfileImage(pngBytes);
+                          ref.read(tripsLogicProvider).uploadProfileImage(pngBytes);
                         }
                       },
                       child: CircleAvatar(
@@ -90,7 +90,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 style: TextStyle(color: context.getTextColor()),
                 onFieldSubmitted: (text) {
-                  context.read(tripsLogicProvider).setUserName(text);
+                  ref.read(tripsLogicProvider).setUserName(text);
                 },
               ),
             ],

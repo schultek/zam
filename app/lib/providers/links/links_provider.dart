@@ -25,7 +25,7 @@ class LinkState {
 }
 
 class LinkStateNotifier extends StateNotifier<LinkState> {
-  final ProviderReference ref;
+  final Ref ref;
 
   LinkStateNotifier(this.ref) : super(LinkState(null, isLoading: true)) {
     setup();
@@ -59,7 +59,7 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
         state = LinkState(null, isProcessing: true);
         (() async {
           var user = ref.read(userProvider);
-          if (user.data?.value == null) {
+          if (user.asData?.value == null) {
             await ref.read(authLogicProvider).signInAnonymously();
           }
           await handleReceivedLink(uri);
@@ -82,7 +82,7 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
 final linkLogicProvider = Provider((ref) => LinkLogic(ref));
 
 class LinkLogic {
-  final ProviderReference ref;
+  final Ref ref;
   LinkLogic(this.ref);
 
   Future<String> createOrganizerLink({required String phoneNumber}) async {
@@ -111,15 +111,15 @@ class LinkLogic {
     );
   }
 
-  Future<String> createTripInvitationLink({required Trip trip, String role = UserRoles.Participant}) async {
+  Future<String> createTripInvitationLink({required Trip trip, String role = UserRoles.participant}) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createTripInvitationLink');
     var res = await callable.call({'tripId': trip.id, 'role': role});
     return _buildDynamicLink(
       link: res.data as String,
       meta: SocialMetaTagParameters(
-        title: role == UserRoles.Participant
+        title: role == UserRoles.participant
             ? trip.name
-            : "Werde ${role == UserRoles.Organizer ? 'Organisator' : 'Leiter'} bei ${trip.name}",
+            : "Werde ${role == UserRoles.organizer ? 'Organisator' : 'Leiter'} bei ${trip.name}",
         description: 'Trete dem Ausflug bei.',
         imageUrl: Uri.parse(
             trip.pictureUrl ?? 'https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),

@@ -7,15 +7,17 @@ import '../../widgets/ju_background.dart';
 import '../create_trip/create_trip_screen.dart';
 
 class NoTripScreen extends StatefulWidget {
+  const NoTripScreen({Key? key}) : super(key: key);
+
   @override
   _NoTripScreenState createState() => _NoTripScreenState();
 
   static Route route() {
-    return MaterialPageRoute(builder: (context) => NoTripScreen());
+    return MaterialPageRoute(builder: (context) => const NoTripScreen());
   }
 
   static MaterialPage page() {
-    return MaterialPage(child: NoTripScreen());
+    return const MaterialPage(child: NoTripScreen());
   }
 }
 
@@ -29,8 +31,8 @@ class _NoTripScreenState extends State<NoTripScreen> {
           padding: const EdgeInsets.all(40.0),
           child: Center(
             child: Consumer(
-              builder: (context, watch, _) {
-                var claims = watch(claimsProvider);
+              builder: (context, ref, _) {
+                var claims = ref.watch(claimsProvider);
 
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -48,7 +50,8 @@ class _NoTripScreenState extends State<NoTripScreen> {
                             radius: const BorderRadius.all(Radius.circular(50.0)),
                             child: InkWell(
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateTripScreen()));
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) => const CreateTripScreen()));
                               },
                               child: const Center(
                                 child: Padding(

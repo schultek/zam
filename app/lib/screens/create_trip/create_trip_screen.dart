@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/templates/templates.dart';
 import '../../models/models.dart';
@@ -10,6 +10,8 @@ import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/ju_background.dart';
 
 class CreateTripScreen extends StatefulWidget {
+  const CreateTripScreen({Key? key}) : super(key: key);
+
   @override
   _CreateTripScreenState createState() => _CreateTripScreenState();
 }
@@ -88,7 +90,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
     var trip = Trip(
       id: '',
       name: tripName,
-      users: {userId: TripUser(role: UserRoles.Organizer)},
+      users: {userId: TripUser(role: UserRoles.organizer)},
       template: SwipeTemplateModel(),
     );
     return FirebaseFirestore.instance.collection('trips').add(trip.toMap());

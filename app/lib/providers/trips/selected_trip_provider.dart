@@ -14,7 +14,7 @@ final selectedTripIdProvider = StateNotifierProvider<IdNotifier, String?>((ref) 
 class IdNotifier extends StateNotifier<String?> {
   late StreamSubscription<List<Trip>> _tripsSubscription;
 
-  IdNotifier(ProviderReference ref) : super(null) {
+  IdNotifier(Ref ref) : super(null) {
     _tripsSubscription = ref.watch(tripsProvider.stream).listen((trips) {
       state ??= trips.firstOrNull?.id;
     });
@@ -36,7 +36,7 @@ final selectedTripProvider = StateNotifierProvider<StreamNotifier<Trip?>, Trip?>
   Trip? get(String? id, List<Trip>? trips) => trips?.where((t) => t.id == id).firstOrNull ?? trips?.firstOrNull;
   return StreamNotifier.from(
     CombinedStream(selectedTripIdStream, tripsStream, get),
-    initialValue: get(ref.read(selectedTripIdProvider), ref.read(tripsProvider).data?.value),
+    initialValue: get(ref.read(selectedTripIdProvider), ref.read(tripsProvider).asData?.value),
     onValue: (value) =>
         value != null ? ref.read(notificationsProvider).subscribe('trip.${value.id}.announcements') : null,
   );

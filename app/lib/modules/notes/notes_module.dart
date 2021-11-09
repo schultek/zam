@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/areas/areas.dart';
 import '../../core/module/module.dart';
@@ -80,8 +81,8 @@ class NotesModule {
 
     return ContentSegment(
       builder: (context) => Consumer(
-        builder: (context, watch, _) {
-          var note = watch(noteProvider(id));
+        builder: (context, ref, _) {
+          var note = ref.watch(noteProvider(id));
           return note.when(
             data: (data) {
               if (data == null) {

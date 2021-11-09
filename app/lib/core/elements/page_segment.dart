@@ -1,6 +1,5 @@
 part of elements;
 
-@ModuleWidgetReflectable()
 class PageSegment extends ModuleElement with ModuleElementBuilder<PageSegment> {
   final bool keepAlive;
   final Widget Function(BuildContext context) builder;

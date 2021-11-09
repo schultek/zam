@@ -29,8 +29,8 @@ class _FileViewPageState extends State<FileViewPage> {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (context, watch, _) {
-        var files = watch(orderedFilesProvider);
+      builder: (context, ref, _) {
+        var files = ref.watch(orderedFilesProvider);
 
         return Scaffold(
           backgroundColor: Colors.black,
@@ -88,7 +88,7 @@ class _FileViewPageState extends State<FileViewPage> {
                             IconButton(
                               onPressed: () async {
                                 if (controller.page != null) {
-                                  context.read(filesLogicProvider).deleteFile(files[controller.page!.round()]);
+                                  ref.read(filesLogicProvider).deleteFile(files[controller.page!.round()]);
                                 }
                               },
                               icon: const Icon(Icons.delete),

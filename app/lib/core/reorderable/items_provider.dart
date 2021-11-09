@@ -5,5 +5,5 @@ import 'item_animation.dart';
 
 final itemTranslationProvider = StateProvider.family((ref, Key key) => const ItemAxisAnimation(null, null));
 
-final itemAnimationProvider = Provider.family(
-    (ref, Key key) => ItemOffsetAnimation(axisAnimation: ref.watch(itemTranslationProvider(key)).state));
+final itemAnimationProvider =
+    Provider.family((ref, Key key) => ItemOffsetAnimation(axisAnimation: ref.watch(itemTranslationProvider(key))));

@@ -2,14 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../thebutton_animation_controller.dart';
 import '../thebutton_provider.dart';
 
 class TheButton extends StatefulWidget {
-  const TheButton();
+  const TheButton({Key? key}) : super(key: key);
 
   @override
   _TheButtonState createState() => _TheButtonState();
@@ -123,11 +123,11 @@ class TapProgressPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(TapProgressPainter painter) => painter.value != value;
+  bool shouldRepaint(TapProgressPainter oldDelegate) => oldDelegate.value != value;
 }
 
 class TheButtonAnimation extends StatefulWidget {
-  const TheButtonAnimation();
+  const TheButtonAnimation({Key? key}) : super(key: key);
 
   @override
   _TheButtonAnimationState createState() => _TheButtonAnimationState();

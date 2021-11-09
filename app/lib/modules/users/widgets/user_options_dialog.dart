@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../models/models.dart';
 import '../../../providers/trips/logic_provider.dart';
@@ -29,7 +29,7 @@ class UserOptionsDialog extends StatelessWidget {
                 Navigator.of(context).pop();
               },
             ),
-            roleOption(context, context.read(tripUserByIdProvider(id))?.role ?? UserRoles.Participant),
+            roleOption(context, context.read(tripUserByIdProvider(id))?.role ?? UserRoles.participant),
           ],
         ),
       ),
@@ -37,11 +37,11 @@ class UserOptionsDialog extends StatelessWidget {
   }
 
   Widget roleOption(BuildContext context, String role) {
-    if (role == UserRoles.Organizer) {
+    if (role == UserRoles.organizer) {
       return ListTile(
         title: const Text('Remove Organizer Status'),
         onTap: () {
-          context.read(tripsLogicProvider).updateUserRole(id, UserRoles.Participant);
+          context.read(tripsLogicProvider).updateUserRole(id, UserRoles.participant);
           Navigator.of(context).pop();
         },
       );
@@ -49,7 +49,7 @@ class UserOptionsDialog extends StatelessWidget {
       return ListTile(
         title: const Text('Make Organizer'),
         onTap: () {
-          context.read(tripsLogicProvider).updateUserRole(id, UserRoles.Organizer);
+          context.read(tripsLogicProvider).updateUserRole(id, UserRoles.organizer);
           Navigator.of(context).pop();
         },
       );

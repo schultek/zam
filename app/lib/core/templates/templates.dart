@@ -5,8 +5,9 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../modules/profile/image_selector.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../modules/profile/image_selector.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/nested_will_pop_scope.dart';
@@ -46,7 +47,7 @@ class InheritedWidgetTemplate extends InheritedWidget {
 
 abstract class WidgetTemplate<T extends TemplateModel> extends StatefulWidget {
   final T config;
-  const WidgetTemplate(this.config);
+  const WidgetTemplate(this.config, {Key? key}) : super(key: key);
 
   Widget build(BuildContext context, WidgetTemplateState state);
 

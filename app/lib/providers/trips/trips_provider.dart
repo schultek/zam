@@ -17,13 +17,13 @@ final tripsProvider = StreamProvider<List<Trip>>((ref) {
           : FirebaseFirestore.instance.collection('trips').where(
               'users.$userId.role',
               whereIn: [
-                UserRoles.Participant,
-                UserRoles.Leader,
-                UserRoles.Organizer,
+                UserRoles.participant,
+                UserRoles.leader,
+                UserRoles.organizer,
               ],
             );
 
-      return query.snapshots().map((snapshots) => snapshots.toList());
+      return query.snapshotsMapped();
     },
     loading: () => const Stream.empty(),
     error: (_, __) => Stream.value([]),

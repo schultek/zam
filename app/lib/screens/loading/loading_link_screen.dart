@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import '../../widgets/ju_background.dart';
 
 class LoadingLinkScreen extends StatelessWidget {
+  const LoadingLinkScreen({Key? key}) : super(key: key);
+
   static MaterialPage page() {
-    return MaterialPage(child: LoadingLinkScreen());
+    return const MaterialPage(child: LoadingLinkScreen());
   }
 
   @override

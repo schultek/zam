@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import 'drag_provider.dart';
 import 'items_provider.dart';
@@ -43,7 +44,7 @@ class ReorderableItemState extends State<ReorderableItem> {
     super.didUpdateWidget(oldWidget);
     if (context.read(isDraggingProvider(key))) {
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        context.read(dragWidgetProvider).state = widget.builder(context, ReorderableState.dragging, widget.child);
+        context.read(dragWidgetProvider.state).state = widget.builder(context, ReorderableState.dragging, widget.child);
       });
     }
   }
@@ -57,9 +58,9 @@ class ReorderableItemState extends State<ReorderableItem> {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (context, watch, _) {
-        var isDragging = watch(isDraggingProvider(key));
-        var animation = watch(itemAnimationProvider(key));
+      builder: (context, ref, _) {
+        var isDragging = ref.watch(isDraggingProvider(key));
+        var animation = ref.watch(itemAnimationProvider(key));
         return AnimatedBuilder(
           animation: animation,
           builder: (context, child) => Transform(
@@ -68,7 +69,7 @@ class ReorderableItemState extends State<ReorderableItem> {
           ),
           child: isDragging
               ? SizedBox.fromSize(
-                  size: context.read(dragSizeProvider).state,
+                  size: context.read(dragSizeProvider.state).state,
                   child: widget.builder(context, ReorderableState.placeholder, widget.child),
                 )
               : widget.builder(context, ReorderableState.normal, widget.child),

@@ -2,7 +2,7 @@ part of areas;
 
 class BodyWidgetArea extends WidgetArea<ContentSegment> {
   final ScrollController scrollController;
-  const BodyWidgetArea(this.scrollController) : super('body');
+  const BodyWidgetArea(this.scrollController, {Key? key}) : super('body', key: key);
 
   @override
   State<StatefulWidget> createState() => BodyWidgetAreaState();
@@ -16,7 +16,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
     List<ContentSegment>? row;
     grid = [];
     for (ContentSegment segment in widgets) {
-      if (segment.size == SegmentSize.Square) {
+      if (segment.size == SegmentSize.square) {
         if (row == null) {
           row = [segment];
           grid.add(row);
@@ -46,7 +46,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
         itemCount: grid.length,
         itemBuilder: (context, index) => Padding(
           padding: EdgeInsets.only(bottom: index == grid.length - 1 ? 10 : 20, left: 10, right: 10),
-          child: grid[index][0].size == SegmentSize.Wide
+          child: grid[index][0].size == SegmentSize.wide
               ? grid[index][0]
               : Row(
                   children: [
@@ -90,7 +90,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
     setState(() {
       if (curIndex.row == newIndex.row) {
         grid[curIndex.row] = grid[curIndex.row].reversed.toList();
-      } else if (curIndex.size == SegmentSize.Square && newIndex.size == SegmentSize.Square) {
+      } else if (curIndex.size == SegmentSize.square && newIndex.size == SegmentSize.square) {
         var draggedCard = grid[curIndex.row][curIndex.column];
         grid[curIndex.row][curIndex.column] = grid[newIndex.row][newIndex.column];
         grid[newIndex.row][newIndex.column] = draggedCard;
@@ -104,9 +104,9 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
   @override
   void insertItem(ContentSegment item) {
     setState(() {
-      if (grid.isEmpty || grid[grid.length - 1][0].size == SegmentSize.Wide || grid[grid.length - 1].length == 2) {
+      if (grid.isEmpty || grid[grid.length - 1][0].size == SegmentSize.wide || grid[grid.length - 1].length == 2) {
         grid.add([item]);
-      } else if (item.size == SegmentSize.Wide) {
+      } else if (item.size == SegmentSize.wide) {
         grid.insert(grid.length - 1, [item]);
       } else {
         grid[grid.length - 1].add(item);
@@ -116,7 +116,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
 
   @override
   BoxConstraints constrainWidget(ContentSegment widget) {
-    if (widget.size == SegmentSize.Wide) {
+    if (widget.size == SegmentSize.wide) {
       return BoxConstraints(maxWidth: areaSize.width - 20);
     } else {
       return BoxConstraints(maxWidth: (areaSize.width - 40) / 2);
@@ -176,7 +176,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
       if (dragIndex.row > 0) {
         var aboveRow = grid[dragIndex.row - 1];
 
-        if (dragIndex.size == SegmentSize.Wide) {
+        if (dragIndex.size == SegmentSize.wide) {
           onReorder(itemKey, aboveRow[0].key);
 
           translateY(aboveRow[0].key, -itemSize.height - 20);
@@ -205,8 +205,8 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
       if (dragIndex.row < grid.length - 1) {
         var belowRow = grid[dragIndex.row + 1];
 
-        if (dragIndex.size == SegmentSize.Wide) {
-          if (belowRow[0].size == SegmentSize.Wide || belowRow.length == 2) {
+        if (dragIndex.size == SegmentSize.wide) {
+          if (belowRow[0].size == SegmentSize.wide || belowRow.length == 2) {
             onReorder(itemKey, belowRow[0].key);
 
             translateY(belowRow[0].key, itemSize.height + 20);
@@ -220,7 +220,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
 
             onReorder(itemKey, belowItem.key);
             translateY(belowItem.key, itemSize.height + 20);
-          } else if (belowRow[0].size == SegmentSize.Wide) {
+          } else if (belowRow[0].size == SegmentSize.wide) {
             var siblingItem = grid[dragIndex.row][1 - dragIndex.column];
 
             onReorder(itemKey, belowRow[0].key);
@@ -247,7 +247,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
       }
     } else if ((offset.dx - itemOffset.dx).abs() > itemSize.width / 2 + 20) {
       var dragIndex = indexOf(itemKey);
-      if (dragIndex.size == SegmentSize.Square && grid[dragIndex.row].length == 2) {
+      if (dragIndex.size == SegmentSize.square && grid[dragIndex.row].length == 2) {
         var siblingItem = grid[dragIndex.row][1 - dragIndex.column];
 
         onReorder(itemKey, siblingItem.key);
@@ -291,7 +291,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
       if (index.column == 1) {
         grid[index.row].removeAt(1);
       } else {
-        if (index.size == SegmentSize.Wide) {
+        if (index.size == SegmentSize.wide) {
           grid.removeAt(index.row);
         } else {
           if (grid[index.row].length == 2) {
@@ -307,7 +307,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
     } else {
       var belowRow = grid[index.row + 1];
 
-      if (index.size == SegmentSize.Wide) {
+      if (index.size == SegmentSize.wide) {
         translateY(belowRow[0].key, itemSize.height + 20);
         grid[index.row][0] = belowRow[0];
 
@@ -323,22 +323,22 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
           grid[index.row].removeAt(1);
         }
 
-        removeAtIndex(GridIndex(index.row + 1, 0, SegmentSize.Wide));
+        removeAtIndex(GridIndex(index.row + 1, 0, SegmentSize.wide));
       } else {
         if (belowRow.length == 2) {
           translateY(belowRow[index.column].key, itemSize.height + 20);
 
           grid[index.row][index.column] = belowRow[index.column];
 
-          removeAtIndex(GridIndex(index.row + 1, index.column, SegmentSize.Square));
+          removeAtIndex(GridIndex(index.row + 1, index.column, SegmentSize.square));
         } else {
           if (index.column == 0) {
-            if (belowRow[0].size == SegmentSize.Square) {
+            if (belowRow[0].size == SegmentSize.square) {
               translateY(belowRow[0].key, itemSize.height + 20);
 
               grid[index.row][0] = belowRow[0];
 
-              removeAtIndex(GridIndex(index.row + 1, index.column, SegmentSize.Square));
+              removeAtIndex(GridIndex(index.row + 1, index.column, SegmentSize.square));
             } else {
               translateY(belowRow[0].key, itemSize.height + 20);
               translateY(grid[index.row][1].key, -itemSize.height - 20);
@@ -346,16 +346,16 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
               grid[index.row][0] = belowRow[0];
               belowRow.add(grid[index.row][1]);
 
-              removeAtIndex(GridIndex(index.row + 1, index.column, SegmentSize.Square));
+              removeAtIndex(GridIndex(index.row + 1, index.column, SegmentSize.square));
             }
           } else {
-            if (belowRow[0].size == SegmentSize.Square) {
+            if (belowRow[0].size == SegmentSize.square) {
               translateY(belowRow[0].key, itemSize.height + 20);
               translateX(belowRow[0].key, -itemSize.width - 20);
 
               grid[index.row][1] = belowRow[0];
 
-              removeAtIndex(GridIndex(index.row + 1, 0, SegmentSize.Square));
+              removeAtIndex(GridIndex(index.row + 1, 0, SegmentSize.square));
             } else {
               translateY(belowRow[0].key, itemSize.height + 20);
               translateY(grid[index.row][0].key, -itemSize.height - 20);
@@ -363,7 +363,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
               grid[index.row + 1] = grid[index.row];
               grid[index.row] = belowRow;
 
-              removeAtIndex(GridIndex(index.row + 1, index.column, SegmentSize.Square));
+              removeAtIndex(GridIndex(index.row + 1, index.column, SegmentSize.square));
             }
           }
         }

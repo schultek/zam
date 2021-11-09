@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../music_models.dart';
 
-enum TrackAction { play, queue, add_playlist, delete_playlist }
+enum TrackAction { play, queue, addPlaylist, deletePlaylist }
 
 const defaultActions = {TrackAction.play, TrackAction.queue};
 
@@ -13,9 +13,9 @@ extension ActionUi on TrackAction {
         return Icons.play_arrow;
       case TrackAction.queue:
         return Icons.playlist_add;
-      case TrackAction.add_playlist:
+      case TrackAction.addPlaylist:
         return Icons.add;
-      case TrackAction.delete_playlist:
+      case TrackAction.deletePlaylist:
         return Icons.delete;
     }
   }
@@ -26,9 +26,9 @@ extension ActionUi on TrackAction {
         return 'Play';
       case TrackAction.queue:
         return 'Add to queue';
-      case TrackAction.add_playlist:
+      case TrackAction.addPlaylist:
         return 'Add to playlist';
-      case TrackAction.delete_playlist:
+      case TrackAction.deletePlaylist:
         return 'Remove from playlist';
     }
   }

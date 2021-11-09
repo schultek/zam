@@ -24,13 +24,13 @@ class TripUser with Mappable {
   String? nickname;
   String? profileUrl;
 
-  TripUser({this.role = UserRoles.Participant, this.nickname, this.profileUrl});
+  TripUser({this.role = UserRoles.participant, this.nickname, this.profileUrl});
 
-  bool get isOrganizer => role == UserRoles.Organizer;
+  bool get isOrganizer => role == UserRoles.organizer;
 }
 
 class UserRoles {
-  static const Organizer = 'organizer';
-  static const Leader = 'leader';
-  static const Participant = 'participant';
+  static const organizer = 'organizer';
+  static const leader = 'leader';
+  static const participant = 'participant';
 }

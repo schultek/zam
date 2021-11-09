@@ -6,6 +6,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/helpers.dart';
 import '../../providers/trips/logic_provider.dart';
@@ -44,7 +45,7 @@ final areaModulesProvider = StateNotifierProvider.family<StateNotifier<List<Stri
 
 abstract class WidgetArea<T extends ModuleElement> extends StatefulWidget {
   final String id;
-  const WidgetArea(this.id);
+  const WidgetArea(this.id, {Key? key}) : super(key: key);
 
   static WidgetAreaState<WidgetArea<T>, T>? of<T extends ModuleElement>(BuildContext context) {
     assert(T != ModuleElement, 'WidgetArea.of was called with default type parameter. This is probably not right.');
@@ -249,7 +250,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   List<T> getWidgets();
   T getWidgetFromKey(Key key);
   void removeItem(Key key);
-  bool didReorderItem(Offset offset, Key key);
+  bool didReorderItem(Offset offset, Key itemKey);
   bool canInsertItem(T item) => true;
   void insertItem(T item);
   bool hasKey(Key key);

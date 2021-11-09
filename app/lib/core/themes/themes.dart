@@ -24,8 +24,8 @@ class InheritedThemeState extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(InheritedThemeState old) {
-    var notify = old.theme != theme;
+  bool updateShouldNotify(InheritedThemeState oldWidget) {
+    var notify = oldWidget.theme != theme;
     return notify;
   }
 
@@ -41,7 +41,7 @@ class TripTheme extends StatelessWidget {
   final ThemeState theme;
   final Widget child;
 
-  const TripTheme({required this.theme, required this.child});
+  const TripTheme({required this.theme, required this.child, Key? key}) : super(key: key);
 
   factory TripTheme.of(BuildContext context, {required Widget child}) {
     return TripTheme(
@@ -172,7 +172,7 @@ class _ThemedContainerState extends State<ThemedContainer> {
 
 class ThemedBackground extends StatefulWidget {
   final Widget child;
-  const ThemedBackground({required this.child});
+  const ThemedBackground({required this.child, Key? key}) : super(key: key);
 
   @override
   _ThemedBackgroundState createState() => _ThemedBackgroundState();

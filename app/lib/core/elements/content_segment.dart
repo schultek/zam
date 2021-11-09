@@ -13,7 +13,6 @@ class IdProvider {
   }
 }
 
-@ModuleWidgetReflectable()
 class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegment> {
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context)? onNavigate;
@@ -26,7 +25,7 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
     required this.builder,
     this.onNavigate,
     this.onTap,
-    this.size = SegmentSize.Square,
+    this.size = SegmentSize.square,
     this.idProvider,
     this.whenRemoved,
   }) : super(key: UniqueKey());
@@ -89,7 +88,7 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
         ),
       ),
     );
-    if (size == SegmentSize.Wide) {
+    if (size == SegmentSize.wide) {
       return w;
     } else {
       return AspectRatio(

@@ -25,8 +25,8 @@ class _AddChannelPageState extends State<AddChannelPage> {
         title: const Text('Channels'),
       ),
       body: Consumer(
-        builder: (context, watch, _) {
-          var channelsToJoin = watch(channelsToJoinProvider);
+        builder: (context, ref, _) {
+          var channelsToJoin = ref.watch(channelsToJoinProvider);
           return channelsToJoin.when(
             data: (channels) => ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -37,7 +37,7 @@ class _AddChannelPageState extends State<AddChannelPage> {
                 leading: const Icon(Icons.tag),
                 minLeadingWidth: 0,
                 onTap: () async {
-                  await context.read(chatLogicProvider).joinChannel(channels[index]);
+                  await ref.read(chatLogicProvider).joinChannel(channels[index]);
                   Navigator.of(context).pushReplacement(ChannelPage.route(channels[index].id));
                 },
               ),

@@ -11,7 +11,7 @@ import 'photos_provider.dart';
 final photosLogicProvider = Provider((ref) => PhotosLogic(ref));
 
 class PhotosLogic {
-  final ProviderReference ref;
+  final Ref ref;
   PhotosLogic(this.ref) {
     ref.watch(photosConfigProvider);
     ref.watch(photosApiProvider);
@@ -34,7 +34,7 @@ class PhotosLogic {
   Future<Album?> joinSharedAlbum() async {
     var api = ref.read(photosApiProvider);
     if (api == null) return null;
-    var config = ref.read(photosConfigProvider).data?.value;
+    var config = ref.read(photosConfigProvider).asData?.value;
     if (config == null || config.shareToken == null) return null;
     try {
       var response = await api.sharedAlbums.join(JoinSharedAlbumRequest()..shareToken = config.shareToken);
@@ -49,15 +49,15 @@ class PhotosLogic {
     var api = ref.read(photosApiProvider);
     if (api == null || client == null) return;
 
-    var config = ref.read(photosConfigProvider).data?.value;
+    var config = ref.read(photosConfigProvider).asData?.value;
     if (config == null || config.albumId == null) return;
 
     print('Upload files: $files');
 
-    ref.read(fileUploadingStatusProvider).state = {
-      ...ref.read(fileUploadingStatusProvider).state,
-      for (var file in files) Uri.parse(file.filePath).pathSegments.last: FileUploadStatus.uploading,
-    };
+    ref.read(fileUploadingStatusProvider.state).update((state) => {
+          ...state,
+          for (var file in files) Uri.parse(file.filePath).pathSegments.last: FileUploadStatus.uploading,
+        });
 
     var responses = await Future.wait([
       for (var file in files)
@@ -74,19 +74,19 @@ class PhotosLogic {
                 ))
             .then<String?>((r) {
           if (r.statusCode == 200) {
-            ref.read(fileUploadingStatusProvider).state = {
-              ...ref.read(fileUploadingStatusProvider).state,
-              Uri.parse(file.filePath).pathSegments.last: FileUploadStatus.completed,
-            };
+            ref.read(fileUploadingStatusProvider.state).update((state) => {
+                  ...state,
+                  Uri.parse(file.filePath).pathSegments.last: FileUploadStatus.completed,
+                });
             return r.body;
           } else {
             throw Future.error(0);
           }
         }).catchError((_) {
-          ref.read(fileUploadingStatusProvider).state = {
-            ...ref.read(fileUploadingStatusProvider).state,
-            Uri.parse(file.filePath).pathSegments.last: FileUploadStatus.failed,
-          };
+          ref.read(fileUploadingStatusProvider.state).update((state) => {
+                ...state,
+                Uri.parse(file.filePath).pathSegments.last: FileUploadStatus.failed,
+              });
           return null;
         }),
     ]);

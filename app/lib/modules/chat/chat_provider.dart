@@ -16,19 +16,18 @@ final channelsProvider = StreamProvider<List<ChannelInfo>>((ref) => ref
     .watch(moduleDocProvider('chat'))
     .collection('channels')
     .where('members', arrayContains: ref.watch(userIdProvider))
-    .snapshots()
-    .map((s) => s.toList()));
+    .snapshotsMapped<ChannelInfo>());
 
 final channelProvider =
-    Provider.family((ref, String id) => ref.watch(channelsProvider).data?.value.where((c) => c.id == id).firstOrNull);
+    Provider.family((ref, String id) => ref.watch(channelsProvider).asData?.value.where((c) => c.id == id).firstOrNull);
 
 final channelsToJoinProvider = StreamProvider<List<ChannelInfo>>((ref) => ref
     .watch(moduleDocProvider('chat'))
     .collection('channels')
     .where('isOpen', isEqualTo: true)
-    .snapshots()
-    .map((s) => s.toList<ChannelInfo>())
-    .map((c) => c.where((c) => ref.watch(channelsProvider).data?.value.every((cc) => cc.id != c.id) ?? true).toList()));
+    .snapshotsMapped<ChannelInfo>()
+    .map((c) =>
+        c.where((c) => ref.watch(channelsProvider).asData?.value.every((cc) => cc.id != c.id) ?? true).toList()));
 
 final channelMessagesProvider = StreamProvider.family((ref, String id) => ref
     .watch(moduleDocProvider('chat'))
@@ -40,7 +39,7 @@ final channelMessagesProvider = StreamProvider.family((ref, String id) => ref
 final chatLogicProvider = Provider((ref) => ChatLogic(ref));
 
 class ChatLogic {
-  final ProviderReference ref;
+  final Ref ref;
   final DocumentReference chat;
   ChatLogic(this.ref) : chat = ref.watch(moduleDocProvider('chat'));
 
@@ -108,7 +107,7 @@ class ChatLogic {
 
   Future<void> sendFile(String channelId, FilePickerResult res) async {
     var resFile = res.files.single;
-    var file = File(resFile.path);
+    var file = File(resFile.path!);
 
     try {
       var reference = FirebaseStorage.instance.ref('chat/files/${resFile.name}');

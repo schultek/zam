@@ -20,9 +20,9 @@ class ManagePlaylistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (context, watch, _) {
-        var playlist = watch(playlistProvider);
-        var musicLogic = context.read(musicLogicProvider);
+      builder: (context, ref, _) {
+        var playlist = ref.watch(playlistProvider);
+        var musicLogic = ref.read(musicLogicProvider);
 
         return Scaffold(
           appBar: AppBar(
@@ -47,11 +47,11 @@ class ManagePlaylistPage extends StatelessWidget {
               ],
             ),
             actions: [
-              if (context.read(isOrganizerProvider))
+              if (ref.read(isOrganizerProvider))
                 IconButton(
                   icon: const Icon(Icons.playlist_add_check),
                   onPressed: () async {
-                    var logic = context.read(spotifySyncProvider);
+                    var logic = ref.read(spotifySyncProvider);
                     var playlist = await Navigator.of(context).push(SelectPlaylistPage.route());
                     if (playlist != null) {
                       logic.syncPlaylist(playlist.id);
@@ -88,7 +88,7 @@ class ManagePlaylistPage extends StatelessWidget {
               ? Center(
                   child: TextButton(
                     onPressed: () {
-                      context.read(musicLogicProvider).createSharedPlaylist();
+                      ref.read(musicLogicProvider).createSharedPlaylist();
                     },
                     child: const Text('Create Shared Playlist'),
                   ),
@@ -100,24 +100,20 @@ class ManagePlaylistPage extends StatelessWidget {
                       TrackTile(
                         track: track,
                         onTap: () {
-                          context
-                              .read(musicLogicProvider)
-                              .play(null, context: playlist.uri, offset: {'uri': track.uri});
+                          ref.read(musicLogicProvider).play(null, context: playlist.uri, offset: {'uri': track.uri});
                           Navigator.of(context).pop();
                         },
                         onAction: (action) {
                           if (action == TrackAction.play) {
-                            context
-                                .read(musicLogicProvider)
-                                .play(null, context: playlist.uri, offset: {'uri': track.uri});
+                            ref.read(musicLogicProvider).play(null, context: playlist.uri, offset: {'uri': track.uri});
                             Navigator.of(context).pop();
                           } else if (action == TrackAction.queue) {
-                            context.read(musicLogicProvider).addToQueue(track.uri);
+                            ref.read(musicLogicProvider).addToQueue(track.uri);
                           } else {
-                            context.read(musicLogicProvider).removeFromPlaylist(track.uri, playlist.id);
+                            ref.read(musicLogicProvider).removeFromPlaylist(track.uri, playlist.id);
                           }
                         },
-                        actions: const {TrackAction.play, TrackAction.queue, TrackAction.delete_playlist},
+                        actions: const {TrackAction.play, TrackAction.queue, TrackAction.deletePlaylist},
                       ),
                   ],
                 ),

@@ -19,12 +19,12 @@ class _EliminationGameCardState extends State<EliminationGameCard> {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (context, watch, _) {
-        var game = watch(gameProvider(widget.id));
+      builder: (context, ref, _) {
+        var game = ref.watch(gameProvider(widget.id));
 
         return game.when(
           data: (data) {
-            var userId = watch(userIdProvider)!;
+            var userId = ref.watch(userIdProvider)!;
             var myTarget = data.currentTargets[userId];
             if (myTarget == null) {
               return const Center(
@@ -33,7 +33,7 @@ class _EliminationGameCardState extends State<EliminationGameCard> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
               );
-            } else if (myTarget == watch(userIdProvider)!) {
+            } else if (myTarget == ref.watch(userIdProvider)!) {
               return const Center(
                 child: Text(
                   'Immortal',
@@ -41,7 +41,7 @@ class _EliminationGameCardState extends State<EliminationGameCard> {
                 ),
               );
             } else {
-              return RevealTextAnimation(text: watch(nicknameProvider(myTarget)) ?? 'Anonym');
+              return RevealTextAnimation(text: ref.watch(nicknameProvider(myTarget)) ?? 'Anonym');
             }
           },
           loading: () => const LoadingShimmer(),

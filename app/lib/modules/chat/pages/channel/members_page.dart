@@ -25,8 +25,8 @@ class _MembersPageState extends State<MembersPage> {
         title: const Text('Mitglieder'),
       ),
       body: Consumer(
-        builder: (context, watch, _) {
-          var trip = watch(selectedTripProvider);
+        builder: (context, ref, _) {
+          var trip = ref.watch(selectedTripProvider);
           var users = trip!.users.entries.where((e) => widget.channel.members.contains(e.key)).toList();
           return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

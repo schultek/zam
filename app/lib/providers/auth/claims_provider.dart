@@ -10,7 +10,7 @@ final claimsProvider = StateNotifierProvider<ClaimsNotifier, UserClaims>((ref) =
 class ClaimsNotifier extends StateNotifier<UserClaims> {
   late final StreamSubscription<User?> _userSubscription;
 
-  final ProviderReference ref;
+  final Ref ref;
 
   ClaimsNotifier(this.ref) : super(const UserClaims()) {
     _onUserChanged(ref.read(userProvider).maybeWhen(data: (d) => d, orElse: () => null));

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/areas/areas.dart';
 import '../../core/elements/elements.dart';
@@ -17,7 +18,7 @@ class AnnouncementModule {
       if (context.read(isOrganizerProvider)) {
         var idProvider = IdProvider();
         return ContentSegment(
-          size: SegmentSize.Wide,
+          size: SegmentSize.wide,
           idProvider: idProvider,
           builder: (context) => AspectRatio(
             aspectRatio: 2,
@@ -57,14 +58,14 @@ class AnnouncementModule {
     }
 
     return ContentSegment(
-      size: SegmentSize.Wide,
+      size: SegmentSize.wide,
       whenRemoved: (context) {
         context.read(announcementLogicProvider).removeAnnouncement(id);
       },
       builder: (context) => Consumer(
-        builder: (context, watch, _) {
-          var announcement = watch(announcementProvider(id));
-          var isDismissed = watch(isDismissedProvider(id));
+        builder: (context, ref, _) {
+          var announcement = ref.watch(announcementProvider(id));
+          var isDismissed = ref.watch(isDismissedProvider(id));
 
           if (isDismissed ?? true) {
             if (isDismissed != null) {

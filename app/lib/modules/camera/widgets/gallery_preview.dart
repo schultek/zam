@@ -22,8 +22,8 @@ class GalleryPreview extends StatelessWidget {
           width: 40,
           height: 40,
           child: Consumer(
-            builder: (context, watch, child) {
-              var lastPicture = watch(lastPictureProvider);
+            builder: (context, ref, child) {
+              var lastPicture = ref.watch(lastPictureProvider);
               if (lastPicture == null) return child!;
               return Image.memory(lastPicture.thumbData);
             },

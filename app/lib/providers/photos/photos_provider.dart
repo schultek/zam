@@ -9,7 +9,7 @@ import 'photos_api_provider.dart';
 export '../../main.mapper.g.dart' show PhotosConfigMapperExtension;
 
 final photosConfigProvider =
-    StreamProvider((ref) => ref.watch(moduleDocProvider('photos')).snapshots().map((d) => d.decode<PhotosConfig>()));
+    StreamProvider<PhotosConfig>((ref) => ref.watch(moduleDocProvider('photos')).snapshotsMapped<PhotosConfig>());
 
 @MappableClass()
 class PhotosConfig {
@@ -81,7 +81,7 @@ enum FileUploadStatus { completed, uploading, failed }
 final fileUploadingStatusProvider = StateProvider<Map<String, FileUploadStatus>>((ref) => {});
 
 final fileStatusProvider = Provider<Map<String?, FileUploadStatus>>((ref) {
-  var items = ref.watch(itemsInAlbumProvider).data?.value ?? [];
-  var filesUploading = ref.watch(fileUploadingStatusProvider).state;
+  var items = ref.watch(itemsInAlbumProvider).asData?.value ?? [];
+  var filesUploading = ref.watch(fileUploadingStatusProvider);
   return {for (var item in items) item.filename: FileUploadStatus.completed, ...filesUploading};
 });

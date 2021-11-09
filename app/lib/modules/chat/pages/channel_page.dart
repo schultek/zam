@@ -5,6 +5,7 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/themes/themes.dart';
 import '../../../providers/auth/user_provider.dart';
@@ -15,7 +16,7 @@ import 'channel/channel_info_page.dart';
 
 class ChannelPage extends StatefulWidget {
   final String id;
-  const ChannelPage(this.id) : super();
+  const ChannelPage(this.id, {Key? key}) : super(key: key);
 
   static Route route(String id) {
     return MaterialPageRoute(builder: (context) => ChannelPage(id));
@@ -94,8 +95,8 @@ class _ChannelPageState extends State<ChannelPage> {
   Widget build(BuildContext context) {
     var backgroundColor = context.getFillColor();
     return Consumer(
-      builder: (context, watch, _) {
-        var channel = watch(channelProvider(widget.id));
+      builder: (context, ref, _) {
+        var channel = ref.watch(channelProvider(widget.id));
         return Scaffold(
           appBar: AppBar(
             title: Text('# ${channel?.name}'),
@@ -121,9 +122,10 @@ class _ChannelPageState extends State<ChannelPage> {
                   preference: ColorPreference(contrast: Contrast.low),
                   builder: (context, fillColor) => SafeArea(
                     child: Consumer(
-                      builder: (context, watch, _) {
-                        List<ChatMessage> messages = channel != null ? watch(channel.messages).data?.value ?? [] : [];
-                        var trip = watch(selectedTripProvider)!;
+                      builder: (context, ref, _) {
+                        List<ChatMessage> messages =
+                            channel != null ? ref.watch(channel.messages).asData?.value ?? [] : [];
+                        var trip = ref.watch(selectedTripProvider)!;
 
                         return Chat(
                           theme: DarkChatTheme(

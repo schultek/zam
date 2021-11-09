@@ -21,8 +21,8 @@ class NoteInfoPage extends StatefulWidget {
 class _NoteInfoPageState extends State<NoteInfoPage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (context, watch, _) {
-      var note = watch(noteProvider(widget.note.id)).data!.value;
+    return Consumer(builder: (context, ref, _) {
+      var note = ref.watch(noteProvider(widget.note.id)).asData!.value;
       if (note == null) {
         return Container();
       }
@@ -42,11 +42,11 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
             ),
             ListTile(
               title: const Text('Author'),
-              subtitle: Text(context.read(nicknameProvider(note.author)) ?? 'Anonym'),
+              subtitle: Text(ref.read(nicknameProvider(note.author)) ?? 'Anonym'),
             ),
             ListTile(
               title: const Text('Editors'),
-              subtitle: Text(note.editors.map((e) => context.read(nicknameProvider(e)) ?? 'Anonym').join(', ')),
+              subtitle: Text(note.editors.map((e) => ref.read(nicknameProvider(e)) ?? 'Anonym').join(', ')),
               onTap: () {
                 Navigator.of(context).push(AddEditorsPage.route(note));
               },

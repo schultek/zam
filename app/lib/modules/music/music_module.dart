@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/elements/elements.dart';
 import '../../core/module/module.dart';
@@ -17,8 +18,8 @@ class MusicModule {
         context.read(musicLogicProvider).signOut();
       },
       builder: (context) => Consumer(
-        builder: (context, watch, _) {
-          var signedInValue = watch(spotifyIsSignedInProvider);
+        builder: (context, ref, _) {
+          var signedInValue = ref.watch(spotifyIsSignedInProvider);
           return signedInValue.when(
             data: (signedIn) {
               if (!signedIn) {

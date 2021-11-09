@@ -154,7 +154,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
       child: Padding(
         padding: const EdgeInsets.only(left: 20, top: 30, right: 20, bottom: 10),
         child: Consumer(
-          builder: (context, watch, _) => ListView(
+          builder: (context, ref, _) => ListView(
             padding: const EdgeInsets.only(bottom: 10),
             physics: const BouncingScrollPhysics(),
             children: [
@@ -164,7 +164,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                 style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
               ),
               const SizedBox(height: 12),
-              for (var entry in watch(theButtonLeaderboardProvider)) ...[
+              for (var entry in ref.watch(theButtonLeaderboardProvider)) ...[
                 const SizedBox(height: 8),
                 Row(
                   children: [

@@ -11,7 +11,7 @@ import 'selected_trip_provider.dart';
 final tripsLogicProvider = Provider((ref) => TripsLogic(ref));
 
 class TripsLogic {
-  final ProviderReference ref;
+  final Ref ref;
   TripsLogic(this.ref);
 
   String? get _tripId => ref.read(selectedTripIdProvider);
@@ -42,7 +42,7 @@ class TripsLogic {
   }
 
   Future<void> updateTrip(Map<String, dynamic> map) async {
-    if (ref.read(tripUserProvider)?.role != UserRoles.Organizer) return;
+    if (ref.read(tripUserProvider)?.role != UserRoles.organizer) return;
     return FirebaseFirestore.instance.collection('trips').doc(_tripId).update(map);
   }
 

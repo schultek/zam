@@ -29,8 +29,8 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
           height: 400,
           width: 400,
           child: Consumer(
-            builder: (context, watch, _) {
-              var game = watch(gameProvider(widget.gameId)).data!.value;
+            builder: (context, ref, _) {
+              var game = ref.watch(gameProvider(widget.gameId)).asData!.value;
               var players = game.currentTargets.keys;
 
               return GridView.count(
@@ -49,7 +49,7 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
                           UserAvatar(id: playerId),
                           const SizedBox(height: 5),
                           Text(
-                            watch(nicknameProvider(playerId)) ?? 'Anonym',
+                            ref.watch(nicknameProvider(playerId)) ?? 'Anonym',
                             style: Theme.of(context).textTheme.caption,
                           ),
                         ],
@@ -65,8 +65,8 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
       return AlertDialog(
         title: const Text('Player Status'),
         content: Consumer(
-          builder: (context, watch, _) {
-            var game = watch(gameProvider(widget.gameId)).data!.value;
+          builder: (context, ref, _) {
+            var game = ref.watch(gameProvider(widget.gameId)).asData!.value;
             var player = game.currentTargets[playerId!];
             if (player == null) {
               return const Text('Eliminated');
@@ -74,7 +74,7 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
             if (player == playerId) {
               return const Text('Immortal');
             }
-            return Text('Target: ${watch(nicknameProvider(player)) ?? 'Anonym'}');
+            return Text('Target: ${ref.watch(nicknameProvider(player)) ?? 'Anonym'}');
           },
         ),
       );

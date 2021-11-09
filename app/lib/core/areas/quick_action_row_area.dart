@@ -1,7 +1,7 @@
 part of areas;
 
 class QuickActionRowArea extends WidgetArea<QuickAction> {
-  const QuickActionRowArea(String id) : super(id);
+  const QuickActionRowArea(String id, {Key? key}) : super(id, key: key);
 
   @override
   State<StatefulWidget> createState() => QuickActionRowAreaState();
@@ -39,7 +39,7 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
   bool hasKey(Key key) => row.any((e) => e.key == key);
 
   @override
-  bool canInsertItem(_) => row.length < 3;
+  bool canInsertItem(item) => row.length < 3;
 
   @override
   void insertItem(QuickAction item) => setState(() => row.add(item));

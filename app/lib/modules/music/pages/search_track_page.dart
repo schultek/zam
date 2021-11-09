@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 import 'package:spotify/spotify.dart' show Track;
 
 import '../../../core/themes/themes.dart';
@@ -74,7 +74,7 @@ class _SearchTrackPageState extends State<SearchTrackPage> {
                     onAction: (action) {
                       Navigator.of(context).pop(TrackResult(track.toSpotifyTrack(), action));
                     },
-                    actions: const {TrackAction.play, TrackAction.queue, TrackAction.add_playlist},
+                    actions: const {TrackAction.play, TrackAction.queue, TrackAction.addPlaylist},
                   ),
               ],
             ),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../api_client/photoslibrary.dart';
@@ -129,8 +130,8 @@ class _GalleryPageState extends State<GalleryPage> {
       appBar: AppBar(
         title: const Text('Gallery'),
         actions: [
-          Consumer(builder: (context, watch, _) {
-            var config = watch(photosConfigProvider).data?.value;
+          Consumer(builder: (context, ref, _) {
+            var config = ref.watch(photosConfigProvider).asData?.value;
             if (config?.albumUrl != null) {
               return IconButton(
                 icon: const Icon(Icons.open_in_new),
@@ -163,9 +164,9 @@ class _GalleryPageState extends State<GalleryPage> {
         ],
       ),
       body: Consumer(
-        builder: (context, watch, _) {
-          var files = watch(orderedFilesProvider);
-          var fileStatus = watch(fileStatusProvider);
+        builder: (context, ref, _) {
+          var files = ref.watch(orderedFilesProvider);
+          var fileStatus = ref.watch(fileStatusProvider);
           return GridView.count(
             physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             crossAxisCount: 3,

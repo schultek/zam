@@ -18,7 +18,7 @@ FutureProvider<Box<T>> hiveBoxProvider<T>(String box) {
 extension BoxProvider<T> on FutureProvider<Box<T>> {
   Provider<Iterable<T>?> valuesProvider() {
     var notifier = ChangeNotifierProvider((ref) => ValueListener<Box<T>, Iterable<T>>(
-          ref.watch(this).data?.value.listenable(),
+          ref.watch(this).asData?.value.listenable(),
           get: (box) => box?.values,
         ));
     return Provider((ref) => ref.watch(notifier).value);

@@ -27,8 +27,8 @@ class _NotesPageState extends State<NotesPage> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Consumer(
-          builder: (context, watch, _) {
-            var notes = watch(notesProvider);
+          builder: (context, ref, _) {
+            var notes = ref.watch(notesProvider);
 
             return notes.when(
               data: (data) {
@@ -52,7 +52,7 @@ class _NotesPageState extends State<NotesPage> {
                         child: Icon(Icons.add, size: 60),
                       ),
                       onTap: () async {
-                        var note = await context.read(notesLogicProvider).createEmptyNote();
+                        var note = await ref.read(notesLogicProvider).createEmptyNote();
                         Navigator.of(context).push(EditNotePage.route(note));
                       },
                     ),
@@ -123,8 +123,8 @@ class _NotesPageState extends State<NotesPage> {
                 Navigator.of(context).pop();
               },
               child: Consumer(
-                builder: (context, watch, _) {
-                  var notes = watch(notesProvider).data?.value.where((n) => n.folder == folder) ?? [];
+                builder: (context, ref, _) {
+                  var notes = ref.watch(notesProvider).asData?.value.where((n) => n.folder == folder) ?? [];
 
                   return GridView.count(
                     physics: const NeverScrollableScrollPhysics(),
@@ -151,7 +151,7 @@ class _NotesPageState extends State<NotesPage> {
                           child: Icon(Icons.add, size: 30),
                         ),
                         onTap: () async {
-                          var note = await context.read(notesLogicProvider).createEmptyNote(folder: folder);
+                          var note = await ref.read(notesLogicProvider).createEmptyNote(folder: folder);
                           Navigator.of(context).push(EditNotePage.route(note));
                         },
                       ),

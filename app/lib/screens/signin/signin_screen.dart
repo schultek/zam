@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/auth/logic_provider.dart';
 import '../../providers/links/links_provider.dart';
@@ -12,7 +12,7 @@ import 'sms_code_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   final Uri invitationLink;
-  const SignInScreen(this.invitationLink);
+  const SignInScreen(this.invitationLink, {Key? key}) : super(key: key);
   @override
   _SignInScreenState createState() => _SignInScreenState();
 

@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:share/share.dart';
+import 'package:riverpod_context/riverpod_context.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/module/module.dart';
 import '../../models/models.dart';
@@ -41,7 +42,7 @@ class UsersModule {
 }
 
 class UsersPage extends StatelessWidget {
-  const UsersPage();
+  const UsersPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +61,10 @@ class UsersPage extends StatelessWidget {
           children: [
             Expanded(
               child: Consumer(
-                builder: (context, watch, _) {
-                  var trip = watch(selectedTripProvider)!;
-                  var organizers = trip.users.entries.where((e) => e.value.role == UserRoles.Organizer);
-                  var participants = trip.users.entries.where((e) => e.value.role != UserRoles.Organizer);
+                builder: (context, ref, _) {
+                  var trip = ref.watch(selectedTripProvider)!;
+                  var organizers = trip.users.entries.where((e) => e.value.role == UserRoles.organizer);
+                  var participants = trip.users.entries.where((e) => e.value.role != UserRoles.organizer);
                   return ListView(
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     children: [
@@ -112,7 +113,7 @@ class UsersPage extends StatelessWidget {
                           var trip = context.read(selectedTripProvider)!;
                           String link = await context
                               .read(linkLogicProvider)
-                              .createTripInvitationLink(trip: trip, role: UserRoles.Leader);
+                              .createTripInvitationLink(trip: trip, role: UserRoles.leader);
                           Share.share('Um dich als Leiter bei ${trip.name} anzumelden, klicke auf den Link: $link');
                         },
                         child: const Text(
@@ -133,7 +134,7 @@ class UsersPage extends StatelessWidget {
                           var trip = context.read(selectedTripProvider)!;
                           String link = await context
                               .read(linkLogicProvider)
-                              .createTripInvitationLink(trip: trip, role: UserRoles.Organizer);
+                              .createTripInvitationLink(trip: trip, role: UserRoles.organizer);
                           Share.share(
                               'Um dich als Organisator bei ${trip.name} anzumelden, klicke auf den Link: $link');
                         },

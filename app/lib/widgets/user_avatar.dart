@@ -11,8 +11,8 @@ class UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (context, watch, _) {
-        var user = watch(tripUserByIdProvider(id));
+      builder: (context, ref, _) {
+        var user = ref.watch(tripUserByIdProvider(id));
         return CircleAvatar(
           backgroundColor: Colors.grey,
           backgroundImage: user?.profileUrl != null ? CachedNetworkImageProvider(user!.profileUrl!) : null,

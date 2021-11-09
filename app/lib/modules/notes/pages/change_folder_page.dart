@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/themes/themes.dart';
 import '../notes_provider.dart';
@@ -38,8 +39,8 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
         title: const Text('Change Folder'),
       ),
       body: Consumer(
-        builder: (context, watch, _) {
-          var folders = watch(foldersProvider);
+        builder: (context, ref, _) {
+          var folders = ref.watch(foldersProvider);
 
           return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

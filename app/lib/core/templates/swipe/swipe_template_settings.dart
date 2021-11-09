@@ -24,8 +24,8 @@ class _SwipeTemplateSettingsState extends State<SwipeTemplateSettings> {
       body: Padding(
         padding: const EdgeInsets.all(50.0),
         child: Consumer(
-          builder: (context, watch, _) {
-            var trip = watch(selectedTripProvider)!;
+          builder: (context, ref, _) {
+            var trip = ref.watch(selectedTripProvider)!;
             return ListView(
               children: [
                 GestureDetector(

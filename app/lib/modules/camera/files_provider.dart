@@ -22,7 +22,7 @@ final lastPictureProvider = Provider<PhotoItem?>((ref) => ref.watch(orderedFiles
 final filesLogicProvider = Provider((ref) => FilesLogic(ref));
 
 class FilesLogic {
-  final ProviderReference ref;
+  final Ref ref;
 
   FilesLogic(this.ref);
 

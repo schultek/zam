@@ -2,7 +2,7 @@ import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/auth/logic_provider.dart';
 import '../../widgets/ju_background.dart';
@@ -12,7 +12,7 @@ class SmsCodeScreen extends StatefulWidget {
   final Function(User user) onSignedIn;
   final Future<void> Function() onResend;
 
-  const SmsCodeScreen(this.verificationId, this.onSignedIn, this.onResend);
+  const SmsCodeScreen(this.verificationId, this.onSignedIn, this.onResend, {Key? key}) : super(key: key);
 
   @override
   _EnterCodeState createState() => _EnterCodeState();

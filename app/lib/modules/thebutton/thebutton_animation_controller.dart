@@ -18,15 +18,15 @@ class TheButtonAnimationController extends RiveAnimationController<RuntimeArtboa
   }
 
   @override
-  bool init(RuntimeArtboard artboard) {
-    var animation = artboard.animations.firstWhere((a) => a.name == 'Fill');
+  bool init(RuntimeArtboard core) {
+    var animation = core.animations.firstWhere((a) => a.name == 'Fill');
     _instance = LinearAnimationInstance(animation as LinearAnimation);
     return isActive = true;
   }
 
   @override
-  void apply(RuntimeArtboard artboard, double elapsedSeconds) {
-    _instance.animation.apply(_instance.time, coreContext: artboard);
+  void apply(RuntimeArtboard core, double elapsedSeconds) {
+    _instance.animation.apply(_instance.time, coreContext: core);
 
     if (targetTime == _instance.time) {
       isActive = false;

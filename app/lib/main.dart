@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 //ignore: unused_import
 import 'modules/modules.dart';
@@ -14,11 +15,11 @@ import 'screens/trip/trip_screen.dart';
 import 'widgets/nested_will_pop_scope.dart';
 
 void main() {
-  runApp(const ProviderScope(child: JufaApp()));
+  runApp(const ProviderScope(child: InheritedConsumer(child: JufaApp())));
 }
 
 class JufaApp extends StatefulWidget {
-  const JufaApp();
+  const JufaApp({Key? key}) : super(key: key);
 
   @override
   _JufaAppState createState() => _JufaAppState();
@@ -38,12 +39,12 @@ class _JufaAppState extends State<JufaApp> {
       debugShowCheckedModeBanner: false,
       builder: (context, _) {
         return Consumer(
-          builder: (context, watch, _) {
-            var isLoadingTrips = watch(isLoadingTripsProvider);
-            var isLoadingLink = watch(isLoadingLinkProvider);
-            var isProcessingLink = watch(isProcessingLinkProvider);
-            var selectedTrip = watch(selectedTripProvider);
-            var link = watch(linkProvider);
+          builder: (context, ref, _) {
+            var isLoadingTrips = ref.watch(isLoadingTripsProvider);
+            var isLoadingLink = ref.watch(isLoadingLinkProvider);
+            var isProcessingLink = ref.watch(isProcessingLinkProvider);
+            var selectedTrip = ref.watch(selectedTripProvider);
+            var link = ref.watch(linkProvider);
 
             return NestedWillPopScope(
               onWillPop: () async => !(await _navigatorKey.currentState?.maybePop() ?? true),

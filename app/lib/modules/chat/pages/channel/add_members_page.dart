@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../../providers/trips/selected_trip_provider.dart';
 import '../../../../widgets/user_avatar.dart';
@@ -40,8 +41,8 @@ class _AddMembersPageState extends State<AddMembersPage> {
         ],
       ),
       body: Consumer(
-        builder: (context, watch, _) {
-          var trip = watch(selectedTripProvider);
+        builder: (context, ref, _) {
+          var trip = ref.watch(selectedTripProvider);
           var users = trip!.users.entries.where((e) => !widget.channel.members.contains(e.key)).toList();
           return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

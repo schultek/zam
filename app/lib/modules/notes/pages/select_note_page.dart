@@ -17,8 +17,8 @@ class _SelectNotePageState extends State<SelectNotePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer(
-        builder: (context, watch, _) {
-          var notes = watch(notesProvider);
+        builder: (context, ref, _) {
+          var notes = ref.watch(notesProvider);
           print(notes);
           return notes.when(
               data: (data) => ListView(

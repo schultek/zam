@@ -13,9 +13,9 @@ class SpotifyPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer(
-      builder: (context, watch, _) {
-        var _ = watch(spotifySyncProvider);
-        var player = watch(playerProvider);
+      builder: (context, ref, _) {
+        var _ = ref.watch(spotifySyncProvider);
+        var player = ref.watch(playerProvider);
 
         var trackName = player?.track.name;
         var artistName = player?.track.artists.map((a) => a.name).join(', ');
@@ -61,7 +61,7 @@ class SpotifyPlayer extends StatelessWidget {
                       ),
                       onPressed: player != null
                           ? () {
-                              context.read(musicLogicProvider).skipPrevious();
+                              ref.read(musicLogicProvider).skipPrevious();
                             }
                           : null,
                     ),
@@ -74,9 +74,9 @@ class SpotifyPlayer extends StatelessWidget {
                       onPressed: player != null
                           ? () {
                               if (player.isPlaying) {
-                                context.read(musicLogicProvider).pause();
+                                ref.read(musicLogicProvider).pause();
                               } else {
-                                context.read(musicLogicProvider).resume();
+                                ref.read(musicLogicProvider).resume();
                               }
                             }
                           : null,
@@ -89,7 +89,7 @@ class SpotifyPlayer extends StatelessWidget {
                       ),
                       onPressed: player != null
                           ? () {
-                              context.read(musicLogicProvider).skipNext();
+                              ref.read(musicLogicProvider).skipNext();
                             }
                           : null,
                     ),
@@ -107,7 +107,7 @@ class SpotifyPlayer extends StatelessWidget {
                           color: context.getTextColor(),
                         ),
                         onPressed: () async {
-                          context.read(musicLogicProvider).getDevices();
+                          ref.read(musicLogicProvider).getDevices();
                           Navigator.of(context).push(ManagePlaylistPage.route(context));
                         },
                       )

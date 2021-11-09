@@ -18,7 +18,7 @@ final isSignedInWithGoogleProvider = FutureProvider((ref) =>
     ref.watch(googleSignInFutureProvider.future).then((acc) => (ref.watch(googleAccountProvider) ?? acc) != null));
 
 class GoogleAccountNotifier extends StateNotifier<GoogleSignInAccount?> {
-  final ProviderReference ref;
+  final Ref ref;
   late StreamSubscription<GoogleSignInAccount?> _userSubscription;
 
   GoogleAccountNotifier(this.ref) : super(ref.read(googleSignInProvider).currentUser) {

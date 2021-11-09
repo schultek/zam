@@ -1,7 +1,7 @@
 part of areas;
 
 class FullPageArea extends WidgetArea<PageSegment> {
-  const FullPageArea({required String id}) : super(id);
+  const FullPageArea({required String id, Key? key}) : super(id, key: key);
 
   @override
   State<StatefulWidget> createState() => FullPageAreaState();
@@ -41,7 +41,7 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment> {
   bool hasKey(Key key) => content?.key == key;
 
   @override
-  bool canInsertItem(_) => true;
+  bool canInsertItem(item) => true;
 
   @override
   void insertItem(PageSegment item) {
@@ -66,5 +66,5 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment> {
   }
 
   @override
-  bool didReorderItem(Offset offset, Key key) => false;
+  bool didReorderItem(Offset offset, Key itemKey) => false;
 }

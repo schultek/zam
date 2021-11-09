@@ -22,7 +22,7 @@ class ImageSelector {
 class CropDialog extends StatefulWidget {
   final Uint8List image;
 
-  const CropDialog({required this.image});
+  const CropDialog({required this.image, Key? key}) : super(key: key);
 
   @override
   _CropDialogState createState() => _CropDialogState();

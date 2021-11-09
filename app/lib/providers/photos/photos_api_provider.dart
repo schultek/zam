@@ -17,7 +17,7 @@ final refreshablePhotosApiProvider =
         (ref, key) => RefreshablePhotosApiNotifier(ref, key));
 
 class RefreshablePhotosApiNotifier extends StateNotifier<PhotosLibraryApi?> {
-  final ProviderReference ref;
+  final Ref ref;
   final String key;
   RefreshablePhotosApiNotifier(this.ref, this.key) : super(ref.watch(photosApiProvider));
 

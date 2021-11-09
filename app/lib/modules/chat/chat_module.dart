@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/module/module.dart';
 import '../../core/widgets/widget_selector.dart';
@@ -26,7 +26,7 @@ class ChatModule with ModulePreloadMixin {
             child: Icon(Icons.chat, size: MediaQuery.of(context).size.width / 2),
           );
         }
-        return ChatPage();
+        return const ChatPage();
       },
     );
   }
@@ -35,12 +35,12 @@ class ChatModule with ModulePreloadMixin {
 
   @override
   void preload(BuildContext context) {
-    var message = context.read(messageProvider).state;
+    var message = context.read(messageProvider);
     if (message?.data['channelId'] != null) {
       Navigator.of(context).push(ChannelPage.route(message!.data['channelId'] as String));
     }
     _msgSub?.cancel();
-    _msgSub = context.read(messageProvider).stream.listen((m) {
+    _msgSub = context.read(messageProvider.state).stream.listen((m) {
       if (m?.data['channelId'] != null) {
         Navigator.of(context).push(ChannelPage.route(m!.data['channelId'] as String));
       }

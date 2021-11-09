@@ -41,17 +41,13 @@ class EliminationEntry {
   EliminationEntry(this.target, this.eliminatedBy, this.description, this.time);
 }
 
-final gameProvider = StreamProvider.family((ref, String id) => ref
-    .watch(moduleDocProvider('elimination'))
-    .collection('games')
-    .doc(id)
-    .snapshots()
-    .map((s) => s.decode<EliminationGame>()));
+final gameProvider = StreamProvider.family((ref, String id) =>
+    ref.watch(moduleDocProvider('elimination')).collection('games').doc(id).snapshotsMapped<EliminationGame>());
 
 final gameLogicProvider = Provider((ref) => GameLogic(ref));
 
 class GameLogic {
-  final ProviderReference ref;
+  final Ref ref;
   final DocumentReference doc;
   GameLogic(this.ref) : doc = ref.watch(moduleDocProvider('elimination'));
 

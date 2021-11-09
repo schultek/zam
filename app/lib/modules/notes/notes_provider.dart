@@ -34,8 +34,8 @@ class Note {
   });
 }
 
-final notesProvider = StreamProvider(
-    (ref) => ref.watch(moduleDocProvider('notes')).collection('notes').snapshots().map((s) => s.toList<Note>()));
+final notesProvider =
+    StreamProvider((ref) => ref.watch(moduleDocProvider('notes')).collection('notes').snapshotsMapped<Note>());
 
 final noteProvider = Provider.family(
     (ref, String id) => ref.watch(notesProvider).whenData((value) => value.where((n) => n.id == id).firstOrNull));
@@ -43,7 +43,7 @@ final noteProvider = Provider.family(
 final foldersProvider = Provider((ref) =>
     ref
         .watch(notesProvider)
-        .data
+        .asData
         ?.value
         .fold<Set<String?>>({null}, (folders, note) => {...folders, note.folder}).toList() ??
     []);
@@ -51,7 +51,7 @@ final foldersProvider = Provider((ref) =>
 final notesLogicProvider = Provider((ref) => NotesLogic(ref));
 
 class NotesLogic {
-  final ProviderReference ref;
+  final Ref ref;
   final DocumentReference doc;
   NotesLogic(this.ref) : doc = ref.watch(moduleDocProvider('notes'));
 

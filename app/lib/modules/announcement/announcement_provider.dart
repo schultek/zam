@@ -9,12 +9,8 @@ import '../../providers/hive/hive_provider.dart';
 
 export '../../main.mapper.g.dart' show AnnouncementMapperExtension;
 
-final announcementProvider = FutureProvider.family<Announcement, String>((ref, id) => ref
-    .read(moduleDocProvider('announcements'))
-    .collection('announcements')
-    .doc(id)
-    .get()
-    .then((d) => d.decode<Announcement>()));
+final announcementProvider = FutureProvider.family<Announcement, String>((ref, id) =>
+    ref.read(moduleDocProvider('announcements')).collection('announcements').doc(id).getMapped<Announcement>());
 
 final dismissedAnnouncementsBoxProvider = hiveBoxProvider<String>('dismissed_announcements');
 
@@ -27,7 +23,7 @@ final isDismissedProvider = Provider.family((ref, String id) {
 final announcementLogicProvider = Provider((ref) => AnnouncementLogic(ref));
 
 class AnnouncementLogic {
-  final ProviderReference ref;
+  final Ref ref;
   AnnouncementLogic(this.ref);
 
   Future<String> createAnnouncement(Announcement announcement) async {

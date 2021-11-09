@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../notes_provider.dart';
@@ -48,8 +49,8 @@ class _AddEditorsPageState extends State<AddEditorsPage> {
         ],
       ),
       body: Consumer(
-        builder: (context, watch, _) {
-          var users = watch(selectedTripProvider)!.users.entries.toList();
+        builder: (context, ref, _) {
+          var users = ref.watch(selectedTripProvider)!.users.entries.toList();
 
           return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
