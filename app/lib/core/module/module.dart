@@ -1,78 +1,91 @@
-@CodeGen(runAfter: [buildModuleFactories])
-library module;
+import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:super_annotations/super_annotations.dart';
-
-// ignore: UNUSED_IMPORT
-import '../../modules/modules.dart';
-import 'module_annotations.dart';
-
-export '../../models/segment_size.dart';
-export '../../modules/modules.dart';
-export '../elements/elements.dart';
-export '../themes/themes.dart';
-export 'module_annotations.dart';
 
 abstract class ModuleElement extends StatelessWidget {
-  @override
-  final Key key; // ignore: overridden_fields
-  ModuleElement({required this.key}) : super(key: key); // ignore: prefer_const_constructors_in_immutables
+  ModuleElement({required Key key, required ModuleContext context})
+      : id = context.id,
+        super(key: key);
 
-  late final String _id;
-  String get id => _id;
+  final String id;
+
+  @override
+  Key get key => super.key!;
 
   void onRemoved(BuildContext context) {}
 }
 
-class ModuleRegistry {
-  final Map<String, ModuleInstance> moduleMap;
-  ModuleRegistry(this.moduleMap);
+abstract class ModuleBuilder<T extends ModuleElement> {
+  FutureOr<T?> build(ModuleContext context);
 
-  ModuleElement? getWidget(BuildContext context, String id) {
-    return moduleMap[id.split('/').firstOrNull]?.getWidget(context, id);
-  }
+  void preload(BuildContext context) {}
 
-  List<T> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
-    return moduleMap.entries.expand((e) => e.value.getWidgetsOf<T>(context, e.key)).whereNotNull().toList();
-  }
+  Iterable<Route> generateInitialRoutes(BuildContext context) => [];
 
-  void preloadWidgets(BuildContext context) {
-    for (var module in moduleMap.values.whereType<ModuleInstance<ModulePreloadMixin>>()) {
-      module.module.preload(context);
+  @mustCallSuper
+  void dispose() {}
+}
+
+class ModuleContext {
+  final BuildContext context;
+  final String id;
+  final String moduleId;
+  final String? elementId;
+
+  ModuleContext(this.context, this.id)
+      : moduleId = id.split('/').first,
+        elementId = id.split('/').skip(1).firstOrNull;
+
+  FutureOr<T> when<T>({
+    required FutureOr<T> Function(String id) withId,
+    required FutureOr<T> Function() withoutId,
+  }) {
+    if (elementId != null) {
+      return withId(elementId!);
+    } else {
+      return withoutId();
     }
   }
 }
 
-mixin ModulePreloadMixin {
-  void preload(BuildContext context);
-}
+class ModuleRegistry {
+  final Map<String, ModuleBuilder> modules;
+  ModuleRegistry(this.modules);
 
-class ModuleInstance<T> {
-  final T module;
-  final Map<String, ModuleFactory<T, ModuleElement>> factories;
-
-  ModuleInstance(this.module, this.factories);
-
-  ModuleElement? getWidget(BuildContext context, String id) {
-    return factories[id.split('/').skip(1).firstOrNull]?.getWidget(context, module, id);
+  FutureOr<T?> getWidget<T extends ModuleElement>(ModuleContext context) async {
+    var builder = modules[context.moduleId];
+    assert(builder is ModuleBuilder<T>?, 'Expected ModuleBuilder<T> for module ${context.moduleId}.');
+    return (builder as ModuleBuilder<T>?)?.build(context);
   }
 
-  Iterable<U?> getWidgetsOf<U extends ModuleElement>(BuildContext context, String moduleId) {
-    return factories.entries
-        .where((e) => e.value is ModuleFactory<T, U>)
-        .map((e) => (e.value as ModuleFactory<T, U>).getWidget(context, module, '$moduleId/${e.key}'));
+  List<T> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
+    return modules.entries
+        .whereType<MapEntry<String, ModuleBuilder<T>>>()
+        .map((e) {
+          var element = e.value.build(ModuleContext(context, e.key));
+          assert(element is T?, "ModuleBuilder's build() method must return synchronously when given no element id.");
+          return element as T?;
+        })
+        .whereNotNull()
+        .toList();
   }
-}
 
-class ModuleFactory<M, T extends ModuleElement> {
-  T? Function(BuildContext context, M m, String? id) factory;
-  Type get type => T;
+  void preloadModules(BuildContext context) {
+    for (var module in modules.values) {
+      module.preload(context);
+    }
+  }
 
-  ModuleFactory(this.factory);
+  void disposeModules() {
+    for (var module in modules.values) {
+      module.dispose();
+    }
+  }
 
-  T? getWidget(BuildContext context, M m, String id) {
-    return factory(context, m, id.split('/').skip(2).firstOrNull)?.._id = id;
+  Iterable<Route> generateInitialRoutes(BuildContext context) sync* {
+    for (var module in modules.values) {
+      yield* module.generateInitialRoutes(context);
+    }
   }
 }

@@ -1,19 +1,22 @@
 library templates;
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../modules/profile/image_selector.dart';
+import '../../modules/modules.dart';
+import '../../modules/profile/widgets/image_selector.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/nested_will_pop_scope.dart';
 import '../areas/areas.dart';
+import '../elements/elements.dart';
+import '../models/models.dart';
 import '../module/module.dart';
-import '../module/module.g.dart';
 import '../themes/themes.dart';
 import '../widgets/reorder_toggle.dart';
 import '../widgets/template_navigator.dart';
@@ -22,15 +25,6 @@ import '../widgets/widget_selector.dart';
 part 'grid/grid_template.dart';
 part 'swipe/swipe_template.dart';
 part 'swipe/swipe_template_settings.dart';
-
-@MappableClass(discriminatorKey: 'type')
-abstract class TemplateModel {
-  String type;
-  TemplateModel(this.type);
-
-  String get name;
-  WidgetTemplate builder();
-}
 
 class InheritedWidgetTemplate extends InheritedWidget {
   final WidgetTemplateState state;
@@ -124,13 +118,11 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     _unselectArea();
   }
 
-  List<T> getWidgetsForArea<T extends ModuleElement>(String areaId) {
+  Future<List<T>> getWidgetsForArea<T extends ModuleElement>(String areaId) async {
     var selectedModules = context.read(areaModulesProvider(areaId));
-    return selectedModules
-        .map((id) => registry.getWidget(context, id))
-        .where((e) => e != null && e is T)
-        .cast<T>()
-        .toList();
+    var elements =
+        await Future.wait(selectedModules.map((id) async => await registry.getWidget<T>(ModuleContext(context, id))));
+    return elements.whereNotNull().toList();
   }
 
   void selectWidgetArea<T extends ModuleElement>(WidgetAreaState<WidgetArea<T>, T>? area) {

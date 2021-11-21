@@ -1,19 +1,21 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../core/module/module.dart';
+import '../../../core/core.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import 'pages/thebutton_help.dart';
 import 'pages/thebutton_settings.dart';
 import 'widgets/thebutton_widget.dart';
 
-@Module('thebutton')
-class TheButtonModule {
-  @ModuleItem('thebutton')
-  ContentSegment getButtonCard() {
+class TheButtonModule extends ModuleBuilder<ContentSegment> {
+  @override
+  FutureOr<ContentSegment?> build(ModuleContext context) {
     var buttonHelpKey = GlobalKey();
     var buttonSettingsKey = GlobalKey();
     return ContentSegment(
+      context: context,
       builder: (context) => Stack(
         children: [
           const Positioned.fill(

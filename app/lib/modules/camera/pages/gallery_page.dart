@@ -49,7 +49,8 @@ class _GalleryPageState extends State<GalleryPage> {
   Future<bool> showCreateSharedAlbumPrompt() async {
     var album = await showPrompt<Album?>(
       title: 'Create shared album',
-      body: 'There exists currently no shared album for this trip. Continue to create a shared album in Google Photos.',
+      body:
+          'There exists currently no shared album for this models. Continue to create a shared album in Google Photos.',
       onContinue: () => context.read(photosLogicProvider).createSharedAlbum(context.read(selectedTripProvider)!.name),
     );
     return album != null;
@@ -58,14 +59,14 @@ class _GalleryPageState extends State<GalleryPage> {
   Future<void> showMissingSharedAlbumPrompt() async {
     await showPrompt(
         title: 'No shared album',
-        body: 'There exists currently no shared album for this trip. Ask your organizer to create one.',
+        body: 'There exists currently no shared album for this models. Ask your organizer to create one.',
         onContinue: () {});
   }
 
   Future<bool> showJoinSharedAlbumPrompt() async {
     var album = await showPrompt<Album?>(
       title: 'Join shared album',
-      body: 'You have not yet joined the shared album for this trip. Continue to join the shared album.',
+      body: 'You have not yet joined the shared album for this models. Continue to join the shared album.',
       onContinue: () => context.read(photosLogicProvider).joinSharedAlbum(),
     );
     return album != null;
@@ -165,7 +166,7 @@ class _GalleryPageState extends State<GalleryPage> {
       ),
       body: Consumer(
         builder: (context, ref, _) {
-          var files = ref.watch(orderedFilesProvider);
+          var files = ref.watch(orderedFilesProvider).value ?? [];
           var fileStatus = ref.watch(fileStatusProvider);
           return GridView.count(
             physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),

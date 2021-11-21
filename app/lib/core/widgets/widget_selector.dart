@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../modules/modules.dart';
 import '../areas/areas.dart';
 import '../module/module.dart';
-import '../module/module.g.dart';
 import '../reorderable/logic_provider.dart';
 import '../templates/templates.dart';
 import '../themes/themes.dart';

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -148,6 +149,8 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
 
   static Artboard? artboard;
 
+  StreamSubscription<double>? _valueSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -156,6 +159,12 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
         print('ERROR ON BUTTON $e');
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _valueSubscription?.cancel();
+    super.dispose();
   }
 
   Future<void> loadAnimation() async {
@@ -181,15 +190,14 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
       artboard!.removeController(deadEntryController);
     }
 
-    var valueNotifier = context.read(theButtonValueProvider.stream);
-    var initialValue = await valueNotifier.first;
+    var initialValue = await context.read(theButtonValueProvider.future);
 
     fillController.jumpTo(initialValue);
     if (initialValue >= 1) {
       runDeadAnimation();
     }
 
-    valueNotifier.listen((value) {
+    _valueSubscription = context.read(theButtonValueProvider.stream).listen((value) {
       if (value < 1) {
         clearDeadAnimation();
         fillController.animateTo(value);

@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oauth2/oauth2.dart' as oauth;
 import 'package:spotify/spotify.dart';
 
-import '../../models/models.dart';
+import '../../../core/core.dart';
 import '../../providers/firebase/doc_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import 'music_models.dart';

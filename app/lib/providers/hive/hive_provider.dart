@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../models/models.dart';
+import '../../core/core.dart';
 
 final hiveProvider = FutureProvider((ref) => Hive.initFlutter());
 
@@ -16,12 +18,25 @@ FutureProvider<Box<T>> hiveBoxProvider<T>(String box) {
 }
 
 extension BoxProvider<T> on FutureProvider<Box<T>> {
-  Provider<Iterable<T>?> valuesProvider() {
-    var notifier = ChangeNotifierProvider((ref) => ValueListener<Box<T>, Iterable<T>>(
-          ref.watch(this).asData?.value.listenable(),
-          get: (box) => box?.values,
-        ));
-    return Provider((ref) => ref.watch(notifier).value);
+  StreamProvider<Iterable<T>> valuesProvider() {
+    return StreamProvider((ref) async* {
+      var box = await ref.watch(future);
+
+      yield box.values;
+
+      var controller = StreamController<Iterable<T>>();
+
+      var listenable = box.listenable();
+      void add() => controller.add(box.values);
+
+      listenable.addListener(add);
+
+      ref.onDispose(() {
+        listenable.removeListener(add);
+      });
+
+      yield* controller.stream;
+    });
   }
 }
 

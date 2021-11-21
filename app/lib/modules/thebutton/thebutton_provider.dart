@@ -4,10 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/models.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/firebase/doc_provider.dart';
-import '../../providers/helpers.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 
 @MappableClass()
@@ -19,18 +17,29 @@ class TheButtonState {
   TheButtonState(this.lastReset, this.aliveHours, this.leaderboard);
 }
 
-final theButtonProvider = StateNotifierProvider<StreamNotifier<TheButtonState>, TheButtonState>((ref) {
-  return StreamNotifier.from(
-    ref.watch(moduleDocProvider('thebutton')).snapshotsMapped<TheButtonState>(),
-    initialValue: TheButtonState(null, null, {}),
-  );
+final theButtonProvider = Provider<TheButtonState>((ref) {
+  var doc = ref.watch(moduleDocProvider('thebutton'));
+
+  var sub = doc.snapshotsMapped<TheButtonState>().listen((value) {
+    ref.state = value;
+  });
+
+  ref.onDispose(() => sub.cancel());
+
+  return TheButtonState(null, null, {});
 });
 
-final theButtonValueProvider = StreamProvider<double>((ref) {
+final theButtonValueProvider = StreamProvider<double>((ref) async* {
   ref.watch(theButtonProvider);
-  return Stream.periodic(const Duration(seconds: 1), (_) => ref.read(theButtonLogicProvider).value)
-      .where((v) => v != null)
-      .cast<double>();
+
+  var timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    var val = ref.read(theButtonLogicProvider).value;
+    if (val != null) {
+      ref.state = AsyncValue.data(val);
+    }
+  });
+
+  ref.onDispose(() => timer.cancel());
 });
 
 final theButtonLogicProvider = Provider((ref) => TheButtonLogic(ref));

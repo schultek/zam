@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../modules/modules.dart';
 import '../../widgets/nested_will_pop_scope.dart';
-import '../module/module.g.dart';
 
 class TemplateNavigator extends StatefulWidget {
   final Widget home;
@@ -19,8 +19,14 @@ class _TemplateNavigatorState extends State<TemplateNavigator> {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      registry.preloadWidgets(_navigatorKey.currentContext!);
+      registry.preloadModules(_navigatorKey.currentContext!);
     });
+  }
+
+  @override
+  void dispose() {
+    registry.disposeModules();
+    super.dispose();
   }
 
   @override
@@ -31,6 +37,7 @@ class _TemplateNavigatorState extends State<TemplateNavigator> {
         key: _navigatorKey,
         onGenerateInitialRoutes: (_, __) => [
           MaterialPageRoute(builder: (context) => widget.home),
+          ...registry.generateInitialRoutes(context),
         ],
       ),
     );

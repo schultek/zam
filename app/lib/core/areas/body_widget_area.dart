@@ -12,6 +12,9 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
   List<List<ContentSegment>> grid = [];
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initArea(List<ContentSegment> widgets) {
     List<ContentSegment>? row;
     grid = [];

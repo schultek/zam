@@ -15,8 +15,8 @@ linter:
     #avoid_positional_boolean_parameters: false
 
     #constant_identifier_names: false
-    #prefer_relative_imports: true
-    #prefer_single_quotes: true
+    prefer_relative_imports: true
+    prefer_single_quotes: true
 
     #unnecessary_final: true
     #prefer_final_locals: false

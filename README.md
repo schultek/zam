@@ -34,7 +34,6 @@ Jugend-Freizeit-App
   - Rank Leaderboard + history
 - Camera
   - Remove
-  - Simple Shortcut to Photos album, maybe photo viewer + uploader
 - Profile
   - Better Picture selector + cropper
   - Save Button
@@ -42,9 +41,11 @@ Jugend-Freizeit-App
   - Visibility settings for notes / folders
   - More Attachment options
 - Music
-  - Persistent connection?
+  - Better connection persistence?
   - Queue-Only mode
   - Volume Control
+  - Song voting
+  - Better Music Browser (Song, Album, Artist, Playlist)
 - Announcement
   - Scheduled Announcement
   - Custom Notification Sound
@@ -54,6 +55,9 @@ Jugend-Freizeit-App
 
 ### New Modules
 
+- Photos
+    - Simple Shortcut to Photos album 
+    - Photos viewer
 - Polls
   - Fixed Options vs Open Options
   - Single Choise vs Multi Choice
@@ -61,6 +65,9 @@ Jugend-Freizeit-App
 - FAQ (App)
   - How to use?
 - Photo of the day
+  - Upload Photo
+  - Vote Photos
+  - See Winning Photo
 - Team Games
   - Story, one line per person at a time
   - Picture Story, continuing per person

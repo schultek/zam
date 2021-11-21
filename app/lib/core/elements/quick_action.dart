@@ -3,7 +3,12 @@ part of elements;
 class QuickAction extends ModuleElement with ModuleElementBuilder<QuickAction> {
   final IconData icon;
   final String text;
-  QuickAction({required this.icon, required this.text}) : super(key: UniqueKey());
+
+  QuickAction({
+    required ModuleContext context,
+    required this.icon,
+    required this.text,
+  }) : super(key: UniqueKey(), context: context);
 
   @override
   Widget buildElement(BuildContext context) {

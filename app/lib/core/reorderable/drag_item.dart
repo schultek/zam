@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../areas/areas.dart';
 import '../module/module.dart';
 import '../templates/templates.dart';
+import '../themes/themes.dart';
 import 'drag_provider.dart';
 import 'reorderable_item.dart';
 

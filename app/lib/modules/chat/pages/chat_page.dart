@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/module/module.dart';
+import '../../../core/core.dart';
 import '../chat_provider.dart';
 import 'channel/add_channel_page.dart';
 import 'channel_page.dart';
 
-class ChatPage extends ConsumerWidget {
+class ChatPage extends StatelessWidget {
   const ChatPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    var channels = ref.watch(channelsProvider);
+  Widget build(BuildContext context) {
+    var channels = context.watch(channelsProvider);
     return channels.when(
       data: (data) {
         return ListView(

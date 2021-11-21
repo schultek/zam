@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/models.dart';
+import '../../core/core.dart';
 import '../../providers/firebase/doc_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 

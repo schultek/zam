@@ -14,10 +14,15 @@ final filesBoxProvider = hiveBoxProvider<PhotoItem>('photos3');
 
 final filesProvider = filesBoxProvider.valuesProvider();
 
-final orderedFilesProvider = Provider(
-    (ref) => (ref.watch(filesProvider) ?? []).toList()..sort((a, b) => a.createdAt.compareTo(b.createdAt) * -1));
+final orderedFilesProvider = FutureProvider((ref) async {
+  var files = await ref.watch(filesProvider.future);
+  return files.toList()..sort((a, b) => a.createdAt.compareTo(b.createdAt) * -1);
+});
 
-final lastPictureProvider = Provider<PhotoItem?>((ref) => ref.watch(orderedFilesProvider).firstOrNull);
+final lastPictureProvider = FutureProvider<PhotoItem?>((ref) async {
+  var files = await ref.watch(orderedFilesProvider.future);
+  return files.firstOrNull;
+});
 
 final filesLogicProvider = Provider((ref) => FilesLogic(ref));
 

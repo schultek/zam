@@ -3,8 +3,8 @@ import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../core/core.dart';
 import '../../core/templates/templates.dart';
-import '../../models/models.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/ju_background.dart';
@@ -65,7 +65,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                   onTap: () async {
                     if (tripName == null) return;
                     DocumentReference doc = await createNewTrip(tripName!, context.read(userIdProvider)!);
-                    context.read(selectedTripIdProvider.notifier).id = doc.id;
+                    context.read(selectedTripIdProvider.state).state = doc.id;
                   },
                   child: const Center(
                     child: Padding(

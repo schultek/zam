@@ -1,1 +1,0 @@
-enum SegmentSize { square, wide }

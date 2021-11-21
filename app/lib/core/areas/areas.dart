@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../providers/helpers.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../elements/elements.dart';
 import '../module/module.dart';
 import '../reorderable/logic_provider.dart';
 import '../templates/templates.dart';
+import '../themes/themes.dart';
 
 part 'body_widget_area.dart';
 part 'full_page_area.dart';
@@ -33,13 +33,10 @@ class InheritedWidgetArea<T extends ModuleElement> extends InheritedWidget {
   bool updateShouldNotify(covariant InheritedWidgetArea oldWidget) => true;
 }
 
-final areaModulesProvider = StateNotifierProvider.family<StateNotifier<List<String>>, List<String>, String>(
+final areaModulesProvider = Provider.family<List<String>, String>(
   (ref, String id) {
-    var n = ref.watch(selectedTripProvider.notifier);
-    return StreamNotifier.from(
-      n.stream.map((t) => t?.modules[id] ?? []),
-      initialValue: ref.read(selectedTripProvider)?.modules[id] ?? [],
-    );
+    var trip = ref.watch(selectedTripProvider);
+    return trip?.modules[id] ?? [];
   },
 );
 
@@ -57,8 +54,6 @@ abstract class WidgetArea<T extends ModuleElement> extends StatefulWidget {
 abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement> extends State<U>
     with AutomaticKeepAliveClientMixin {
   bool _isInitialized = false;
-
-  StreamSubscription<List<String>?>? _modulesSubscription;
 
   String get id => widget.id;
 
@@ -84,24 +79,17 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     if (_isInitialized) return;
     _isInitialized = true;
 
-    reload(rebuild: false);
-    _modulesSubscription = context.read(areaModulesProvider(id).notifier).stream.listen((event) {
-      reload();
-    });
+    reload();
+    context.listen(areaModulesProvider(id), (_, __) => reload());
   }
 
-  void reload({bool rebuild = true}) {
-    initArea(template.getWidgetsForArea<T>(widget.id));
-    if (rebuild) setState(() {});
+  Future<void> reload() async {
+    var widgets = await template.getWidgetsForArea<T>(widget.id);
+    initArea(widgets);
+    setState(() {});
   }
 
   void initArea(List<T> widgets);
-
-  @override
-  void dispose() {
-    _modulesSubscription?.cancel();
-    super.dispose();
-  }
 
   void updateAreaSize(_) {
     _areaSize = (_areaKey.currentContext!.findRenderObject()! as RenderBox).size;

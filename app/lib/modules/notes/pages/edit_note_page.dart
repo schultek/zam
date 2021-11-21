@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/areas/areas.dart';
-import '../../../core/module/module.dart' hide Brightness;
+import '../../../core/core.dart' hide Brightness;
 import '../../../providers/auth/user_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../notes_provider.dart';

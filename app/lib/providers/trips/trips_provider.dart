@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/models.dart';
+import '../../core/core.dart';
 import '../auth/claims_provider.dart';
 import '../auth/user_provider.dart';
+import '../firebase/firestore_extensions.dart';
 
 final tripsProvider = StreamProvider<List<Trip>>((ref) {
   var user = ref.watch(userProvider);
@@ -23,7 +24,7 @@ final tripsProvider = StreamProvider<List<Trip>>((ref) {
               ],
             );
 
-      return query.snapshotsMapped();
+      return query.snapshotsMapped<Trip>();
     },
     loading: () => const Stream.empty(),
     error: (_, __) => Stream.value([]),

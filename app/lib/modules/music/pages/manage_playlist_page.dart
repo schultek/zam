@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/route/route.dart';
+import '../../../core/core.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../music_providers.dart';
 import '../widgets/track_tile.dart';

@@ -13,6 +13,8 @@ class IdProvider {
   }
 }
 
+enum SegmentSize { square, wide }
+
 class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegment> {
   final Widget Function(BuildContext context) builder;
   final Widget Function(BuildContext context)? onNavigate;
@@ -22,13 +24,14 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
   final void Function(BuildContext context)? whenRemoved;
 
   ContentSegment({
+    required ModuleContext context,
     required this.builder,
     this.onNavigate,
     this.onTap,
     this.size = SegmentSize.square,
     this.idProvider,
     this.whenRemoved,
-  }) : super(key: UniqueKey());
+  }) : super(key: UniqueKey(), context: context);
 
   @override
   String get id => idProvider?._getId(super.id) ?? super.id;

@@ -1,15 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import '../../core/elements/elements.dart';
-import '../../core/module/module.dart';
+import '../../core/core.dart';
 import '../../core/widgets/widget_selector.dart';
 import 'pages/camera_page.dart';
 
-@Module('camera')
-class CameraModule {
-  @ModuleItem('camera')
-  PageSegment getCameraPage() {
+class CameraModule extends ModuleBuilder<PageSegment> {
+  @override
+  FutureOr<PageSegment?> build(ModuleContext context) {
     return PageSegment(
+      context: context,
       keepAlive: false,
       builder: (context) {
         if (WidgetSelector.existsIn(context)) {

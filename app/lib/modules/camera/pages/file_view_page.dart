@@ -30,7 +30,7 @@ class _FileViewPageState extends State<FileViewPage> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, _) {
-        var files = ref.watch(orderedFilesProvider);
+        var files = ref.watch(orderedFilesProvider).value ?? [];
 
         return Scaffold(
           backgroundColor: Colors.black,

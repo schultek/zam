@@ -1,23 +1,50 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../core/areas/areas.dart';
-import '../../core/elements/elements.dart';
-import '../../core/module/module.dart';
+import '../../core/core.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import 'announcement_create_page.dart';
 import 'announcement_provider.dart';
 import 'widgets/announcement_card.dart';
 
-@Module('announcement')
-class AnnouncementModule {
-  @ModuleItem('announcement')
-  ContentSegment? getAnnouncement(BuildContext context, String? id) {
-    if (id == null) {
-      if (context.read(isOrganizerProvider)) {
+class AnnouncementModule extends ModuleBuilder<ContentSegment> {
+  @override
+  FutureOr<ContentSegment?> build(ModuleContext context) {
+    return context.when(withId: (id) async {
+      if (await context.context.read(isDismissedProvider(id).future)) {
+        return null;
+      }
+
+      return ContentSegment(
+        context: context,
+        size: SegmentSize.wide,
+        whenRemoved: (context) {
+          context.read(announcementLogicProvider).removeAnnouncement(id);
+        },
+        builder: (context) => Consumer(
+          builder: (context, ref, _) {
+            var announcement = ref.watch(announcementProvider(id));
+
+            return AnnouncementCard(
+              announcement: announcement,
+              onDismissed: !context.read(isOrganizerProvider)
+                  ? () {
+                      context.read(announcementLogicProvider).dismiss(id);
+                      WidgetArea.of<ContentSegment>(context)?.reload();
+                    }
+                  : null,
+            );
+          },
+        ),
+      );
+    }, withoutId: () {
+      if (context.context.read(isOrganizerProvider)) {
         var idProvider = IdProvider();
         return ContentSegment(
+          context: context,
           size: SegmentSize.wide,
           idProvider: idProvider,
           builder: (context) => AspectRatio(
@@ -51,42 +78,6 @@ class AnnouncementModule {
       } else {
         return null;
       }
-    }
-
-    if (context.read(isDismissedProvider(id)) ?? false) {
-      return null;
-    }
-
-    return ContentSegment(
-      size: SegmentSize.wide,
-      whenRemoved: (context) {
-        context.read(announcementLogicProvider).removeAnnouncement(id);
-      },
-      builder: (context) => Consumer(
-        builder: (context, ref, _) {
-          var announcement = ref.watch(announcementProvider(id));
-          var isDismissed = ref.watch(isDismissedProvider(id));
-
-          if (isDismissed ?? true) {
-            if (isDismissed != null) {
-              WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-                WidgetArea.of<ContentSegment>(context)?.reload();
-              });
-            }
-            return Container();
-          }
-
-          return AnnouncementCard(
-            announcement: announcement,
-            onDismissed: !context.read(isOrganizerProvider)
-                ? () {
-                    context.read(announcementLogicProvider).dismiss(id);
-                    WidgetArea.of<ContentSegment>(context)?.reload();
-                  }
-                : null,
-          );
-        },
-      ),
-    );
+    });
   }
 }

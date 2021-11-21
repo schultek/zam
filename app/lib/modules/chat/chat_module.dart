@@ -4,17 +4,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../core/module/module.dart';
+import '../../core/core.dart';
 import '../../core/widgets/widget_selector.dart';
 import '../../providers/notifications/notifications_provider.dart';
 import 'pages/channel_page.dart';
 import 'pages/chat_page.dart';
 
-@Module('chat')
-class ChatModule with ModulePreloadMixin {
-  @ModuleItem('chat')
-  PageSegment getChatPage(BuildContext context) {
+class ChatModule extends ModuleBuilder<PageSegment> {
+  @override
+  FutureOr<PageSegment?> build(ModuleContext context) {
     return PageSegment(
+      context: context,
       builder: (context) {
         if (WidgetSelector.existsIn(context)) {
           return Container(
@@ -34,11 +34,15 @@ class ChatModule with ModulePreloadMixin {
   static StreamSubscription<RemoteMessage?>? _msgSub;
 
   @override
-  void preload(BuildContext context) {
+  Iterable<Route> generateInitialRoutes(BuildContext context) sync* {
     var message = context.read(messageProvider);
     if (message?.data['channelId'] != null) {
-      Navigator.of(context).push(ChannelPage.route(message!.data['channelId'] as String));
+      yield ChannelPage.route(message!.data['channelId'] as String);
     }
+  }
+
+  @override
+  void preload(BuildContext context) {
     _msgSub?.cancel();
     _msgSub = context.read(messageProvider.state).stream.listen((m) {
       if (m?.data['channelId'] != null) {
@@ -46,5 +50,11 @@ class ChatModule with ModulePreloadMixin {
       }
     });
     print('Subscribed to messages');
+  }
+
+  @override
+  void dispose() {
+    _msgSub?.cancel();
+    super.dispose();
   }
 }

@@ -24,8 +24,10 @@ class GalleryPreview extends StatelessWidget {
           child: Consumer(
             builder: (context, ref, child) {
               var lastPicture = ref.watch(lastPictureProvider);
-              if (lastPicture == null) return child!;
-              return Image.memory(lastPicture.thumbData);
+              return lastPicture.maybeWhen(
+                data: (picture) => picture != null ? Image.memory(picture.thumbData) : child!,
+                orElse: () => child!,
+              );
             },
             child: const Icon(Icons.image),
           ),

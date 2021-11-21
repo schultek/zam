@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../trips/selected_trip_provider.dart';
 
+export 'firestore_extensions.dart';
+
 final tripDocProvider =
     Provider((ref) => FirebaseFirestore.instance.collection('trips').doc(ref.watch(selectedTripIdProvider)));
 

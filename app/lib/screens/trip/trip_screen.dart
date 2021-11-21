@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/models.dart';
+import '../../core/core.dart';
 
 class TripScreen extends StatelessWidget {
   final Trip trip;
@@ -8,12 +8,4 @@ class TripScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => trip.template.builder();
-
-  static Route route(Trip trip) {
-    return MaterialPageRoute(builder: (context) => TripScreen(trip));
-  }
-
-  static MaterialPage page(Trip trip) {
-    return MaterialPage(child: TripScreen(trip));
-  }
 }

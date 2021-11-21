@@ -11,14 +11,6 @@ class NoTripScreen extends StatefulWidget {
 
   @override
   _NoTripScreenState createState() => _NoTripScreenState();
-
-  static Route route() {
-    return MaterialPageRoute(builder: (context) => const NoTripScreen());
-  }
-
-  static MaterialPage page() {
-    return const MaterialPage(child: NoTripScreen());
-  }
 }
 
 class _NoTripScreenState extends State<NoTripScreen> {

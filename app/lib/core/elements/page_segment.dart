@@ -4,7 +4,11 @@ class PageSegment extends ModuleElement with ModuleElementBuilder<PageSegment> {
   final bool keepAlive;
   final Widget Function(BuildContext context) builder;
 
-  PageSegment({required this.builder, this.keepAlive = true}) : super(key: UniqueKey());
+  PageSegment({
+    required ModuleContext context,
+    required this.builder,
+    this.keepAlive = true,
+  }) : super(key: UniqueKey(), context: context);
 
   @override
   Widget buildPlaceholder(BuildContext context) {

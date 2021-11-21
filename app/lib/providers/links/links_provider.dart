@@ -2,7 +2,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/models.dart';
+import '../../core/core.dart';
 import '../auth/claims_provider.dart';
 import '../auth/logic_provider.dart';
 import '../auth/user_provider.dart';
@@ -55,7 +55,7 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
     if (uri.path.startsWith('/invitation')) {
       if (uri.path.endsWith('/organizer') || uri.path.endsWith('/admin')) {
         state = LinkState(uri);
-      } else if (uri.path.endsWith('/trip')) {
+      } else if (uri.path.endsWith('/models')) {
         state = LinkState(null, isProcessing: true);
         (() async {
           var user = ref.read(userProvider);

@@ -1,14 +1,6 @@
-library models;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dart_mappable/dart_mappable.dart';
 
-import '../core/templates/templates.dart';
-import '../main.mapper.g.dart';
-
-export '../main.mapper.g.dart';
-
-part 'trip.dart';
+import '../../core/core.dart';
 
 extension DocumentMap on DocumentSnapshot<Map<String, dynamic>> {
   Map<String, dynamic> toMap() {
@@ -19,7 +11,11 @@ extension DocumentMap on DocumentSnapshot<Map<String, dynamic>> {
 extension MapperDocumentReference on DocumentReference {
   DocumentReference<T> mapped<T>() {
     return withConverter<T>(
-      fromFirestore: (snapshot, _) => Mapper.fromValue(snapshot.toMap()),
+      fromFirestore: (snapshot, _) {
+        var map = snapshot.toMap();
+        print('GOT MAP $map for $T');
+        return Mapper.fromValue(map);
+      },
       toFirestore: (model, _) => Mapper.toMap(model),
     );
   }
@@ -29,9 +25,10 @@ extension MapperDocumentReference on DocumentReference {
   }
 
   Stream<T> snapshotsMapped<T>({bool includeMetadataChanges = false}) {
-    return mapped<T>()
-        .snapshots(includeMetadataChanges: includeMetadataChanges)
-        .map((snapshot) => snapshot.data() as T);
+    return mapped<T>().snapshots(includeMetadataChanges: includeMetadataChanges).map((snapshot) {
+      print('SNAP ${snapshot.exists} ${snapshot.runtimeType}');
+      return snapshot.data() as T;
+    });
   }
 }
 

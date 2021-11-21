@@ -13,12 +13,9 @@ import 'sms_code_screen.dart';
 class SignInScreen extends StatefulWidget {
   final Uri invitationLink;
   const SignInScreen(this.invitationLink, {Key? key}) : super(key: key);
+
   @override
   _SignInScreenState createState() => _SignInScreenState();
-
-  static MaterialPage page(Uri link) {
-    return MaterialPage(child: SignInScreen(link));
-  }
 }
 
 class _SignInScreenState extends State<SignInScreen> {

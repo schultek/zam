@@ -5,10 +5,6 @@ import '../../widgets/ju_background.dart';
 class LoadingLinkScreen extends StatelessWidget {
   const LoadingLinkScreen({Key? key}) : super(key: key);
 
-  static MaterialPage page() {
-    return const MaterialPage(child: LoadingLinkScreen());
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,45 +1,28 @@
-import 'dart:async';
-
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/models.dart';
+import '../../core/core.dart';
 import '../auth/user_provider.dart';
-import '../helpers.dart';
-import '../notifications/notifications_provider.dart';
 import 'trips_provider.dart';
 
-final selectedTripIdProvider = StateNotifierProvider<IdNotifier, String?>((ref) => IdNotifier(ref));
+final selectedTripIdProvider = StateProvider<String?>((ref) {
+  ref.listen<AsyncValue<List<Trip>>>(tripsProvider, (_, trips) {
+    ref.controller.state ??= trips.value?.firstOrNull?.id;
+  });
 
-class IdNotifier extends StateNotifier<String?> {
-  late StreamSubscription<List<Trip>> _tripsSubscription;
+  return ref.read(tripsProvider).value?.firstOrNull?.id;
+});
 
-  IdNotifier(Ref ref) : super(null) {
-    _tripsSubscription = ref.watch(tripsProvider.stream).listen((trips) {
-      state ??= trips.firstOrNull?.id;
-    });
+final selectedTripProvider = Provider<Trip?>((ref) {
+  var selectedTripId = ref.watch(selectedTripIdProvider);
+
+  var trips = ref.watch(tripsProvider).value;
+
+  if (trips == null || selectedTripId == null) {
+    return trips?.firstOrNull;
+  } else {
+    return trips.where((t) => t.id == selectedTripId).firstOrNull;
   }
-
-  String? get id => state;
-  set id(String? id) => state = id;
-
-  @override
-  void dispose() {
-    _tripsSubscription.cancel();
-    super.dispose();
-  }
-}
-
-final selectedTripProvider = StateNotifierProvider<StreamNotifier<Trip?>, Trip?>((ref) {
-  var selectedTripIdStream = ref.watch(selectedTripIdProvider.notifier).stream;
-  var tripsStream = ref.watch(tripsProvider.stream);
-  Trip? get(String? id, List<Trip>? trips) => trips?.where((t) => t.id == id).firstOrNull ?? trips?.firstOrNull;
-  return StreamNotifier.from(
-    CombinedStream(selectedTripIdStream, tripsStream, get),
-    initialValue: get(ref.read(selectedTripIdProvider), ref.read(tripsProvider).asData?.value),
-    onValue: (value) =>
-        value != null ? ref.read(notificationsProvider).subscribe('trip.${value.id}.announcements') : null,
-  );
 });
 
 final tripUserProvider = Provider<TripUser?>((ref) {

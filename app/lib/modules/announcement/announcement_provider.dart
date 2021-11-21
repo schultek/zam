@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/models.dart';
+import '../../core/core.dart';
 import '../../providers/firebase/doc_provider.dart';
 import '../../providers/hive/hive_provider.dart';
 
@@ -16,8 +16,9 @@ final dismissedAnnouncementsBoxProvider = hiveBoxProvider<String>('dismissed_ann
 
 final dismissedAnnouncementsProvider = dismissedAnnouncementsBoxProvider.valuesProvider();
 
-final isDismissedProvider = Provider.family((ref, String id) {
-  return ref.watch(dismissedAnnouncementsProvider)?.contains(id);
+final isDismissedProvider = FutureProvider.family((ref, String id) async {
+  var dismissed = await ref.watch(dismissedAnnouncementsProvider.future);
+  return dismissed.contains(id);
 });
 
 final announcementLogicProvider = Provider((ref) => AnnouncementLogic(ref));

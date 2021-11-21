@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../models/models.dart';
+import '../../../core/core.dart';
 import '../../../providers/trips/logic_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 

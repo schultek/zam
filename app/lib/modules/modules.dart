@@ -1,12 +1,25 @@
 library modules;
 
-export 'announcement/announcement_module.dart';
-export 'camera/camera_module.dart';
-export 'chat/chat_module.dart';
-export 'elimination/elimination_module.dart';
-export 'music/music_module.dart';
-export 'notes/notes_module.dart';
-export 'profile/profile_module.dart';
-//export 'supply/supply_module.dart';
-export 'thebutton/thebutton_module.dart';
-export 'users/users_module.dart';
+import '../core/core.dart';
+import 'announcement/announcement_module.dart';
+import 'camera/camera_module.dart';
+import 'chat/chat_module.dart';
+import 'elimination/elimination_module.dart';
+import 'music/music_module.dart';
+import 'notes/notes_module.dart';
+import 'profile/profile_module.dart';
+import 'thebutton/thebutton_module.dart';
+import 'users/users_module.dart';
+
+final registry = ModuleRegistry({
+  'camera': CameraModule(),
+  'chat': ChatModule(),
+  'music': MusicModule(),
+  'notes': NotesModule(),
+  'note': NoteModule(),
+  'users': UsersModule(),
+  'thebutton': TheButtonModule(),
+  'announcement': AnnouncementModule(),
+  'elimination': EliminationModule(),
+  'profile': ProfileModule()
+});

@@ -12,7 +12,6 @@ import 'screens/loading/loading_screen.dart';
 import 'screens/no_trip/no_trip_screen.dart';
 import 'screens/signin/signin_screen.dart';
 import 'screens/trip/trip_screen.dart';
-import 'widgets/nested_will_pop_scope.dart';
 
 void main() {
   runApp(const ProviderScope(child: InheritedConsumer(child: JufaApp())));
@@ -26,8 +25,6 @@ class JufaApp extends StatefulWidget {
 }
 
 class _JufaAppState extends State<JufaApp> {
-  final _navigatorKey = GlobalKey<NavigatorState>();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,38 +34,32 @@ class _JufaAppState extends State<JufaApp> {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       debugShowCheckedModeBanner: false,
-      builder: (context, _) {
-        return Consumer(
-          builder: (context, ref, _) {
-            var isLoadingTrips = ref.watch(isLoadingTripsProvider);
-            var isLoadingLink = ref.watch(isLoadingLinkProvider);
-            var isProcessingLink = ref.watch(isProcessingLinkProvider);
-            var selectedTrip = ref.watch(selectedTripProvider);
-            var link = ref.watch(linkProvider);
-
-            return NestedWillPopScope(
-              onWillPop: () async => !(await _navigatorKey.currentState?.maybePop() ?? true),
-              child: Navigator(
-                key: _navigatorKey,
-                restorationScopeId: 'nav',
-                pages: [
-                  if (isProcessingLink)
-                    LoadingLinkScreen.page()
-                  else if (isLoadingTrips || isLoadingLink)
-                    LoadingScreen.page()
-                  else if (link != null)
-                    SignInScreen.page(link)
-                  else if (selectedTrip != null)
-                    TripScreen.page(selectedTrip)
-                  else
-                    NoTripScreen.page(),
-                ],
-                onPopPage: (route, result) => route.didPop(result),
-              ),
-            );
-          },
-        );
-      },
+      home: buildHome(context),
     );
+  }
+
+  Widget buildHome(BuildContext context) {
+    var isProcessingLink = context.watch(isProcessingLinkProvider);
+    if (isProcessingLink) {
+      return const LoadingLinkScreen();
+    }
+
+    var isLoadingTrips = context.watch(isLoadingTripsProvider);
+    var isLoadingLink = context.watch(isLoadingLinkProvider);
+    if (isLoadingTrips || isLoadingLink) {
+      return const LoadingScreen();
+    }
+
+    var link = context.watch(linkProvider);
+    if (link != null) {
+      return SignInScreen(link);
+    }
+
+    var selectedTrip = context.watch(selectedTripProvider);
+    if (selectedTrip != null) {
+      return TripScreen(selectedTrip);
+    }
+
+    return const NoTripScreen();
   }
 }

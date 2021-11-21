@@ -8,7 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart' show XFile;
 
-import '../../models/models.dart';
+import '../../core/core.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/firebase/doc_provider.dart';
 
