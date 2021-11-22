@@ -16,6 +16,12 @@ firebase-debug.log*
 # it commented so all members can deploy to the same project(s) in .firebaserc.
 # .firebaserc
 
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
 # Runtime data
 pids
 *.pid
