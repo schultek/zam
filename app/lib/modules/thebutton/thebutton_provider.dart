@@ -20,8 +20,10 @@ class TheButtonState {
 final theButtonProvider = Provider<TheButtonState>((ref) {
   var doc = ref.watch(moduleDocProvider('thebutton'));
 
-  var sub = doc.snapshotsMapped<TheButtonState>().listen((value) {
-    ref.state = value;
+  var sub = doc.snapshotsMapped<TheButtonState?>().listen((value) {
+    if (value != null) {
+      ref.state = value;
+    }
   });
 
   ref.onDispose(() => sub.cancel());
@@ -29,17 +31,23 @@ final theButtonProvider = Provider<TheButtonState>((ref) {
   return TheButtonState(null, null, {});
 });
 
-final theButtonValueProvider = StreamProvider<double>((ref) async* {
+final theButtonValueProvider = StreamProvider.autoDispose<double>((ref) {
   ref.watch(theButtonProvider);
 
-  var timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+  var controller = StreamController<double>.broadcast();
+
+  var timer = Timer.periodic(const Duration(seconds: 10), (timer) {
     var val = ref.read(theButtonLogicProvider).value;
     if (val != null) {
-      ref.state = AsyncValue.data(val);
+      controller.add(val);
     }
   });
 
-  ref.onDispose(() => timer.cancel());
+  ref.onDispose(() {
+    timer.cancel();
+  });
+
+  return controller.stream;
 });
 
 final theButtonLogicProvider = Provider((ref) => TheButtonLogic(ref));

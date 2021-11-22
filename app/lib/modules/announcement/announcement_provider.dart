@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/core.dart';
 import '../../providers/firebase/doc_provider.dart';
-import '../../providers/hive/hive_provider.dart';
+import '../../providers/general/hive_provider.dart';
 
 export '../../main.mapper.g.dart' show AnnouncementMapperExtension;
 

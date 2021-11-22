@@ -20,6 +20,7 @@ import '../module/module.dart';
 import '../themes/themes.dart';
 import '../widgets/reorder_toggle.dart';
 import '../widgets/template_navigator.dart';
+import '../widgets/trip_selector.dart';
 import '../widgets/widget_selector.dart';
 
 part 'grid/grid_template.dart';
@@ -176,7 +177,16 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   Widget build(BuildContext context) {
     return InheritedWidgetTemplate(
       state: this,
-      child: widget.build(context, this),
+      child: MediaQuery(
+        data: MediaQuery.of(context).addPadding(bottom: widgetSelector?.state?.sheetHeight),
+        child: widget.build(context, this),
+      ),
     );
+  }
+}
+
+extension on MediaQueryData {
+  MediaQueryData addPadding({double? bottom}) {
+    return copyWith(padding: padding.copyWith(bottom: bottom != null ? padding.bottom + bottom : null));
   }
 }

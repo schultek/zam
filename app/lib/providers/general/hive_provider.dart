@@ -17,6 +17,8 @@ FutureProvider<Box<T>> hiveBoxProvider<T>(String box) {
       }));
 }
 
+final configBox = hiveBoxProvider('config');
+
 extension BoxProvider<T> on FutureProvider<Box<T>> {
   StreamProvider<Iterable<T>> valuesProvider() {
     return StreamProvider((ref) async* {

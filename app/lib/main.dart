@@ -4,9 +4,9 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 //ignore: unused_import
 import 'modules/modules.dart';
+import 'providers/general/loading_provider.dart';
 import 'providers/links/links_provider.dart';
 import 'providers/trips/selected_trip_provider.dart';
-import 'providers/trips/trips_provider.dart';
 import 'screens/loading/loading_link_screen.dart';
 import 'screens/loading/loading_screen.dart';
 import 'screens/no_trip/no_trip_screen.dart';
@@ -39,15 +39,14 @@ class _JufaAppState extends State<JufaApp> {
   }
 
   Widget buildHome(BuildContext context) {
+    var isLoading = context.watch(isLoadingProvider);
+    if (isLoading) {
+      return const LoadingScreen();
+    }
+
     var isProcessingLink = context.watch(isProcessingLinkProvider);
     if (isProcessingLink) {
       return const LoadingLinkScreen();
-    }
-
-    var isLoadingTrips = context.watch(isLoadingTripsProvider);
-    var isLoadingLink = context.watch(isLoadingLinkProvider);
-    if (isLoadingTrips || isLoadingLink) {
-      return const LoadingScreen();
     }
 
     var link = context.watch(linkProvider);
@@ -57,7 +56,7 @@ class _JufaAppState extends State<JufaApp> {
 
     var selectedTrip = context.watch(selectedTripProvider);
     if (selectedTrip != null) {
-      return TripScreen(selectedTrip);
+      return TripScreen(selectedTrip, key: ValueKey(selectedTrip.id));
     }
 
     return const NoTripScreen();

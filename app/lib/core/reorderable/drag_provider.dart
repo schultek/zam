@@ -124,10 +124,9 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
         dragScaleAnimation!.forward();
       }
 
-      var areaOffset = area.areaOffset;
-      var localDragOffset = dragOffset! - Offset(dragSize!.width / 2, dragSize!.height / 2) - areaOffset;
+      var globalDragOffset = dragOffset! - Offset(dragSize!.width / 2, dragSize!.height / 2);
 
-      var accepted = area.didInsertItem(localDragOffset, moduleElement!);
+      var accepted = area.didInsertItem(globalDragOffset, moduleElement!);
       if (accepted != isDropAccepted) {
         if (accepted) {
           widgetSelector!.removeWidget(moduleElement!);

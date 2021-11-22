@@ -8,7 +8,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 
-import '../../providers/hive/hive_provider.dart';
+import '../../providers/general/hive_provider.dart';
 
 final filesBoxProvider = hiveBoxProvider<PhotoItem>('photos3');
 

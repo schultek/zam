@@ -26,7 +26,6 @@ extension MapperDocumentReference on DocumentReference {
 
   Stream<T> snapshotsMapped<T>({bool includeMetadataChanges = false}) {
     return mapped<T>().snapshots(includeMetadataChanges: includeMetadataChanges).map((snapshot) {
-      print('SNAP ${snapshot.exists} ${snapshot.runtimeType}');
       return snapshot.data() as T;
     });
   }

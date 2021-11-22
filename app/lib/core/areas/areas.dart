@@ -59,11 +59,11 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   final _areaKey = GlobalKey();
   final _areaTheme = ValueNotifier<ThemeState?>(null);
-  late Size _areaSize;
-  late Offset _areaOffset;
 
-  Size get areaSize => _areaSize;
-  Offset get areaOffset => _areaOffset;
+  late RenderBox _areaRenderBox;
+
+  Size get areaSize => _areaRenderBox.size;
+  Offset get areaOffset => _areaRenderBox.localToGlobal(Offset.zero);
 
   ThemeState get theme => _areaTheme.value!;
   WidgetTemplateState get template => WidgetTemplate.of(context, listen: false);
@@ -72,6 +72,9 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   @override
   bool get wantKeepAlive => false;
+
+  bool _isLoading = true;
+  bool get isLoading => _isLoading;
 
   @override
   void didChangeDependencies() {
@@ -86,14 +89,14 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   Future<void> reload() async {
     var widgets = await template.getWidgetsForArea<T>(widget.id);
     initArea(widgets);
-    setState(() {});
+    _isLoading = false;
+    if (mounted) setState(() {});
   }
 
   void initArea(List<T> widgets);
 
-  void updateAreaSize(_) {
-    _areaSize = (_areaKey.currentContext!.findRenderObject()! as RenderBox).size;
-    _areaOffset = (_areaKey.currentContext!.findRenderObject()! as RenderBox).localToGlobal(Offset.zero);
+  void updateAreaRenderBox(_) {
+    _areaRenderBox = _areaKey.currentContext!.findRenderObject()! as RenderBox;
   }
 
   bool get isSelected => template.selectedArea == id;
@@ -108,7 +111,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     var backgroundColor = Colors.blue.withOpacity(0.05);
     var borderColor = Colors.blue.withOpacity(0.5);
 
-    WidgetsBinding.instance!.addPostFrameCallback(updateAreaSize);
+    WidgetsBinding.instance!.addPostFrameCallback(updateAreaRenderBox);
 
     return InheritedWidgetArea(
       state: this,
@@ -181,13 +184,13 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   ReorderableLogic get logic => context.read(reorderableLogicProvider);
 
-  Offset getOffset(Key key) => logic.itemOffset(key) - areaOffset;
+  Offset getOffset(Key key) => logic.itemOffset(key);
   Size getSize(Key key) => logic.itemSize(key);
   void translateX(Key key, double delta) => logic.translateItemX(this, key, delta);
   void translateY(Key key, double delta) => logic.translateItemY(this, key, delta);
 
   bool isOverArea(Offset offset, Size size) {
-    var areaRect = Rect.fromLTWH(0, 0, areaSize.width, areaSize.height);
+    var areaRect = Rect.fromLTWH(areaOffset.dx, areaOffset.dy, areaSize.width, areaSize.height);
     var itemRect = Rect.fromLTWH(offset.dx, offset.dy, size.width, size.height);
     return itemRect.overlaps(areaRect);
   }
@@ -207,12 +210,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     }
 
     if (hasKey(item.key)) {
-      if (didReorderItem(offset, item.key)) {
-        WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-          _scheduledRebuild = false;
-        });
-        _scheduledRebuild = true;
-      }
+      reorderItem(offset, item.key);
       return true;
     }
 
@@ -222,17 +220,26 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
     insertItem(item);
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      var n = 0;
-      while (n++ < 100 && didReorderItem(offset, item.key)) {}
-      if (n >= 100) {
-        print('WARNING: REORDERING DID NOT FINISH AFTER 100 STEPS');
-      }
-      _scheduledRebuild = false;
-    });
-    _scheduledRebuild = true;
-
+    reorderItem(offset, item.key);
     return true;
+  }
+
+  void reorderItem(Offset offset, Key key) {
+    if (_scheduledRebuild) {
+      return;
+    }
+
+    if (!hasKey(key)) {
+      return;
+    }
+
+    if (didReorderItem(offset, key)) {
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        _scheduledRebuild = false;
+        reorderItem(offset, key);
+      });
+      _scheduledRebuild = true;
+    }
   }
 
   List<T> getWidgets();

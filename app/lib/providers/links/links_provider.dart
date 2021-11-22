@@ -10,24 +10,37 @@ import '../firebase/firebase_provider.dart';
 
 final linkStateProvider = StateNotifierProvider<LinkStateNotifier, LinkState>((ref) => LinkStateNotifier(ref));
 
-final linkProvider = Provider((ref) => ref.watch(linkStateProvider).uri);
+final linkProvider = Provider((ref) {
+  var link = ref.watch(linkStateProvider);
+  return link is UriLinkState ? link.uri : null;
+});
 
-final isLoadingLinkProvider = Provider((ref) => ref.watch(linkStateProvider).isLoading);
+final isProcessingLinkProvider = Provider((ref) {
+  return ref.watch(linkStateProvider.select((s) => s is ProcessingLinkState));
+});
 
-final isProcessingLinkProvider = Provider((ref) => ref.watch(linkStateProvider).isProcessing);
+class UriLinkState implements LinkState {
+  final Uri uri;
+  UriLinkState(this.uri);
+}
+
+class NoLinkState implements LinkState {}
+
+class ProcessingLinkState implements LinkState {}
+
+class LoadingLinkState implements LinkState {}
 
 class LinkState {
-  final Uri? uri;
-  final bool isLoading;
-  final bool isProcessing;
-
-  LinkState(this.uri, {this.isLoading = false, this.isProcessing = false});
+  factory LinkState(Uri uri) = UriLinkState;
+  factory LinkState.noLink() = NoLinkState;
+  factory LinkState.processing() = ProcessingLinkState;
+  factory LinkState.loading() = LoadingLinkState;
 }
 
 class LinkStateNotifier extends StateNotifier<LinkState> {
   final Ref ref;
 
-  LinkStateNotifier(this.ref) : super(LinkState(null, isLoading: true)) {
+  LinkStateNotifier(this.ref) : super(LinkState.loading()) {
     setup();
   }
 
@@ -40,8 +53,8 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
     } else {
       await ref.read(authLogicProvider).signInAnonymously();
     }
-    if (state.isLoading) {
-      state = LinkState(state.uri);
+    if (state is LoadingLinkState) {
+      state = LinkState.noLink();
     }
 
     FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData? link) async {
@@ -56,7 +69,7 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
       if (uri.path.endsWith('/organizer') || uri.path.endsWith('/admin')) {
         state = LinkState(uri);
       } else if (uri.path.endsWith('/models')) {
-        state = LinkState(null, isProcessing: true);
+        state = LinkState.processing();
         (() async {
           var user = ref.read(userProvider);
           if (user.asData?.value == null) {
@@ -75,7 +88,7 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
     if (claimsChanged) {
       await ref.read(claimsProvider.notifier).refresh();
     }
-    state = LinkState(null);
+    state = LinkState.noLink();
   }
 }
 

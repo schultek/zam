@@ -38,32 +38,35 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
 
   @override
   Widget buildArea(BuildContext context) {
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 300),
-      alignment: Alignment.topCenter,
-      curve: Curves.easeInOut,
-      child: ListView.builder(
-        padding: const EdgeInsets.only(top: 10),
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: grid.length,
-        itemBuilder: (context, index) => Padding(
-          padding: EdgeInsets.only(bottom: index == grid.length - 1 ? 10 : 20, left: 10, right: 10),
-          child: grid[index][0].size == SegmentSize.wide
-              ? grid[index][0]
-              : Row(
-                  children: [
-                    Flexible(
-                      fit: FlexFit.tight,
-                      child: grid[index][0],
-                    ),
-                    Container(width: 20),
-                    Flexible(
-                      fit: FlexFit.tight,
-                      child: grid[index].length == 2 ? grid[index][1] : Container(),
-                    )
-                  ],
-                ),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 100),
+      child: AnimatedSize(
+        duration: const Duration(milliseconds: 300),
+        alignment: Alignment.topCenter,
+        curve: Curves.easeInOut,
+        child: ListView.builder(
+          padding: const EdgeInsets.only(top: 10),
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: grid.length,
+          itemBuilder: (context, index) => Padding(
+            padding: EdgeInsets.only(bottom: index == grid.length - 1 ? 10 : 20, left: 10, right: 10),
+            child: grid[index][0].size == SegmentSize.wide
+                ? grid[index][0]
+                : Row(
+                    children: [
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: grid[index][0],
+                      ),
+                      Container(width: 20),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: grid[index].length == 2 ? grid[index][1] : Container(),
+                      )
+                    ],
+                  ),
+          ),
         ),
       ),
     );
@@ -137,32 +140,42 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
     return sortedWidgets;
   }
 
-  bool _scrolling = false;
+  Function? _activeScrollCb;
 
-  Future<void> maybeScroll(Offset dragOffset, Key itemKey, Offset itemOffset, Size itemSize) async {
-    // ignore: dead_code, invariant_booleans
-    if (false && !_scrolling) {
-      var position = widget.scrollController.position;
-      int duration = 15; // in ms
+  Future<void> maybeScroll(Offset dragOffset, Key itemKey, Size itemSize) async {
+    scrollCb() {
+      _activeScrollCb = null;
+      if (hasKey(itemKey)) {
+        reorderItem(dragOffset, itemKey);
+      }
+    }
 
-      MediaQueryData d = MediaQuery.of(context);
+    if (_activeScrollCb != null) {
+      _activeScrollCb = scrollCb;
+      return;
+    }
+    var position = widget.scrollController.position;
+    int duration = 15; // in ms
 
-      double top = d.padding.top;
-      double bottom = widget.scrollController.position.viewportDimension - (d.padding.bottom);
+    MediaQueryData d = MediaQuery.of(context);
 
-      double? newOffset = checkScrollPosition(position, itemOffset, itemSize, top, bottom);
+    double padding = 20;
+    double top = d.padding.top + padding;
+    double bottom = position.viewportDimension - (d.padding.bottom) - padding;
 
-      if (newOffset != null && (newOffset - position.pixels).abs() >= 1.0) {
-        _scrolling = true;
-        await widget.scrollController.position.animateTo(
-          newOffset,
-          duration: Duration(milliseconds: duration),
-          curve: Curves.linear,
-        );
-        _scrolling = false;
-        if (hasKey(itemKey)) {
-          didReorderItem(dragOffset, itemKey);
-        }
+    double? newOffset = checkScrollPosition(position, dragOffset.dy, itemSize, top, bottom);
+
+    if (newOffset != null && (newOffset - position.pixels).abs() >= 1.0) {
+      _activeScrollCb = scrollCb;
+
+      await widget.scrollController.position.animateTo(
+        newOffset,
+        duration: Duration(milliseconds: duration),
+        curve: Curves.linear,
+      );
+
+      if (_activeScrollCb != null) {
+        _activeScrollCb!();
       }
     }
   }
@@ -172,7 +185,7 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
     Offset itemOffset = getOffset(itemKey);
     Size itemSize = getSize(itemKey);
 
-    maybeScroll(offset, itemKey, itemOffset, itemSize);
+    maybeScroll(offset, itemKey, itemSize);
 
     if (offset.dy < itemOffset.dy - itemSize.height / 2 - 20) {
       var dragIndex = indexOf(itemKey);
@@ -190,14 +203,12 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
 
             onReorder(itemKey, aboveItem.key);
             translateY(aboveItem.key, -itemSize.height - 20);
-          } else if (grid[dragIndex.row].length == 2) {
+          } else {
             var siblingItem = grid[dragIndex.row][1 - dragIndex.column];
 
             onReorder(itemKey, aboveRow[0].key);
             translateY(aboveRow[0].key, -itemSize.height - 20);
             translateY(siblingItem.key, itemSize.height + 20);
-          } else {
-            print('FOUND ELSE?? WHAT IS THIS');
           }
         }
 
@@ -265,16 +276,16 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
     return false;
   }
 
-  double? checkScrollPosition(ScrollPosition position, Offset dragOffset, Size dragSize, double top, double bottom) {
+  double? checkScrollPosition(ScrollPosition position, double dragOffset, Size dragSize, double top, double bottom) {
     double step = 1.0;
     double overdragMax = 40.0;
     double overdragCoef = 5.0;
 
-    if (dragOffset.dy < top && position.pixels > position.minScrollExtent) {
-      var overdrag = max(top - dragOffset.dy, overdragMax);
+    if (dragOffset < top && position.pixels > position.minScrollExtent) {
+      var overdrag = max(top - dragOffset, overdragMax);
       return max(position.minScrollExtent, position.pixels - step * overdrag / overdragCoef);
-    } else if (dragOffset.dy + dragSize.height > bottom && position.pixels < position.maxScrollExtent) {
-      var overdrag = max<double>(dragOffset.dy + dragSize.height - bottom, overdragMax);
+    } else if (dragOffset + dragSize.height > bottom && position.pixels < position.maxScrollExtent) {
+      var overdrag = max<double>(dragOffset + dragSize.height - bottom, overdragMax);
       return min(position.maxScrollExtent, position.pixels + step * overdrag / overdragCoef);
     } else {
       return null;

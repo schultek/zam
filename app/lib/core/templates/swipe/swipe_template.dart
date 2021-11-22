@@ -73,30 +73,18 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    if (user.isOrganizer)
-                                      const SizedBox(
-                                        width: 50,
-                                        child: ReorderToggle(),
-                                      )
-                                    else
-                                      const SizedBox(width: 50),
+                                    const TripSelectorButton(
+                                      settingsRoute: SwipeTemplateSettings.route,
+                                    ),
                                     Text(
                                       trip.name,
                                       style:
                                           Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
                                     ),
                                     if (user.isOrganizer)
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 50,
-                                        child: IconButton(
-                                          icon: Icon(
-                                            Icons.settings,
-                                            color: context.getTextColor(),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.of(context).push(SwipeTemplateSettings.route());
-                                          },
-                                        ),
+                                        child: ReorderToggle(),
                                       )
                                     else
                                       const SizedBox(width: 50),

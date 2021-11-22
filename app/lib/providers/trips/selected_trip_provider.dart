@@ -1,28 +1,48 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/core.dart';
 import '../auth/user_provider.dart';
+import '../general/preferences_provider.dart';
 import 'trips_provider.dart';
 
-final selectedTripIdProvider = StateProvider<String?>((ref) {
-  ref.listen<AsyncValue<List<Trip>>>(tripsProvider, (_, trips) {
-    ref.controller.state ??= trips.value?.firstOrNull?.id;
-  });
+final selectedTripIdProvider = StateNotifierProvider<TripIdNotifier, String?>((ref) {
+  var trips = ref.watch(tripsProvider);
+  var prefs = ref.watch(sharedPreferencesProvider).value;
 
-  return ref.read(tripsProvider).value?.firstOrNull?.id;
+  var initialState = prefs?.getString('selected_trip_id') ?? trips.value?.firstOrNull?.id;
+
+  if (trips.value?.every((t) => t.id != initialState) ?? false) {
+    initialState = trips.value?.firstOrNull?.id;
+  }
+
+  return TripIdNotifier(ref, initialState);
 });
+
+class TripIdNotifier extends StateNotifier<String?> {
+  final Ref ref;
+
+  TripIdNotifier(this.ref, String? initialState) : super(initialState);
+
+  SharedPreferences? get prefs => ref.read(sharedPreferencesProvider).value;
+
+  @override
+  set state(String? value) {
+    if (value != null) {
+      prefs?.setString('selected_trip_id', value);
+    }
+    super.state = value;
+  }
+}
 
 final selectedTripProvider = Provider<Trip?>((ref) {
   var selectedTripId = ref.watch(selectedTripIdProvider);
 
-  var trips = ref.watch(tripsProvider).value;
+  var trips = ref.watch(tripsProvider);
+  var trip = trips.value?.where((t) => t.id == selectedTripId).firstOrNull;
 
-  if (trips == null || selectedTripId == null) {
-    return trips?.firstOrNull;
-  } else {
-    return trips.where((t) => t.id == selectedTripId).firstOrNull;
-  }
+  return trip;
 });
 
 final tripUserProvider = Provider<TripUser?>((ref) {

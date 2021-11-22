@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -149,8 +150,6 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
 
   static Artboard? artboard;
 
-  StreamSubscription<double>? _valueSubscription;
-
   @override
   void initState() {
     super.initState();
@@ -159,12 +158,6 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
         print('ERROR ON BUTTON $e');
       });
     }
-  }
-
-  @override
-  void dispose() {
-    _valueSubscription?.cancel();
-    super.dispose();
   }
 
   Future<void> loadAnimation() async {
@@ -197,10 +190,11 @@ class _TheButtonAnimationState extends State<TheButtonAnimation> {
       runDeadAnimation();
     }
 
-    _valueSubscription = context.read(theButtonValueProvider.stream).listen((value) {
-      if (value < 1) {
+    context.listen<AsyncValue<double>>(theButtonValueProvider, (_, value) {
+      if (value is! AsyncData<double>) return;
+      if (value.value < 1) {
         clearDeadAnimation();
-        fillController.animateTo(value);
+        fillController.animateTo(value.value);
       } else {
         runDeadAnimation();
       }

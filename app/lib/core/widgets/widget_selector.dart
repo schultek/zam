@@ -125,6 +125,9 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
     });
   }
 
+  double get outerPadding => 10;
+  double get innerPadding => 10;
+  double get sheetHeight => widgets.isNotEmpty ? itemHeight + outerPadding * 2 + innerPadding * 2 : 0;
   double get itemHeight => 90;
   double get topEdge => (context.findRenderObject()! as RenderBox).localToGlobal(Offset.zero).dy - 10;
 
@@ -139,16 +142,16 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           child: SizedBox(
-            height: widgets.isNotEmpty ? 130 : 0,
+            height: sheetHeight,
             child: Padding(
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(outerPadding),
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 controller: _scrollController,
                 itemCount: widgets.length,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    padding: EdgeInsets.all(innerPadding),
                     child: FittedBox(
                       fit: BoxFit.fitHeight,
                       child: ConstrainedBox(

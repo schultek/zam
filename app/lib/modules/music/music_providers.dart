@@ -28,12 +28,12 @@ const redirectUri = 'https://jufa20.web.app/spotify/auth';
 final musicLogicProvider = Provider((ref) => MusicLogic(ref));
 
 final musicConfigProvider =
-    StreamProvider((ref) => ref.watch(moduleDocProvider('music')).snapshotsMapped<MusicConfig>());
+    StreamProvider((ref) => ref.watch(moduleDocProvider('music')).snapshotsMapped<MusicConfig?>());
 
 final credentialsProvider = StreamProvider<SpotifyCredentials?>(
-    (ref) => ref.watch(musicConfigProvider.stream).map((d) => d.credentials).distinct());
-final playlistProvider = Provider<SpotifyPlaylist?>((ref) => ref.watch(musicConfigProvider).asData?.value.playlist);
-final playerProvider = Provider<SpotifyPlayer?>((ref) => ref.watch(musicConfigProvider).asData?.value.player);
+    (ref) => ref.watch(musicConfigProvider.stream).map((d) => d?.credentials).distinct());
+final playlistProvider = Provider<SpotifyPlaylist?>((ref) => ref.watch(musicConfigProvider).asData?.value?.playlist);
+final playerProvider = Provider<SpotifyPlayer?>((ref) => ref.watch(musicConfigProvider).asData?.value?.player);
 
 final spotifyApiProvider = StreamProvider<SpotifyApi?>((ref) {
   return ref.watch(credentialsProvider.stream).map((credentials) {

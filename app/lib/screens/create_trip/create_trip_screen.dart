@@ -65,7 +65,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                   onTap: () async {
                     if (tripName == null) return;
                     DocumentReference doc = await createNewTrip(tripName!, context.read(userIdProvider)!);
-                    context.read(selectedTripIdProvider.state).state = doc.id;
+                    context.read(selectedTripIdProvider.notifier).state = doc.id;
                   },
                   child: const Center(
                     child: Padding(

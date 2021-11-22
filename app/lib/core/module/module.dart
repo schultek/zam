@@ -61,7 +61,7 @@ class ModuleRegistry {
 
   List<T> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
     return modules.entries
-        .whereType<MapEntry<String, ModuleBuilder<T>>>()
+        .where((e) => e.value is ModuleBuilder<T>)
         .map((e) {
           var element = e.value.build(ModuleContext(context, e.key));
           assert(element is T?, "ModuleBuilder's build() method must return synchronously when given no element id.");
