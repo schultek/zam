@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/themes/themes.dart';
@@ -81,7 +82,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
         onPressed: () => setState(() {
           settingsOpen = true;
           selectIndex(
-            options.indexOf(asOption(context.read(theButtonProvider).aliveHours) ?? options[0]),
+            options.indexOf(asOption(context.read(theButtonProvider).value?.aliveHours) ?? options[0]),
             constraints.maxHeight * 0.2,
             animate: false,
           );
@@ -234,7 +235,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
         icon: const Icon(Icons.check, size: 20, color: Colors.green),
         onPressed: () {
           setState(() {
-            context.read(theButtonLogicProvider).setAlive(options[selectedIndex]);
+            context.read(theButtonLogicProvider).setAliveHours(options[selectedIndex]);
             settingsOpen = false;
           });
         },

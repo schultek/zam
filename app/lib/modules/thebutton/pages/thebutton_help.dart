@@ -13,9 +13,10 @@ class LeaderboardEntry {
 }
 
 final theButtonLeaderboardProvider = Provider.autoDispose((ref) {
-  var state = ref.watch(theButtonProvider);
+  var state = ref.watch(theButtonProvider).value;
   var trip = ref.watch(selectedTripProvider);
-  return state.leaderboard.entries
+  return (state?.leaderboard ?? {})
+      .entries
       .map((e) => LeaderboardEntry(trip?.users[e.key]?.nickname ?? 'Anonym', e.value.round()))
       .toList()
     ..sort((a, b) => b.points.compareTo(a.points));
@@ -137,7 +138,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
               ),
               const SizedBox(height: 10),
               Text(
-                "You will receive points when you save the button from its demise. The lower the buttons health is the more points you get. But don't wait too long, someone else might just come along and save the button before you have the chance.",
+                "When you save the button from its demise, you will get it's level. The lower the buttons health is the higher is level you get. But don't wait too long, someone else might just come along and save the button before you have the chance.",
                 textAlign: TextAlign.justify,
                 style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
               )
@@ -180,13 +181,12 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                     ),
                     const SizedBox(width: 4),
                     Flexible(
-                      flex: 2,
+                      flex: 1,
                       fit: FlexFit.tight,
-                      child: Text(
-                        '${entry.points} P',
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(color: context.getTextColor()),
-                        softWrap: false,
-                        overflow: TextOverflow.ellipsis,
+                      child: Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: theButtonLevels[entry.points]),
                       ),
                     ),
                   ],

@@ -1,53 +1,61 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/auth/user_provider.dart';
 import '../../providers/firebase/doc_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 
+const theButtonLevels = [Colors.green, Colors.yellow, Colors.orange, Colors.red, Colors.purple, Colors.blue];
+
 @MappableClass()
 class TheButtonState {
-  Timestamp? lastReset;
-  double? aliveHours;
-  Map<String, double> leaderboard = {};
+  Timestamp lastReset;
+  double aliveHours;
+  Map<String, int> leaderboard = {};
 
   TheButtonState(this.lastReset, this.aliveHours, this.leaderboard);
+
+  int get currentLevel {
+    var hours = DateTime.now().difference(lastReset.toDate()).inSeconds / 3600.0;
+    return hours >= aliveHours ? -1 : (hours / aliveHours * theButtonLevels.length).floor();
+  }
+
+  Duration get timeUntilValueChanges {
+    var hours = DateTime.now().difference(lastReset.toDate()).inSeconds / 3600.0;
+    var interval = aliveHours / theButtonLevels.length;
+    return Duration(seconds: ((interval - (hours % interval)) * 3600 + 1).round());
+  }
 }
 
-final theButtonProvider = Provider<TheButtonState>((ref) {
+final theButtonProvider = StreamProvider<TheButtonState?>((ref) {
   var doc = ref.watch(moduleDocProvider('thebutton'));
-
-  var sub = doc.snapshotsMapped<TheButtonState?>().listen((value) {
-    if (value != null) {
-      ref.state = value;
-    }
-  });
-
-  ref.onDispose(() => sub.cancel());
-
-  return TheButtonState(null, null, {});
+  return doc.snapshotsMapped<TheButtonState?>();
 });
 
-final theButtonValueProvider = StreamProvider.autoDispose<double>((ref) {
-  ref.watch(theButtonProvider);
+final theButtonLevelProvider = Provider.autoDispose<int>((ref) {
+  var state = ref.watch(theButtonProvider).value;
 
-  var controller = StreamController<double>.broadcast();
+  if (state == null) {
+    return -1;
+  }
 
-  var timer = Timer.periodic(const Duration(seconds: 10), (timer) {
-    var val = ref.read(theButtonLogicProvider).value;
-    if (val != null) {
-      controller.add(val);
+  Timer? timer;
+  int updateLevel() {
+    var level = state.currentLevel;
+    if (level != -1) {
+      timer = Timer(state.timeUntilValueChanges, () => ref.state = updateLevel());
     }
-  });
+    return level;
+  }
 
-  ref.onDispose(() {
-    timer.cancel();
-  });
+  ref.onDispose(() => timer?.cancel());
 
-  return controller.stream;
+  return updateLevel();
 });
 
 final theButtonLogicProvider = Provider((ref) => TheButtonLogic(ref));
@@ -57,19 +65,11 @@ class TheButtonLogic {
   final DocumentReference<Map<String, dynamic>> doc;
   TheButtonLogic(this.ref) : doc = ref.watch(moduleDocProvider('thebutton'));
 
-  double? get value {
-    return getValue(ref.read(theButtonProvider));
+  Future<void> init() async {
+    await doc.mapped<TheButtonState>().set(TheButtonState(Timestamp.now(), 2, {}));
   }
 
-  double? getValue(TheButtonState state) {
-    if (state.lastReset == null) return null;
-    var hours = DateTime.now().difference(state.lastReset!.toDate()).inSeconds / 3600.0;
-    return hours >= state.aliveHours! ? 1 : hours / state.aliveHours!;
-  }
-
-  bool? get isAlive => value != null ? value! < 1 : null;
-
-  void setAlive(String time) {
+  void setAliveHours(String time) {
     var d = time.split(':');
     int h = int.parse(d[0]);
     int m = d.length == 2 ? int.parse(d[1]) : 0;
@@ -82,14 +82,14 @@ class TheButtonLogic {
     await doc.firestore.runTransaction((transaction) async {
       var snapshot = await transaction.get(doc.mapped<TheButtonState>());
       var state = snapshot.data()!;
-      var value = getValue(state);
-      if (value != null && value < 1) {
-        points = (value * 100).floor();
+      var level = state.currentLevel;
+      if (level != -1) {
+        var userId = ref.read(userIdProvider);
         transaction.set(
           doc,
           {
             'lastReset': Timestamp.now(),
-            'leaderboard': {ref.read(userIdProvider): FieldValue.increment(points!)},
+            'leaderboard': {userId: max(level, state.leaderboard[userId] ?? 0)},
           },
           SetOptions(merge: true),
         );

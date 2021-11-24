@@ -1,14 +1,10 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rive/rive.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../thebutton_animation_controller.dart';
 import '../thebutton_provider.dart';
+import 'thebutton_shape.dart';
 
 class TheButton extends StatefulWidget {
   const TheButton({Key? key}) : super(key: key);
@@ -33,7 +29,7 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (event) {
-        if (context.read(theButtonLogicProvider).isAlive ?? false) {
+        if (context.read(theButtonLevelProvider) != -1) {
           tapAnimation.forward();
         }
       },
@@ -57,8 +53,9 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
       child: AnimatedBuilder(
         animation: tapAnimation,
         builder: (context, child) {
+          var level = context.read(theButtonLevelProvider);
           return CustomPaint(
-            painter: TapProgressPainter(tapAnimation.value),
+            painter: TapProgressPainter(tapAnimation.value, level),
             child: child,
           );
         },
@@ -67,7 +64,7 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
           builder: (context, child) {
             return Stack(
               children: [
-                child!,
+                Positioned.fill(child: child!),
                 if (points != null && pointsAnimation.isAnimating)
                   Center(
                     child: Text(
@@ -87,7 +84,7 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
                 shape: BoxShape.circle,
                 color: Colors.black26,
               ),
-              child: const TheButtonAnimation(),
+              child: const TheButtonShape(),
             ),
           ),
         ),
@@ -98,7 +95,8 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
 
 class TapProgressPainter extends CustomPainter {
   final double value;
-  TapProgressPainter(this.value);
+  final int level;
+  TapProgressPainter(this.value, this.level);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -109,7 +107,7 @@ class TapProgressPainter extends CustomPainter {
       false,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 4
+        ..strokeWidth = 6
         ..color = Colors.grey.shade600,
     );
     canvas.drawArc(
@@ -119,98 +117,11 @@ class TapProgressPainter extends CustomPainter {
       false,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 4
-        ..color = value == 1 ? Colors.green : Colors.white,
+        ..strokeWidth = 6
+        ..color = value == 1 ? theButtonLevels[level] : Colors.white,
     );
   }
 
   @override
   bool shouldRepaint(TapProgressPainter oldDelegate) => oldDelegate.value != value;
-}
-
-class TheButtonAnimation extends StatefulWidget {
-  const TheButtonAnimation({Key? key}) : super(key: key);
-
-  @override
-  _TheButtonAnimationState createState() => _TheButtonAnimationState();
-}
-
-class _TheButtonAnimationState extends State<TheButtonAnimation> {
-  static Future<Artboard> animationFuture = rootBundle.load('assets/animations/the_button.riv').then((data) async {
-    var file = RiveFile.import(data);
-
-    var artboard = file.mainArtboard;
-
-    var waveController = SimpleAnimation('Wave');
-    artboard.addController(waveController);
-    waveController.instance!.animation.speed = 0.1;
-
-    return artboard;
-  });
-
-  static Artboard? artboard;
-
-  @override
-  void initState() {
-    super.initState();
-    if (artboard == null) {
-      loadAnimation().catchError((e) {
-        print('ERROR ON BUTTON $e');
-      });
-    }
-  }
-
-  Future<void> loadAnimation() async {
-    artboard = await animationFuture;
-
-    var fillController = TheButtonAnimationController();
-    artboard!.addController(fillController);
-
-    SimpleAnimation deadController;
-    SimpleAnimation deadEntryController;
-
-    deadController = SimpleAnimation('Dead');
-    deadEntryController = SimpleAnimation('Dead Entry');
-
-    void runDeadAnimation() {
-      artboard!.addController(deadController);
-      artboard!.addController(deadEntryController);
-    }
-
-    void clearDeadAnimation() {
-      deadEntryController.instance?.animation.apply(0, coreContext: artboard!.context);
-      artboard!.removeController(deadController);
-      artboard!.removeController(deadEntryController);
-    }
-
-    var initialValue = await context.read(theButtonValueProvider.future);
-
-    fillController.jumpTo(initialValue);
-    if (initialValue >= 1) {
-      runDeadAnimation();
-    }
-
-    context.listen<AsyncValue<double>>(theButtonValueProvider, (_, value) {
-      if (value is! AsyncData<double>) return;
-      if (value.value < 1) {
-        clearDeadAnimation();
-        fillController.animateTo(value.value);
-      } else {
-        runDeadAnimation();
-      }
-    });
-
-    if (mounted) {
-      setState(() {});
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (artboard != null) {
-      return Rive(artboard: artboard!);
-    } else {
-      return Container();
-    }
-  }
 }

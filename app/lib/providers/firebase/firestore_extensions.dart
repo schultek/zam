@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 
 import '../../core/core.dart';
 
@@ -15,7 +16,12 @@ extension MapperDocumentReference on DocumentReference {
         var map = snapshot.toMap();
         return Mapper.fromValue(map);
       },
-      toFirestore: (model, _) => Mapper.toMap(model)..remove('id'),
+      toFirestore: (model, _) {
+        Mapper.use(TimestampMapper());
+        var encoded = Mapper.toMap(model)..remove('id');
+        Mapper.unuse<Timestamp>();
+        return encoded;
+      },
     );
   }
 
@@ -28,6 +34,14 @@ extension MapperDocumentReference on DocumentReference {
       return snapshot.data() as T;
     });
   }
+}
+
+class TimestampMapper extends SimpleMapper<Timestamp> {
+  @override
+  Timestamp decode(value) => value as Timestamp;
+
+  @override
+  encode(Timestamp self) => self;
 }
 
 extension MapperCollectionRef on CollectionReference {
