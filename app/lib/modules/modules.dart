@@ -2,17 +2,16 @@ library modules;
 
 import '../core/core.dart';
 import 'announcement/announcement_module.dart';
-import 'camera/camera_module.dart';
 import 'chat/chat_module.dart';
 import 'elimination/elimination_module.dart';
 import 'music/music_module.dart';
 import 'notes/notes_module.dart';
+import 'photos/photos_module.dart';
 import 'profile/profile_module.dart';
 import 'thebutton/thebutton_module.dart';
 import 'users/users_module.dart';
 
 final registry = ModuleRegistry({
-  'camera': CameraModule(),
   'chat': ChatModule(),
   'music': MusicModule(),
   'notes': NotesModule(),
@@ -21,5 +20,6 @@ final registry = ModuleRegistry({
   'thebutton': TheButtonModule(),
   'announcement': AnnouncementModule(),
   'elimination': EliminationModule(),
-  'profile': ProfileModule()
+  'profile': ProfileModule(),
+  'photos': PhotosModule(),
 });

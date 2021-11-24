@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
 
-import '../../api_client/photoslibrary.dart';
+import '../../../api_client/photoslibrary.dart';
 import 'google_account_provider.dart';
 
 final photosApiClientProvider = Provider((ref) => ((GoogleSignInAccount? user) => user != null

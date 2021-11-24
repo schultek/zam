@@ -13,10 +13,9 @@ extension MapperDocumentReference on DocumentReference {
     return withConverter<T>(
       fromFirestore: (snapshot, _) {
         var map = snapshot.toMap();
-        print('GOT MAP $map for $T');
         return Mapper.fromValue(map);
       },
-      toFirestore: (model, _) => Mapper.toMap(model),
+      toFirestore: (model, _) => Mapper.toMap(model)..remove('id'),
     );
   }
 

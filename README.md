@@ -32,7 +32,7 @@ Jugend-Freizeit-App
   - Multiple Game instances, Named + Settings 
   - Ranks instead of points
   - Rank Leaderboard + history
-- Camera
+- [x] Camera
   - Remove
 - Profile
   - Better Picture selector + cropper
@@ -55,12 +55,11 @@ Jugend-Freizeit-App
 
 ### New Modules
 
-- Photos
-    - Simple Shortcut to Photos album 
-    - Photos viewer
+- [x] Photos
+  - Simple Shortcut to Photos album
 - Polls
   - Fixed Options vs Open Options
-  - Single Choise vs Multi Choice
+  - Single Choice vs Multi Choice
   - Check vs Rating
 - FAQ (App)
   - How to use?
@@ -89,12 +88,13 @@ Jugend-Freizeit-App
 - Duties
   - Assign to player
   - Player sees card with assigned duty 
-- Trophys
+- Trophies
   - Custom trophies, assignable to player
   - Automatic trophies (games, etc)
 - Documents / Content / Education
   - Shared Google Drive folder?
   - View docs, images, pdfs
 - Screentime Tree
+  - Data Notification and Pong
 - Money Split
 

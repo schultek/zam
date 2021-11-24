@@ -3,11 +3,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final googleSignInProvider = Provider((ref) => GoogleSignIn(scopes: <String>[
-      'profile',
-      'https://www.googleapis.com/auth/photoslibrary',
-      'https://www.googleapis.com/auth/photoslibrary.sharing'
-    ]));
+final googleSignInProvider = Provider(
+    (ref) => GoogleSignIn(scopes: <String>['profile', 'https://www.googleapis.com/auth/photoslibrary.readonly']));
 
 final googleAccountProvider =
     StateNotifierProvider<GoogleAccountNotifier, GoogleSignInAccount?>((ref) => GoogleAccountNotifier(ref));
@@ -24,7 +21,6 @@ class GoogleAccountNotifier extends StateNotifier<GoogleSignInAccount?> {
   GoogleAccountNotifier(this.ref) : super(ref.read(googleSignInProvider).currentUser) {
     ref.watch(googleSignInFutureProvider);
     _userSubscription = ref.watch(googleSignInProvider).onCurrentUserChanged.listen((user) {
-      print('user $user');
       state = user;
     });
   }
