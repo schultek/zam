@@ -22,7 +22,7 @@ class _SwipeTemplateSettingsState extends State<SwipeTemplateSettings> {
         title: Text('Settings', style: TextStyle(color: context.getTextColor())),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(50.0),
+        padding: const EdgeInsets.all(20.0),
         child: Consumer(
           builder: (context, ref, _) {
             var trip = ref.watch(selectedTripProvider)!;

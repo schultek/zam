@@ -27,6 +27,7 @@ dependencies:
   camera: ^0.9.4
   cloud_firestore: ^3.1.0
   cloud_functions: ^3.1.0
+  cropperx: ^0.0.4
   cupertino_rounded_corners: ^2.0.0
   dart_mappable: ^0.8.3
   discoveryapis_generator: ^1.0.0

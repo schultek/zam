@@ -15,6 +15,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String? _name;
+
+  final _focusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,14 +36,15 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               Center(
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width / 2,
+                  width: MediaQuery.of(context).size.width / 2.5,
                   child: AspectRatio(
                     aspectRatio: 1,
                     child: GestureDetector(
                       onTap: () async {
+                        var logic = ref.read(tripsLogicProvider);
                         var pngBytes = await ImageSelector.fromGallery(context);
                         if (pngBytes != null) {
-                          ref.read(tripsLogicProvider).uploadProfileImage(pngBytes);
+                          logic.uploadProfileImage(pngBytes);
                         }
                       },
                       child: CircleAvatar(
@@ -55,10 +60,24 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 40),
               TextFormField(
                 initialValue: user?.nickname,
-                decoration: const InputDecoration(
+                focusNode: _focusNode,
+                decoration: InputDecoration(
                   labelText: 'Name',
+                  suffixIcon: _name != null
+                      ? IconButton(
+                          icon: const Icon(Icons.check),
+                          onPressed: () {
+                            ref.read(tripsLogicProvider).setUserName(_name!);
+                            _focusNode.unfocus();
+                            setState(() => _name = null);
+                          },
+                        )
+                      : null,
                 ),
                 style: TextStyle(color: context.getTextColor()),
+                onChanged: (text) {
+                  setState(() => _name = text);
+                },
                 onFieldSubmitted: (text) {
                   ref.read(tripsLogicProvider).setUserName(text);
                 },

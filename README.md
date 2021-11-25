@@ -34,7 +34,7 @@ Jugend-Freizeit-App
   - Level in Avatars
 - [x] Camera
   - Remove
-- Profile
+- [x] Profile
   - Better Picture selector + cropper
   - Save Button
 - Notes
