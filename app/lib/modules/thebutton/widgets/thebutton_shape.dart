@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../providers/auth/user_provider.dart';
@@ -19,7 +18,7 @@ class _TheButtonShapeState extends State<TheButtonShape> {
   Widget build(BuildContext context) {
     var currentLevel = context.watch(theButtonLevelProvider);
     var userId = context.read(userIdProvider);
-    var userLevel = context.watch(theButtonProvider).value?.leaderboard[userId];
+    var userLevel = context.watch(theButtonUserLevelProvider(userId));
     return CustomPaint(
       painter: TheButtonPainter(currentLevel, userLevel),
     );
@@ -47,7 +46,8 @@ class TheButtonPainter extends CustomPainter {
       var ua = pi * 1.5 + userLevel! * a + a / 2;
       var c = size.width / 2;
       var f = 0.7;
-      canvas.drawPath(star().shift(Offset(c + cos(ua) * c * f, c + sin(ua) * c * f)), Paint()..color = Colors.white);
+      canvas.drawPath(
+          StarPainter.star().shift(Offset(c + cos(ua) * c * f, c + sin(ua) * c * f)), Paint()..color = Colors.white);
     }
   }
 
@@ -59,9 +59,37 @@ class TheButtonPainter extends CustomPainter {
     return paint;
   }
 
-  Path star() {
+  @override
+  bool shouldRepaint(covariant TheButtonPainter oldDelegate) {
+    return currentLevel != oldDelegate.currentLevel;
+  }
+}
+
+class StarPaint extends StatelessWidget {
+  final Color color;
+  const StarPaint({required this.color, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: StarPainter(color),
+      size: const Size(20, 20),
+    );
+  }
+}
+
+class StarPainter extends CustomPainter {
+  final Color color;
+
+  StarPainter(this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawPath(StarPainter.star(size.width), Paint()..color = color);
+  }
+
+  static Path star([double size = 20.0]) {
     Path path = Path();
-    var size = 20.0;
     path.moveTo(size * 0.5000000, size * 0.02445833);
     path.lineTo(size * 0.6528333, size * 0.3397917);
     path.lineTo(size, size * 0.3877500);
@@ -77,7 +105,7 @@ class TheButtonPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant TheButtonPainter oldDelegate) {
-    return currentLevel != oldDelegate.currentLevel;
+  bool shouldRepaint(covariant StarPainter oldDelegate) {
+    return color != oldDelegate.color;
   }
 }

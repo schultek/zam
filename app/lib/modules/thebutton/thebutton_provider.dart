@@ -58,6 +58,15 @@ final theButtonLevelProvider = Provider.autoDispose<int>((ref) {
   return updateLevel();
 });
 
+final theButtonUserLevelProvider = Provider.family<int?, String?>((ref, userId) {
+  var state = ref.watch(theButtonProvider).value;
+  if (state == null) {
+    return null;
+  } else {
+    return state.leaderboard[userId];
+  }
+});
+
 final theButtonLogicProvider = Provider((ref) => TheButtonLogic(ref));
 
 class TheButtonLogic {

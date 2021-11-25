@@ -28,10 +28,10 @@ Jugend-Freizeit-App
 - Elimination Game
   - Create Game Page (Name, Select User + Fake User)
   - Games List Page, Game Summary
-- The Button Game
-  - Multiple Game instances, Named + Settings 
+- [x] The Button Game
   - Ranks instead of points
-  - Rank Leaderboard + history
+  - Rank Leaderboard
+  - Level in Avatars
 - [x] Camera
   - Remove
 - Profile

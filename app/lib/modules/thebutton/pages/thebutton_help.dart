@@ -8,8 +8,8 @@ import '../widgets/clip_layer.dart';
 
 class LeaderboardEntry {
   String name;
-  int points;
-  LeaderboardEntry(this.name, this.points);
+  int level;
+  LeaderboardEntry(this.name, this.level);
 }
 
 final theButtonLeaderboardProvider = Provider.autoDispose((ref) {
@@ -19,7 +19,7 @@ final theButtonLeaderboardProvider = Provider.autoDispose((ref) {
       .entries
       .map((e) => LeaderboardEntry(trip?.users[e.key]?.nickname ?? 'Anonym', e.value.round()))
       .toList()
-    ..sort((a, b) => b.points.compareTo(a.points));
+    ..sort((a, b) => b.level.compareTo(a.level));
 });
 
 class TheButtonHelp extends StatefulWidget {
@@ -186,7 +186,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                       child: Container(
                         width: 14,
                         height: 14,
-                        decoration: BoxDecoration(shape: BoxShape.circle, color: theButtonLevels[entry.points]),
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: theButtonLevels[entry.level]),
                       ),
                     ),
                   ],
