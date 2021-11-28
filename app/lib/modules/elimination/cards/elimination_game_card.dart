@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/core.dart';
 import '../../../providers/auth/user_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/loading_shimmer.dart';
 import '../game_provider.dart';
-import 'reveal_text_animation.dart';
+import '../pages/elimination_help.dart';
+import '../pages/elimination_list_page.dart';
+import '../widgets/reveal_text_animation.dart';
 
 class EliminationGameCard extends StatefulWidget {
   final String id;
@@ -13,6 +18,29 @@ class EliminationGameCard extends StatefulWidget {
 
   @override
   _EliminationGameCardState createState() => _EliminationGameCardState();
+
+  static FutureOr<ContentSegment?> segment(ModuleContext context, String id) {
+    return ContentSegment(
+      context: context,
+      builder: (context) => Stack(
+        children: [
+          EliminationGameCard(id),
+          const Positioned.fill(child: EliminationHelp()),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              visualDensity: VisualDensity.compact,
+              icon: Icon(Icons.leaderboard, size: 20, color: context.getTextColor()),
+              onPressed: () {
+                Navigator.of(context).push(ModulePageRoute(context, child: EliminationListPage(gameId: id)));
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _EliminationGameCardState extends State<EliminationGameCard> {

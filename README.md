@@ -25,8 +25,8 @@ Jugend-Freizeit-App
   - More Attachments
   - Custom chat ui
   - Smart Attachments (Notes, Games, Music, Announcement, Poll)
-- Elimination Game
-  - Create Game Page (Name, Select User + Fake User)
+- [x] Elimination Game
+  - Create Game Page (Name, /-Select-User-+-Fake-User-/)
   - Games List Page, Game Summary
 - [x] The Button Game
   - Ranks instead of points

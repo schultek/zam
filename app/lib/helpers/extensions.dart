@@ -23,3 +23,15 @@ extension GlobalKeyExtension on GlobalKey {
     }
   }
 }
+
+extension DateString on DateTime {
+  String toDateString() {
+    return '${day.fill()}.${month.fill()}.$year ${hour.fill()}:${minute.fill()}';
+  }
+}
+
+extension FillZero on num {
+  String fill([int n = 2]) {
+    return toString().padLeft(n, '0');
+  }
+}

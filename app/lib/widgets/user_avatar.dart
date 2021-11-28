@@ -27,7 +27,7 @@ class UserAvatar extends StatelessWidget {
                   Center(child: Text(user!.nickname!.substring(0, 1)))
                 else
                   const Center(child: Icon(Icons.account_circle_outlined, size: 25)),
-              if (userLevel != null)
+              if (userLevel != null && userLevel >= 0 && userLevel < theButtonLevels.length)
                 Positioned(right: -13, bottom: -13, child: StarPaint(color: theButtonLevels[userLevel]))
             ],
           ),

@@ -5,13 +5,14 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
+import '../../../widgets/simple_card.dart';
 import '../pages/select_photos_album_page.dart';
 import '../providers/google_account_provider.dart';
 import '../providers/photos_provider.dart';
 
-class SelectPhotosAlbumWidget extends StatefulWidget {
+class SelectPhotosAlbumCard extends StatefulWidget {
   final IdProvider idProvider;
-  const SelectPhotosAlbumWidget(this.idProvider, {Key? key}) : super(key: key);
+  const SelectPhotosAlbumCard(this.idProvider, {Key? key}) : super(key: key);
 
   static FutureOr<ContentSegment?> segment(ModuleContext context) {
     if (!context.context.read(isOrganizerProvider)) {
@@ -21,15 +22,15 @@ class SelectPhotosAlbumWidget extends StatefulWidget {
     return ContentSegment(
       context: context,
       idProvider: idProvider,
-      builder: (context) => SelectPhotosAlbumWidget(idProvider),
+      builder: (context) => SelectPhotosAlbumCard(idProvider),
     );
   }
 
   @override
-  State<SelectPhotosAlbumWidget> createState() => _SelectPhotosAlbumWidgetState();
+  State<SelectPhotosAlbumCard> createState() => _SelectPhotosAlbumCardState();
 }
 
-class _SelectPhotosAlbumWidgetState extends State<SelectPhotosAlbumWidget> {
+class _SelectPhotosAlbumCardState extends State<SelectPhotosAlbumCard> {
   Future<bool> showSignInWithGooglePrompt(BuildContext context) async {
     var didSignIn = await showPrompt<bool>(
       context,
@@ -84,26 +85,7 @@ class _SelectPhotosAlbumWidgetState extends State<SelectPhotosAlbumWidget> {
       onTap: () {
         selectAlbum(context);
       },
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.image,
-                color: context.getTextColor(),
-                size: 50,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                'Select Album',
-                style: Theme.of(context).textTheme.headline6!.copyWith(color: context.getTextColor()),
-              ),
-            ],
-          ),
-        ),
-      ),
+      child: const SimpleCard(title: 'Select Album', icon: Icons.image),
     );
   }
 }

@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import '../../core/core.dart';
-import 'widgets/photos_album_shortcut_widget.dart';
-import 'widgets/select_photos_album_widget.dart';
+import 'cards/photos_album_shortcut_card.dart';
+import 'cards/select_photos_album_card.dart';
 
 class PhotosModule extends ModuleBuilder<ContentSegment> {
   @override
   FutureOr<ContentSegment?> build(ModuleContext context) {
     return context.when(
-      withId: (id) => PhotosAlbumShortcutWidget.segment(context),
-      withoutId: () => SelectPhotosAlbumWidget.segment(context),
+      withId: (id) => PhotosAlbumShortcutCard.segment(context),
+      withoutId: () => SelectPhotosAlbumCard.segment(context),
     );
   }
 }

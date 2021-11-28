@@ -9,16 +9,16 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/core.dart';
 import '../providers/photos_provider.dart';
 
-class PhotosAlbumShortcutWidget extends StatelessWidget {
+class PhotosAlbumShortcutCard extends StatelessWidget {
   final AlbumShortcut album;
-  const PhotosAlbumShortcutWidget(this.album, {Key? key}) : super(key: key);
+  const PhotosAlbumShortcutCard(this.album, {Key? key}) : super(key: key);
 
   static Future<ContentSegment> segment(ModuleContext context) async {
     var album = await context.context.read(albumShortcutProvider(context.elementId!).future);
 
     return ContentSegment(
       context: context,
-      builder: (context) => PhotosAlbumShortcutWidget(album),
+      builder: (context) => PhotosAlbumShortcutCard(album),
       onTap: () {
         launch(album.albumUrl);
       },

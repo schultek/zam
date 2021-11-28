@@ -20,7 +20,13 @@ class EliminationListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, _) {
-        var game = ref.watch(gameProvider(gameId)).asData!.value;
+        var gameSnap = ref.watch(gameProvider(gameId));
+
+        if (gameSnap is! AsyncData<EliminationGame>) {
+          return const Scaffold();
+        }
+
+        var game = gameSnap.value;
 
         var curTargets = game.currentTargets;
 

@@ -19,7 +19,8 @@ final registry = ModuleRegistry({
   'users': UsersModule(),
   'thebutton': TheButtonModule(),
   'announcement': AnnouncementModule(),
-  'elimination': EliminationModule(),
+  'elimination': EliminationGameModule(),
+  'elimination_games': EliminationGamesModule(),
   'profile': ProfileModule(),
   'photos': PhotosModule(),
 });

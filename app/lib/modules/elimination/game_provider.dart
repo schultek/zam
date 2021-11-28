@@ -14,11 +14,13 @@ export '../../main.mapper.g.dart' show NoteMapperExtension;
 @MappableClass()
 class EliminationGame {
   final String id;
+  final String name;
+  final DateTime startedAt;
 
   final Map<String, String> initialTargets;
   final List<EliminationEntry> eliminations;
 
-  EliminationGame(this.id, this.initialTargets, this.eliminations);
+  EliminationGame(this.id, this.name, this.startedAt, this.initialTargets, this.eliminations);
 
   Map<String, String?> get currentTargets {
     var targets = <String, String?>{...initialTargets};
@@ -41,6 +43,9 @@ class EliminationEntry {
   EliminationEntry(this.target, this.eliminatedBy, this.description, this.time);
 }
 
+final gamesProvider = StreamProvider(
+    (ref) => ref.watch(moduleDocProvider('elimination')).collection('games').snapshotsMapped<EliminationGame>());
+
 final gameProvider = StreamProvider.family((ref, String id) =>
     ref.watch(moduleDocProvider('elimination')).collection('games').doc(id).snapshotsMapped<EliminationGame>());
 
@@ -51,9 +56,9 @@ class GameLogic {
   final DocumentReference doc;
   GameLogic(this.ref) : doc = ref.watch(moduleDocProvider('elimination'));
 
-  Future<EliminationGame> createGame() async {
+  Future<EliminationGame> createGame(String name) async {
     var gameDoc = doc.collection('games').doc();
-    var game = EliminationGame(gameDoc.id, _generateTargetMap(), []);
+    var game = EliminationGame(gameDoc.id, name, DateTime.now(), _generateTargetMap(), []);
     await gameDoc.set(game.toMap());
     return game;
   }

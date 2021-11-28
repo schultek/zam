@@ -16,8 +16,6 @@ class _SwipeTemplateSettingsState extends State<SwipeTemplateSettings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
         iconTheme: IconThemeData(color: context.getTextColor()),
         title: Text('Settings', style: TextStyle(color: context.getTextColor())),
       ),

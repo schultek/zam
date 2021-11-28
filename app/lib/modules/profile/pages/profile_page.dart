@@ -23,8 +23,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
         iconTheme: IconThemeData(color: context.getTextColor()),
         title: Text('Profil', style: TextStyle(color: context.getTextColor())),
       ),

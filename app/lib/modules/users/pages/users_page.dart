@@ -17,11 +17,7 @@ class UsersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        iconTheme: IconThemeData(
-          color: context.getTextColor(),
-        ),
+        iconTheme: IconThemeData(color: context.getTextColor()),
         title: Text('Users', style: TextStyle(color: context.getTextColor())),
         actions: [
           if (context.read(isOrganizerProvider))

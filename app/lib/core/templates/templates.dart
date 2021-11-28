@@ -167,7 +167,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   void onWidgetRemoved<T extends ModuleElement>(WidgetAreaState<WidgetArea<T>, T> area, T widget) {
     if (widgetSelector != null && widgetSelector!.isForArea(area)) {
       if (widget.id.split('/').length < 3) {
-        // Don't add specialized widgets
+        // Don't add specialized cards
         widgetSelector!.state!.addWidget(null, widget);
       }
     }
