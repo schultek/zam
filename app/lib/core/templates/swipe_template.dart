@@ -2,19 +2,54 @@ part of templates;
 
 @MappableClass(discriminatorValue: 'swipe')
 class SwipeTemplateModel extends TemplateModel {
-  SwipeTemplateModel({String? type}) : super(type ?? 'swipe');
+  bool showLeftPage;
+  bool showRightPage;
+
+  SwipeTemplateModel({String? type, this.showLeftPage = true, this.showRightPage = true}) : super(type ?? 'swipe');
 
   @override
   String get name => 'Swipe Template';
   @override
   WidgetTemplate<TemplateModel> builder() => SwipeTemplate(this);
+
+  @override
+  List<Widget>? settings(BuildContext context) => SwipeTemplate.settings(context, this);
 }
 
 class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
   SwipeTemplate(SwipeTemplateModel model, {Key? key}) : super(model, key: key);
 
   final _scrollController = ScrollController();
-  final pageController = PageController(initialPage: 1);
+  late final PageController pageController;
+
+  static List<Widget> settings(BuildContext context, SwipeTemplateModel model) {
+    return [
+      SwitchListTile(
+        title: const Text('Show left page'),
+        value: model.showLeftPage,
+        onChanged: (v) {
+          model.update(context, (m) => m.copyWith(showLeftPage: v));
+        },
+      ),
+      SwitchListTile(
+        title: const Text('Show right page'),
+        value: model.showRightPage,
+        onChanged: (v) {
+          model.update(context, (m) => m.copyWith(showRightPage: v));
+        },
+      )
+    ];
+  }
+
+  @override
+  void init([covariant SwipeTemplate? oldWidget]) {
+    pageController = PageController(initialPage: config.showLeftPage ? 1 : 0);
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+  }
 
   @override
   void onEdit(WidgetTemplateState state) {
@@ -22,14 +57,15 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
   }
 
   void selectArea(WidgetTemplateState state, int areaIndex) {
-    switch (areaIndex) {
-      case 0:
-        return state.selectWidgetAreaById<PageSegment>('left');
-      case 1:
-        return state.selectWidgetAreaById<ContentSegment>('body');
-      case 2:
-        return state.selectWidgetAreaById<PageSegment>('right');
+    if (areaIndex == 0 && config.showLeftPage) {
+      return state.selectWidgetAreaById<PageSegment>('left');
     }
+
+    if ((areaIndex == 1 && !config.showLeftPage) || (areaIndex == 2 && config.showRightPage)) {
+      return state.selectWidgetAreaById<PageSegment>('right');
+    }
+
+    return state.selectWidgetAreaById<ContentSegment>('body');
   }
 
   @override
@@ -56,7 +92,7 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                   }
                 },
                 children: [
-                  const ThemedBackground(child: FullPageArea(id: 'left')),
+                  if (config.showLeftPage) const ThemedBackground(child: FullPageArea(id: 'left')),
                   ThemedBackground(
                     child: CustomScrollView(
                       physics: const BouncingScrollPhysics(),
@@ -73,9 +109,7 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                                 return Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    const TripSelectorButton(
-                                      settingsRoute: SwipeTemplateSettings.route,
-                                    ),
+                                    const TripSelectorButton(),
                                     Text(
                                       trip.name,
                                       style:
@@ -102,7 +136,7 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                       ],
                     ),
                   ),
-                  const ThemedBackground(child: FullPageArea(id: 'right')),
+                  if (config.showRightPage) const ThemedBackground(child: FullPageArea(id: 'right')),
                 ],
               ),
             ),

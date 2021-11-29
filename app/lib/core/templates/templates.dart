@@ -1,6 +1,5 @@
 library templates;
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../modules/modules.dart';
-import '../../modules/profile/widgets/image_selector.dart';
-import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/nested_will_pop_scope.dart';
 import '../areas/areas.dart';
@@ -23,9 +20,8 @@ import '../widgets/template_navigator.dart';
 import '../widgets/trip_selector.dart';
 import '../widgets/widget_selector.dart';
 
-part 'grid/grid_template.dart';
-part 'swipe/swipe_template.dart';
-part 'swipe/swipe_template_settings.dart';
+part 'grid_template.dart';
+part 'swipe_template.dart';
 
 class InheritedWidgetTemplate extends InheritedWidget {
   final WidgetTemplateState state;
@@ -47,6 +43,8 @@ abstract class WidgetTemplate<T extends TemplateModel> extends StatefulWidget {
   Widget build(BuildContext context, WidgetTemplateState state);
 
   void onEdit(WidgetTemplateState state) {}
+  void init([WidgetTemplate<T>? oldWidget]) {}
+  void dispose() {}
 
   @override
   State<StatefulWidget> createState() => WidgetTemplateState();
@@ -82,12 +80,21 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     super.initState();
     _transitionController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
     _wiggleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    widget.init();
+  }
+
+  @override
+  void didUpdateWidget(WidgetTemplate oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    oldWidget.dispose();
+    widget.init(oldWidget);
   }
 
   @override
   void dispose() {
     _transitionController.dispose();
     _wiggleController.dispose();
+    widget.dispose();
     super.dispose();
   }
 

@@ -15,6 +15,7 @@ class UserAvatar extends StatelessWidget {
     return Consumer(
       builder: (context, ref, _) {
         var user = ref.watch(tripUserByIdProvider(id));
+        var showButtonLevel = ref.watch(theButtonProvider.select((v) => v.value?.showInAvatars ?? false));
         var userLevel = ref.watch(theButtonUserLevelProvider(id));
         return CircleAvatar(
           backgroundColor: Colors.grey,
@@ -27,8 +28,9 @@ class UserAvatar extends StatelessWidget {
                   Center(child: Text(user!.nickname!.substring(0, 1)))
                 else
                   const Center(child: Icon(Icons.account_circle_outlined, size: 25)),
-              if (userLevel != null && userLevel >= 0 && userLevel < theButtonLevels.length)
-                Positioned(right: -13, bottom: -13, child: StarPaint(color: theButtonLevels[userLevel]))
+              if (showButtonLevel)
+                if (userLevel != null && userLevel >= 0 && userLevel < theButtonLevels.length)
+                  Positioned(right: -13, bottom: -13, child: StarPaint(color: theButtonLevels[userLevel]))
             ],
           ),
         );

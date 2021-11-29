@@ -17,8 +17,9 @@ class TheButtonState {
   Timestamp lastReset;
   double aliveHours;
   Map<String, int> leaderboard = {};
+  bool showInAvatars;
 
-  TheButtonState(this.lastReset, this.aliveHours, this.leaderboard);
+  TheButtonState(this.lastReset, this.aliveHours, this.leaderboard, {this.showInAvatars = false});
 
   int get currentLevel {
     var hours = DateTime.now().difference(lastReset.toDate()).inSeconds / 3600.0;
@@ -119,6 +120,14 @@ class TheButtonLogic {
     if (ref.read(isOrganizerProvider)) {
       doc.set({
         'leaderboard': {},
+      }, SetOptions(merge: true));
+    }
+  }
+
+  Future<void> setShowInAvatars(bool showInAvatars) async {
+    if (ref.read(isOrganizerProvider)) {
+      await doc.set({
+        'showInAvatars': showInAvatars,
       }, SetOptions(merge: true));
     }
   }

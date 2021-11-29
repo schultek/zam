@@ -81,6 +81,10 @@ class UsersPage extends StatelessWidget {
           : null,
     );
   }
+
+  static Route route() {
+    return MaterialPageRoute(builder: (context) => const UsersPage());
+  }
 }
 
 extension on String {

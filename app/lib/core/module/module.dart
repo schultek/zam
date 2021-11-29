@@ -25,6 +25,8 @@ abstract class ModuleBuilder<T extends ModuleElement> {
 
   @mustCallSuper
   void dispose() {}
+
+  ModuleSettings? getSettings(BuildContext context) => null;
 }
 
 class ModuleContext {
@@ -47,6 +49,13 @@ class ModuleContext {
       return withoutId();
     }
   }
+}
+
+class ModuleSettings {
+  String title;
+  List<Widget> settings;
+
+  ModuleSettings(this.title, this.settings);
 }
 
 class ModuleRegistry {
@@ -86,6 +95,13 @@ class ModuleRegistry {
   Iterable<Route> generateInitialRoutes(BuildContext context) sync* {
     for (var module in modules.values) {
       yield* module.generateInitialRoutes(context);
+    }
+  }
+
+  Iterable<ModuleSettings> getSettings(BuildContext context) sync* {
+    for (var module in modules.values) {
+      var settings = module.getSettings(context);
+      if (settings != null) yield settings;
     }
   }
 }

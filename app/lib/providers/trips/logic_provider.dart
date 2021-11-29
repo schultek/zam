@@ -72,4 +72,10 @@ class TripsLogic {
       'users.$id.role': role,
     });
   }
+
+  Future<void> updateTemplateModel<T extends TemplateModel>(T model) async {
+    await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+      'template': model.toMap(),
+    });
+  }
 }

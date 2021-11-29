@@ -15,4 +15,14 @@ class UsersModule extends ModuleBuilder<ContentSegment> {
       onNavigate: (context) => const UsersPage(),
     );
   }
+
+  @override
+  ModuleSettings? getSettings(BuildContext context) {
+    return ModuleSettings('Users', [
+      ListTile(
+        title: const Text('Open Users'),
+        onTap: () => Navigator.of(context).push(UsersPage.route()),
+      ),
+    ]);
+  }
 }

@@ -49,4 +49,21 @@ class TheButtonModule extends ModuleBuilder<ContentSegment> {
       },
     );
   }
+
+  @override
+  ModuleSettings? getSettings(BuildContext context) {
+    var state = context.watch(theButtonProvider);
+
+    return state.whenOrNull<ModuleSettings?>(
+      data: (state) => state != null
+          ? ModuleSettings('The Button', [
+              SwitchListTile(
+                title: const Text('Show level in user avatars'),
+                value: state.showInAvatars,
+                onChanged: (v) => context.read(theButtonLogicProvider).setShowInAvatars(v),
+              ),
+            ])
+          : null,
+    );
+  }
 }

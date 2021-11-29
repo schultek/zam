@@ -7,10 +7,10 @@ import '../../providers/trips/selected_trip_provider.dart';
 import '../../providers/trips/trips_provider.dart';
 import '../../screens/create_trip/create_trip_screen.dart';
 import '../core.dart';
+import 'trip_settings.dart';
 
 class TripSelectorButton extends StatelessWidget {
-  final Route Function()? settingsRoute;
-  const TripSelectorButton({Key? key, this.settingsRoute}) : super(key: key);
+  const TripSelectorButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +19,7 @@ class TripSelectorButton extends StatelessWidget {
       child: IconButton(
         icon: const Icon(Icons.menu),
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => TripSelectorPage(
-                    settingsRoute: settingsRoute,
-                  )));
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TripSelectorPage()));
         },
       ),
     );
@@ -30,8 +27,7 @@ class TripSelectorButton extends StatelessWidget {
 }
 
 class TripSelectorPage extends StatelessWidget {
-  final Route Function()? settingsRoute;
-  const TripSelectorPage({Key? key, this.settingsRoute}) : super(key: key);
+  const TripSelectorPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -94,14 +90,14 @@ class TripSelectorPage extends StatelessWidget {
                     style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
                   ),
                 ),
-                if (context.watch(isOrganizerProvider) && settingsRoute != null)
+                if (context.watch(isOrganizerProvider))
                   Positioned(
                     top: 10,
                     right: 10,
                     child: IconButton(
                       icon: const Icon(Icons.settings),
                       onPressed: () {
-                        Navigator.push(context, settingsRoute!());
+                        Navigator.push(context, TripSettings.route());
                       },
                     ),
                   ),
