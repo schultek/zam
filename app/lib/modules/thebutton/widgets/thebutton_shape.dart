@@ -4,7 +4,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/themes/themes.dart';
+import '../../../core/core.dart';
 import '../../../providers/auth/user_provider.dart';
 import '../thebutton_provider.dart';
 

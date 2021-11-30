@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../areas/areas.dart';
-import '../module/module.dart';
+import '../areas/widget_area.dart';
+import '../elements/module_element.dart';
 import 'logic_provider.dart';
 import 'reorderable_item.dart';
 

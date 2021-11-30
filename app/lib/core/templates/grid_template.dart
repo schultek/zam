@@ -1,4 +1,15 @@
-part of templates;
+import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../providers/trips/selected_trip_provider.dart';
+import '../areas/body_widget_area.dart';
+import '../themes/widgets/trip_theme.dart';
+import 'template_model.dart';
+import 'widget_template.dart';
+import 'widgets/reorder_toggle.dart';
+import 'widgets/sliver_template_header.dart';
 
 @MappableClass(discriminatorValue: 'grid')
 class GridTemplateModel extends TemplateModel {
@@ -50,51 +61,5 @@ class GridTemplate extends WidgetTemplate<GridTemplateModel> {
         ],
       ),
     );
-  }
-}
-
-class SliverTemplateHeader extends SingleChildRenderObjectWidget {
-  const SliverTemplateHeader({Key? key, required Widget child}) : super(key: key, child: child);
-
-  @override
-  RenderObject createRenderObject(BuildContext context) => RenderSliverTemplateHeader();
-}
-
-class RenderSliverTemplateHeader extends RenderSliverSingleBoxAdapter {
-  RenderSliverTemplateHeader({RenderBox? child}) : super(child: child);
-
-  @override
-  void performLayout() {
-    if (child == null) {
-      geometry = SliverGeometry.zero;
-      return;
-    }
-    SliverConstraints constraints = this.constraints;
-    child!.layout(constraints.asBoxConstraints(), parentUsesSize: true);
-
-    double childExtent;
-    switch (constraints.axis) {
-      case Axis.horizontal:
-        childExtent = child!.size.width;
-        break;
-      case Axis.vertical:
-        childExtent = child!.size.height;
-        break;
-    }
-
-    double paintedChildSize = calculatePaintOffset(constraints, from: 0.0, to: childExtent);
-    double cacheExtent = calculateCacheOffset(constraints, from: 0.0, to: childExtent);
-
-    assert(paintedChildSize.isFinite);
-    assert(paintedChildSize >= 0.0);
-    geometry = SliverGeometry(
-      scrollExtent: childExtent,
-      paintExtent: paintedChildSize,
-      cacheExtent: cacheExtent,
-      maxPaintExtent: childExtent,
-      hitTestExtent: paintedChildSize,
-      hasVisualOverflow: childExtent > constraints.remainingPaintExtent || constraints.scrollOffset > 0.0,
-    );
-    setChildParentData(child!, constraints, geometry!);
   }
 }

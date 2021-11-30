@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../providers/trips/selected_trip_provider.dart';
-import '../../providers/trips/trips_provider.dart';
-import '../../screens/create_trip/create_trip_screen.dart';
-import '../core.dart';
-import 'trip_settings.dart';
+import '../../../providers/trips/selected_trip_provider.dart';
+import '../../../providers/trips/trips_provider.dart';
+import '../../../screens/create_trip/create_trip_screen.dart';
+import '../../models/trip.dart';
+import '../../themes/widgets/trip_theme.dart';
+import '../../widgets/trip_settings.dart';
 
 class TripSelectorButton extends StatelessWidget {
   const TripSelectorButton({Key? key}) : super(key: key);

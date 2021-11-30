@@ -5,8 +5,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../areas/areas.dart';
-import '../module/module.dart';
+import '../areas/widget_area.dart';
+import '../elements/module_element.dart';
 import 'drag_provider.dart';
 import 'item_animation.dart';
 import 'items_provider.dart';

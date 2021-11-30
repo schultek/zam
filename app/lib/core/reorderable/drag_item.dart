@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../areas/areas.dart';
-import '../module/module.dart';
-import '../templates/templates.dart';
-import '../themes/themes.dart';
+import '../areas/widget_area.dart';
+import '../elements/module_element.dart';
+import '../templates/widget_template.dart';
+import '../themes/widgets/trip_theme.dart';
 import 'drag_provider.dart';
 import 'reorderable_item.dart';
 

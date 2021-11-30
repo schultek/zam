@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../core/themes/themes.dart';
+import '../core/core.dart';
 import '../modules/thebutton/thebutton_provider.dart';
 import '../modules/thebutton/widgets/thebutton_shape.dart';
 import '../providers/trips/selected_trip_provider.dart';

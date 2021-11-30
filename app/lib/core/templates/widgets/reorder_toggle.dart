@@ -8,8 +8,8 @@ import 'package:flare_flutter/flare_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-import '../templates/templates.dart';
-import '../themes/themes.dart';
+import '../../themes/widgets/trip_theme.dart';
+import '../widget_template.dart';
 
 class ReorderToggle extends StatefulWidget {
   final void Function()? onPressed;

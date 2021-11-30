@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../core/themes/themes.dart';
+import '../core/core.dart';
 
 class SimpleCard extends StatelessWidget {
   final String title;

@@ -3,53 +3,9 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-abstract class ModuleElement extends StatelessWidget {
-  ModuleElement({required Key key, required ModuleContext context})
-      : id = context.id,
-        super(key: key);
-
-  final String id;
-
-  @override
-  Key get key => super.key!;
-
-  void onRemoved(BuildContext context) {}
-}
-
-abstract class ModuleBuilder<T extends ModuleElement> {
-  FutureOr<T?> build(ModuleContext context);
-
-  void preload(BuildContext context) {}
-
-  Iterable<Route> generateInitialRoutes(BuildContext context) => [];
-
-  @mustCallSuper
-  void dispose() {}
-
-  ModuleSettings? getSettings(BuildContext context) => null;
-}
-
-class ModuleContext {
-  final BuildContext context;
-  final String id;
-  final String moduleId;
-  final String? elementId;
-
-  ModuleContext(this.context, this.id)
-      : moduleId = id.split('/').first,
-        elementId = id.split('/').skip(1).firstOrNull;
-
-  FutureOr<T> when<T>({
-    required FutureOr<T> Function(String id) withId,
-    required FutureOr<T> Function() withoutId,
-  }) {
-    if (elementId != null) {
-      return withId(elementId!);
-    } else {
-      return withoutId();
-    }
-  }
-}
+import '../elements/module_element.dart';
+import 'module_builder.dart';
+import 'module_context.dart';
 
 class ModuleSettings {
   String title;

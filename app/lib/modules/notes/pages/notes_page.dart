@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/themes/themes.dart';
+import '../../../core/core.dart';
 import '../notes_provider.dart';
 import '../widgets/note_preview.dart';
 import 'edit_note_page.dart';

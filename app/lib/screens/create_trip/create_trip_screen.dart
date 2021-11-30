@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
-import '../../core/templates/templates.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/ju_background.dart';

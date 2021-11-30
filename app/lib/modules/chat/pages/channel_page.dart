@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/themes/themes.dart';
+import '../../../core/core.dart';
 import '../../../providers/auth/user_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../chat_provider.dart';

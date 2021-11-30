@@ -1,4 +1,9 @@
-part of elements;
+import 'package:flutter/material.dart';
+
+import '../areas/widget_area.dart';
+import '../module/module_context.dart';
+import 'module_element.dart';
+import 'widgets/module_element_builder.dart';
 
 class PageSegment extends ModuleElement with ModuleElementBuilder<PageSegment> {
   final bool keepAlive;

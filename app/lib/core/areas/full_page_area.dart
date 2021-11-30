@@ -1,4 +1,9 @@
-part of areas;
+import 'package:flutter/material.dart';
+
+import '../elements/page_segment.dart';
+import '../themes/widgets/trip_theme.dart';
+import 'mixins/single_element_area_mixin.dart';
+import 'widget_area.dart';
 
 class FullPageArea extends WidgetArea<PageSegment> {
   const FullPageArea({required String id, Key? key}) : super(id, key: key);
@@ -7,17 +12,10 @@ class FullPageArea extends WidgetArea<PageSegment> {
   State<StatefulWidget> createState() => FullPageAreaState();
 }
 
-class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment> {
-  PageSegment? content;
-
+class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment>
+    with SingleElementAreaMixin<FullPageArea, PageSegment> {
   @override
-  bool get wantKeepAlive => content?.keepAlive ?? super.wantKeepAlive;
-
-  @override
-  void initArea(List<PageSegment> widgets) => content = widgets.isNotEmpty ? widgets.first : null;
-
-  @override
-  List<PageSegment> getWidgets() => [if (content != null) content!];
+  bool get wantKeepAlive => element?.keepAlive ?? super.wantKeepAlive;
 
   @override
   EdgeInsetsGeometry getMargin() =>
@@ -28,33 +26,11 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment> {
 
   @override
   Widget buildArea(BuildContext context) {
-    return content ?? const Center(child: Text('No Content'));
+    return element ?? const Center(child: Text('No Content'));
   }
 
   @override
   BoxConstraints constrainWidget(PageSegment widget) => BoxConstraints.tight(areaSize);
-
-  @override
-  PageSegment getWidgetFromKey(Key key) => content!;
-
-  @override
-  bool hasKey(Key key) => content?.key == key;
-
-  @override
-  bool canInsertItem(item) => true;
-
-  @override
-  void insertItem(PageSegment item) {
-    if (content != null) removeWidget(content!.key);
-    setState(() => content = item);
-  }
-
-  @override
-  void removeItem(Key key) {
-    if (key == content?.key) {
-      setState(() => content = null);
-    }
-  }
 
   @override
   Widget? decorateElement(BuildContext context, PageSegment element) {
@@ -64,7 +40,4 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment> {
       child: element.builder(context),
     );
   }
-
-  @override
-  bool didReorderItem(Offset offset, Key itemKey) => false;
 }

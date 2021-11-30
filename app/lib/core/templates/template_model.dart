@@ -1,4 +1,9 @@
-part of models;
+import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
+
+import '../../providers/trips/logic_provider.dart';
+import 'widget_template.dart';
 
 @MappableClass(discriminatorKey: 'type')
 abstract class TemplateModel {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/themes/themes.dart';
+import '../../../core/core.dart';
 import '../notes_provider.dart';
 
 class ChangeFolderPage extends StatefulWidget {

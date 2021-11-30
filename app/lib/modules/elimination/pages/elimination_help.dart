@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/themes/themes.dart';
+import '../../../core/core.dart';
 import '../../thebutton/widgets/clip_layer.dart';
 
 class EliminationHelp extends StatefulWidget {

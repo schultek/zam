@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../modules/modules.dart';
-import '../../widgets/nested_will_pop_scope.dart';
+import '../../../modules/modules.dart';
+import '../../../widgets/nested_will_pop_scope.dart';
 
 class TemplateNavigator extends StatefulWidget {
   final Widget home;

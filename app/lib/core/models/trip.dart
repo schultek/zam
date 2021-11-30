@@ -1,4 +1,8 @@
-part of models;
+import 'package:dart_mappable/dart_mappable.dart';
+
+import '../../main.mapper.g.dart';
+import '../templates/template_model.dart';
+import '../themes/theme_model.dart';
 
 @MappableClass()
 class Trip with Mappable {

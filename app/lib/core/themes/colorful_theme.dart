@@ -1,4 +1,3 @@
-part of themes;
 //
 // class ColorfulTheme extends ThemeState {
 //   static const base = Colors.white;

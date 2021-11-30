@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/themes/themes.dart';
+import '../../../core/core.dart';
 import '../music_providers.dart';
 import '../pages/manage_playlist_page.dart';
 import 'select_device_dialog.dart';

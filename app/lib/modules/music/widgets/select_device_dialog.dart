@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:spotify/spotify.dart';
 
-import '../../../core/themes/themes.dart';
+import '../../../core/core.dart';
 import '../music_providers.dart';
 
 class SelectDeviceDialog extends StatefulWidget {

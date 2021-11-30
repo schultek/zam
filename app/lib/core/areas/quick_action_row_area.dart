@@ -1,4 +1,8 @@
-part of areas;
+import 'package:flutter/material.dart';
+
+import '../elements/quick_action.dart';
+import 'mixins/list_area_mixin.dart';
+import 'widget_area.dart';
 
 class QuickActionRowArea extends WidgetArea<QuickAction> {
   const QuickActionRowArea(String id, {Key? key}) : super(id, key: key);
@@ -7,15 +11,9 @@ class QuickActionRowArea extends WidgetArea<QuickAction> {
   State<StatefulWidget> createState() => QuickActionRowAreaState();
 }
 
-class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickAction> {
-  late List<QuickAction> row;
+class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickAction>
+    with ListAreaMixin<QuickActionRowArea, QuickAction> {
   final _boxKey = GlobalKey();
-
-  @override
-  void initArea(List<QuickAction> widgets) => row = widgets;
-
-  @override
-  List<QuickAction> getWidgets() => row;
 
   @override
   Widget buildArea(BuildContext context) {
@@ -24,7 +22,7 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
       height: 100,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: row,
+        children: elements,
       ),
     );
   }
@@ -33,20 +31,11 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
   BoxConstraints constrainWidget(QuickAction widget) => const BoxConstraints();
 
   @override
-  QuickAction getWidgetFromKey(Key key) => row.firstWhere((e) => e.key == key);
-
-  @override
-  bool hasKey(Key key) => row.any((e) => e.key == key);
-
-  @override
-  bool canInsertItem(item) => row.length < 3;
-
-  @override
-  void insertItem(QuickAction item) => setState(() => row.add(item));
+  bool canInsertItem(item) => elements.length < 3;
 
   @override
   void removeItem(Key key) {
-    var index = row.indexWhere((w) => w.key == key);
+    var index = elements.indexWhere((w) => w.key == key);
     removeAtIndex(index);
   }
 
@@ -54,6 +43,8 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
   bool didReorderItem(Offset offset, Key itemKey) {
     Offset itemOffset = getOffset(itemKey);
     Size itemSize = getSize(itemKey);
+
+    var row = elements;
 
     var boxWidth = _boxKey.currentContext!.size!.width;
     var spacing = (boxWidth - itemSize.width * row.length) / (row.length + 1);
@@ -79,6 +70,7 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
   }
 
   void removeAtIndex(int index) {
+    var row = elements;
     var itemSize = getSize(row[index].key);
 
     var boxWidth = _boxKey.currentContext!.size!.width;

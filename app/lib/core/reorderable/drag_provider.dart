@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../areas/areas.dart';
-import '../module/module.dart';
+import '../areas/widget_area.dart';
+import '../elements/module_element.dart';
 import '../widgets/widget_selector.dart';
 import 'drag_item.dart';
 import 'logic_provider.dart';

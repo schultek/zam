@@ -1,4 +1,21 @@
-part of templates;
+import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../main.mapper.g.dart';
+import '../../providers/trips/selected_trip_provider.dart';
+import '../../widgets/nested_will_pop_scope.dart';
+import '../areas/body_widget_area.dart';
+import '../areas/full_page_area.dart';
+import '../elements/content_segment.dart';
+import '../elements/page_segment.dart';
+import '../themes/widgets/trip_theme.dart';
+import 'template_model.dart';
+import 'widget_template.dart';
+import 'widgets/reorder_toggle.dart';
+import 'widgets/sliver_template_header.dart';
+import 'widgets/trip_selector.dart';
 
 @MappableClass(discriminatorValue: 'swipe')
 class SwipeTemplateModel extends TemplateModel {

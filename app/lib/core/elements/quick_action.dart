@@ -1,4 +1,10 @@
-part of elements;
+import 'package:flutter/material.dart';
+
+import '../module/module_context.dart';
+import '../themes/widgets/themed_surface.dart';
+import '../themes/widgets/trip_theme.dart';
+import 'module_element.dart';
+import 'widgets/module_element_builder.dart';
 
 class QuickAction extends ModuleElement with ModuleElementBuilder<QuickAction> {
   final IconData icon;

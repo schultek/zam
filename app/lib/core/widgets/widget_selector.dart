@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../modules/modules.dart';
-import '../areas/areas.dart';
-import '../module/module.dart';
+import '../areas/widget_area.dart';
+import '../elements/module_element.dart';
 import '../reorderable/logic_provider.dart';
-import '../templates/templates.dart';
-import '../themes/themes.dart';
+import '../templates/widget_template.dart';
+import '../themes/widgets/trip_theme.dart';
 
 class WidgetSelectorController<T extends ModuleElement> {
   final GlobalKey<WidgetSelectorState<T>> _selectorKey;

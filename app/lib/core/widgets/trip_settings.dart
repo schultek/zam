@@ -3,12 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../main.mapper.g.dart';
 import '../../modules/modules.dart';
 import '../../modules/profile/widgets/image_selector.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
-import '../core.dart';
-import '../themes/theme_selector.dart';
+import '../themes/widgets/theme_selector.dart';
+import '../themes/widgets/trip_theme.dart';
 import 'settings_section.dart';
 
 class TripSettings extends StatefulWidget {

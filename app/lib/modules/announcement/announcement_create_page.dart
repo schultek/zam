@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:o_color_picker/o_color_picker.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../core/themes/themes.dart';
+import '../../core/core.dart';
 import 'announcement_provider.dart';
 import 'widgets/announcement_card.dart';
 

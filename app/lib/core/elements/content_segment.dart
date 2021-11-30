@@ -1,4 +1,12 @@
-part of elements;
+import 'package:flutter/material.dart';
+
+import '../areas/widget_area.dart';
+import '../module/module_context.dart';
+import '../route/route.dart';
+import '../themes/widgets/themed_surface.dart';
+import '../themes/widgets/trip_theme.dart';
+import 'module_element.dart';
+import 'widgets/module_element_builder.dart';
 
 class IdProvider {
   String? _id;
@@ -9,11 +17,9 @@ class IdProvider {
   }
 
   String? _getId(String id) {
-    return _id != null ? id.split('/').take(2).followedBy([_id!]).join('/') : id;
+    return _id != null ? id.split('/').take(1).followedBy([_id!]).join('/') : id;
   }
 }
-
-enum SegmentSize { square, wide }
 
 class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegment> {
   final Widget Function(BuildContext context) builder;

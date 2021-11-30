@@ -1,6 +1,10 @@
-part of themes;
+import 'package:flutter/material.dart';
 
-abstract class ThemeState with ChangeNotifier {
+class ColorPreference {
+  ColorPreference();
+}
+
+abstract class ThemeState {
   Color get currentFillColor;
 
   ThemeData get themeData;
