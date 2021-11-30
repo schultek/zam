@@ -13,7 +13,7 @@ class AnnouncementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 2,
+      aspectRatio: 2.1,
       child: announcement.when(
         data: (data) {
           Widget child = Container(

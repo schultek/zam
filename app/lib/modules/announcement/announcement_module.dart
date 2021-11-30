@@ -48,7 +48,7 @@ class AnnouncementModule extends ModuleBuilder<ContentSegment> {
           size: SegmentSize.wide,
           idProvider: idProvider,
           builder: (context) => AspectRatio(
-            aspectRatio: 2,
+            aspectRatio: 2.1,
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -56,15 +56,13 @@ class AnnouncementModule extends ModuleBuilder<ContentSegment> {
                 children: [
                   Icon(
                     Icons.add,
-                    color: context.getTextColor(),
+                    color: context.theme.colorScheme.primary,
                     size: 50,
                   ),
                   const SizedBox(height: 5),
-                  const Text(
-                    'New Announcement\n(Tap to create)',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  Text('New Announcement\n(Tap to create)',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyText1!.apply(color: context.getTextColor())),
                 ],
               ),
             ),

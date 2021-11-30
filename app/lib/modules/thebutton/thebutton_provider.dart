@@ -6,11 +6,18 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/core.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/firebase/doc_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 
-const theButtonLevels = [Colors.green, Colors.yellow, Colors.orange, Colors.red, Colors.purple, Colors.blue];
+const _theButtonLevels = [Colors.green, Colors.yellow, Colors.orange, Colors.red, Colors.purple, Colors.blue];
+
+final theButtonLevelsCount = _theButtonLevels.length;
+
+Color getColorForLevel(int level, BuildContext context) {
+  return Color.alphaBlend(context.theme.primaryColorLight.withAlpha(60), _theButtonLevels[level]);
+}
 
 @MappableClass()
 class TheButtonState {
@@ -23,12 +30,12 @@ class TheButtonState {
 
   int get currentLevel {
     var hours = DateTime.now().difference(lastReset.toDate()).inSeconds / 3600.0;
-    return hours >= aliveHours ? -1 : (hours / aliveHours * theButtonLevels.length).floor();
+    return hours >= aliveHours ? -1 : (hours / aliveHours * _theButtonLevels.length).floor();
   }
 
   Duration get timeUntilValueChanges {
     var hours = DateTime.now().difference(lastReset.toDate()).inSeconds / 3600.0;
-    var interval = aliveHours / theButtonLevels.length;
+    var interval = aliveHours / _theButtonLevels.length;
     return Duration(seconds: ((interval - (hours % interval)) * 3600 + 1).round());
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/core.dart' hide Brightness;
+import '../../../core/core.dart';
 import '../../../providers/auth/user_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../notes_provider.dart';
@@ -80,83 +80,80 @@ class _EditNotePageState extends State<EditNotePage> {
             ),
         ],
       ),
-      body: TripTheme.of(
-        context,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Builder(
-              builder: (context) => Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    if (!editorFocusNode.hasPrimaryFocus) {
-                      editorFocusNode.requestFocus();
-                    }
-                  },
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: ListView(
-                      shrinkWrap: true,
-                      reverse: true,
-                      children: [
-                        QuillEditor(
-                          controller: _controller,
-                          scrollController: ScrollController(),
-                          scrollable: false,
-                          focusNode: editorFocusNode,
-                          autoFocus: false,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Builder(
+            builder: (context) => Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (!editorFocusNode.hasPrimaryFocus) {
+                    editorFocusNode.requestFocus();
+                  }
+                },
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: ListView(
+                    shrinkWrap: true,
+                    reverse: true,
+                    children: [
+                      QuillEditor(
+                        controller: _controller,
+                        scrollController: ScrollController(),
+                        scrollable: false,
+                        focusNode: editorFocusNode,
+                        autoFocus: false,
+                        readOnly: !isEditor,
+                        expands: false,
+                        padding: const EdgeInsets.all(20.0),
+                        keyboardAppearance: Brightness.dark,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: TextFormField(
+                          decoration: const InputDecoration(hintText: 'Title'),
+                          style: TextStyle(fontSize: 30, color: context.getTextColor()),
+                          initialValue: widget.note.title,
+                          onChanged: (text) => _title = text,
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (_) => editorFocusNode.requestFocus(),
                           readOnly: !isEditor,
-                          expands: false,
-                          padding: const EdgeInsets.all(20.0),
-                          keyboardAppearance: Brightness.dark,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: TextFormField(
-                            decoration: const InputDecoration(hintText: 'Title'),
-                            style: TextStyle(fontSize: 30, color: context.getTextColor()),
-                            initialValue: widget.note.title,
-                            onChanged: (text) => _title = text,
-                            textInputAction: TextInputAction.next,
-                            onFieldSubmitted: (_) => editorFocusNode.requestFocus(),
-                            readOnly: !isEditor,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-            if (isEditor)
-              ValueListenableBuilder<bool>(
-                valueListenable: editorFocusListenable,
-                builder: (context, value, _) {
-                  var logic = context.read(notesLogicProvider);
-                  if (value) {
-                    return FillColor(
-                      builder: (context, fillColor) => Container(
-                        color: fillColor,
-                        child: SingleChildScrollView(
-                          padding: const EdgeInsets.all(20),
-                          scrollDirection: Axis.horizontal,
-                          child: QuillToolbar.basic(
-                            controller: _controller,
-                            onImagePickCallback: (file) async {
-                              return logic.uploadImage(widget.note.id, file);
-                            },
-                            showCameraButton: false,
-                          ),
+          ),
+          if (isEditor)
+            ValueListenableBuilder<bool>(
+              valueListenable: editorFocusListenable,
+              builder: (context, value, _) {
+                var logic = context.read(notesLogicProvider);
+                if (value) {
+                  return ThemedSurface(
+                    builder: (context, fillColor) => Container(
+                      color: fillColor,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.all(20),
+                        scrollDirection: Axis.horizontal,
+                        child: QuillToolbar.basic(
+                          controller: _controller,
+                          onImagePickCallback: (file) async {
+                            return logic.uploadImage(widget.note.id, file);
+                          },
+                          showCameraButton: false,
                         ),
                       ),
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
-          ],
-        ),
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
+        ],
       ),
     );
   }

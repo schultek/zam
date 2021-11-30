@@ -26,9 +26,7 @@ class ClipLayer extends StatelessWidget {
         builder: (context, double value, _) {
           return ClipOval(
             clipper: ExpandClipper(value, corner),
-            child: FillColor(
-              matchTextColor: matchColor,
-              preference: matchColor ? null : ColorPreference(contrast: Contrast.veryLow),
+            child: ThemedSurface(
               builder: (context, fillColor) => Material(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 color: fillColor,

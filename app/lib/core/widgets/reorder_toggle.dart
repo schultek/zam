@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
 import '../templates/templates.dart';
+import '../themes/themes.dart';
 
 class ReorderToggle extends StatefulWidget {
   final void Function()? onPressed;
@@ -43,7 +44,7 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
         blendMode: BlendMode.srcIn,
         shaderCallback: (Rect bounds) {
           return LinearGradient(
-            colors: <Color>[Colors.grey.shade600, Colors.grey.shade600],
+            colors: <Color>[context.theme.colorScheme.onBackground, context.theme.colorScheme.onBackground],
           ).createShader(bounds);
         },
         child: AnimatedBuilder(
@@ -73,6 +74,7 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
   void initialize(FlutterActorArtboard artboard) {
     this.artboard = artboard;
     iconAnimation = artboard.getAnimation('go');
+
     var time = WidgetTemplate.of(context, listen: false).transition.value * iconAnimation!.duration;
     iconAnimation!.apply(time, artboard, 1.0);
   }

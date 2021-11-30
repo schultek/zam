@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/core.dart';
+import '../../../core/widgets/settings_section.dart';
 import '../../../providers/trips/logic_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../widgets/image_selector.dart';
@@ -23,14 +24,13 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: context.getTextColor()),
-        title: Text('Profil', style: TextStyle(color: context.getTextColor())),
+        title: const Text('Profil'),
       ),
       body: Consumer(
         builder: (context, ref, _) {
           var user = ref.watch(tripUserProvider);
           return ListView(
-            padding: const EdgeInsets.all(50),
+            padding: const EdgeInsets.symmetric(vertical: 50),
             children: [
               Center(
                 child: SizedBox(
@@ -56,30 +56,32 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const SizedBox(height: 40),
-              TextFormField(
-                initialValue: user?.nickname,
-                focusNode: _focusNode,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  suffixIcon: _name != null
-                      ? IconButton(
-                          icon: const Icon(Icons.check),
-                          onPressed: () {
-                            ref.read(tripsLogicProvider).setUserName(_name!);
-                            _focusNode.unfocus();
-                            setState(() => _name = null);
-                          },
-                        )
-                      : null,
+              SettingsSection(padding: const EdgeInsets.all(14), children: [
+                TextFormField(
+                  initialValue: user?.nickname,
+                  focusNode: _focusNode,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    suffixIcon: _name != null
+                        ? IconButton(
+                            icon: const Icon(Icons.check),
+                            onPressed: () {
+                              ref.read(tripsLogicProvider).setUserName(_name!);
+                              _focusNode.unfocus();
+                              setState(() => _name = null);
+                            },
+                          )
+                        : null,
+                  ),
+                  style: TextStyle(color: context.getTextColor()),
+                  onChanged: (text) {
+                    setState(() => _name = text);
+                  },
+                  onFieldSubmitted: (text) {
+                    ref.read(tripsLogicProvider).setUserName(text);
+                  },
                 ),
-                style: TextStyle(color: context.getTextColor()),
-                onChanged: (text) {
-                  setState(() => _name = text);
-                },
-                onFieldSubmitted: (text) {
-                  ref.read(tripsLogicProvider).setUserName(text);
-                },
-              ),
+              ]),
             ],
           );
         },

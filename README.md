@@ -13,6 +13,7 @@ Jugend-Freizeit-App
 ## App
 
 - Offline capability
+- [x] Themes
 
 ## Modules
 

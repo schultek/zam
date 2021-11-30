@@ -38,6 +38,7 @@ dependencies:
   firebase_messaging: ^11.1.0
   firebase_storage: ^10.1.0
   flare_flutter: ^3.0.2
+  flex_color_scheme: ^4.1.1
   flutter:
     sdk: flutter
   flutter_chat_ui: ^1.5.1

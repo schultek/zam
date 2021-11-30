@@ -48,7 +48,7 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            color: widgetArea.context.getFillColor(),
+            color: widgetArea.context.theme.backgroundColor,
           ),
           child: InheritedWidgetTemplate(state: template, child: widgetSelector),
         ),
@@ -135,7 +135,7 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
   Widget build(BuildContext context) {
     return InheritedWidgetArea(
       state: widget.widgetArea,
-      child: InheritedThemeState(
+      child: TripTheme(
         theme: widget.widgetArea.theme,
         reuseTheme: true,
         child: AnimatedSize(

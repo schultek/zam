@@ -53,8 +53,7 @@ class QuickAction extends ModuleElement with ModuleElementBuilder<QuickAction> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FillColor(
-            preference: ColorPreference(id: id),
+          ThemedSurface(
             builder: (context, fillColor) => Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,

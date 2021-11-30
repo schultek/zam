@@ -36,8 +36,7 @@ class TripSelectorPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
+        title: const Text('Trips'),
         actions: [
           if (context.watch(isOrganizerProvider))
             IconButton(
@@ -52,12 +51,12 @@ class TripSelectorPage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         children: [
           if (selectedTrip != null) ...[
-            const Text('Ausgewählter Trip', style: TextStyle(color: Colors.white38)),
+            Text('Ausgewählter Trip', style: TextStyle(color: context.getTextColor())),
             const SizedBox(height: 20),
             selectedTripTile(context, selectedTrip),
             const SizedBox(height: 40),
           ],
-          const Text('Verfügbare Trips', style: TextStyle(color: Colors.white38)),
+          Text('Verfügbare Trips', style: TextStyle(color: context.getTextColor())),
           const SizedBox(height: 20),
           for (var trip in trips.where((t) => t.id != selectedTrip?.id)) ...[
             tripTile(context, trip),
@@ -73,21 +72,21 @@ class TripSelectorPage extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade900,
+          color: context.theme.colorScheme.surface,
           image: trip.pictureUrl != null
               ? DecorationImage(image: CachedNetworkImageProvider(trip.pictureUrl!), fit: BoxFit.cover)
               : null,
         ),
         height: 200,
         child: Material(
-          color: Colors.black38,
+          color: context.theme.colorScheme.primary.withOpacity(0.4),
           child: InkWell(
             child: Stack(
               children: [
                 Center(
                   child: Text(
                     trip.name,
-                    style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
+                    style: Theme.of(context).textTheme.headline4!.copyWith(color: context.theme.colorScheme.onPrimary),
                   ),
                 ),
                 if (context.watch(isOrganizerProvider))
@@ -95,7 +94,7 @@ class TripSelectorPage extends StatelessWidget {
                     top: 10,
                     right: 10,
                     child: IconButton(
-                      icon: const Icon(Icons.settings),
+                      icon: Icon(Icons.settings, color: context.theme.colorScheme.onPrimary),
                       onPressed: () {
                         Navigator.push(context, TripSettings.route());
                       },
@@ -117,14 +116,14 @@ class TripSelectorPage extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade900,
+          color: context.theme.colorScheme.surface,
           image: trip.pictureUrl != null
               ? DecorationImage(image: CachedNetworkImageProvider(trip.pictureUrl!), fit: BoxFit.cover)
               : null,
         ),
         height: 100,
         child: Material(
-          color: Colors.black38,
+          color: context.theme.colorScheme.primary.withOpacity(0.4),
           child: InkWell(
             child: Center(
                 child: Text(

@@ -6,6 +6,7 @@ class Trip with Mappable {
   final String id;
   final String? pictureUrl;
   final TemplateModel template;
+  final ThemeModel theme;
   final Map<String, TripUser> users;
   final Map<String, List<String>> modules;
 
@@ -14,6 +15,7 @@ class Trip with Mappable {
       required this.name,
       this.pictureUrl,
       required this.template,
+      this.theme = const ThemeModel(),
       this.users = const {},
       this.modules = const {}});
 }

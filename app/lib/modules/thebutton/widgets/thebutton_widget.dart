@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../core/core.dart';
 import '../thebutton_provider.dart';
 import 'thebutton_shape.dart';
 
@@ -55,7 +56,7 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
         builder: (context, child) {
           var level = context.read(theButtonLevelProvider);
           return CustomPaint(
-            painter: TapProgressPainter(tapAnimation.value, level),
+            painter: TapProgressPainter(tapAnimation.value, level, context),
             child: child,
           );
         },
@@ -79,12 +80,14 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
             );
           },
           child: AbsorbPointer(
-            child: Container(
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black26,
+            child: ThemedSurface(
+              builder: (context, color) => Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color,
+                ),
+                child: const TheButtonShape(),
               ),
-              child: const TheButtonShape(),
             ),
           ),
         ),
@@ -96,7 +99,8 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
 class TapProgressPainter extends CustomPainter {
   final double value;
   final int level;
-  TapProgressPainter(this.value, this.level);
+  final BuildContext context;
+  TapProgressPainter(this.value, this.level, this.context);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -108,7 +112,7 @@ class TapProgressPainter extends CustomPainter {
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 6
-        ..color = Colors.grey.shade600,
+        ..color = context.theme.colorScheme.primary,
     );
     canvas.drawArc(
       Rect.fromLTWH(0, 0, size.width, size.height),
@@ -118,7 +122,7 @@ class TapProgressPainter extends CustomPainter {
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 6
-        ..color = value == 1 ? theButtonLevels[level] : Colors.white,
+        ..color = value == 1 ? getColorForLevel(level, context) : context.theme.colorScheme.onPrimary,
     );
   }
 

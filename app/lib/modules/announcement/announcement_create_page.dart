@@ -47,7 +47,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(20),
-            child: FillColor(
+            child: ThemedSurface(
               builder: (context, fillColor) => Material(
                 textStyle: TextStyle(color: context.getTextColor()),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

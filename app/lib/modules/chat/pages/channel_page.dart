@@ -13,6 +13,7 @@ import '../../../providers/trips/selected_trip_provider.dart';
 import '../chat_provider.dart';
 import '../widgets/attachment_bottom_sheet.dart';
 import 'channel/channel_info_page.dart';
+import 'channel/chat_theme.dart';
 
 class ChannelPage extends StatefulWidget {
   final String id;
@@ -93,7 +94,6 @@ class _ChannelPageState extends State<ChannelPage> {
 
   @override
   Widget build(BuildContext context) {
-    var backgroundColor = context.getFillColor();
     return Consumer(
       builder: (context, ref, _) {
         var channel = ref.watch(channelProvider(widget.id));
@@ -118,86 +118,77 @@ class _ChannelPageState extends State<ChannelPage> {
           body: Column(
             children: [
               Expanded(
-                child: FillColor(
-                  preference: ColorPreference(contrast: Contrast.low),
-                  builder: (context, fillColor) => SafeArea(
-                    child: Consumer(
-                      builder: (context, ref, _) {
-                        List<ChatMessage> messages =
-                            channel != null ? ref.watch(channel.messages).asData?.value ?? [] : [];
-                        var trip = ref.watch(selectedTripProvider)!;
+                child: SafeArea(
+                  child: Consumer(
+                    builder: (context, ref, _) {
+                      List<ChatMessage> messages =
+                          channel != null ? ref.watch(channel.messages).asData?.value ?? [] : [];
+                      var trip = ref.watch(selectedTripProvider)!;
 
-                        return Chat(
-                          theme: DarkChatTheme(
-                            backgroundColor: backgroundColor,
-                            primaryColor: Colors.red,
-                            attachmentButtonIcon: const Icon(Icons.link),
-                            secondaryColor: fillColor,
-                            inputBackgroundColor: fillColor,
-                          ),
-                          showUserAvatars: true,
-                          showUserNames: true,
-                          messages: messages.map((m) {
-                            if (m is ChatImageMessage) {
-                              return types.ImageMessage(
-                                author: types.User(
-                                  id: m.sender,
-                                  imageUrl: trip.users[m.sender]?.profileUrl,
-                                  firstName: trip.users[m.sender]?.nickname ?? 'Anonym',
-                                ),
-                                id: m.uri,
-                                uri: m.uri,
-                                name: m.uri,
-                                size: m.size,
-                              );
-                            } else if (m is ChatFileMessage) {
-                              return types.FileMessage(
-                                author: types.User(
-                                  id: m.sender,
-                                  imageUrl: trip.users[m.sender]?.profileUrl,
-                                  firstName: trip.users[m.sender]?.nickname ?? 'Anonym',
-                                ),
-                                id: m.uri,
-                                uri: m.uri,
-                                name: m.uri,
-                                size: m.size,
-                              );
-                            } else {
-                              return types.TextMessage(
-                                author: types.User(
-                                  id: m.sender,
-                                  imageUrl: trip.users[m.sender]?.profileUrl,
-                                  firstName: trip.users[m.sender]?.nickname ?? 'Anonym',
-                                ),
-                                id: m.text,
-                                text: m.text,
-                                createdAt: m.sentAt.millisecondsSinceEpoch,
-                              );
-                            }
-                          }).toList(),
-                          onSendPressed: _handleSendPressed,
-                          user: types.User(
-                            id: context.read(userIdProvider)!,
-                          ),
-                          isAttachmentUploading: _isAttachmentUploading,
-                          onAttachmentPressed: () async {
-                            var option = await AttachmentBottomSheet.open(context);
-                            switch (option) {
-                              case AttachmentOption.image:
-                                _handleImageSelection();
-                                break;
-                              case AttachmentOption.file:
-                                _handleFileSelection();
-                                break;
-                              default:
-                                break;
-                            }
-                          },
-                          // onMessageTap: _handleMessageTap,
-                          onPreviewDataFetched: _handlePreviewDataFetched,
-                        );
-                      },
-                    ),
+                      return Chat(
+                        theme: CustomChatTheme(context.theme),
+                        showUserAvatars: true,
+                        showUserNames: true,
+                        messages: messages.map((m) {
+                          if (m is ChatImageMessage) {
+                            return types.ImageMessage(
+                              author: types.User(
+                                id: m.sender,
+                                imageUrl: trip.users[m.sender]?.profileUrl,
+                                firstName: trip.users[m.sender]?.nickname ?? 'Anonym',
+                              ),
+                              id: m.uri,
+                              uri: m.uri,
+                              name: m.uri,
+                              size: m.size,
+                            );
+                          } else if (m is ChatFileMessage) {
+                            return types.FileMessage(
+                              author: types.User(
+                                id: m.sender,
+                                imageUrl: trip.users[m.sender]?.profileUrl,
+                                firstName: trip.users[m.sender]?.nickname ?? 'Anonym',
+                              ),
+                              id: m.uri,
+                              uri: m.uri,
+                              name: m.uri,
+                              size: m.size,
+                            );
+                          } else {
+                            return types.TextMessage(
+                              author: types.User(
+                                id: m.sender,
+                                imageUrl: trip.users[m.sender]?.profileUrl,
+                                firstName: trip.users[m.sender]?.nickname ?? 'Anonym',
+                              ),
+                              id: m.text,
+                              text: m.text,
+                              createdAt: m.sentAt.millisecondsSinceEpoch,
+                            );
+                          }
+                        }).toList(),
+                        onSendPressed: _handleSendPressed,
+                        user: types.User(
+                          id: context.read(userIdProvider)!,
+                        ),
+                        isAttachmentUploading: _isAttachmentUploading,
+                        onAttachmentPressed: () async {
+                          var option = await AttachmentBottomSheet.open(context);
+                          switch (option) {
+                            case AttachmentOption.image:
+                              _handleImageSelection();
+                              break;
+                            case AttachmentOption.file:
+                              _handleFileSelection();
+                              break;
+                            default:
+                              break;
+                          }
+                        },
+                        // onMessageTap: _handleMessageTap,
+                        onPreviewDataFetched: _handlePreviewDataFetched,
+                      );
+                    },
                   ),
                 ),
               ),

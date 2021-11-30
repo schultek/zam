@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../core/themes/themes.dart';
 import '../../../providers/auth/user_provider.dart';
 import '../thebutton_provider.dart';
 
@@ -20,7 +22,7 @@ class _TheButtonShapeState extends State<TheButtonShape> {
     var userId = context.read(userIdProvider);
     var userLevel = context.watch(theButtonUserLevelProvider(userId));
     return CustomPaint(
-      painter: TheButtonPainter(currentLevel, userLevel),
+      painter: TheButtonPainter(currentLevel, userLevel, context),
     );
   }
 }
@@ -28,8 +30,9 @@ class _TheButtonShapeState extends State<TheButtonShape> {
 class TheButtonPainter extends CustomPainter {
   final int currentLevel;
   final int? userLevel;
+  final BuildContext context;
 
-  TheButtonPainter(this.currentLevel, this.userLevel);
+  TheButtonPainter(this.currentLevel, this.userLevel, this.context);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -46,15 +49,25 @@ class TheButtonPainter extends CustomPainter {
       var ua = pi * 1.5 + userLevel! * a + a / 2;
       var c = size.width / 2;
       var f = 0.7;
+
+      var onEmpty = currentLevel == -1 || (userLevel ?? -1) < currentLevel;
+      var starColor = !onEmpty ? context.theme.colorScheme.onPrimary : context.theme.colorScheme.primary;
+
       canvas.drawPath(
-          StarPainter.star().shift(Offset(c + cos(ua) * c * f, c + sin(ua) * c * f)), Paint()..color = Colors.white);
+          StarPainter.star().shift(Offset(c + cos(ua) * c * f, c + sin(ua) * c * f)), Paint()..color = starColor);
     }
   }
 
   Paint paintLevel(int level) {
-    var paint = Paint()..color = theButtonLevels[level];
+    var paint = Paint();
     if (currentLevel == -1 || currentLevel > level) {
-      paint.color = Colors.grey.withAlpha(200 - level * 30);
+      if (context.theme.brightness == Brightness.dark) {
+        paint.color = context.getFillColor().lighten(10 - level * 2);
+      } else {
+        paint.color = context.getFillColor().darken(level * 2);
+      }
+    } else {
+      paint.color = getColorForLevel(level, context);
     }
     return paint;
   }

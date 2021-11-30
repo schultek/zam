@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/widgets/settings_section.dart';
 import '../../chat_provider.dart';
 import 'add_members_page.dart';
 import 'members_page.dart';
@@ -23,28 +24,33 @@ class _ChannelInfoPageState extends State<ChannelInfoPage> {
       appBar: AppBar(
         title: const Text('Channel details'),
       ),
-      body: Column(
+      body: ListView(
         children: [
-          ListTile(
-            title: const Text('Add Members'),
-            onTap: () {
-              Navigator.of(context).push(AddMembersPage.route(widget.channel));
-            },
-          ),
-          ListTile(
-            title: const Text('Members'),
-            onTap: () {
-              Navigator.of(context).push(MembersPage.route(widget.channel));
-            },
-          ),
-          ListTile(
+          SettingsSection(children: [
+            ListTile(
+              title: const Text('Add Members'),
+              onTap: () {
+                Navigator.of(context).push(AddMembersPage.route(widget.channel));
+              },
+            ),
+            ListTile(
+              title: const Text('Members'),
+              onTap: () {
+                Navigator.of(context).push(MembersPage.route(widget.channel));
+              },
+            ),
+          ]),
+          SettingsSection(children: [
+            ListTile(
               title: const Text(
                 'Leave',
                 style: TextStyle(color: Colors.red),
               ),
               onTap: () {
                 Navigator.of(context).pop(true);
-              })
+              },
+            ),
+          ]),
         ],
       ),
     );

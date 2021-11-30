@@ -19,10 +19,7 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        iconTheme: IconThemeData(color: context.getTextColor()),
-        title: Text('Notes', style: TextStyle(color: context.getTextColor())),
+        title: const Text('Notes'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -48,8 +45,8 @@ class _NotesPageState extends State<NotesPage> {
                     for (var folder in folders.keys)
                       if (folder != null) folderCard(folder),
                     noteCard(
-                      child: const Center(
-                        child: Icon(Icons.add, size: 60),
+                      child: Center(
+                        child: Icon(Icons.add, size: 60, color: context.theme.colorScheme.primary),
                       ),
                       onTap: () async {
                         var note = await ref.read(notesLogicProvider).createEmptyNote();
@@ -72,6 +69,8 @@ class _NotesPageState extends State<NotesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Card(
+        elevation: 0,
+        color: context.theme.cardColor,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: child,
@@ -82,9 +81,15 @@ class _NotesPageState extends State<NotesPage> {
   Widget folderCard(String folder) {
     return GestureDetector(
       onTap: () {
-        showDialog(context: context, builder: (context) => folderDialog(folder), useRootNavigator: false);
+        showDialog(
+          context: context,
+          builder: (context) => folderDialog(folder),
+          useRootNavigator: false,
+          barrierColor: Colors.black45,
+        );
       },
       child: Card(
+        elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
@@ -92,9 +97,10 @@ class _NotesPageState extends State<NotesPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
+              Icon(
                 Icons.folder,
                 size: 40,
+                color: context.theme.colorScheme.primary,
               ),
               const SizedBox(height: 10),
               Text(

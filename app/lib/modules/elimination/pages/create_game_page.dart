@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../core/widgets/settings_section.dart';
 import '../game_provider.dart';
 
 class CreateGamePage extends StatefulWidget {
@@ -36,18 +37,21 @@ class _CreateGamePageState extends State<CreateGamePage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Name',
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        children: [
+          SettingsSection(
+            padding: const EdgeInsets.all(14),
+            children: [
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                ),
+                onChanged: (text) => setState(() => _name = text),
               ),
-              onChanged: (text) => setState(() => _name = text),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }

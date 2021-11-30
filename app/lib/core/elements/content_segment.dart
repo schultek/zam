@@ -67,13 +67,16 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
   @override
   Widget decorationBuilder(Widget child, double opacity) {
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: [
-        BoxShadow(
-          blurRadius: 8,
-          spreadRadius: -2,
-          color: Colors.black.withOpacity(opacity * 0.5),
-        )
-      ]),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 8,
+            spreadRadius: -2,
+            color: Colors.black.withOpacity(opacity * 0.5),
+          )
+        ],
+      ),
       child: child,
     );
   }
@@ -81,8 +84,7 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
   Widget _defaultDecorator([Widget? child]) {
     var w = ClipRRect(
       borderRadius: BorderRadius.circular(20),
-      child: FillColor(
-        preference: ColorPreference(id: id),
+      child: ThemedSurface(
         builder: (context, fillColor) => Material(
           textStyle: TextStyle(color: context.getTextColor()),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

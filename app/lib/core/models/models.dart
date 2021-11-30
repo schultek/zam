@@ -2,6 +2,7 @@ library models;
 
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/widgets.dart';
+import '../themes/themes.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../main.mapper.g.dart';

@@ -2,8 +2,10 @@ library templates;
 
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -182,11 +184,25 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
 
   @override
   Widget build(BuildContext context) {
+    var trip = context.read(selectedTripProvider)!;
     return InheritedWidgetTemplate(
       state: this,
       child: MediaQuery(
         data: MediaQuery.of(context).addPadding(bottom: widgetSelector?.state?.sheetHeight),
-        child: widget.build(context, this),
+        child: TripTheme(
+          theme: MaterialTheme(FlexScheme.values[trip.theme.schemeIndex], trip.theme.dark),
+          child: Builder(builder: (context) {
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: FlexColorScheme.themedSystemNavigationBar(
+                context,
+                noAppBar: true,
+              ),
+              child: TemplateNavigator(
+                home: widget.build(context, this),
+              ),
+            );
+          }),
+        ),
       ),
     );
   }

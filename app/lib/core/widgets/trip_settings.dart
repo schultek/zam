@@ -8,6 +8,8 @@ import '../../modules/profile/widgets/image_selector.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../core.dart';
+import '../themes/theme_selector.dart';
+import 'settings_section.dart';
 
 class TripSettings extends StatefulWidget {
   const TripSettings({Key? key}) : super(key: key);
@@ -30,8 +32,7 @@ class _TripSettingsState extends State<TripSettings> {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: context.getTextColor()),
-        title: Text('Settings', style: TextStyle(color: context.getTextColor())),
+        title: const Text('Settings'),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -63,24 +64,49 @@ class _TripSettingsState extends State<TripSettings> {
             ),
           ),
           const SizedBox(height: 8),
-          _section([
+          SettingsSection(padding: const EdgeInsets.all(14), children: [
+            TextFormField(
+              initialValue: trip.name,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+              ),
+              style: TextStyle(color: context.getTextColor()),
+              onFieldSubmitted: (text) {
+                context.read(tripsLogicProvider).updateTrip({'name': text});
+              },
+            ),
+          ]),
+          if (templateSettings != null)
+            SettingsSection(
+              title: 'Template',
+              children: [...templateSettings],
+            ),
+          SettingsSection(title: 'Theme', children: [
             Padding(
-              padding: const EdgeInsets.all(14),
-              child: TextFormField(
-                initialValue: trip.name,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
-                style: TextStyle(color: context.getTextColor()),
-                onFieldSubmitted: (text) {
-                  context.read(tripsLogicProvider).updateTrip({'name': text});
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: ThemeSelector(
+                schemeIndex: trip.theme.schemeIndex,
+                onChange: (index) {
+                  context
+                      .read(tripsLogicProvider)
+                      .updateTrip({'theme': trip.theme.copyWith(schemeIndex: index).toMap()});
                 },
               ),
             ),
+            SwitchListTile(
+              title: const Text('Dark Mode'),
+              value: trip.theme.dark,
+              onChanged: (value) {
+                context.read(tripsLogicProvider).updateTrip({'theme': trip.theme.copyWith(dark: value).toMap()});
+              },
+            ),
           ]),
-          if (templateSettings != null) _section([...templateSettings], title: 'Template'),
-          for (var settings in moduleSettings) _section(settings.settings, title: settings.title),
-          _section([
+          for (var settings in moduleSettings)
+            SettingsSection(
+              title: settings.title,
+              children: settings.settings,
+            ),
+          SettingsSection(children: [
             ListTile(
               title: const Text('Leave', style: TextStyle(color: Colors.red)),
               onTap: () {
@@ -89,32 +115,6 @@ class _TripSettingsState extends State<TripSettings> {
             ),
           ]),
         ],
-      ),
-    );
-  }
-
-  Widget _section(List<Widget> children, {String? title}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: FillColor(
-        builder: (context, color) => Material(
-          color: color,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (title != null)
-                Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: Text(
-                    title,
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ...children,
-            ],
-          ),
-        ),
       ),
     );
   }

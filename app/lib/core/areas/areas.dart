@@ -119,9 +119,10 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
         onPointerDown: (_) {
           templateState.selectWidgetArea<T>(this);
         },
-        child: ThemedContainer(
+        child: ThemedSurface(
           themeNotifier: _areaTheme,
-          child: Container(
+          opaque: false,
+          builder: (context, color) => Container(
             margin: getMargin(),
             padding: getPadding(),
             decoration: isSelected

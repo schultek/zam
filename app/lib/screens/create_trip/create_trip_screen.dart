@@ -92,6 +92,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
       name: tripName,
       users: {userId: TripUser(role: UserRoles.organizer)},
       template: SwipeTemplateModel(),
+      theme: const ThemeModel(),
     );
     return FirebaseFirestore.instance.collection('trips').add(trip.toMap());
   }

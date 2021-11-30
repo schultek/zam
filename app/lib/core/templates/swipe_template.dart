@@ -70,76 +70,68 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
 
   @override
   Widget build(BuildContext context, WidgetTemplateState state) {
-    return TripTheme(
-      theme: DarkTheme(),
-      child: TemplateNavigator(
-        home: Scaffold(
-          body: Builder(
-            builder: (context) => NestedWillPopScope(
-              onWillPop: () async {
-                if (!Navigator.of(context).canPop() && pageController.page != 1) {
-                  pageController.animateToPage(1, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                  return false;
-                }
-                return true;
-              },
-              child: PageView(
+    return Scaffold(
+      body: Builder(
+        builder: (context) => NestedWillPopScope(
+          onWillPop: () async {
+            if (!Navigator.of(context).canPop() && pageController.page != 1) {
+              pageController.animateToPage(1, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+              return false;
+            }
+            return true;
+          },
+          child: PageView(
+            physics: const BouncingScrollPhysics(),
+            controller: pageController,
+            onPageChanged: (index) {
+              if (state.isEditing) {
+                selectArea(state, index);
+              }
+            },
+            children: [
+              if (config.showLeftPage) const FullPageArea(id: 'left'),
+              CustomScrollView(
                 physics: const BouncingScrollPhysics(),
-                controller: pageController,
-                onPageChanged: (index) {
-                  if (state.isEditing) {
-                    selectArea(state, index);
-                  }
-                },
-                children: [
-                  if (config.showLeftPage) const ThemedBackground(child: FullPageArea(id: 'left')),
-                  ThemedBackground(
-                    child: CustomScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      controller: _scrollController,
-                      slivers: [
-                        SliverTemplateHeader(
-                          child: Container(
-                            padding: EdgeInsets.only(
-                                top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
-                            child: Consumer(
-                              builder: (context, ref, _) {
-                                var trip = ref.watch(selectedTripProvider)!;
-                                var user = ref.watch(tripUserProvider)!;
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const TripSelectorButton(),
-                                    Text(
-                                      trip.name,
-                                      style:
-                                          Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
-                                    ),
-                                    if (user.isOrganizer)
-                                      const SizedBox(
-                                        width: 50,
-                                        child: ReorderToggle(),
-                                      )
-                                    else
-                                      const SizedBox(width: 50),
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                        SliverPadding(
-                          padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
-                          sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
-                        ),
-                        if (state.isEditing) SliverToBoxAdapter(child: Container(height: 130)),
-                      ],
+                controller: _scrollController,
+                slivers: [
+                  SliverTemplateHeader(
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
+                      child: Consumer(
+                        builder: (context, ref, _) {
+                          var trip = ref.watch(selectedTripProvider)!;
+                          var user = ref.watch(tripUserProvider)!;
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const TripSelectorButton(),
+                              Text(
+                                trip.name,
+                                style: Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
+                              ),
+                              if (user.isOrganizer)
+                                const SizedBox(
+                                  width: 50,
+                                  child: ReorderToggle(),
+                                )
+                              else
+                                const SizedBox(width: 50),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ),
-                  if (config.showRightPage) const ThemedBackground(child: FullPageArea(id: 'right')),
+                  SliverPadding(
+                    padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
+                    sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
+                  ),
+                  if (state.isEditing) SliverToBoxAdapter(child: Container(height: 130)),
                 ],
               ),
-            ),
+              if (config.showRightPage) const FullPageArea(id: 'right'),
+            ],
           ),
         ),
       ),

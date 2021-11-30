@@ -5,6 +5,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 
 import 'core/models/models.dart';
 import 'core/templates/templates.dart';
+import 'core/themes/themes.dart';
 import 'modules/announcement/announcement_provider.dart';
 import 'modules/chat/chat_provider.dart';
 import 'modules/elimination/game_provider.dart';
@@ -28,22 +29,15 @@ var _mappers = <String, BaseMapper>{
   _typeOf<Set>(): IterableMapper<Set>(<T>(Iterable<T> i) => i.toSet(), <T>(f) => f<Set<T>>()),
   _typeOf<Map>(): MapMapper<Map>(<K, V>(Map<K, V> map) => map, <K, V>(f) => f<Map<K, V>>()),
   // class mappers
+  _typeOf<ThemeModel>(): ThemeModelMapper._(),
+  _typeOf<GridTemplateModel>(): GridTemplateModelMapper._(),
   _typeOf<TemplateModel>(): TemplateModelMapper._(),
+  _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
   _typeOf<Trip>(): TripMapper._(),
   _typeOf<TripUser>(): TripUserMapper._(),
-  _typeOf<GridTemplateModel>(): GridTemplateModelMapper._(),
-  _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
-  _typeOf<Announcement>(): AnnouncementMapper._(),
   _typeOf<TheButtonState>(): TheButtonStateMapper._(),
   _typeOf<Note>(): NoteMapper._(),
-  _typeOf<AlbumShortcut>(): AlbumShortcutMapper._(),
-  _typeOf<EliminationGame>(): EliminationGameMapper._(),
-  _typeOf<EliminationEntry>(): EliminationEntryMapper._(),
-  _typeOf<ChannelInfo>(): ChannelInfoMapper._(),
-  _typeOf<ChatMessage>(): ChatMessageMapper._(),
-  _typeOf<ChatTextMessage>(): ChatTextMessageMapper._(),
-  _typeOf<ChatImageMessage>(): ChatImageMessageMapper._(),
-  _typeOf<ChatFileMessage>(): ChatFileMessageMapper._(),
+  _typeOf<Announcement>(): AnnouncementMapper._(),
   _typeOf<MusicConfig>(): MusicConfigMapper._(),
   _typeOf<SpotifyPlayer>(): SpotifyPlayerMapper._(),
   _typeOf<SpotifyCredentials>(): SpotifyCredentialsMapper._(),
@@ -52,12 +46,111 @@ var _mappers = <String, BaseMapper>{
   _typeOf<SpotifyAlbum>(): SpotifyAlbumMapper._(),
   _typeOf<SpotifyImage>(): SpotifyImageMapper._(),
   _typeOf<SpotifyArtist>(): SpotifyArtistMapper._(),
+  _typeOf<AlbumShortcut>(): AlbumShortcutMapper._(),
+  _typeOf<EliminationGame>(): EliminationGameMapper._(),
+  _typeOf<EliminationEntry>(): EliminationEntryMapper._(),
+  _typeOf<ChannelInfo>(): ChannelInfoMapper._(),
+  _typeOf<ChatMessage>(): ChatMessageMapper._(),
+  _typeOf<ChatTextMessage>(): ChatTextMessageMapper._(),
+  _typeOf<ChatImageMessage>(): ChatImageMessageMapper._(),
+  _typeOf<ChatFileMessage>(): ChatFileMessageMapper._(),
   // enum mappers
   // custom mappers
   _typeOf<Color>(): ColorMapper(),
 };
 
 // === GENERATED CLASS MAPPERS AND EXTENSIONS ===
+
+class ThemeModelMapper extends BaseMapper<ThemeModel> {
+  ThemeModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  ThemeModel decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ThemeModel fromMap(Map<String, dynamic> map) =>
+      ThemeModel(schemeIndex: map.getOpt('schemeIndex') ?? 0, dark: map.getOpt('dark') ?? false);
+
+  @override
+  Function get encoder => (ThemeModel v) => encode(v);
+  dynamic encode(ThemeModel v) => toMap(v);
+  Map<String, dynamic> toMap(ThemeModel t) =>
+      {'schemeIndex': Mapper.toValue(t.schemeIndex), 'dark': Mapper.toValue(t.dark)};
+
+  @override
+  String? stringify(ThemeModel self) =>
+      'ThemeModel(schemeIndex: ${Mapper.asString(self.schemeIndex)}, dark: ${Mapper.asString(self.dark)})';
+  @override
+  int? hash(ThemeModel self) => Mapper.hash(self.schemeIndex) ^ Mapper.hash(self.dark);
+  @override
+  bool? equals(ThemeModel self, ThemeModel other) =>
+      Mapper.isEqual(self.schemeIndex, other.schemeIndex) && Mapper.isEqual(self.dark, other.dark);
+
+  @override
+  Function get typeFactory => (f) => f<ThemeModel>();
+}
+
+extension ThemeModelMapperExtension on ThemeModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  ThemeModelCopyWith<ThemeModel> get copyWith => ThemeModelCopyWith(this, _$identity);
+}
+
+abstract class ThemeModelCopyWith<$R> {
+  factory ThemeModelCopyWith(ThemeModel value, Then<ThemeModel, $R> then) = _ThemeModelCopyWithImpl<$R>;
+  $R call({int? schemeIndex, bool? dark});
+}
+
+class _ThemeModelCopyWithImpl<$R> extends BaseCopyWith<ThemeModel, $R> implements ThemeModelCopyWith<$R> {
+  _ThemeModelCopyWithImpl(ThemeModel value, Then<ThemeModel, $R> then) : super(value, then);
+
+  @override
+  $R call({int? schemeIndex, bool? dark}) =>
+      _then(ThemeModel(schemeIndex: schemeIndex ?? _value.schemeIndex, dark: dark ?? _value.dark));
+}
+
+class GridTemplateModelMapper extends BaseMapper<GridTemplateModel> {
+  GridTemplateModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  GridTemplateModel decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  GridTemplateModel fromMap(Map<String, dynamic> map) => GridTemplateModel(type: map.getOpt('type'));
+
+  @override
+  Function get encoder => (GridTemplateModel v) => encode(v);
+  dynamic encode(GridTemplateModel v) => toMap(v);
+  Map<String, dynamic> toMap(GridTemplateModel g) => {'type': Mapper.toValue(g.type)};
+
+  @override
+  String? stringify(GridTemplateModel self) => 'GridTemplateModel(type: ${Mapper.asString(self.type)})';
+  @override
+  int? hash(GridTemplateModel self) => Mapper.hash(self.type);
+  @override
+  bool? equals(GridTemplateModel self, GridTemplateModel other) => Mapper.isEqual(self.type, other.type);
+
+  @override
+  Function get typeFactory => (f) => f<GridTemplateModel>();
+}
+
+extension GridTemplateModelMapperExtension on GridTemplateModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  GridTemplateModelCopyWith<GridTemplateModel> get copyWith => GridTemplateModelCopyWith(this, _$identity);
+}
+
+abstract class GridTemplateModelCopyWith<$R> {
+  factory GridTemplateModelCopyWith(GridTemplateModel value, Then<GridTemplateModel, $R> then) =
+      _GridTemplateModelCopyWithImpl<$R>;
+  $R call({String? type});
+}
+
+class _GridTemplateModelCopyWithImpl<$R> extends BaseCopyWith<GridTemplateModel, $R>
+    implements GridTemplateModelCopyWith<$R> {
+  _GridTemplateModelCopyWithImpl(GridTemplateModel value, Then<GridTemplateModel, $R> then) : super(value, then);
+
+  @override
+  $R call({Object? type = _none}) => _then(GridTemplateModel(type: or(type, _value.type)));
+}
 
 class TemplateModelMapper extends BaseMapper<TemplateModel> {
   TemplateModelMapper._();
@@ -105,193 +198,6 @@ class TemplateModelMapper extends BaseMapper<TemplateModel> {
 extension TemplateModelMapperExtension on TemplateModel {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-}
-
-class TripMapper extends BaseMapper<Trip> {
-  TripMapper._();
-
-  @override
-  Function get decoder => decode;
-  Trip decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  Trip fromMap(Map<String, dynamic> map) => Trip(
-      id: map.get('id'),
-      name: map.get('name'),
-      pictureUrl: map.getOpt('pictureUrl'),
-      template: map.get('template'),
-      users: map.getMapOpt('users') ?? const {},
-      modules: map.getMapOpt('modules') ?? const {});
-
-  @override
-  Function get encoder => (Trip v) => encode(v);
-  dynamic encode(Trip v) => toMap(v);
-  Map<String, dynamic> toMap(Trip t) => {
-        'id': Mapper.toValue(t.id),
-        'name': Mapper.toValue(t.name),
-        'pictureUrl': Mapper.toValue(t.pictureUrl),
-        'template': Mapper.toValue(t.template),
-        'users': Mapper.toValue(t.users),
-        'modules': Mapper.toValue(t.modules)
-      };
-
-  @override
-  String? stringify(Trip self) =>
-      'Trip(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, template: ${Mapper.asString(self.template)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)})';
-  @override
-  int? hash(Trip self) =>
-      Mapper.hash(self.id) ^
-      Mapper.hash(self.name) ^
-      Mapper.hash(self.pictureUrl) ^
-      Mapper.hash(self.template) ^
-      Mapper.hash(self.users) ^
-      Mapper.hash(self.modules);
-  @override
-  bool? equals(Trip self, Trip other) =>
-      Mapper.isEqual(self.id, other.id) &&
-      Mapper.isEqual(self.name, other.name) &&
-      Mapper.isEqual(self.pictureUrl, other.pictureUrl) &&
-      Mapper.isEqual(self.template, other.template) &&
-      Mapper.isEqual(self.users, other.users) &&
-      Mapper.isEqual(self.modules, other.modules);
-
-  @override
-  Function get typeFactory => (f) => f<Trip>();
-}
-
-extension TripMapperExtension on Trip {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  TripCopyWith<Trip> get copyWith => TripCopyWith(this, _$identity);
-}
-
-abstract class TripCopyWith<$R> {
-  factory TripCopyWith(Trip value, Then<Trip, $R> then) = _TripCopyWithImpl<$R>;
-  $R call(
-      {String? id,
-      String? name,
-      String? pictureUrl,
-      TemplateModel? template,
-      Map<String, TripUser>? users,
-      Map<String, List<String>>? modules});
-}
-
-class _TripCopyWithImpl<$R> extends BaseCopyWith<Trip, $R> implements TripCopyWith<$R> {
-  _TripCopyWithImpl(Trip value, Then<Trip, $R> then) : super(value, then);
-
-  @override
-  $R call(
-          {String? id,
-          String? name,
-          Object? pictureUrl = _none,
-          TemplateModel? template,
-          Map<String, TripUser>? users,
-          Map<String, List<String>>? modules}) =>
-      _then(Trip(
-          id: id ?? _value.id,
-          name: name ?? _value.name,
-          pictureUrl: or(pictureUrl, _value.pictureUrl),
-          template: template ?? _value.template,
-          users: users ?? _value.users,
-          modules: modules ?? _value.modules));
-}
-
-class TripUserMapper extends BaseMapper<TripUser> {
-  TripUserMapper._();
-
-  @override
-  Function get decoder => decode;
-  TripUser decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  TripUser fromMap(Map<String, dynamic> map) => TripUser(
-      role: map.getOpt('role') ?? UserRoles.participant,
-      nickname: map.getOpt('nickname'),
-      profileUrl: map.getOpt('profileUrl'));
-
-  @override
-  Function get encoder => (TripUser v) => encode(v);
-  dynamic encode(TripUser v) => toMap(v);
-  Map<String, dynamic> toMap(TripUser t) => {
-        'role': Mapper.toValue(t.role),
-        'nickname': Mapper.toValue(t.nickname),
-        'profileUrl': Mapper.toValue(t.profileUrl)
-      };
-
-  @override
-  String? stringify(TripUser self) =>
-      'TripUser(role: ${Mapper.asString(self.role)}, nickname: ${Mapper.asString(self.nickname)}, profileUrl: ${Mapper.asString(self.profileUrl)})';
-  @override
-  int? hash(TripUser self) => Mapper.hash(self.role) ^ Mapper.hash(self.nickname) ^ Mapper.hash(self.profileUrl);
-  @override
-  bool? equals(TripUser self, TripUser other) =>
-      Mapper.isEqual(self.role, other.role) &&
-      Mapper.isEqual(self.nickname, other.nickname) &&
-      Mapper.isEqual(self.profileUrl, other.profileUrl);
-
-  @override
-  Function get typeFactory => (f) => f<TripUser>();
-}
-
-extension TripUserMapperExtension on TripUser {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  TripUserCopyWith<TripUser> get copyWith => TripUserCopyWith(this, _$identity);
-}
-
-abstract class TripUserCopyWith<$R> {
-  factory TripUserCopyWith(TripUser value, Then<TripUser, $R> then) = _TripUserCopyWithImpl<$R>;
-  $R call({String? role, String? nickname, String? profileUrl});
-}
-
-class _TripUserCopyWithImpl<$R> extends BaseCopyWith<TripUser, $R> implements TripUserCopyWith<$R> {
-  _TripUserCopyWithImpl(TripUser value, Then<TripUser, $R> then) : super(value, then);
-
-  @override
-  $R call({String? role, Object? nickname = _none, Object? profileUrl = _none}) => _then(TripUser(
-      role: role ?? _value.role,
-      nickname: or(nickname, _value.nickname),
-      profileUrl: or(profileUrl, _value.profileUrl)));
-}
-
-class GridTemplateModelMapper extends BaseMapper<GridTemplateModel> {
-  GridTemplateModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  GridTemplateModel decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  GridTemplateModel fromMap(Map<String, dynamic> map) => GridTemplateModel(type: map.getOpt('type'));
-
-  @override
-  Function get encoder => (GridTemplateModel v) => encode(v);
-  dynamic encode(GridTemplateModel v) => toMap(v);
-  Map<String, dynamic> toMap(GridTemplateModel g) => {'type': Mapper.toValue(g.type)};
-
-  @override
-  String? stringify(GridTemplateModel self) => 'GridTemplateModel(type: ${Mapper.asString(self.type)})';
-  @override
-  int? hash(GridTemplateModel self) => Mapper.hash(self.type);
-  @override
-  bool? equals(GridTemplateModel self, GridTemplateModel other) => Mapper.isEqual(self.type, other.type);
-
-  @override
-  Function get typeFactory => (f) => f<GridTemplateModel>();
-}
-
-extension GridTemplateModelMapperExtension on GridTemplateModel {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  GridTemplateModelCopyWith<GridTemplateModel> get copyWith => GridTemplateModelCopyWith(this, _$identity);
-}
-
-abstract class GridTemplateModelCopyWith<$R> {
-  factory GridTemplateModelCopyWith(GridTemplateModel value, Then<GridTemplateModel, $R> then) =
-      _GridTemplateModelCopyWithImpl<$R>;
-  $R call({String? type});
-}
-
-class _GridTemplateModelCopyWithImpl<$R> extends BaseCopyWith<GridTemplateModel, $R>
-    implements GridTemplateModelCopyWith<$R> {
-  _GridTemplateModelCopyWithImpl(GridTemplateModel value, Then<GridTemplateModel, $R> then) : super(value, then);
-
-  @override
-  $R call({Object? type = _none}) => _then(GridTemplateModel(type: or(type, _value.type)));
 }
 
 class SwipeTemplateModelMapper extends BaseMapper<SwipeTemplateModel> {
@@ -353,79 +259,157 @@ class _SwipeTemplateModelCopyWithImpl<$R> extends BaseCopyWith<SwipeTemplateMode
       showRightPage: showRightPage ?? _value.showRightPage));
 }
 
-class AnnouncementMapper extends BaseMapper<Announcement> {
-  AnnouncementMapper._();
+class TripMapper extends BaseMapper<Trip> {
+  TripMapper._();
 
   @override
   Function get decoder => decode;
-  Announcement decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  Announcement fromMap(Map<String, dynamic> map) => Announcement(
-      title: map.getOpt('title'),
-      message: map.get('message'),
-      textColor: map.getOpt('textColor'),
-      backgroundColor: map.getOpt('backgroundColor'),
-      isDismissible: map.getOpt('isDismissible') ?? false);
+  Trip decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  Trip fromMap(Map<String, dynamic> map) => Trip(
+      id: map.get('id'),
+      name: map.get('name'),
+      pictureUrl: map.getOpt('pictureUrl'),
+      template: map.get('template'),
+      theme: map.getOpt('theme') ?? const ThemeModel(),
+      users: map.getMapOpt('users') ?? const {},
+      modules: map.getMapOpt('modules') ?? const {});
 
   @override
-  Function get encoder => (Announcement v) => encode(v);
-  dynamic encode(Announcement v) => toMap(v);
-  Map<String, dynamic> toMap(Announcement a) => {
-        'title': Mapper.toValue(a.title),
-        'message': Mapper.toValue(a.message),
-        'textColor': Mapper.toValue(a.textColor),
-        'backgroundColor': Mapper.toValue(a.backgroundColor),
-        'isDismissible': Mapper.toValue(a.isDismissible)
+  Function get encoder => (Trip v) => encode(v);
+  dynamic encode(Trip v) => toMap(v);
+  Map<String, dynamic> toMap(Trip t) => {
+        'id': Mapper.toValue(t.id),
+        'name': Mapper.toValue(t.name),
+        'pictureUrl': Mapper.toValue(t.pictureUrl),
+        'template': Mapper.toValue(t.template),
+        'theme': Mapper.toValue(t.theme),
+        'users': Mapper.toValue(t.users),
+        'modules': Mapper.toValue(t.modules)
       };
 
   @override
-  String? stringify(Announcement self) =>
-      'Announcement(title: ${Mapper.asString(self.title)}, message: ${Mapper.asString(self.message)}, textColor: ${Mapper.asString(self.textColor)}, backgroundColor: ${Mapper.asString(self.backgroundColor)}, isDismissible: ${Mapper.asString(self.isDismissible)})';
+  String? stringify(Trip self) =>
+      'Trip(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, template: ${Mapper.asString(self.template)}, theme: ${Mapper.asString(self.theme)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)})';
   @override
-  int? hash(Announcement self) =>
-      Mapper.hash(self.title) ^
-      Mapper.hash(self.message) ^
-      Mapper.hash(self.textColor) ^
-      Mapper.hash(self.backgroundColor) ^
-      Mapper.hash(self.isDismissible);
+  int? hash(Trip self) =>
+      Mapper.hash(self.id) ^
+      Mapper.hash(self.name) ^
+      Mapper.hash(self.pictureUrl) ^
+      Mapper.hash(self.template) ^
+      Mapper.hash(self.theme) ^
+      Mapper.hash(self.users) ^
+      Mapper.hash(self.modules);
   @override
-  bool? equals(Announcement self, Announcement other) =>
-      Mapper.isEqual(self.title, other.title) &&
-      Mapper.isEqual(self.message, other.message) &&
-      Mapper.isEqual(self.textColor, other.textColor) &&
-      Mapper.isEqual(self.backgroundColor, other.backgroundColor) &&
-      Mapper.isEqual(self.isDismissible, other.isDismissible);
+  bool? equals(Trip self, Trip other) =>
+      Mapper.isEqual(self.id, other.id) &&
+      Mapper.isEqual(self.name, other.name) &&
+      Mapper.isEqual(self.pictureUrl, other.pictureUrl) &&
+      Mapper.isEqual(self.template, other.template) &&
+      Mapper.isEqual(self.theme, other.theme) &&
+      Mapper.isEqual(self.users, other.users) &&
+      Mapper.isEqual(self.modules, other.modules);
 
   @override
-  Function get typeFactory => (f) => f<Announcement>();
+  Function get typeFactory => (f) => f<Trip>();
 }
 
-extension AnnouncementMapperExtension on Announcement {
+extension TripMapperExtension on Trip {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-  AnnouncementCopyWith<Announcement> get copyWith => AnnouncementCopyWith(this, _$identity);
+  TripCopyWith<Trip> get copyWith => TripCopyWith(this, _$identity);
 }
 
-abstract class AnnouncementCopyWith<$R> {
-  factory AnnouncementCopyWith(Announcement value, Then<Announcement, $R> then) = _AnnouncementCopyWithImpl<$R>;
-  $R call({String? title, String? message, Color? textColor, Color? backgroundColor, bool? isDismissible});
+abstract class TripCopyWith<$R> {
+  factory TripCopyWith(Trip value, Then<Trip, $R> then) = _TripCopyWithImpl<$R>;
+  ThemeModelCopyWith<$R> get theme;
+  $R call(
+      {String? id,
+      String? name,
+      String? pictureUrl,
+      TemplateModel? template,
+      ThemeModel? theme,
+      Map<String, TripUser>? users,
+      Map<String, List<String>>? modules});
 }
 
-class _AnnouncementCopyWithImpl<$R> extends BaseCopyWith<Announcement, $R> implements AnnouncementCopyWith<$R> {
-  _AnnouncementCopyWithImpl(Announcement value, Then<Announcement, $R> then) : super(value, then);
+class _TripCopyWithImpl<$R> extends BaseCopyWith<Trip, $R> implements TripCopyWith<$R> {
+  _TripCopyWithImpl(Trip value, Then<Trip, $R> then) : super(value, then);
 
   @override
+  ThemeModelCopyWith<$R> get theme => ThemeModelCopyWith(_value.theme, (v) => call(theme: v));
+  @override
   $R call(
-          {Object? title = _none,
-          String? message,
-          Object? textColor = _none,
-          Object? backgroundColor = _none,
-          bool? isDismissible}) =>
-      _then(Announcement(
-          title: or(title, _value.title),
-          message: message ?? _value.message,
-          textColor: or(textColor, _value.textColor),
-          backgroundColor: or(backgroundColor, _value.backgroundColor),
-          isDismissible: isDismissible ?? _value.isDismissible));
+          {String? id,
+          String? name,
+          Object? pictureUrl = _none,
+          TemplateModel? template,
+          ThemeModel? theme,
+          Map<String, TripUser>? users,
+          Map<String, List<String>>? modules}) =>
+      _then(Trip(
+          id: id ?? _value.id,
+          name: name ?? _value.name,
+          pictureUrl: or(pictureUrl, _value.pictureUrl),
+          template: template ?? _value.template,
+          theme: theme ?? _value.theme,
+          users: users ?? _value.users,
+          modules: modules ?? _value.modules));
+}
+
+class TripUserMapper extends BaseMapper<TripUser> {
+  TripUserMapper._();
+
+  @override
+  Function get decoder => decode;
+  TripUser decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  TripUser fromMap(Map<String, dynamic> map) => TripUser(
+      role: map.getOpt('role') ?? UserRoles.participant,
+      nickname: map.getOpt('nickname'),
+      profileUrl: map.getOpt('profileUrl'));
+
+  @override
+  Function get encoder => (TripUser v) => encode(v);
+  dynamic encode(TripUser v) => toMap(v);
+  Map<String, dynamic> toMap(TripUser t) => {
+        'role': Mapper.toValue(t.role),
+        'nickname': Mapper.toValue(t.nickname),
+        'profileUrl': Mapper.toValue(t.profileUrl)
+      };
+
+  @override
+  String? stringify(TripUser self) =>
+      'TripUser(role: ${Mapper.asString(self.role)}, nickname: ${Mapper.asString(self.nickname)}, profileUrl: ${Mapper.asString(self.profileUrl)})';
+  @override
+  int? hash(TripUser self) => Mapper.hash(self.role) ^ Mapper.hash(self.nickname) ^ Mapper.hash(self.profileUrl);
+  @override
+  bool? equals(TripUser self, TripUser other) =>
+      Mapper.isEqual(self.role, other.role) &&
+      Mapper.isEqual(self.nickname, other.nickname) &&
+      Mapper.isEqual(self.profileUrl, other.profileUrl);
+
+  @override
+  Function get typeFactory => (f) => f<TripUser>();
+}
+
+extension TripUserMapperExtension on TripUser {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  TripUserCopyWith<TripUser> get copyWith => TripUserCopyWith(this, _$identity);
+}
+
+abstract class TripUserCopyWith<$R> {
+  factory TripUserCopyWith(TripUser value, Then<TripUser, $R> then) = _TripUserCopyWithImpl<$R>;
+  $R call({String? role, String? nickname, String? profileUrl});
+}
+
+class _TripUserCopyWithImpl<$R> extends BaseCopyWith<TripUser, $R> implements TripUserCopyWith<$R> {
+  _TripUserCopyWithImpl(TripUser value, Then<TripUser, $R> then) : super(value, then);
+
+  @override
+  $R call({String? role, Object? nickname = _none, Object? profileUrl = _none}) => _then(TripUser(
+      role: role ?? _value.role,
+      nickname: or(nickname, _value.nickname),
+      profileUrl: or(profileUrl, _value.profileUrl)));
 }
 
 class TheButtonStateMapper extends BaseMapper<TheButtonState> {
@@ -574,6 +558,557 @@ class _NoteCopyWithImpl<$R> extends BaseCopyWith<Note, $R> implements NoteCopyWi
           isArchived: isArchived ?? _value.isArchived,
           author: author ?? _value.author,
           editors: editors ?? _value.editors));
+}
+
+class AnnouncementMapper extends BaseMapper<Announcement> {
+  AnnouncementMapper._();
+
+  @override
+  Function get decoder => decode;
+  Announcement decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  Announcement fromMap(Map<String, dynamic> map) => Announcement(
+      title: map.getOpt('title'),
+      message: map.get('message'),
+      textColor: map.getOpt('textColor'),
+      backgroundColor: map.getOpt('backgroundColor'),
+      isDismissible: map.getOpt('isDismissible') ?? false);
+
+  @override
+  Function get encoder => (Announcement v) => encode(v);
+  dynamic encode(Announcement v) => toMap(v);
+  Map<String, dynamic> toMap(Announcement a) => {
+        'title': Mapper.toValue(a.title),
+        'message': Mapper.toValue(a.message),
+        'textColor': Mapper.toValue(a.textColor),
+        'backgroundColor': Mapper.toValue(a.backgroundColor),
+        'isDismissible': Mapper.toValue(a.isDismissible)
+      };
+
+  @override
+  String? stringify(Announcement self) =>
+      'Announcement(title: ${Mapper.asString(self.title)}, message: ${Mapper.asString(self.message)}, textColor: ${Mapper.asString(self.textColor)}, backgroundColor: ${Mapper.asString(self.backgroundColor)}, isDismissible: ${Mapper.asString(self.isDismissible)})';
+  @override
+  int? hash(Announcement self) =>
+      Mapper.hash(self.title) ^
+      Mapper.hash(self.message) ^
+      Mapper.hash(self.textColor) ^
+      Mapper.hash(self.backgroundColor) ^
+      Mapper.hash(self.isDismissible);
+  @override
+  bool? equals(Announcement self, Announcement other) =>
+      Mapper.isEqual(self.title, other.title) &&
+      Mapper.isEqual(self.message, other.message) &&
+      Mapper.isEqual(self.textColor, other.textColor) &&
+      Mapper.isEqual(self.backgroundColor, other.backgroundColor) &&
+      Mapper.isEqual(self.isDismissible, other.isDismissible);
+
+  @override
+  Function get typeFactory => (f) => f<Announcement>();
+}
+
+extension AnnouncementMapperExtension on Announcement {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  AnnouncementCopyWith<Announcement> get copyWith => AnnouncementCopyWith(this, _$identity);
+}
+
+abstract class AnnouncementCopyWith<$R> {
+  factory AnnouncementCopyWith(Announcement value, Then<Announcement, $R> then) = _AnnouncementCopyWithImpl<$R>;
+  $R call({String? title, String? message, Color? textColor, Color? backgroundColor, bool? isDismissible});
+}
+
+class _AnnouncementCopyWithImpl<$R> extends BaseCopyWith<Announcement, $R> implements AnnouncementCopyWith<$R> {
+  _AnnouncementCopyWithImpl(Announcement value, Then<Announcement, $R> then) : super(value, then);
+
+  @override
+  $R call(
+          {Object? title = _none,
+          String? message,
+          Object? textColor = _none,
+          Object? backgroundColor = _none,
+          bool? isDismissible}) =>
+      _then(Announcement(
+          title: or(title, _value.title),
+          message: message ?? _value.message,
+          textColor: or(textColor, _value.textColor),
+          backgroundColor: or(backgroundColor, _value.backgroundColor),
+          isDismissible: isDismissible ?? _value.isDismissible));
+}
+
+class MusicConfigMapper extends BaseMapper<MusicConfig> {
+  MusicConfigMapper._();
+
+  @override
+  Function get decoder => decode;
+  MusicConfig decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  MusicConfig fromMap(Map<String, dynamic> map) => MusicConfig(
+      credentials: map.getOpt('credentials'), player: map.getOpt('player'), playlist: map.getOpt('playlist'));
+
+  @override
+  Function get encoder => (MusicConfig v) => encode(v);
+  dynamic encode(MusicConfig v) => toMap(v);
+  Map<String, dynamic> toMap(MusicConfig m) => {
+        'credentials': Mapper.toValue(m.credentials),
+        'player': Mapper.toValue(m.player),
+        'playlist': Mapper.toValue(m.playlist)
+      };
+
+  @override
+  String? stringify(MusicConfig self) =>
+      'MusicConfig(credentials: ${Mapper.asString(self.credentials)}, playlist: ${Mapper.asString(self.playlist)}, player: ${Mapper.asString(self.player)})';
+  @override
+  int? hash(MusicConfig self) => Mapper.hash(self.credentials) ^ Mapper.hash(self.player) ^ Mapper.hash(self.playlist);
+  @override
+  bool? equals(MusicConfig self, MusicConfig other) =>
+      Mapper.isEqual(self.credentials, other.credentials) &&
+      Mapper.isEqual(self.player, other.player) &&
+      Mapper.isEqual(self.playlist, other.playlist);
+
+  @override
+  Function get typeFactory => (f) => f<MusicConfig>();
+}
+
+extension MusicConfigMapperExtension on MusicConfig {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  MusicConfigCopyWith<MusicConfig> get copyWith => MusicConfigCopyWith(this, _$identity);
+}
+
+abstract class MusicConfigCopyWith<$R> {
+  factory MusicConfigCopyWith(MusicConfig value, Then<MusicConfig, $R> then) = _MusicConfigCopyWithImpl<$R>;
+  SpotifyCredentialsCopyWith<$R>? get credentials;
+  SpotifyPlayerCopyWith<$R>? get player;
+  SpotifyPlaylistCopyWith<$R>? get playlist;
+  $R call({SpotifyCredentials? credentials, SpotifyPlayer? player, SpotifyPlaylist? playlist});
+}
+
+class _MusicConfigCopyWithImpl<$R> extends BaseCopyWith<MusicConfig, $R> implements MusicConfigCopyWith<$R> {
+  _MusicConfigCopyWithImpl(MusicConfig value, Then<MusicConfig, $R> then) : super(value, then);
+
+  @override
+  SpotifyCredentialsCopyWith<$R>? get credentials =>
+      _value.credentials != null ? SpotifyCredentialsCopyWith(_value.credentials!, (v) => call(credentials: v)) : null;
+  @override
+  SpotifyPlayerCopyWith<$R>? get player =>
+      _value.player != null ? SpotifyPlayerCopyWith(_value.player!, (v) => call(player: v)) : null;
+  @override
+  SpotifyPlaylistCopyWith<$R>? get playlist =>
+      _value.playlist != null ? SpotifyPlaylistCopyWith(_value.playlist!, (v) => call(playlist: v)) : null;
+  @override
+  $R call({Object? credentials = _none, Object? player = _none, Object? playlist = _none}) => _then(MusicConfig(
+      credentials: or(credentials, _value.credentials),
+      player: or(player, _value.player),
+      playlist: or(playlist, _value.playlist)));
+}
+
+class SpotifyPlayerMapper extends BaseMapper<SpotifyPlayer> {
+  SpotifyPlayerMapper._();
+
+  @override
+  Function get decoder => decode;
+  SpotifyPlayer decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SpotifyPlayer fromMap(Map<String, dynamic> map) =>
+      SpotifyPlayer(map.get('track'), map.get('isPlaying'), map.getOpt('progressMs'));
+
+  @override
+  Function get encoder => (SpotifyPlayer v) => encode(v);
+  dynamic encode(SpotifyPlayer v) => toMap(v);
+  Map<String, dynamic> toMap(SpotifyPlayer s) => {
+        'track': Mapper.toValue(s.track),
+        'isPlaying': Mapper.toValue(s.isPlaying),
+        'progressMs': Mapper.toValue(s.progressMs)
+      };
+
+  @override
+  String? stringify(SpotifyPlayer self) =>
+      'SpotifyPlayer(track: ${Mapper.asString(self.track)}, isPlaying: ${Mapper.asString(self.isPlaying)}, progressMs: ${Mapper.asString(self.progressMs)})';
+  @override
+  int? hash(SpotifyPlayer self) => Mapper.hash(self.track) ^ Mapper.hash(self.isPlaying) ^ Mapper.hash(self.progressMs);
+  @override
+  bool? equals(SpotifyPlayer self, SpotifyPlayer other) =>
+      Mapper.isEqual(self.track, other.track) &&
+      Mapper.isEqual(self.isPlaying, other.isPlaying) &&
+      Mapper.isEqual(self.progressMs, other.progressMs);
+
+  @override
+  Function get typeFactory => (f) => f<SpotifyPlayer>();
+}
+
+extension SpotifyPlayerMapperExtension on SpotifyPlayer {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SpotifyPlayerCopyWith<SpotifyPlayer> get copyWith => SpotifyPlayerCopyWith(this, _$identity);
+}
+
+abstract class SpotifyPlayerCopyWith<$R> {
+  factory SpotifyPlayerCopyWith(SpotifyPlayer value, Then<SpotifyPlayer, $R> then) = _SpotifyPlayerCopyWithImpl<$R>;
+  SpotifyTrackCopyWith<$R> get track;
+  $R call({SpotifyTrack? track, bool? isPlaying, int? progressMs});
+}
+
+class _SpotifyPlayerCopyWithImpl<$R> extends BaseCopyWith<SpotifyPlayer, $R> implements SpotifyPlayerCopyWith<$R> {
+  _SpotifyPlayerCopyWithImpl(SpotifyPlayer value, Then<SpotifyPlayer, $R> then) : super(value, then);
+
+  @override
+  SpotifyTrackCopyWith<$R> get track => SpotifyTrackCopyWith(_value.track, (v) => call(track: v));
+  @override
+  $R call({SpotifyTrack? track, bool? isPlaying, Object? progressMs = _none}) =>
+      _then(SpotifyPlayer(track ?? _value.track, isPlaying ?? _value.isPlaying, or(progressMs, _value.progressMs)));
+}
+
+class SpotifyCredentialsMapper extends BaseMapper<SpotifyCredentials> {
+  SpotifyCredentialsMapper._();
+
+  @override
+  Function get decoder => decode;
+  SpotifyCredentials decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SpotifyCredentials fromMap(Map<String, dynamic> map) =>
+      SpotifyCredentials(map.get('accessToken'), map.get('refreshToken'), map.get('expiration'));
+
+  @override
+  Function get encoder => (SpotifyCredentials v) => encode(v);
+  dynamic encode(SpotifyCredentials v) => toMap(v);
+  Map<String, dynamic> toMap(SpotifyCredentials s) => {
+        'accessToken': Mapper.toValue(s.accessToken),
+        'refreshToken': Mapper.toValue(s.refreshToken),
+        'expiration': Mapper.toValue(s.expiration)
+      };
+
+  @override
+  String? stringify(SpotifyCredentials self) =>
+      'SpotifyCredentials(accessToken: ${Mapper.asString(self.accessToken)}, refreshToken: ${Mapper.asString(self.refreshToken)}, expiration: ${Mapper.asString(self.expiration)})';
+  @override
+  int? hash(SpotifyCredentials self) =>
+      Mapper.hash(self.accessToken) ^ Mapper.hash(self.refreshToken) ^ Mapper.hash(self.expiration);
+  @override
+  bool? equals(SpotifyCredentials self, SpotifyCredentials other) =>
+      Mapper.isEqual(self.accessToken, other.accessToken) &&
+      Mapper.isEqual(self.refreshToken, other.refreshToken) &&
+      Mapper.isEqual(self.expiration, other.expiration);
+
+  @override
+  Function get typeFactory => (f) => f<SpotifyCredentials>();
+}
+
+extension SpotifyCredentialsMapperExtension on SpotifyCredentials {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SpotifyCredentialsCopyWith<SpotifyCredentials> get copyWith => SpotifyCredentialsCopyWith(this, _$identity);
+}
+
+abstract class SpotifyCredentialsCopyWith<$R> {
+  factory SpotifyCredentialsCopyWith(SpotifyCredentials value, Then<SpotifyCredentials, $R> then) =
+      _SpotifyCredentialsCopyWithImpl<$R>;
+  $R call({String? accessToken, String? refreshToken, Timestamp? expiration});
+}
+
+class _SpotifyCredentialsCopyWithImpl<$R> extends BaseCopyWith<SpotifyCredentials, $R>
+    implements SpotifyCredentialsCopyWith<$R> {
+  _SpotifyCredentialsCopyWithImpl(SpotifyCredentials value, Then<SpotifyCredentials, $R> then) : super(value, then);
+
+  @override
+  $R call({String? accessToken, String? refreshToken, Timestamp? expiration}) => _then(SpotifyCredentials(
+      accessToken ?? _value.accessToken, refreshToken ?? _value.refreshToken, expiration ?? _value.expiration));
+}
+
+class SpotifyPlaylistMapper extends BaseMapper<SpotifyPlaylist> {
+  SpotifyPlaylistMapper._();
+
+  @override
+  Function get decoder => decode;
+  SpotifyPlaylist decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SpotifyPlaylist fromMap(Map<String, dynamic> map) => SpotifyPlaylist(map.get('id'), map.get('name'),
+      map.getList('images'), map.get('uri'), map.get('spotifyUrl'), map.getList('tracks'));
+
+  @override
+  Function get encoder => (SpotifyPlaylist v) => encode(v);
+  dynamic encode(SpotifyPlaylist v) => toMap(v);
+  Map<String, dynamic> toMap(SpotifyPlaylist s) => {
+        'id': Mapper.toValue(s.id),
+        'name': Mapper.toValue(s.name),
+        'images': Mapper.toValue(s.images),
+        'uri': Mapper.toValue(s.uri),
+        'spotifyUrl': Mapper.toValue(s.spotifyUrl),
+        'tracks': Mapper.toValue(s.tracks)
+      };
+
+  @override
+  String? stringify(SpotifyPlaylist self) =>
+      'SpotifyPlaylist(id: ${Mapper.asString(self.id)}, name: ${Mapper.asString(self.name)}, images: ${Mapper.asString(self.images)}, uri: ${Mapper.asString(self.uri)}, spotifyUrl: ${Mapper.asString(self.spotifyUrl)}, tracks: ${Mapper.asString(self.tracks)})';
+  @override
+  int? hash(SpotifyPlaylist self) =>
+      Mapper.hash(self.id) ^
+      Mapper.hash(self.name) ^
+      Mapper.hash(self.images) ^
+      Mapper.hash(self.uri) ^
+      Mapper.hash(self.spotifyUrl) ^
+      Mapper.hash(self.tracks);
+  @override
+  bool? equals(SpotifyPlaylist self, SpotifyPlaylist other) =>
+      Mapper.isEqual(self.id, other.id) &&
+      Mapper.isEqual(self.name, other.name) &&
+      Mapper.isEqual(self.images, other.images) &&
+      Mapper.isEqual(self.uri, other.uri) &&
+      Mapper.isEqual(self.spotifyUrl, other.spotifyUrl) &&
+      Mapper.isEqual(self.tracks, other.tracks);
+
+  @override
+  Function get typeFactory => (f) => f<SpotifyPlaylist>();
+}
+
+extension SpotifyPlaylistMapperExtension on SpotifyPlaylist {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SpotifyPlaylistCopyWith<SpotifyPlaylist> get copyWith => SpotifyPlaylistCopyWith(this, _$identity);
+}
+
+abstract class SpotifyPlaylistCopyWith<$R> {
+  factory SpotifyPlaylistCopyWith(SpotifyPlaylist value, Then<SpotifyPlaylist, $R> then) =
+      _SpotifyPlaylistCopyWithImpl<$R>;
+  $R call(
+      {String? id,
+      String? name,
+      List<SpotifyImage>? images,
+      String? uri,
+      String? spotifyUrl,
+      List<SpotifyTrack>? tracks});
+}
+
+class _SpotifyPlaylistCopyWithImpl<$R> extends BaseCopyWith<SpotifyPlaylist, $R>
+    implements SpotifyPlaylistCopyWith<$R> {
+  _SpotifyPlaylistCopyWithImpl(SpotifyPlaylist value, Then<SpotifyPlaylist, $R> then) : super(value, then);
+
+  @override
+  $R call(
+          {String? id,
+          String? name,
+          List<SpotifyImage>? images,
+          String? uri,
+          String? spotifyUrl,
+          List<SpotifyTrack>? tracks}) =>
+      _then(SpotifyPlaylist(id ?? _value.id, name ?? _value.name, images ?? _value.images, uri ?? _value.uri,
+          spotifyUrl ?? _value.spotifyUrl, tracks ?? _value.tracks));
+}
+
+class SpotifyTrackMapper extends BaseMapper<SpotifyTrack> {
+  SpotifyTrackMapper._();
+
+  @override
+  Function get decoder => decode;
+  SpotifyTrack decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SpotifyTrack fromMap(Map<String, dynamic> map) => SpotifyTrack(
+      map.get('name'), map.get('id'), map.get('uri'), map.get('album'), map.getList('artists'), map.get('durationMs'));
+
+  @override
+  Function get encoder => (SpotifyTrack v) => encode(v);
+  dynamic encode(SpotifyTrack v) => toMap(v);
+  Map<String, dynamic> toMap(SpotifyTrack s) => {
+        'name': Mapper.toValue(s.name),
+        'id': Mapper.toValue(s.id),
+        'uri': Mapper.toValue(s.uri),
+        'album': Mapper.toValue(s.album),
+        'artists': Mapper.toValue(s.artists),
+        'durationMs': Mapper.toValue(s.durationMs)
+      };
+
+  @override
+  String? stringify(SpotifyTrack self) =>
+      'SpotifyTrack(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, uri: ${Mapper.asString(self.uri)}, album: ${Mapper.asString(self.album)}, artists: ${Mapper.asString(self.artists)}, durationMs: ${Mapper.asString(self.durationMs)})';
+  @override
+  int? hash(SpotifyTrack self) =>
+      Mapper.hash(self.name) ^
+      Mapper.hash(self.id) ^
+      Mapper.hash(self.uri) ^
+      Mapper.hash(self.album) ^
+      Mapper.hash(self.artists) ^
+      Mapper.hash(self.durationMs);
+  @override
+  bool? equals(SpotifyTrack self, SpotifyTrack other) =>
+      Mapper.isEqual(self.name, other.name) &&
+      Mapper.isEqual(self.id, other.id) &&
+      Mapper.isEqual(self.uri, other.uri) &&
+      Mapper.isEqual(self.album, other.album) &&
+      Mapper.isEqual(self.artists, other.artists) &&
+      Mapper.isEqual(self.durationMs, other.durationMs);
+
+  @override
+  Function get typeFactory => (f) => f<SpotifyTrack>();
+}
+
+extension SpotifyTrackMapperExtension on SpotifyTrack {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SpotifyTrackCopyWith<SpotifyTrack> get copyWith => SpotifyTrackCopyWith(this, _$identity);
+}
+
+abstract class SpotifyTrackCopyWith<$R> {
+  factory SpotifyTrackCopyWith(SpotifyTrack value, Then<SpotifyTrack, $R> then) = _SpotifyTrackCopyWithImpl<$R>;
+  SpotifyAlbumCopyWith<$R> get album;
+  $R call({String? name, String? id, String? uri, SpotifyAlbum? album, List<SpotifyArtist>? artists, int? durationMs});
+}
+
+class _SpotifyTrackCopyWithImpl<$R> extends BaseCopyWith<SpotifyTrack, $R> implements SpotifyTrackCopyWith<$R> {
+  _SpotifyTrackCopyWithImpl(SpotifyTrack value, Then<SpotifyTrack, $R> then) : super(value, then);
+
+  @override
+  SpotifyAlbumCopyWith<$R> get album => SpotifyAlbumCopyWith(_value.album, (v) => call(album: v));
+  @override
+  $R call(
+          {String? name,
+          String? id,
+          String? uri,
+          SpotifyAlbum? album,
+          List<SpotifyArtist>? artists,
+          int? durationMs}) =>
+      _then(SpotifyTrack(name ?? _value.name, id ?? _value.id, uri ?? _value.uri, album ?? _value.album,
+          artists ?? _value.artists, durationMs ?? _value.durationMs));
+}
+
+class SpotifyAlbumMapper extends BaseMapper<SpotifyAlbum> {
+  SpotifyAlbumMapper._();
+
+  @override
+  Function get decoder => decode;
+  SpotifyAlbum decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SpotifyAlbum fromMap(Map<String, dynamic> map) =>
+      SpotifyAlbum(map.get('id'), map.get('uri'), map.get('name'), map.getList('images'));
+
+  @override
+  Function get encoder => (SpotifyAlbum v) => encode(v);
+  dynamic encode(SpotifyAlbum v) => toMap(v);
+  Map<String, dynamic> toMap(SpotifyAlbum s) => {
+        'id': Mapper.toValue(s.id),
+        'uri': Mapper.toValue(s.uri),
+        'name': Mapper.toValue(s.name),
+        'images': Mapper.toValue(s.images)
+      };
+
+  @override
+  String? stringify(SpotifyAlbum self) =>
+      'SpotifyAlbum(id: ${Mapper.asString(self.id)}, uri: ${Mapper.asString(self.uri)}, name: ${Mapper.asString(self.name)}, images: ${Mapper.asString(self.images)})';
+  @override
+  int? hash(SpotifyAlbum self) =>
+      Mapper.hash(self.id) ^ Mapper.hash(self.uri) ^ Mapper.hash(self.name) ^ Mapper.hash(self.images);
+  @override
+  bool? equals(SpotifyAlbum self, SpotifyAlbum other) =>
+      Mapper.isEqual(self.id, other.id) &&
+      Mapper.isEqual(self.uri, other.uri) &&
+      Mapper.isEqual(self.name, other.name) &&
+      Mapper.isEqual(self.images, other.images);
+
+  @override
+  Function get typeFactory => (f) => f<SpotifyAlbum>();
+}
+
+extension SpotifyAlbumMapperExtension on SpotifyAlbum {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SpotifyAlbumCopyWith<SpotifyAlbum> get copyWith => SpotifyAlbumCopyWith(this, _$identity);
+}
+
+abstract class SpotifyAlbumCopyWith<$R> {
+  factory SpotifyAlbumCopyWith(SpotifyAlbum value, Then<SpotifyAlbum, $R> then) = _SpotifyAlbumCopyWithImpl<$R>;
+  $R call({String? id, String? uri, String? name, List<SpotifyImage>? images});
+}
+
+class _SpotifyAlbumCopyWithImpl<$R> extends BaseCopyWith<SpotifyAlbum, $R> implements SpotifyAlbumCopyWith<$R> {
+  _SpotifyAlbumCopyWithImpl(SpotifyAlbum value, Then<SpotifyAlbum, $R> then) : super(value, then);
+
+  @override
+  $R call({String? id, String? uri, String? name, List<SpotifyImage>? images}) =>
+      _then(SpotifyAlbum(id ?? _value.id, uri ?? _value.uri, name ?? _value.name, images ?? _value.images));
+}
+
+class SpotifyImageMapper extends BaseMapper<SpotifyImage> {
+  SpotifyImageMapper._();
+
+  @override
+  Function get decoder => decode;
+  SpotifyImage decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SpotifyImage fromMap(Map<String, dynamic> map) => SpotifyImage(map.get('height'), map.get('width'), map.get('url'));
+
+  @override
+  Function get encoder => (SpotifyImage v) => encode(v);
+  dynamic encode(SpotifyImage v) => toMap(v);
+  Map<String, dynamic> toMap(SpotifyImage s) =>
+      {'height': Mapper.toValue(s.height), 'width': Mapper.toValue(s.width), 'url': Mapper.toValue(s.url)};
+
+  @override
+  String? stringify(SpotifyImage self) =>
+      'SpotifyImage(height: ${Mapper.asString(self.height)}, width: ${Mapper.asString(self.width)}, url: ${Mapper.asString(self.url)})';
+  @override
+  int? hash(SpotifyImage self) => Mapper.hash(self.height) ^ Mapper.hash(self.width) ^ Mapper.hash(self.url);
+  @override
+  bool? equals(SpotifyImage self, SpotifyImage other) =>
+      Mapper.isEqual(self.height, other.height) &&
+      Mapper.isEqual(self.width, other.width) &&
+      Mapper.isEqual(self.url, other.url);
+
+  @override
+  Function get typeFactory => (f) => f<SpotifyImage>();
+}
+
+extension SpotifyImageMapperExtension on SpotifyImage {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SpotifyImageCopyWith<SpotifyImage> get copyWith => SpotifyImageCopyWith(this, _$identity);
+}
+
+abstract class SpotifyImageCopyWith<$R> {
+  factory SpotifyImageCopyWith(SpotifyImage value, Then<SpotifyImage, $R> then) = _SpotifyImageCopyWithImpl<$R>;
+  $R call({int? height, int? width, String? url});
+}
+
+class _SpotifyImageCopyWithImpl<$R> extends BaseCopyWith<SpotifyImage, $R> implements SpotifyImageCopyWith<$R> {
+  _SpotifyImageCopyWithImpl(SpotifyImage value, Then<SpotifyImage, $R> then) : super(value, then);
+
+  @override
+  $R call({int? height, int? width, String? url}) =>
+      _then(SpotifyImage(height ?? _value.height, width ?? _value.width, url ?? _value.url));
+}
+
+class SpotifyArtistMapper extends BaseMapper<SpotifyArtist> {
+  SpotifyArtistMapper._();
+
+  @override
+  Function get decoder => decode;
+  SpotifyArtist decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SpotifyArtist fromMap(Map<String, dynamic> map) => SpotifyArtist(map.get('id'), map.get('name'));
+
+  @override
+  Function get encoder => (SpotifyArtist v) => encode(v);
+  dynamic encode(SpotifyArtist v) => toMap(v);
+  Map<String, dynamic> toMap(SpotifyArtist s) => {'id': Mapper.toValue(s.id), 'name': Mapper.toValue(s.name)};
+
+  @override
+  String? stringify(SpotifyArtist self) =>
+      'SpotifyArtist(id: ${Mapper.asString(self.id)}, name: ${Mapper.asString(self.name)})';
+  @override
+  int? hash(SpotifyArtist self) => Mapper.hash(self.id) ^ Mapper.hash(self.name);
+  @override
+  bool? equals(SpotifyArtist self, SpotifyArtist other) =>
+      Mapper.isEqual(self.id, other.id) && Mapper.isEqual(self.name, other.name);
+
+  @override
+  Function get typeFactory => (f) => f<SpotifyArtist>();
+}
+
+extension SpotifyArtistMapperExtension on SpotifyArtist {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SpotifyArtistCopyWith<SpotifyArtist> get copyWith => SpotifyArtistCopyWith(this, _$identity);
+}
+
+abstract class SpotifyArtistCopyWith<$R> {
+  factory SpotifyArtistCopyWith(SpotifyArtist value, Then<SpotifyArtist, $R> then) = _SpotifyArtistCopyWithImpl<$R>;
+  $R call({String? id, String? name});
+}
+
+class _SpotifyArtistCopyWithImpl<$R> extends BaseCopyWith<SpotifyArtist, $R> implements SpotifyArtistCopyWith<$R> {
+  _SpotifyArtistCopyWithImpl(SpotifyArtist value, Then<SpotifyArtist, $R> then) : super(value, then);
+
+  @override
+  $R call({String? id, String? name}) => _then(SpotifyArtist(id ?? _value.id, name ?? _value.name));
 }
 
 class AlbumShortcutMapper extends BaseMapper<AlbumShortcut> {
@@ -1109,482 +1644,6 @@ class _ChatFileMessageCopyWithImpl<$R> extends BaseCopyWith<ChatFileMessage, $R>
       sender: sender ?? _value.sender,
       text: text ?? _value.text,
       sentAt: sentAt ?? _value.sentAt));
-}
-
-class MusicConfigMapper extends BaseMapper<MusicConfig> {
-  MusicConfigMapper._();
-
-  @override
-  Function get decoder => decode;
-  MusicConfig decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  MusicConfig fromMap(Map<String, dynamic> map) => MusicConfig(
-      credentials: map.getOpt('credentials'), player: map.getOpt('player'), playlist: map.getOpt('playlist'));
-
-  @override
-  Function get encoder => (MusicConfig v) => encode(v);
-  dynamic encode(MusicConfig v) => toMap(v);
-  Map<String, dynamic> toMap(MusicConfig m) => {
-        'credentials': Mapper.toValue(m.credentials),
-        'player': Mapper.toValue(m.player),
-        'playlist': Mapper.toValue(m.playlist)
-      };
-
-  @override
-  String? stringify(MusicConfig self) =>
-      'MusicConfig(credentials: ${Mapper.asString(self.credentials)}, playlist: ${Mapper.asString(self.playlist)}, player: ${Mapper.asString(self.player)})';
-  @override
-  int? hash(MusicConfig self) => Mapper.hash(self.credentials) ^ Mapper.hash(self.player) ^ Mapper.hash(self.playlist);
-  @override
-  bool? equals(MusicConfig self, MusicConfig other) =>
-      Mapper.isEqual(self.credentials, other.credentials) &&
-      Mapper.isEqual(self.player, other.player) &&
-      Mapper.isEqual(self.playlist, other.playlist);
-
-  @override
-  Function get typeFactory => (f) => f<MusicConfig>();
-}
-
-extension MusicConfigMapperExtension on MusicConfig {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  MusicConfigCopyWith<MusicConfig> get copyWith => MusicConfigCopyWith(this, _$identity);
-}
-
-abstract class MusicConfigCopyWith<$R> {
-  factory MusicConfigCopyWith(MusicConfig value, Then<MusicConfig, $R> then) = _MusicConfigCopyWithImpl<$R>;
-  SpotifyCredentialsCopyWith<$R>? get credentials;
-  SpotifyPlayerCopyWith<$R>? get player;
-  SpotifyPlaylistCopyWith<$R>? get playlist;
-  $R call({SpotifyCredentials? credentials, SpotifyPlayer? player, SpotifyPlaylist? playlist});
-}
-
-class _MusicConfigCopyWithImpl<$R> extends BaseCopyWith<MusicConfig, $R> implements MusicConfigCopyWith<$R> {
-  _MusicConfigCopyWithImpl(MusicConfig value, Then<MusicConfig, $R> then) : super(value, then);
-
-  @override
-  SpotifyCredentialsCopyWith<$R>? get credentials =>
-      _value.credentials != null ? SpotifyCredentialsCopyWith(_value.credentials!, (v) => call(credentials: v)) : null;
-  @override
-  SpotifyPlayerCopyWith<$R>? get player =>
-      _value.player != null ? SpotifyPlayerCopyWith(_value.player!, (v) => call(player: v)) : null;
-  @override
-  SpotifyPlaylistCopyWith<$R>? get playlist =>
-      _value.playlist != null ? SpotifyPlaylistCopyWith(_value.playlist!, (v) => call(playlist: v)) : null;
-  @override
-  $R call({Object? credentials = _none, Object? player = _none, Object? playlist = _none}) => _then(MusicConfig(
-      credentials: or(credentials, _value.credentials),
-      player: or(player, _value.player),
-      playlist: or(playlist, _value.playlist)));
-}
-
-class SpotifyPlayerMapper extends BaseMapper<SpotifyPlayer> {
-  SpotifyPlayerMapper._();
-
-  @override
-  Function get decoder => decode;
-  SpotifyPlayer decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SpotifyPlayer fromMap(Map<String, dynamic> map) =>
-      SpotifyPlayer(map.get('track'), map.get('isPlaying'), map.getOpt('progressMs'));
-
-  @override
-  Function get encoder => (SpotifyPlayer v) => encode(v);
-  dynamic encode(SpotifyPlayer v) => toMap(v);
-  Map<String, dynamic> toMap(SpotifyPlayer s) => {
-        'track': Mapper.toValue(s.track),
-        'isPlaying': Mapper.toValue(s.isPlaying),
-        'progressMs': Mapper.toValue(s.progressMs)
-      };
-
-  @override
-  String? stringify(SpotifyPlayer self) =>
-      'SpotifyPlayer(track: ${Mapper.asString(self.track)}, isPlaying: ${Mapper.asString(self.isPlaying)}, progressMs: ${Mapper.asString(self.progressMs)})';
-  @override
-  int? hash(SpotifyPlayer self) => Mapper.hash(self.track) ^ Mapper.hash(self.isPlaying) ^ Mapper.hash(self.progressMs);
-  @override
-  bool? equals(SpotifyPlayer self, SpotifyPlayer other) =>
-      Mapper.isEqual(self.track, other.track) &&
-      Mapper.isEqual(self.isPlaying, other.isPlaying) &&
-      Mapper.isEqual(self.progressMs, other.progressMs);
-
-  @override
-  Function get typeFactory => (f) => f<SpotifyPlayer>();
-}
-
-extension SpotifyPlayerMapperExtension on SpotifyPlayer {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SpotifyPlayerCopyWith<SpotifyPlayer> get copyWith => SpotifyPlayerCopyWith(this, _$identity);
-}
-
-abstract class SpotifyPlayerCopyWith<$R> {
-  factory SpotifyPlayerCopyWith(SpotifyPlayer value, Then<SpotifyPlayer, $R> then) = _SpotifyPlayerCopyWithImpl<$R>;
-  SpotifyTrackCopyWith<$R> get track;
-  $R call({SpotifyTrack? track, bool? isPlaying, int? progressMs});
-}
-
-class _SpotifyPlayerCopyWithImpl<$R> extends BaseCopyWith<SpotifyPlayer, $R> implements SpotifyPlayerCopyWith<$R> {
-  _SpotifyPlayerCopyWithImpl(SpotifyPlayer value, Then<SpotifyPlayer, $R> then) : super(value, then);
-
-  @override
-  SpotifyTrackCopyWith<$R> get track => SpotifyTrackCopyWith(_value.track, (v) => call(track: v));
-  @override
-  $R call({SpotifyTrack? track, bool? isPlaying, Object? progressMs = _none}) =>
-      _then(SpotifyPlayer(track ?? _value.track, isPlaying ?? _value.isPlaying, or(progressMs, _value.progressMs)));
-}
-
-class SpotifyCredentialsMapper extends BaseMapper<SpotifyCredentials> {
-  SpotifyCredentialsMapper._();
-
-  @override
-  Function get decoder => decode;
-  SpotifyCredentials decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SpotifyCredentials fromMap(Map<String, dynamic> map) =>
-      SpotifyCredentials(map.get('accessToken'), map.get('refreshToken'), map.get('expiration'));
-
-  @override
-  Function get encoder => (SpotifyCredentials v) => encode(v);
-  dynamic encode(SpotifyCredentials v) => toMap(v);
-  Map<String, dynamic> toMap(SpotifyCredentials s) => {
-        'accessToken': Mapper.toValue(s.accessToken),
-        'refreshToken': Mapper.toValue(s.refreshToken),
-        'expiration': Mapper.toValue(s.expiration)
-      };
-
-  @override
-  String? stringify(SpotifyCredentials self) =>
-      'SpotifyCredentials(accessToken: ${Mapper.asString(self.accessToken)}, refreshToken: ${Mapper.asString(self.refreshToken)}, expiration: ${Mapper.asString(self.expiration)})';
-  @override
-  int? hash(SpotifyCredentials self) =>
-      Mapper.hash(self.accessToken) ^ Mapper.hash(self.refreshToken) ^ Mapper.hash(self.expiration);
-  @override
-  bool? equals(SpotifyCredentials self, SpotifyCredentials other) =>
-      Mapper.isEqual(self.accessToken, other.accessToken) &&
-      Mapper.isEqual(self.refreshToken, other.refreshToken) &&
-      Mapper.isEqual(self.expiration, other.expiration);
-
-  @override
-  Function get typeFactory => (f) => f<SpotifyCredentials>();
-}
-
-extension SpotifyCredentialsMapperExtension on SpotifyCredentials {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SpotifyCredentialsCopyWith<SpotifyCredentials> get copyWith => SpotifyCredentialsCopyWith(this, _$identity);
-}
-
-abstract class SpotifyCredentialsCopyWith<$R> {
-  factory SpotifyCredentialsCopyWith(SpotifyCredentials value, Then<SpotifyCredentials, $R> then) =
-      _SpotifyCredentialsCopyWithImpl<$R>;
-  $R call({String? accessToken, String? refreshToken, Timestamp? expiration});
-}
-
-class _SpotifyCredentialsCopyWithImpl<$R> extends BaseCopyWith<SpotifyCredentials, $R>
-    implements SpotifyCredentialsCopyWith<$R> {
-  _SpotifyCredentialsCopyWithImpl(SpotifyCredentials value, Then<SpotifyCredentials, $R> then) : super(value, then);
-
-  @override
-  $R call({String? accessToken, String? refreshToken, Timestamp? expiration}) => _then(SpotifyCredentials(
-      accessToken ?? _value.accessToken, refreshToken ?? _value.refreshToken, expiration ?? _value.expiration));
-}
-
-class SpotifyPlaylistMapper extends BaseMapper<SpotifyPlaylist> {
-  SpotifyPlaylistMapper._();
-
-  @override
-  Function get decoder => decode;
-  SpotifyPlaylist decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SpotifyPlaylist fromMap(Map<String, dynamic> map) => SpotifyPlaylist(map.get('id'), map.get('name'),
-      map.getList('images'), map.get('uri'), map.get('spotifyUrl'), map.getList('tracks'));
-
-  @override
-  Function get encoder => (SpotifyPlaylist v) => encode(v);
-  dynamic encode(SpotifyPlaylist v) => toMap(v);
-  Map<String, dynamic> toMap(SpotifyPlaylist s) => {
-        'id': Mapper.toValue(s.id),
-        'name': Mapper.toValue(s.name),
-        'images': Mapper.toValue(s.images),
-        'uri': Mapper.toValue(s.uri),
-        'spotifyUrl': Mapper.toValue(s.spotifyUrl),
-        'tracks': Mapper.toValue(s.tracks)
-      };
-
-  @override
-  String? stringify(SpotifyPlaylist self) =>
-      'SpotifyPlaylist(id: ${Mapper.asString(self.id)}, name: ${Mapper.asString(self.name)}, images: ${Mapper.asString(self.images)}, uri: ${Mapper.asString(self.uri)}, spotifyUrl: ${Mapper.asString(self.spotifyUrl)}, tracks: ${Mapper.asString(self.tracks)})';
-  @override
-  int? hash(SpotifyPlaylist self) =>
-      Mapper.hash(self.id) ^
-      Mapper.hash(self.name) ^
-      Mapper.hash(self.images) ^
-      Mapper.hash(self.uri) ^
-      Mapper.hash(self.spotifyUrl) ^
-      Mapper.hash(self.tracks);
-  @override
-  bool? equals(SpotifyPlaylist self, SpotifyPlaylist other) =>
-      Mapper.isEqual(self.id, other.id) &&
-      Mapper.isEqual(self.name, other.name) &&
-      Mapper.isEqual(self.images, other.images) &&
-      Mapper.isEqual(self.uri, other.uri) &&
-      Mapper.isEqual(self.spotifyUrl, other.spotifyUrl) &&
-      Mapper.isEqual(self.tracks, other.tracks);
-
-  @override
-  Function get typeFactory => (f) => f<SpotifyPlaylist>();
-}
-
-extension SpotifyPlaylistMapperExtension on SpotifyPlaylist {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SpotifyPlaylistCopyWith<SpotifyPlaylist> get copyWith => SpotifyPlaylistCopyWith(this, _$identity);
-}
-
-abstract class SpotifyPlaylistCopyWith<$R> {
-  factory SpotifyPlaylistCopyWith(SpotifyPlaylist value, Then<SpotifyPlaylist, $R> then) =
-      _SpotifyPlaylistCopyWithImpl<$R>;
-  $R call(
-      {String? id,
-      String? name,
-      List<SpotifyImage>? images,
-      String? uri,
-      String? spotifyUrl,
-      List<SpotifyTrack>? tracks});
-}
-
-class _SpotifyPlaylistCopyWithImpl<$R> extends BaseCopyWith<SpotifyPlaylist, $R>
-    implements SpotifyPlaylistCopyWith<$R> {
-  _SpotifyPlaylistCopyWithImpl(SpotifyPlaylist value, Then<SpotifyPlaylist, $R> then) : super(value, then);
-
-  @override
-  $R call(
-          {String? id,
-          String? name,
-          List<SpotifyImage>? images,
-          String? uri,
-          String? spotifyUrl,
-          List<SpotifyTrack>? tracks}) =>
-      _then(SpotifyPlaylist(id ?? _value.id, name ?? _value.name, images ?? _value.images, uri ?? _value.uri,
-          spotifyUrl ?? _value.spotifyUrl, tracks ?? _value.tracks));
-}
-
-class SpotifyTrackMapper extends BaseMapper<SpotifyTrack> {
-  SpotifyTrackMapper._();
-
-  @override
-  Function get decoder => decode;
-  SpotifyTrack decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SpotifyTrack fromMap(Map<String, dynamic> map) => SpotifyTrack(
-      map.get('name'), map.get('id'), map.get('uri'), map.get('album'), map.getList('artists'), map.get('durationMs'));
-
-  @override
-  Function get encoder => (SpotifyTrack v) => encode(v);
-  dynamic encode(SpotifyTrack v) => toMap(v);
-  Map<String, dynamic> toMap(SpotifyTrack s) => {
-        'name': Mapper.toValue(s.name),
-        'id': Mapper.toValue(s.id),
-        'uri': Mapper.toValue(s.uri),
-        'album': Mapper.toValue(s.album),
-        'artists': Mapper.toValue(s.artists),
-        'durationMs': Mapper.toValue(s.durationMs)
-      };
-
-  @override
-  String? stringify(SpotifyTrack self) =>
-      'SpotifyTrack(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, uri: ${Mapper.asString(self.uri)}, album: ${Mapper.asString(self.album)}, artists: ${Mapper.asString(self.artists)}, durationMs: ${Mapper.asString(self.durationMs)})';
-  @override
-  int? hash(SpotifyTrack self) =>
-      Mapper.hash(self.name) ^
-      Mapper.hash(self.id) ^
-      Mapper.hash(self.uri) ^
-      Mapper.hash(self.album) ^
-      Mapper.hash(self.artists) ^
-      Mapper.hash(self.durationMs);
-  @override
-  bool? equals(SpotifyTrack self, SpotifyTrack other) =>
-      Mapper.isEqual(self.name, other.name) &&
-      Mapper.isEqual(self.id, other.id) &&
-      Mapper.isEqual(self.uri, other.uri) &&
-      Mapper.isEqual(self.album, other.album) &&
-      Mapper.isEqual(self.artists, other.artists) &&
-      Mapper.isEqual(self.durationMs, other.durationMs);
-
-  @override
-  Function get typeFactory => (f) => f<SpotifyTrack>();
-}
-
-extension SpotifyTrackMapperExtension on SpotifyTrack {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SpotifyTrackCopyWith<SpotifyTrack> get copyWith => SpotifyTrackCopyWith(this, _$identity);
-}
-
-abstract class SpotifyTrackCopyWith<$R> {
-  factory SpotifyTrackCopyWith(SpotifyTrack value, Then<SpotifyTrack, $R> then) = _SpotifyTrackCopyWithImpl<$R>;
-  SpotifyAlbumCopyWith<$R> get album;
-  $R call({String? name, String? id, String? uri, SpotifyAlbum? album, List<SpotifyArtist>? artists, int? durationMs});
-}
-
-class _SpotifyTrackCopyWithImpl<$R> extends BaseCopyWith<SpotifyTrack, $R> implements SpotifyTrackCopyWith<$R> {
-  _SpotifyTrackCopyWithImpl(SpotifyTrack value, Then<SpotifyTrack, $R> then) : super(value, then);
-
-  @override
-  SpotifyAlbumCopyWith<$R> get album => SpotifyAlbumCopyWith(_value.album, (v) => call(album: v));
-  @override
-  $R call(
-          {String? name,
-          String? id,
-          String? uri,
-          SpotifyAlbum? album,
-          List<SpotifyArtist>? artists,
-          int? durationMs}) =>
-      _then(SpotifyTrack(name ?? _value.name, id ?? _value.id, uri ?? _value.uri, album ?? _value.album,
-          artists ?? _value.artists, durationMs ?? _value.durationMs));
-}
-
-class SpotifyAlbumMapper extends BaseMapper<SpotifyAlbum> {
-  SpotifyAlbumMapper._();
-
-  @override
-  Function get decoder => decode;
-  SpotifyAlbum decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SpotifyAlbum fromMap(Map<String, dynamic> map) =>
-      SpotifyAlbum(map.get('id'), map.get('uri'), map.get('name'), map.getList('images'));
-
-  @override
-  Function get encoder => (SpotifyAlbum v) => encode(v);
-  dynamic encode(SpotifyAlbum v) => toMap(v);
-  Map<String, dynamic> toMap(SpotifyAlbum s) => {
-        'id': Mapper.toValue(s.id),
-        'uri': Mapper.toValue(s.uri),
-        'name': Mapper.toValue(s.name),
-        'images': Mapper.toValue(s.images)
-      };
-
-  @override
-  String? stringify(SpotifyAlbum self) =>
-      'SpotifyAlbum(id: ${Mapper.asString(self.id)}, uri: ${Mapper.asString(self.uri)}, name: ${Mapper.asString(self.name)}, images: ${Mapper.asString(self.images)})';
-  @override
-  int? hash(SpotifyAlbum self) =>
-      Mapper.hash(self.id) ^ Mapper.hash(self.uri) ^ Mapper.hash(self.name) ^ Mapper.hash(self.images);
-  @override
-  bool? equals(SpotifyAlbum self, SpotifyAlbum other) =>
-      Mapper.isEqual(self.id, other.id) &&
-      Mapper.isEqual(self.uri, other.uri) &&
-      Mapper.isEqual(self.name, other.name) &&
-      Mapper.isEqual(self.images, other.images);
-
-  @override
-  Function get typeFactory => (f) => f<SpotifyAlbum>();
-}
-
-extension SpotifyAlbumMapperExtension on SpotifyAlbum {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SpotifyAlbumCopyWith<SpotifyAlbum> get copyWith => SpotifyAlbumCopyWith(this, _$identity);
-}
-
-abstract class SpotifyAlbumCopyWith<$R> {
-  factory SpotifyAlbumCopyWith(SpotifyAlbum value, Then<SpotifyAlbum, $R> then) = _SpotifyAlbumCopyWithImpl<$R>;
-  $R call({String? id, String? uri, String? name, List<SpotifyImage>? images});
-}
-
-class _SpotifyAlbumCopyWithImpl<$R> extends BaseCopyWith<SpotifyAlbum, $R> implements SpotifyAlbumCopyWith<$R> {
-  _SpotifyAlbumCopyWithImpl(SpotifyAlbum value, Then<SpotifyAlbum, $R> then) : super(value, then);
-
-  @override
-  $R call({String? id, String? uri, String? name, List<SpotifyImage>? images}) =>
-      _then(SpotifyAlbum(id ?? _value.id, uri ?? _value.uri, name ?? _value.name, images ?? _value.images));
-}
-
-class SpotifyImageMapper extends BaseMapper<SpotifyImage> {
-  SpotifyImageMapper._();
-
-  @override
-  Function get decoder => decode;
-  SpotifyImage decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SpotifyImage fromMap(Map<String, dynamic> map) => SpotifyImage(map.get('height'), map.get('width'), map.get('url'));
-
-  @override
-  Function get encoder => (SpotifyImage v) => encode(v);
-  dynamic encode(SpotifyImage v) => toMap(v);
-  Map<String, dynamic> toMap(SpotifyImage s) =>
-      {'height': Mapper.toValue(s.height), 'width': Mapper.toValue(s.width), 'url': Mapper.toValue(s.url)};
-
-  @override
-  String? stringify(SpotifyImage self) =>
-      'SpotifyImage(height: ${Mapper.asString(self.height)}, width: ${Mapper.asString(self.width)}, url: ${Mapper.asString(self.url)})';
-  @override
-  int? hash(SpotifyImage self) => Mapper.hash(self.height) ^ Mapper.hash(self.width) ^ Mapper.hash(self.url);
-  @override
-  bool? equals(SpotifyImage self, SpotifyImage other) =>
-      Mapper.isEqual(self.height, other.height) &&
-      Mapper.isEqual(self.width, other.width) &&
-      Mapper.isEqual(self.url, other.url);
-
-  @override
-  Function get typeFactory => (f) => f<SpotifyImage>();
-}
-
-extension SpotifyImageMapperExtension on SpotifyImage {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SpotifyImageCopyWith<SpotifyImage> get copyWith => SpotifyImageCopyWith(this, _$identity);
-}
-
-abstract class SpotifyImageCopyWith<$R> {
-  factory SpotifyImageCopyWith(SpotifyImage value, Then<SpotifyImage, $R> then) = _SpotifyImageCopyWithImpl<$R>;
-  $R call({int? height, int? width, String? url});
-}
-
-class _SpotifyImageCopyWithImpl<$R> extends BaseCopyWith<SpotifyImage, $R> implements SpotifyImageCopyWith<$R> {
-  _SpotifyImageCopyWithImpl(SpotifyImage value, Then<SpotifyImage, $R> then) : super(value, then);
-
-  @override
-  $R call({int? height, int? width, String? url}) =>
-      _then(SpotifyImage(height ?? _value.height, width ?? _value.width, url ?? _value.url));
-}
-
-class SpotifyArtistMapper extends BaseMapper<SpotifyArtist> {
-  SpotifyArtistMapper._();
-
-  @override
-  Function get decoder => decode;
-  SpotifyArtist decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SpotifyArtist fromMap(Map<String, dynamic> map) => SpotifyArtist(map.get('id'), map.get('name'));
-
-  @override
-  Function get encoder => (SpotifyArtist v) => encode(v);
-  dynamic encode(SpotifyArtist v) => toMap(v);
-  Map<String, dynamic> toMap(SpotifyArtist s) => {'id': Mapper.toValue(s.id), 'name': Mapper.toValue(s.name)};
-
-  @override
-  String? stringify(SpotifyArtist self) =>
-      'SpotifyArtist(id: ${Mapper.asString(self.id)}, name: ${Mapper.asString(self.name)})';
-  @override
-  int? hash(SpotifyArtist self) => Mapper.hash(self.id) ^ Mapper.hash(self.name);
-  @override
-  bool? equals(SpotifyArtist self, SpotifyArtist other) =>
-      Mapper.isEqual(self.id, other.id) && Mapper.isEqual(self.name, other.name);
-
-  @override
-  Function get typeFactory => (f) => f<SpotifyArtist>();
-}
-
-extension SpotifyArtistMapperExtension on SpotifyArtist {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SpotifyArtistCopyWith<SpotifyArtist> get copyWith => SpotifyArtistCopyWith(this, _$identity);
-}
-
-abstract class SpotifyArtistCopyWith<$R> {
-  factory SpotifyArtistCopyWith(SpotifyArtist value, Then<SpotifyArtist, $R> then) = _SpotifyArtistCopyWithImpl<$R>;
-  $R call({String? id, String? name});
-}
-
-class _SpotifyArtistCopyWithImpl<$R> extends BaseCopyWith<SpotifyArtist, $R> implements SpotifyArtistCopyWith<$R> {
-  _SpotifyArtistCopyWithImpl(SpotifyArtist value, Then<SpotifyArtist, $R> then) : super(value, then);
-
-  @override
-  $R call({String? id, String? name}) => _then(SpotifyArtist(id ?? _value.id, name ?? _value.name));
 }
 
 // === GENERATED ENUM MAPPERS AND EXTENSIONS ===

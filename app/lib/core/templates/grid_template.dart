@@ -17,45 +17,37 @@ class GridTemplate extends WidgetTemplate<GridTemplateModel> {
 
   @override
   Widget build(BuildContext context, WidgetTemplateState state) {
-    return TripTheme(
-      theme: DarkTheme(),
-      child: TemplateNavigator(
-        home: Scaffold(
-          body: ThemedBackground(
-            child: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                SliverTemplateHeader(
-                  child: Container(
-                    padding:
-                        EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
-                    child: Consumer(
-                      builder: (context, ref, _) {
-                        var trip = ref.watch(selectedTripProvider)!;
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const SizedBox(width: 50),
-                            Text(
-                              trip.name,
-                              style: Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
-                            ),
-                            const SizedBox(width: 50, child: ReorderToggle()),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
-                  sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
-                ),
-                if (state.isEditing) SliverToBoxAdapter(child: Container(height: 130)),
-              ],
+    return Scaffold(
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          SliverTemplateHeader(
+            child: Container(
+              padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
+              child: Consumer(
+                builder: (context, ref, _) {
+                  var trip = ref.watch(selectedTripProvider)!;
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 50),
+                      Text(
+                        trip.name,
+                        style: Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
+                      ),
+                      const SizedBox(width: 50, child: ReorderToggle()),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
-        ),
+          SliverPadding(
+            padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
+            sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
+          ),
+          if (state.isEditing) SliverToBoxAdapter(child: Container(height: 130)),
+        ],
       ),
     );
   }

@@ -78,7 +78,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
       right: 0,
       child: IconButton(
         visualDensity: VisualDensity.compact,
-        icon: Icon(Icons.settings, size: 20, color: context.getTextColor()),
+        icon: Icon(Icons.settings, size: 20, color: context.theme.colorScheme.primary),
         onPressed: () => setState(() {
           settingsOpen = true;
           selectIndex(
@@ -118,7 +118,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
       bottom: constraints.maxHeight * 0.35,
       left: 0,
       right: 0,
-      child: FillColor(
+      child: ThemedSurface(
         builder: (context, fillColor) => Container(color: fillColor),
       ),
     );
@@ -167,7 +167,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
 
   Widget timeScroller(BoxConstraints constraints) {
     return Positioned.fill(
-      child: FillColor(
+      child: ThemedSurface(
         builder: (context, fillColor) => NotificationListener(
           onNotification: (n) {
             if (n is ScrollEndNotification) {
@@ -232,7 +232,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
       child: IconButton(
         splashRadius: 20,
         visualDensity: VisualDensity.compact,
-        icon: const Icon(Icons.check, size: 20, color: Colors.green),
+        icon: Icon(Icons.check, size: 20, color: context.theme.colorScheme.primary),
         onPressed: () {
           setState(() {
             context.read(theButtonLogicProvider).setAliveHours(options[selectedIndex]);

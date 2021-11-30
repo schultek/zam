@@ -6,9 +6,9 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/core.dart';
 import '../../../providers/links/links_provider.dart';
+import '../../../providers/trips/logic_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/user_avatar.dart';
-import '../widgets/user_options_dialog.dart';
 
 class UsersPage extends StatelessWidget {
   const UsersPage({Key? key}) : super(key: key);
@@ -17,8 +17,7 @@ class UsersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: context.getTextColor()),
-        title: Text('Users', style: TextStyle(color: context.getTextColor())),
+        title: const Text('Users'),
         actions: [
           if (context.read(isOrganizerProvider))
             PopupMenuButton<String>(
@@ -72,11 +71,36 @@ class UsersPage extends StatelessWidget {
       title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.getTextColor())),
       subtitle: Text(e.value.role.capitalize()),
       trailing: context.read(isOrganizerProvider)
-          ? IconButton(
-              onPressed: () {
-                UserOptionsDialog.show(context, userId: e.key);
-              },
+          ? PopupMenuButton<String>(
+              offset: const Offset(0, 56),
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  child: ListTile(title: Text('Löschen')),
+                  value: 'delete',
+                ),
+                if (e.value.role != UserRoles.organizer)
+                  const PopupMenuItem(
+                    child: ListTile(title: Text('Organisator machen')),
+                    value: UserRoles.organizer,
+                  )
+                else
+                  const PopupMenuItem(
+                    child: ListTile(title: Text('Organisator entfernen')),
+                    value: UserRoles.organizer,
+                  )
+              ],
               icon: const Icon(Icons.more_vert),
+              onSelected: (option) async {
+                if (option == 'delete') {
+                  context.read(tripsLogicProvider).deleteUser(e.key);
+                } else if (option == UserRoles.organizer) {
+                  if (e.value.role == UserRoles.organizer) {
+                    context.read(tripsLogicProvider).updateUserRole(e.key, UserRoles.participant);
+                  } else {
+                    context.read(tripsLogicProvider).updateUserRole(e.key, UserRoles.organizer);
+                  }
+                }
+              },
             )
           : null,
     );

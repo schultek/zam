@@ -43,7 +43,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
           left: 0,
           child: IconButton(
             visualDensity: VisualDensity.compact,
-            icon: Icon(Icons.help, size: 20, color: context.getTextColor()),
+            icon: Icon(Icons.help, size: 20, color: context.theme.colorScheme.primary),
             onPressed: () => setState(() => helpOpen = true),
           ),
         ),
@@ -186,7 +186,8 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                       child: Container(
                         width: 14,
                         height: 14,
-                        decoration: BoxDecoration(shape: BoxShape.circle, color: theButtonLevels[entry.level]),
+                        decoration:
+                            BoxDecoration(shape: BoxShape.circle, color: getColorForLevel(entry.level, context)),
                       ),
                     ),
                   ],

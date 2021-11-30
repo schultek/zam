@@ -38,8 +38,6 @@ class _CropDialogState extends State<CropDialog> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
         title: const Text('Foto zuschneiden'),
         actions: [
           IconButton(

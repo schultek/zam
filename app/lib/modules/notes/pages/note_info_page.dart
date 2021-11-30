@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/widgets/settings_section.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../notes_provider.dart';
 import 'add_editors_page.dart';
@@ -33,33 +34,37 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
         ),
         body: ListView(
           children: [
-            ListTile(
-              title: const Text('Folder'),
-              subtitle: Text(note.folder ?? 'No Folder'),
-              onTap: () {
-                Navigator.of(context).push(ChangeFolderPage.route(note));
-              },
-            ),
-            ListTile(
-              title: const Text('Author'),
-              subtitle: Text(ref.read(nicknameProvider(note.author)) ?? 'Anonym'),
-            ),
-            ListTile(
-              title: const Text('Editors'),
-              subtitle: Text(note.editors.map((e) => ref.read(nicknameProvider(e)) ?? 'Anonym').join(', ')),
-              onTap: () {
-                Navigator.of(context).push(AddEditorsPage.route(note));
-              },
-            ),
-            ListTile(
-              title: const Text(
-                'Delete',
-                style: TextStyle(color: Colors.red),
+            SettingsSection(children: [
+              ListTile(
+                title: const Text('Folder'),
+                subtitle: Text(note.folder ?? 'No Folder'),
+                onTap: () {
+                  Navigator.of(context).push(ChangeFolderPage.route(note));
+                },
               ),
-              onTap: () async {
-                Navigator.pop(context, true);
-              },
-            )
+              ListTile(
+                title: const Text('Author'),
+                subtitle: Text(ref.read(nicknameProvider(note.author)) ?? 'Anonym'),
+              ),
+              ListTile(
+                title: const Text('Editors'),
+                subtitle: Text(note.editors.map((e) => ref.read(nicknameProvider(e)) ?? 'Anonym').join(', ')),
+                onTap: () {
+                  Navigator.of(context).push(AddEditorsPage.route(note));
+                },
+              ),
+            ]),
+            SettingsSection(children: [
+              ListTile(
+                title: const Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
+                onTap: () async {
+                  Navigator.pop(context, true);
+                },
+              ),
+            ]),
           ],
         ),
       );
