@@ -1,10 +1,11 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
-import 'theme_state.dart';
+class ColorPreference {
+  ColorPreference();
+}
 
-class MaterialTheme extends ThemeState {
-  @override
+class MaterialTheme {
   late final themeData = dark
       ? FlexThemeData.dark(
           scheme: scheme,
@@ -23,17 +24,14 @@ class MaterialTheme extends ThemeState {
 
   MaterialTheme(this.scheme, [this.dark = false, this.elevation = -1]);
 
-  @override
   MaterialTheme computeFillColor({required BuildContext context, ColorPreference? preference}) {
     return MaterialTheme(scheme, dark, elevation + 1);
   }
 
-  @override
   Color computeTextColor({ColorPreference? preference}) {
     return themeData.colorScheme.onSurface;
   }
 
-  @override
   Color get currentFillColor {
     if (elevation == -1) {
       return themeData.backgroundColor;
@@ -44,6 +42,5 @@ class MaterialTheme extends ThemeState {
     }
   }
 
-  @override
   MaterialTheme copy() => MaterialTheme(scheme, dark, elevation);
 }

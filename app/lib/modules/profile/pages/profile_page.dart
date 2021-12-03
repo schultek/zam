@@ -13,6 +13,10 @@ class ProfilePage extends StatefulWidget {
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
+
+  static Route route() {
+    return MaterialPageRoute(builder: (context) => const ProfilePage());
+  }
 }
 
 class _ProfilePageState extends State<ProfilePage> {

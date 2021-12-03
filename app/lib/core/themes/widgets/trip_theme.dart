@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../theme_state.dart';
+import '../material_theme.dart';
 
 class TripTheme extends InheritedWidget {
   final bool reuseTheme;
-  final ThemeState theme;
+  final MaterialTheme theme;
 
   TripTheme({Key? key, required Widget child, required this.theme, this.reuseTheme = false})
       : super(key: key, child: Theme(data: theme.themeData, child: child));

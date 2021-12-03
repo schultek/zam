@@ -4,7 +4,7 @@ import '../../elements/module_element.dart';
 import '../widget_area.dart';
 
 mixin ListAreaMixin<U extends WidgetArea<T>, T extends ModuleElement> on WidgetAreaState<U, T> {
-  late List<T> elements;
+  List<T> elements = [];
 
   @override
   void initArea(List<T> widgets) => elements = widgets;
@@ -17,7 +17,4 @@ mixin ListAreaMixin<U extends WidgetArea<T>, T extends ModuleElement> on WidgetA
 
   @override
   bool hasKey(Key key) => elements.any((e) => e.key == key);
-
-  @override
-  void insertItem(T item) => setState(() => elements.add(item));
 }

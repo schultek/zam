@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../elements/decorators/default_page_segment_decorator.dart';
+import '../elements/decorators/element_decorator.dart';
 import '../elements/page_segment.dart';
-import '../themes/widgets/trip_theme.dart';
 import 'mixins/single_element_area_mixin.dart';
 import 'widget_area.dart';
 
@@ -18,6 +19,9 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment>
   bool get wantKeepAlive => element?.keepAlive ?? super.wantKeepAlive;
 
   @override
+  final ElementDecorator<PageSegment> elementDecorator = DefaultPageSegmentDecorator();
+
+  @override
   EdgeInsetsGeometry getMargin() =>
       template.isEditing ? const EdgeInsets.symmetric(horizontal: 10, vertical: 40) : super.getMargin();
 
@@ -31,13 +35,4 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment>
 
   @override
   BoxConstraints constrainWidget(PageSegment widget) => BoxConstraints.tight(areaSize);
-
-  @override
-  Widget? decorateElement(BuildContext context, PageSegment element) {
-    return Material(
-      textStyle: TextStyle(color: context.getTextColor()),
-      color: Colors.transparent,
-      child: element.builder(context),
-    );
-  }
 }

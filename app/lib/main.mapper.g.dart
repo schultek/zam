@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:dart_mappable/dart_mappable.dart';
 
 import 'core/models/trip.dart';
+import 'core/templates/focus_template.dart';
 import 'core/templates/grid_template.dart';
 import 'core/templates/swipe_template.dart';
 import 'core/templates/template_model.dart';
@@ -37,9 +38,11 @@ var _mappers = <String, BaseMapper>{
   _typeOf<ThemeModel>(): ThemeModelMapper._(),
   _typeOf<Trip>(): TripMapper._(),
   _typeOf<TripUser>(): TripUserMapper._(),
-  _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
   _typeOf<TemplateModel>(): TemplateModelMapper._(),
   _typeOf<GridTemplateModel>(): GridTemplateModelMapper._(),
+  _typeOf<SwipeTemplateModel>(): SwipeTemplateModelMapper._(),
+  _typeOf<FocusTemplateModel>(): FocusTemplateModelMapper._(),
+  _typeOf<AlbumShortcut>(): AlbumShortcutMapper._(),
   _typeOf<EliminationGame>(): EliminationGameMapper._(),
   _typeOf<EliminationEntry>(): EliminationEntryMapper._(),
   _typeOf<ChannelInfo>(): ChannelInfoMapper._(),
@@ -47,7 +50,6 @@ var _mappers = <String, BaseMapper>{
   _typeOf<ChatTextMessage>(): ChatTextMessageMapper._(),
   _typeOf<ChatImageMessage>(): ChatImageMessageMapper._(),
   _typeOf<ChatFileMessage>(): ChatFileMessageMapper._(),
-  _typeOf<AlbumShortcut>(): AlbumShortcutMapper._(),
   _typeOf<MusicConfig>(): MusicConfigMapper._(),
   _typeOf<SpotifyPlayer>(): SpotifyPlayerMapper._(),
   _typeOf<SpotifyCredentials>(): SpotifyCredentialsMapper._(),
@@ -486,65 +488,6 @@ class _TripUserCopyWithImpl<$R> extends BaseCopyWith<TripUser, $R> implements Tr
       profileUrl: or(profileUrl, _value.profileUrl)));
 }
 
-class SwipeTemplateModelMapper extends BaseMapper<SwipeTemplateModel> {
-  SwipeTemplateModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  SwipeTemplateModel decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SwipeTemplateModel fromMap(Map<String, dynamic> map) => SwipeTemplateModel(
-      type: map.getOpt('type'),
-      showLeftPage: map.getOpt('showLeftPage') ?? true,
-      showRightPage: map.getOpt('showRightPage') ?? true);
-
-  @override
-  Function get encoder => (SwipeTemplateModel v) => encode(v);
-  dynamic encode(SwipeTemplateModel v) => toMap(v);
-  Map<String, dynamic> toMap(SwipeTemplateModel s) => {
-        'type': Mapper.toValue(s.type),
-        'showLeftPage': Mapper.toValue(s.showLeftPage),
-        'showRightPage': Mapper.toValue(s.showRightPage)
-      };
-
-  @override
-  String? stringify(SwipeTemplateModel self) =>
-      'SwipeTemplateModel(type: ${Mapper.asString(self.type)}, showLeftPage: ${Mapper.asString(self.showLeftPage)}, showRightPage: ${Mapper.asString(self.showRightPage)})';
-  @override
-  int? hash(SwipeTemplateModel self) =>
-      Mapper.hash(self.type) ^ Mapper.hash(self.showLeftPage) ^ Mapper.hash(self.showRightPage);
-  @override
-  bool? equals(SwipeTemplateModel self, SwipeTemplateModel other) =>
-      Mapper.isEqual(self.type, other.type) &&
-      Mapper.isEqual(self.showLeftPage, other.showLeftPage) &&
-      Mapper.isEqual(self.showRightPage, other.showRightPage);
-
-  @override
-  Function get typeFactory => (f) => f<SwipeTemplateModel>();
-}
-
-extension SwipeTemplateModelMapperExtension on SwipeTemplateModel {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SwipeTemplateModelCopyWith<SwipeTemplateModel> get copyWith => SwipeTemplateModelCopyWith(this, _$identity);
-}
-
-abstract class SwipeTemplateModelCopyWith<$R> {
-  factory SwipeTemplateModelCopyWith(SwipeTemplateModel value, Then<SwipeTemplateModel, $R> then) =
-      _SwipeTemplateModelCopyWithImpl<$R>;
-  $R call({String? type, bool? showLeftPage, bool? showRightPage});
-}
-
-class _SwipeTemplateModelCopyWithImpl<$R> extends BaseCopyWith<SwipeTemplateModel, $R>
-    implements SwipeTemplateModelCopyWith<$R> {
-  _SwipeTemplateModelCopyWithImpl(SwipeTemplateModel value, Then<SwipeTemplateModel, $R> then) : super(value, then);
-
-  @override
-  $R call({Object? type = _none, bool? showLeftPage, bool? showRightPage}) => _then(SwipeTemplateModel(
-      type: or(type, _value.type),
-      showLeftPage: showLeftPage ?? _value.showLeftPage,
-      showRightPage: showRightPage ?? _value.showRightPage));
-}
-
 class TemplateModelMapper extends BaseMapper<TemplateModel> {
   TemplateModelMapper._();
 
@@ -552,6 +495,8 @@ class TemplateModelMapper extends BaseMapper<TemplateModel> {
   Function get decoder => decode;
   TemplateModel decode(dynamic v) => _checked(v, (Map<String, dynamic> map) {
         switch (map['type']) {
+          case 'focus':
+            return FocusTemplateModelMapper._().decode(map);
           case 'grid':
             return GridTemplateModelMapper._().decode(map);
           case 'swipe':
@@ -566,10 +511,12 @@ class TemplateModelMapper extends BaseMapper<TemplateModel> {
   @override
   Function get encoder => (TemplateModel v) => encode(v);
   dynamic encode(TemplateModel v) {
-    if (v is SwipeTemplateModel) {
-      return SwipeTemplateModelMapper._().encode(v);
-    } else if (v is GridTemplateModel) {
+    if (v is GridTemplateModel) {
       return GridTemplateModelMapper._().encode(v);
+    } else if (v is SwipeTemplateModel) {
+      return SwipeTemplateModelMapper._().encode(v);
+    } else if (v is FocusTemplateModel) {
+      return FocusTemplateModelMapper._().encode(v);
     } else {
       return toMap(v);
     }
@@ -635,6 +582,176 @@ class _GridTemplateModelCopyWithImpl<$R> extends BaseCopyWith<GridTemplateModel,
 
   @override
   $R call({Object? type = _none}) => _then(GridTemplateModel(type: or(type, _value.type)));
+}
+
+class SwipeTemplateModelMapper extends BaseMapper<SwipeTemplateModel> {
+  SwipeTemplateModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  SwipeTemplateModel decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SwipeTemplateModel fromMap(Map<String, dynamic> map) => SwipeTemplateModel(
+      type: map.getOpt('type'),
+      showLeftPage: map.getOpt('showLeftPage') ?? true,
+      showRightPage: map.getOpt('showRightPage') ?? true);
+
+  @override
+  Function get encoder => (SwipeTemplateModel v) => encode(v);
+  dynamic encode(SwipeTemplateModel v) => toMap(v);
+  Map<String, dynamic> toMap(SwipeTemplateModel s) => {
+        'type': Mapper.toValue(s.type),
+        'showLeftPage': Mapper.toValue(s.showLeftPage),
+        'showRightPage': Mapper.toValue(s.showRightPage)
+      };
+
+  @override
+  String? stringify(SwipeTemplateModel self) =>
+      'SwipeTemplateModel(type: ${Mapper.asString(self.type)}, showLeftPage: ${Mapper.asString(self.showLeftPage)}, showRightPage: ${Mapper.asString(self.showRightPage)})';
+  @override
+  int? hash(SwipeTemplateModel self) =>
+      Mapper.hash(self.type) ^ Mapper.hash(self.showLeftPage) ^ Mapper.hash(self.showRightPage);
+  @override
+  bool? equals(SwipeTemplateModel self, SwipeTemplateModel other) =>
+      Mapper.isEqual(self.type, other.type) &&
+      Mapper.isEqual(self.showLeftPage, other.showLeftPage) &&
+      Mapper.isEqual(self.showRightPage, other.showRightPage);
+
+  @override
+  Function get typeFactory => (f) => f<SwipeTemplateModel>();
+}
+
+extension SwipeTemplateModelMapperExtension on SwipeTemplateModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SwipeTemplateModelCopyWith<SwipeTemplateModel> get copyWith => SwipeTemplateModelCopyWith(this, _$identity);
+}
+
+abstract class SwipeTemplateModelCopyWith<$R> {
+  factory SwipeTemplateModelCopyWith(SwipeTemplateModel value, Then<SwipeTemplateModel, $R> then) =
+      _SwipeTemplateModelCopyWithImpl<$R>;
+  $R call({String? type, bool? showLeftPage, bool? showRightPage});
+}
+
+class _SwipeTemplateModelCopyWithImpl<$R> extends BaseCopyWith<SwipeTemplateModel, $R>
+    implements SwipeTemplateModelCopyWith<$R> {
+  _SwipeTemplateModelCopyWithImpl(SwipeTemplateModel value, Then<SwipeTemplateModel, $R> then) : super(value, then);
+
+  @override
+  $R call({Object? type = _none, bool? showLeftPage, bool? showRightPage}) => _then(SwipeTemplateModel(
+      type: or(type, _value.type),
+      showLeftPage: showLeftPage ?? _value.showLeftPage,
+      showRightPage: showRightPage ?? _value.showRightPage));
+}
+
+class FocusTemplateModelMapper extends BaseMapper<FocusTemplateModel> {
+  FocusTemplateModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  FocusTemplateModel decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  FocusTemplateModel fromMap(Map<String, dynamic> map) => FocusTemplateModel(type: map.getOpt('type'));
+
+  @override
+  Function get encoder => (FocusTemplateModel v) => encode(v);
+  dynamic encode(FocusTemplateModel v) => toMap(v);
+  Map<String, dynamic> toMap(FocusTemplateModel f) => {'type': Mapper.toValue(f.type)};
+
+  @override
+  String? stringify(FocusTemplateModel self) => 'FocusTemplateModel(type: ${Mapper.asString(self.type)})';
+  @override
+  int? hash(FocusTemplateModel self) => Mapper.hash(self.type);
+  @override
+  bool? equals(FocusTemplateModel self, FocusTemplateModel other) => Mapper.isEqual(self.type, other.type);
+
+  @override
+  Function get typeFactory => (f) => f<FocusTemplateModel>();
+}
+
+extension FocusTemplateModelMapperExtension on FocusTemplateModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  FocusTemplateModelCopyWith<FocusTemplateModel> get copyWith => FocusTemplateModelCopyWith(this, _$identity);
+}
+
+abstract class FocusTemplateModelCopyWith<$R> {
+  factory FocusTemplateModelCopyWith(FocusTemplateModel value, Then<FocusTemplateModel, $R> then) =
+      _FocusTemplateModelCopyWithImpl<$R>;
+  $R call({String? type});
+}
+
+class _FocusTemplateModelCopyWithImpl<$R> extends BaseCopyWith<FocusTemplateModel, $R>
+    implements FocusTemplateModelCopyWith<$R> {
+  _FocusTemplateModelCopyWithImpl(FocusTemplateModel value, Then<FocusTemplateModel, $R> then) : super(value, then);
+
+  @override
+  $R call({Object? type = _none}) => _then(FocusTemplateModel(type: or(type, _value.type)));
+}
+
+class AlbumShortcutMapper extends BaseMapper<AlbumShortcut> {
+  AlbumShortcutMapper._();
+
+  @override
+  Function get decoder => decode;
+  AlbumShortcut decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
+  AlbumShortcut fromMap(Map<String, dynamic> map) => AlbumShortcut(
+      map.get('id'), map.getOpt('title'), map.get('albumUrl'), map.getOpt('coverUrl'), map.getOpt('itemsCount'));
+
+  @override
+  Function get encoder => (AlbumShortcut v) => encode(v);
+  dynamic encode(AlbumShortcut v) => toMap(v);
+  Map<String, dynamic> toMap(AlbumShortcut a) => {
+        'id': Mapper.toValue(a.id),
+        'title': Mapper.toValue(a.title),
+        'albumUrl': Mapper.toValue(a.albumUrl),
+        'coverUrl': Mapper.toValue(a.coverUrl),
+        'itemsCount': Mapper.toValue(a.itemsCount)
+      };
+
+  @override
+  String? stringify(AlbumShortcut self) =>
+      'AlbumShortcut(id: ${Mapper.asString(self.id)}, title: ${Mapper.asString(self.title)}, albumUrl: ${Mapper.asString(self.albumUrl)}, coverUrl: ${Mapper.asString(self.coverUrl)}, itemsCount: ${Mapper.asString(self.itemsCount)})';
+  @override
+  int? hash(AlbumShortcut self) =>
+      Mapper.hash(self.id) ^
+      Mapper.hash(self.title) ^
+      Mapper.hash(self.albumUrl) ^
+      Mapper.hash(self.coverUrl) ^
+      Mapper.hash(self.itemsCount);
+  @override
+  bool? equals(AlbumShortcut self, AlbumShortcut other) =>
+      Mapper.isEqual(self.id, other.id) &&
+      Mapper.isEqual(self.title, other.title) &&
+      Mapper.isEqual(self.albumUrl, other.albumUrl) &&
+      Mapper.isEqual(self.coverUrl, other.coverUrl) &&
+      Mapper.isEqual(self.itemsCount, other.itemsCount);
+
+  @override
+  Function get typeFactory => (f) => f<AlbumShortcut>();
+}
+
+extension AlbumShortcutMapperExtension on AlbumShortcut {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  AlbumShortcutCopyWith<AlbumShortcut> get copyWith => AlbumShortcutCopyWith(this, _$identity);
+}
+
+abstract class AlbumShortcutCopyWith<$R> {
+  factory AlbumShortcutCopyWith(AlbumShortcut value, Then<AlbumShortcut, $R> then) = _AlbumShortcutCopyWithImpl<$R>;
+  $R call({String? id, String? title, String? albumUrl, String? coverUrl, String? itemsCount});
+}
+
+class _AlbumShortcutCopyWithImpl<$R> extends BaseCopyWith<AlbumShortcut, $R> implements AlbumShortcutCopyWith<$R> {
+  _AlbumShortcutCopyWithImpl(AlbumShortcut value, Then<AlbumShortcut, $R> then) : super(value, then);
+
+  @override
+  $R call(
+          {String? id,
+          Object? title = _none,
+          String? albumUrl,
+          Object? coverUrl = _none,
+          Object? itemsCount = _none}) =>
+      _then(AlbumShortcut(id ?? _value.id, or(title, _value.title), albumUrl ?? _value.albumUrl,
+          or(coverUrl, _value.coverUrl), or(itemsCount, _value.itemsCount)));
 }
 
 class EliminationGameMapper extends BaseMapper<EliminationGame> {
@@ -1103,73 +1220,6 @@ class _ChatFileMessageCopyWithImpl<$R> extends BaseCopyWith<ChatFileMessage, $R>
       sender: sender ?? _value.sender,
       text: text ?? _value.text,
       sentAt: sentAt ?? _value.sentAt));
-}
-
-class AlbumShortcutMapper extends BaseMapper<AlbumShortcut> {
-  AlbumShortcutMapper._();
-
-  @override
-  Function get decoder => decode;
-  AlbumShortcut decode(dynamic v) => _checked(v, (Map<String, dynamic> map) => fromMap(map));
-  AlbumShortcut fromMap(Map<String, dynamic> map) => AlbumShortcut(
-      map.get('id'), map.getOpt('title'), map.get('albumUrl'), map.getOpt('coverUrl'), map.getOpt('itemsCount'));
-
-  @override
-  Function get encoder => (AlbumShortcut v) => encode(v);
-  dynamic encode(AlbumShortcut v) => toMap(v);
-  Map<String, dynamic> toMap(AlbumShortcut a) => {
-        'id': Mapper.toValue(a.id),
-        'title': Mapper.toValue(a.title),
-        'albumUrl': Mapper.toValue(a.albumUrl),
-        'coverUrl': Mapper.toValue(a.coverUrl),
-        'itemsCount': Mapper.toValue(a.itemsCount)
-      };
-
-  @override
-  String? stringify(AlbumShortcut self) =>
-      'AlbumShortcut(id: ${Mapper.asString(self.id)}, title: ${Mapper.asString(self.title)}, albumUrl: ${Mapper.asString(self.albumUrl)}, coverUrl: ${Mapper.asString(self.coverUrl)}, itemsCount: ${Mapper.asString(self.itemsCount)})';
-  @override
-  int? hash(AlbumShortcut self) =>
-      Mapper.hash(self.id) ^
-      Mapper.hash(self.title) ^
-      Mapper.hash(self.albumUrl) ^
-      Mapper.hash(self.coverUrl) ^
-      Mapper.hash(self.itemsCount);
-  @override
-  bool? equals(AlbumShortcut self, AlbumShortcut other) =>
-      Mapper.isEqual(self.id, other.id) &&
-      Mapper.isEqual(self.title, other.title) &&
-      Mapper.isEqual(self.albumUrl, other.albumUrl) &&
-      Mapper.isEqual(self.coverUrl, other.coverUrl) &&
-      Mapper.isEqual(self.itemsCount, other.itemsCount);
-
-  @override
-  Function get typeFactory => (f) => f<AlbumShortcut>();
-}
-
-extension AlbumShortcutMapperExtension on AlbumShortcut {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  AlbumShortcutCopyWith<AlbumShortcut> get copyWith => AlbumShortcutCopyWith(this, _$identity);
-}
-
-abstract class AlbumShortcutCopyWith<$R> {
-  factory AlbumShortcutCopyWith(AlbumShortcut value, Then<AlbumShortcut, $R> then) = _AlbumShortcutCopyWithImpl<$R>;
-  $R call({String? id, String? title, String? albumUrl, String? coverUrl, String? itemsCount});
-}
-
-class _AlbumShortcutCopyWithImpl<$R> extends BaseCopyWith<AlbumShortcut, $R> implements AlbumShortcutCopyWith<$R> {
-  _AlbumShortcutCopyWithImpl(AlbumShortcut value, Then<AlbumShortcut, $R> then) : super(value, then);
-
-  @override
-  $R call(
-          {String? id,
-          Object? title = _none,
-          String? albumUrl,
-          Object? coverUrl = _none,
-          Object? itemsCount = _none}) =>
-      _then(AlbumShortcut(id ?? _value.id, or(title, _value.title), albumUrl ?? _value.albumUrl,
-          or(coverUrl, _value.coverUrl), or(itemsCount, _value.itemsCount)));
 }
 
 class MusicConfigMapper extends BaseMapper<MusicConfig> {

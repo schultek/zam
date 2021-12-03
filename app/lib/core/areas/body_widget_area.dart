@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../elements/content_segment.dart';
+import '../elements/decorators/default_content_segment_decorator.dart';
+import '../elements/decorators/element_decorator.dart';
 import '../elements/module_element.dart';
 import 'mixins/grid_area_mixin.dart';
 import 'mixins/scroll_mixin.dart';
@@ -18,6 +20,9 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
     with ScrollMixin<BodyWidgetArea, ContentSegment>, GridAreaMixin<BodyWidgetArea, ContentSegment> {
   @override
   bool get wantKeepAlive => true;
+
+  @override
+  final ElementDecorator<ContentSegment> elementDecorator = DefaultContentSegmentDecorator();
 
   @override
   SegmentSize sizeOf(ContentSegment element) => element.size;

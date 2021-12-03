@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/trips/logic_provider.dart';
+import 'focus_template.dart';
+import 'grid_template.dart';
+import 'swipe_template.dart';
 import 'widget_template.dart';
 
 @MappableClass(discriminatorKey: 'type')
@@ -14,6 +17,14 @@ abstract class TemplateModel {
   WidgetTemplate builder();
 
   List<Widget>? settings(BuildContext context) => null;
+
+  static List<TemplateModel> get all {
+    return [
+      GridTemplateModel(),
+      SwipeTemplateModel(),
+      FocusTemplateModel(),
+    ];
+  }
 }
 
 extension ModelUpdate<T extends TemplateModel> on T {

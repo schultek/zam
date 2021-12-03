@@ -8,7 +8,7 @@ import 'logic_provider.dart';
 
 enum ReorderableState { normal, placeholder, dragging }
 
-typedef DecorationBuilder = Widget Function(Widget widget, double opacity);
+typedef DecorationBuilder = Widget Function(BuildContext context, Widget widget, double opacity);
 typedef ReorderableBuilder = Widget Function(BuildContext context, ReorderableState state, Widget child);
 
 class ReorderableItem extends StatefulWidget {

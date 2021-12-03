@@ -29,7 +29,6 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
         state: area,
         child: TripTheme(
           theme: area.theme,
-          reuseTheme: true,
           child: Consumer(
             builder: (context, ref, child) {
               var offset = ref.watch(dragOffsetProvider)!;
@@ -55,16 +54,16 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
                 ),
               );
             },
-            child: Consumer(
-              builder: (context, ref, child) {
-                var decOpacity = ref.watch(dragDecorationOpacityProvider);
-                return decorationBuilder(child!, decOpacity);
-              },
-              child: IgnorePointer(
-                child: MediaQuery.removePadding(
-                  context: context,
-                  removeTop: true,
-                  removeBottom: true,
+            child: IgnorePointer(
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                removeBottom: true,
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    var decOpacity = ref.watch(dragDecorationOpacityProvider);
+                    return decorationBuilder(context, child!, decOpacity);
+                  },
                   child: Consumer(builder: (context, ref, _) => ref.watch(dragWidgetProvider)!),
                 ),
               ),

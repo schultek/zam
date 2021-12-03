@@ -4,7 +4,6 @@ Jugend-Freizeit-App
 
 # Roadmap
 
-
 ## Backend
 
 - Firestore Rules
@@ -98,4 +97,3 @@ Jugend-Freizeit-App
 - Screentime Tree
   - Data Notification and Pong
 - Money Split
-

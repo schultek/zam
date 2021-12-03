@@ -12,6 +12,10 @@ class NotesPage extends StatefulWidget {
 
   @override
   _NotesPageState createState() => _NotesPageState();
+
+  static Route route() {
+    return MaterialPageRoute(builder: (context) => const NotesPage());
+  }
 }
 
 class _NotesPageState extends State<NotesPage> {

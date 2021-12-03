@@ -16,3 +16,15 @@ class ProfileModule extends ModuleBuilder<ContentSegment> {
     );
   }
 }
+
+class ProfileActionModule extends ModuleBuilder<QuickAction> {
+  @override
+  FutureOr<QuickAction?> build(ModuleContext context) {
+    return QuickAction(
+      context: context,
+      icon: Icons.account_circle,
+      text: 'Profil',
+      onTap: (context) => Navigator.of(context).push(ProfilePage.route()),
+    );
+  }
+}

@@ -8,6 +8,7 @@ import '../../modules/modules.dart';
 import '../../modules/profile/widgets/image_selector.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
+import '../templates/template_model.dart';
 import '../themes/widgets/theme_selector.dart';
 import '../themes/widgets/trip_theme.dart';
 import 'settings_section.dart';
@@ -77,11 +78,41 @@ class _TripSettingsState extends State<TripSettings> {
               },
             ),
           ]),
-          if (templateSettings != null)
-            SettingsSection(
-              title: 'Template',
-              children: [...templateSettings],
-            ),
+          SettingsSection(
+            title: 'Template',
+            children: [
+              Builder(builder: (context) {
+                return ListTile(
+                  title: Text(trip.template.name),
+                  subtitle: const Text('Tap to change'),
+                  onTap: () async {
+                    final RenderBox button = context.findRenderObject()! as RenderBox;
+                    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
+                    final RelativeRect position = RelativeRect.fromRect(
+                      Rect.fromPoints(
+                        button.localToGlobal(Offset.zero, ancestor: overlay),
+                        button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay),
+                      ),
+                      Offset.zero & overlay.size,
+                    );
+
+                    var newTemplate = await showMenu<TemplateModel>(
+                      context: context,
+                      position: position,
+                      items: [
+                        for (var template in TemplateModel.all)
+                          PopupMenuItem(value: template, child: Text(template.name)),
+                      ],
+                    );
+                    if (newTemplate != null) {
+                      context.read(tripsLogicProvider).updateTemplateModel(newTemplate);
+                    }
+                  },
+                );
+              }),
+              ...templateSettings ?? []
+            ],
+          ),
           SettingsSection(title: 'Theme', children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),

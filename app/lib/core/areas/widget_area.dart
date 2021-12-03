@@ -7,10 +7,11 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
+import '../elements/decorators/element_decorator.dart';
 import '../elements/module_element.dart';
 import '../reorderable/logic_provider.dart';
 import '../templates/widget_template.dart';
-import '../themes/theme_state.dart';
+import '../themes/material_theme.dart';
 import '../themes/widgets/trip_theme.dart';
 
 class InheritedWidgetArea<T extends ModuleElement> extends InheritedWidget {
@@ -57,7 +58,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   Size get areaSize => _areaRenderBox.size;
   Offset get areaOffset => _areaRenderBox.localToGlobal(Offset.zero);
 
-  ThemeState get theme => TripTheme.of(context, listen: false)!.theme;
+  MaterialTheme get theme => TripTheme.of(context, listen: false)!.theme;
   WidgetTemplateState get template => WidgetTemplate.of(context, listen: false);
 
   @override
@@ -106,6 +107,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     return InheritedWidgetArea(
       state: this,
       child: Listener(
+        behavior: HitTestBehavior.opaque,
         onPointerDown: (_) {
           templateState.selectWidgetArea<T>(this);
         },
@@ -129,9 +131,6 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   EdgeInsetsGeometry getMargin() => EdgeInsets.zero;
   EdgeInsetsGeometry getPadding() => const EdgeInsets.all(10);
-
-  Widget? decoratePlaceholder(BuildContext context, T element) => null;
-  Widget? decorateElement(BuildContext context, T element) => null;
 
   BoxConstraints constrainWidget(T widget);
 
@@ -206,7 +205,6 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     }
 
     insertItem(item);
-
     reorderItem(offset, item.key);
     return true;
   }
@@ -236,4 +234,6 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   bool canInsertItem(T item) => true;
   void insertItem(T item);
   bool hasKey(Key key);
+
+  ElementDecorator<T> get elementDecorator;
 }

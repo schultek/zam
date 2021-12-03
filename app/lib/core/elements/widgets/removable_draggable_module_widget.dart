@@ -4,6 +4,7 @@ import '../../areas/widget_area.dart';
 import '../../reorderable/reorderable_listener.dart';
 import '../../route/route.dart';
 import '../../templates/widget_template.dart';
+import '../../themes/widgets/trip_theme.dart';
 import '../module_element.dart';
 
 class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessWidget {
@@ -42,7 +43,7 @@ class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessW
                   borderRadius: BorderRadius.circular(12),
                   shadowColor: Colors.black54,
                   elevation: 4,
-                  color: Colors.red, // button color
+                  color: context.theme.errorColor, // button color
                   child: InkWell(
                     splashColor: Colors.redAccent,
                     onTap: () {

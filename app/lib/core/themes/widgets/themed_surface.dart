@@ -1,15 +1,15 @@
 // ignore: must_be_immutable
 import 'package:flutter/material.dart';
 
-import '../theme_state.dart';
+import '../material_theme.dart';
 import 'trip_theme.dart';
 
 // ignore: must_be_immutable
 class ThemeKey extends Key {
   ThemeKey() : super.empty();
 
-  ThemeState? _theme;
-  ThemeState? get theme => _theme;
+  MaterialTheme? _theme;
+  MaterialTheme? get theme => _theme;
 }
 
 class ThemedSurface extends StatefulWidget {
@@ -28,7 +28,7 @@ class ThemedSurface extends StatefulWidget {
 }
 
 class _ThemedSurfaceState extends State<ThemedSurface> {
-  late ThemeState theme;
+  late MaterialTheme theme;
 
   @override
   void didChangeDependencies() {

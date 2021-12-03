@@ -137,7 +137,6 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
       state: widget.widgetArea,
       child: TripTheme(
         theme: widget.widgetArea.theme,
-        reuseTheme: true,
         child: AnimatedSize(
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,

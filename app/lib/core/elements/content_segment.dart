@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import '../areas/widget_area.dart';
 import '../module/module_context.dart';
 import '../route/route.dart';
-import '../themes/widgets/themed_surface.dart';
-import '../themes/widgets/trip_theme.dart';
 import 'module_element.dart';
 import 'widgets/module_element_builder.dart';
 
@@ -46,20 +44,15 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
   void onRemoved(BuildContext context) => whenRemoved?.call(context);
 
   @override
-  Widget buildPlaceholder(BuildContext context) {
-    return WidgetArea.of<ContentSegment>(context)?.decoratePlaceholder(context, this) ?? _defaultDecorator();
-  }
+  ContentSegment get element => this;
 
   @override
   Widget buildElement(BuildContext context) {
-    var child =
-        WidgetArea.of<ContentSegment>(context)?.decorateElement(context, this) ?? _defaultDecorator(builder(context));
+    var child = decorator(context).decorateElement(context, this, builder(context));
     if (onTap != null || onNavigate != null) {
       child = GestureDetector(
         onTap: () {
-          if (onTap != null) {
-            onTap!();
-          }
+          onTap?.call();
           if (onNavigate != null) {
             Navigator.of(context).push(ModulePageRoute(context, child: onNavigate!(context)));
           }
@@ -68,44 +61,5 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
       );
     }
     return child;
-  }
-
-  @override
-  Widget decorationBuilder(Widget child, double opacity) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 8,
-            spreadRadius: -2,
-            color: Colors.black.withOpacity(opacity * 0.5),
-          )
-        ],
-      ),
-      child: child,
-    );
-  }
-
-  Widget _defaultDecorator([Widget? child]) {
-    var w = ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: ThemedSurface(
-        builder: (context, fillColor) => Material(
-          textStyle: TextStyle(color: context.getTextColor()),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          color: fillColor.withOpacity(child != null ? 1 : 0.4),
-          child: child ?? Container(),
-        ),
-      ),
-    );
-    if (size == SegmentSize.wide) {
-      return w;
-    } else {
-      return AspectRatio(
-        aspectRatio: 1,
-        child: w,
-      );
-    }
   }
 }

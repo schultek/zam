@@ -25,6 +25,35 @@ class NotesModule extends ModuleBuilder<ContentSegment> {
   }
 }
 
+class NotesActionModule extends ModuleBuilder<QuickAction> {
+  @override
+  FutureOr<QuickAction?> build(ModuleContext context) {
+    return QuickAction(
+      context: context,
+      icon: Icons.sticky_note_2,
+      text: 'Notes',
+      onTap: (BuildContext context) async {
+        Navigator.of(context).push(NotesPage.route());
+      },
+    );
+  }
+}
+
+class AddNoteActionModule extends ModuleBuilder<QuickAction> {
+  @override
+  FutureOr<QuickAction?> build(ModuleContext context) {
+    return QuickAction(
+      context: context,
+      icon: Icons.sticky_note_2,
+      text: 'New Note',
+      onTap: (BuildContext context) async {
+        var note = await context.read(notesLogicProvider).createEmptyNote();
+        Navigator.of(context).push(EditNotePage.route(note));
+      },
+    );
+  }
+}
+
 class NoteModule extends ModuleBuilder<ContentSegment> {
   @override
   FutureOr<ContentSegment?> build(ModuleContext context) {

@@ -2,17 +2,25 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../../areas/widget_area.dart';
 import '../../reorderable/reorderable_item.dart';
 import '../../reorderable/reorderable_listener.dart';
 import '../../templates/widget_template.dart';
 import '../../widgets/widget_selector.dart';
+import '../decorators/element_decorator.dart';
 import '../module_element.dart';
 import 'removable_draggable_module_widget.dart';
 
 mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
+  ElementDecorator<T> decorator(BuildContext context) => WidgetArea.of<T>(context)!.elementDecorator;
+
+  T get element;
+
   Widget buildElement(BuildContext context);
-  Widget buildPlaceholder(BuildContext context);
-  Widget decorationBuilder(Widget child, double opacity);
+
+  Widget _decorationBuilder(BuildContext context, Widget child, double opacity) {
+    return decorator(context).decorateDragged(context, element, child, opacity);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +28,13 @@ mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
       return ReorderableItem(
         key: key,
         builder: (context, state, child) {
-          return state == ReorderableState.placeholder ? buildPlaceholder(context) : child;
+          if (state == ReorderableState.placeholder) {
+            return decorator(context).decoratePlaceholder(context, element);
+          } else {
+            return child;
+          }
         },
-        decorationBuilder: decorationBuilder,
+        decorationBuilder: _decorationBuilder,
         child: ReorderableListener<T>(
           delay: const Duration(milliseconds: 200),
           child: AbsorbPointer(child: buildElement(context)),
@@ -34,7 +46,7 @@ mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
       key: key,
       builder: (context, state, child) {
         if (state == ReorderableState.placeholder) {
-          return buildPlaceholder(context);
+          return decorator(context).decoratePlaceholder(context, element);
         } else if (state == ReorderableState.normal) {
           var animation = CurvedAnimation(parent: PhasedAnimation.of(context), curve: Curves.easeInOut);
           return AnimatedBuilder(
@@ -51,7 +63,7 @@ mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
           return AbsorbPointer(child: buildElement(context));
         }
       },
-      decorationBuilder: decorationBuilder,
+      decorationBuilder: _decorationBuilder,
       child: RemovableDraggableModuleWidget<T>(
         key: key,
         child: Builder(builder: buildElement),

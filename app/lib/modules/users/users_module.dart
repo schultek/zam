@@ -26,3 +26,15 @@ class UsersModule extends ModuleBuilder<ContentSegment> {
     ]);
   }
 }
+
+class UsersActionModule extends ModuleBuilder<QuickAction> {
+  @override
+  FutureOr<QuickAction?> build(ModuleContext context) {
+    return QuickAction(
+      context: context,
+      icon: Icons.supervised_user_circle,
+      text: 'Users',
+      onTap: (context) => Navigator.of(context).push(UsersPage.route()),
+    );
+  }
+}

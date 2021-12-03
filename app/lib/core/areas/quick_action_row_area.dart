@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../elements/decorators/default_quick_action_decorator.dart';
+import '../elements/decorators/element_decorator.dart';
 import '../elements/quick_action.dart';
 import 'mixins/list_area_mixin.dart';
 import 'widget_area.dart';
 
 class QuickActionRowArea extends WidgetArea<QuickAction> {
-  const QuickActionRowArea(String id, {Key? key}) : super(id, key: key);
+  final ElementDecorator<QuickAction> decorator;
+  const QuickActionRowArea(String id, {Key? key, this.decorator = const DefaultQuickActionDecorator()})
+      : super(id, key: key);
 
   @override
   State<StatefulWidget> createState() => QuickActionRowAreaState();
@@ -16,19 +20,28 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
   final _boxKey = GlobalKey();
 
   @override
+  ElementDecorator<QuickAction> get elementDecorator => widget.decorator;
+
+  @override
   Widget buildArea(BuildContext context) {
     return SizedBox(
       key: _boxKey,
       height: 100,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: elements,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          for (var element in elements)
+            Flexible(
+              fit: FlexFit.tight,
+              child: Center(child: element),
+            )
+        ],
       ),
     );
   }
 
   @override
-  BoxConstraints constrainWidget(QuickAction widget) => const BoxConstraints();
+  BoxConstraints constrainWidget(QuickAction widget) => const BoxConstraints(maxHeight: 100);
 
   @override
   bool canInsertItem(item) => elements.length < 3;
@@ -42,61 +55,69 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
   @override
   bool didReorderItem(Offset offset, Key itemKey) {
     Offset itemOffset = getOffset(itemKey);
-    Size itemSize = getSize(itemKey);
 
-    var row = elements;
-
+    int index = elements.indexWhere((e) => e.key == itemKey);
     var boxWidth = _boxKey.currentContext!.size!.width;
-    var spacing = (boxWidth - itemSize.width * row.length) / (row.length + 1);
+    var spacing = boxWidth / elements.length;
 
-    int index = row.indexWhere((e) => e.key == itemKey);
-
-    if (index > 0 && offset.dx < itemOffset.dx - itemSize.width / 2 - spacing / 2 - 20) {
+    if (index > 0 && offset.dx < itemOffset.dx - spacing / 2 - 10) {
       setState(() {
-        var draggedItem = row.removeAt(index);
-        row.insert(index - 1, draggedItem);
+        var draggedItem = elements.removeAt(index);
+        elements.insert(index - 1, draggedItem);
       });
-      translateX(row[index].key, -itemSize.width - spacing);
+      translateX(elements[index].key, -spacing);
       return true;
-    } else if (index < row.length - 1 && offset.dx > itemOffset.dx + itemSize.width / 2 + spacing / 2 + 20) {
+    } else if (index < elements.length - 1 && offset.dx > itemOffset.dx + spacing / 2 + 10) {
       setState(() {
-        var draggedItem = row.removeAt(index);
-        row.insert(index + 1, draggedItem);
+        var draggedItem = elements.removeAt(index);
+        elements.insert(index + 1, draggedItem);
       });
-      translateX(row[index].key, itemSize.width + spacing);
+      translateX(elements[index].key, spacing);
       return true;
     }
     return false;
   }
 
-  void removeAtIndex(int index) {
-    var row = elements;
-    var itemSize = getSize(row[index].key);
-
+  @override
+  void insertItem(QuickAction item) {
     var boxWidth = _boxKey.currentContext!.size!.width;
-    var spacing = (boxWidth - itemSize.width * row.length) / (row.length + 1);
 
-    if (row.length == 1) {
-      row.removeAt(index);
-    } else if (row.length == 2) {
+    if (elements.isEmpty) {
+      setState(() => elements.add(item));
+    } else if (elements.length == 1) {
+      setState(() => elements.add(item));
+      translateX(elements[0].key, boxWidth / 4);
+    } else if (elements.length == 2) {
+      setState(() => elements.insert(1, item));
+      translateX(elements[0].key, boxWidth / 12);
+      translateX(elements[2].key, -boxWidth / 12);
+    }
+  }
+
+  void removeAtIndex(int index) {
+    var boxWidth = _boxKey.currentContext!.size!.width;
+
+    if (elements.length == 1) {
+      elements.removeAt(index);
+    } else if (elements.length == 2) {
       if (index == 0) {
-        translateX(row[1].key, itemSize.width / 2 + spacing / 2);
+        translateX(elements[1].key, boxWidth / 4);
       } else {
-        translateX(row[0].key, -itemSize.width / 2 - spacing / 2);
+        translateX(elements[0].key, -boxWidth / 4);
       }
-      row.removeAt(index);
-    } else if (row.length == 3) {
+      elements.removeAt(index);
+    } else if (elements.length == 3) {
       if (index == 0) {
-        translateX(row[1].key, itemSize.width / 2 + spacing / 2);
-        translateX(row[2].key, (boxWidth + itemSize.width) / 12);
+        translateX(elements[1].key, boxWidth / 4);
+        translateX(elements[2].key, boxWidth / 12);
       } else if (index == 1) {
-        translateX(row[0].key, -(boxWidth + itemSize.width) / 12);
-        translateX(row[2].key, (boxWidth + itemSize.width) / 12);
+        translateX(elements[0].key, -boxWidth / 12);
+        translateX(elements[2].key, boxWidth / 12);
       } else {
-        translateX(row[0].key, -(boxWidth + itemSize.width) / 12);
-        translateX(row[1].key, -itemSize.width / 2 - spacing / 2);
+        translateX(elements[0].key, -boxWidth / 12);
+        translateX(elements[1].key, -boxWidth / 4);
       }
-      row.removeAt(index);
+      elements.removeAt(index);
     }
   }
 }

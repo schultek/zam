@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../areas/widget_area.dart';
 import '../module/module_context.dart';
 import 'module_element.dart';
 import 'widgets/module_element_builder.dart';
@@ -16,31 +15,10 @@ class PageSegment extends ModuleElement with ModuleElementBuilder<PageSegment> {
   }) : super(key: UniqueKey(), context: context);
 
   @override
-  Widget buildPlaceholder(BuildContext context) {
-    return WidgetArea.of<PageSegment>(context)?.decoratePlaceholder(context, this) ?? _defaultDecorator();
-  }
+  PageSegment get element => this;
 
   @override
   Widget buildElement(BuildContext context) {
-    return builder(context);
-  }
-
-  @override
-  Widget decorationBuilder(Widget child, double opacity) {
-    return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), boxShadow: [
-        BoxShadow(
-          blurRadius: 8,
-          spreadRadius: -2,
-          color: Colors.black.withOpacity(opacity * 0.5),
-        )
-      ]),
-      child: child,
-    );
-  }
-
-  Widget _defaultDecorator([Widget? child]) {
-    var w = child ?? Container();
-    return w;
+    return decorator(context).decorateElement(context, this, builder(context));
   }
 }
