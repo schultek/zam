@@ -72,7 +72,7 @@ class _TripSettingsState extends State<TripSettings> {
               decoration: const InputDecoration(
                 labelText: 'Name',
               ),
-              style: TextStyle(color: context.getTextColor()),
+              style: TextStyle(color: context.onSurfaceColor),
               onFieldSubmitted: (text) {
                 context.read(tripsLogicProvider).updateTrip({'name': text});
               },

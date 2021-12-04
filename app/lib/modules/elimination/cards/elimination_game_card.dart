@@ -31,7 +31,7 @@ class EliminationGameCard extends StatefulWidget {
             right: 0,
             child: IconButton(
               visualDensity: VisualDensity.compact,
-              icon: Icon(Icons.leaderboard, size: 20, color: context.getTextColor()),
+              icon: Icon(Icons.leaderboard, size: 20, color: context.onSurfaceColor),
               onPressed: () {
                 Navigator.of(context).push(ModulePageRoute(context, child: EliminationListPage(gameId: id)));
               },

@@ -50,7 +50,7 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
                 return ListTile(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                   title: Text(folders[index] ?? 'No Folder'),
-                  tileColor: folders[index] == folder ? context.getTextColor().withOpacity(0.1) : null,
+                  tileColor: folders[index] == folder ? context.onSurfaceColor.withOpacity(0.1) : null,
                   onTap: () {
                     folder = folders[index];
                     changeFolder();

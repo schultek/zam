@@ -9,7 +9,7 @@ import '../../providers/trips/selected_trip_provider.dart';
 import '../areas/widget_area.dart';
 import '../elements/module_element.dart';
 import '../module/module_context.dart';
-import '../themes/material_theme.dart';
+import '../themes/trip_theme_data.dart';
 import '../themes/widgets/trip_theme.dart';
 import '../widgets/widget_selector.dart';
 import 'template_model.dart';
@@ -180,7 +180,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
       child: MediaQuery(
         data: MediaQuery.of(context).addPadding(bottom: widgetSelector?.state?.sheetHeight),
         child: TripTheme(
-          theme: MaterialTheme(FlexScheme.values[trip.theme.schemeIndex], trip.theme.dark),
+          theme: TripThemeData.fromModel(trip.theme),
           child: Builder(builder: (context) {
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: FlexColorScheme.themedSystemNavigationBar(

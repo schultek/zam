@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../material_theme.dart';
+import '../trip_theme_data.dart';
 
 class TripTheme extends InheritedWidget {
-  final bool reuseTheme;
-  final MaterialTheme theme;
+  final TripThemeData theme;
 
-  TripTheme({Key? key, required Widget child, required this.theme, this.reuseTheme = false})
+  TripTheme({Key? key, required Widget child, required this.theme})
       : super(key: key, child: Theme(data: theme.themeData, child: child));
 
   static TripTheme? of(BuildContext context, {bool listen = true}) {
@@ -26,13 +25,12 @@ class TripTheme extends InheritedWidget {
 }
 
 extension ThemeColorsContext on BuildContext {
-  Color getFillColor() {
-    return TripTheme.of(this)!.theme.currentFillColor;
+  Color get surfaceColor {
+    return TripTheme.of(this)!.theme.surfaceColor;
   }
 
-  Color getTextColor([ColorPreference? preference]) {
-    var inheritedTheme = TripTheme.of(this)!;
-    return inheritedTheme.theme.computeTextColor(preference: preference);
+  Color get onSurfaceColor {
+    return TripTheme.of(this)!.theme.onSurfaceColor;
   }
 
   ThemeData get theme {

@@ -52,7 +52,7 @@ class _AddChannelPageState extends State<AddChannelPage> {
         onPressed: () {
           Navigator.of(context).pushReplacement(CreateChannelPage.route());
         },
-        backgroundColor: context.getTextColor(),
+        backgroundColor: context.onSurfaceColor,
         child: const Icon(Icons.add),
       ),
     );

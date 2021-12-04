@@ -40,7 +40,7 @@ class _SearchTrackPageState extends State<SearchTrackPage> {
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
               hintText: 'Suche nach Liedern',
-              hintStyle: TextStyle(color: context.getFillColor()),
+              hintStyle: TextStyle(color: context.surfaceColor),
               border: InputBorder.none,
               filled: true,
               fillColor: Colors.black12,
@@ -48,7 +48,7 @@ class _SearchTrackPageState extends State<SearchTrackPage> {
             focusNode: searchFocusNode,
             style: DefaultTextStyle.of(context).style.copyWith(
                   fontStyle: FontStyle.italic,
-                  color: context.getFillColor(),
+                  color: context.surfaceColor,
                 ),
             onChanged: (text) async {
               var results = await context.read(musicLogicProvider).search(text);

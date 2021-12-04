@@ -57,7 +57,7 @@ class SpotifyPlayer extends StatelessWidget {
                       iconSize: 25,
                       icon: Icon(
                         Icons.skip_previous,
-                        color: context.getTextColor().withOpacity(player != null ? 1 : 0.5),
+                        color: context.onSurfaceColor.withOpacity(player != null ? 1 : 0.5),
                       ),
                       onPressed: player != null
                           ? () {
@@ -69,7 +69,7 @@ class SpotifyPlayer extends StatelessWidget {
                       iconSize: 40,
                       icon: Icon(
                         player?.isPlaying ?? true ? Icons.pause : Icons.play_arrow,
-                        color: context.getTextColor().withOpacity(player != null ? 1 : 0.5),
+                        color: context.onSurfaceColor.withOpacity(player != null ? 1 : 0.5),
                       ),
                       onPressed: player != null
                           ? () {
@@ -85,7 +85,7 @@ class SpotifyPlayer extends StatelessWidget {
                       iconSize: 25,
                       icon: Icon(
                         Icons.skip_next,
-                        color: context.getTextColor().withOpacity(player != null ? 1 : 0.5),
+                        color: context.onSurfaceColor.withOpacity(player != null ? 1 : 0.5),
                       ),
                       onPressed: player != null
                           ? () {
@@ -104,7 +104,7 @@ class SpotifyPlayer extends StatelessWidget {
                         iconSize: 22,
                         icon: Icon(
                           Icons.playlist_play,
-                          color: context.getTextColor(),
+                          color: context.onSurfaceColor,
                         ),
                         onPressed: () async {
                           ref.read(musicLogicProvider).getDevices();
@@ -115,7 +115,7 @@ class SpotifyPlayer extends StatelessWidget {
                         iconSize: 22,
                         icon: Icon(
                           Icons.devices,
-                          color: context.getTextColor(),
+                          color: context.onSurfaceColor,
                         ),
                         onPressed: () async {
                           await SelectDeviceDialog.show(context);

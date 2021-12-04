@@ -68,7 +68,7 @@ class UsersPage extends StatelessWidget {
   Widget userTile(BuildContext context, MapEntry<String, TripUser> e) {
     return ListTile(
       leading: UserAvatar(id: e.key),
-      title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.getTextColor())),
+      title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.onSurfaceColor)),
       subtitle: Text(e.value.role.capitalize()),
       trailing: context.read(isOrganizerProvider)
           ? PopupMenuButton<String>(

@@ -62,9 +62,9 @@ class TheButtonPainter extends CustomPainter {
     var paint = Paint();
     if (currentLevel == -1 || currentLevel > level) {
       if (context.theme.brightness == Brightness.dark) {
-        paint.color = context.getFillColor().lighten(10 - level * 2);
+        paint.color = context.surfaceColor.lighten(10 - level * 2);
       } else {
-        paint.color = context.getFillColor().darken(level * 2);
+        paint.color = context.surfaceColor.darken(level * 2);
       }
     } else {
       paint.color = getColorForLevel(level, context);

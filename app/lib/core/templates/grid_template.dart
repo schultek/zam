@@ -45,7 +45,7 @@ class GridTemplate extends WidgetTemplate<GridTemplateModel> {
                       const TripSelectorButton(),
                       Text(
                         trip.name,
-                        style: Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
+                        style: Theme.of(context).textTheme.headline5!.apply(color: context.onSurfaceColor),
                       ),
                       const SizedBox(width: 50, child: ReorderToggle()),
                     ],

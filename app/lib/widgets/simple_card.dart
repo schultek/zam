@@ -24,7 +24,7 @@ class SimpleCard extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               title,
-              style: Theme.of(context).textTheme.bodyText1!.apply(color: context.getTextColor()),
+              style: Theme.of(context).textTheme.bodyText1!.apply(color: context.onSurfaceColor),
               textAlign: TextAlign.center,
             ),
           ],

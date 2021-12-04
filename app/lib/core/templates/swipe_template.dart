@@ -125,7 +125,7 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                               const TripSelectorButton(),
                               Text(
                                 trip.name,
-                                style: Theme.of(context).textTheme.headline5!.apply(color: context.getTextColor()),
+                                style: Theme.of(context).textTheme.headline5!.apply(color: context.onSurfaceColor),
                               ),
                               if (user.isOrganizer)
                                 const SizedBox(

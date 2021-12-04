@@ -112,7 +112,7 @@ class _EditNotePageState extends State<EditNotePage> {
                         padding: const EdgeInsets.all(20),
                         child: TextFormField(
                           decoration: const InputDecoration(hintText: 'Title'),
-                          style: TextStyle(fontSize: 30, color: context.getTextColor()),
+                          style: TextStyle(fontSize: 30, color: context.onSurfaceColor),
                           initialValue: widget.note.title,
                           onChanged: (text) => _title = text,
                           textInputAction: TextInputAction.next,

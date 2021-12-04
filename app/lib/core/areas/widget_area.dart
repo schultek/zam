@@ -11,7 +11,7 @@ import '../elements/decorators/element_decorator.dart';
 import '../elements/module_element.dart';
 import '../reorderable/logic_provider.dart';
 import '../templates/widget_template.dart';
-import '../themes/material_theme.dart';
+import '../themes/trip_theme_data.dart';
 import '../themes/widgets/trip_theme.dart';
 
 class InheritedWidgetArea<T extends ModuleElement> extends InheritedWidget {
@@ -58,7 +58,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   Size get areaSize => _areaRenderBox.size;
   Offset get areaOffset => _areaRenderBox.localToGlobal(Offset.zero);
 
-  MaterialTheme get theme => TripTheme.of(context, listen: false)!.theme;
+  TripThemeData get theme => TripTheme.of(context, listen: false)!.theme;
   WidgetTemplateState get template => WidgetTemplate.of(context, listen: false);
 
   @override

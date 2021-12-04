@@ -136,7 +136,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
           child: Builder(
             builder: (context) => Icon(
               Icons.timer,
-              color: context.getTextColor(),
+              color: context.onSurfaceColor,
             ),
           ),
         ),
@@ -157,7 +157,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
             builder: (context) => Text(
               'h',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline5!.apply(fontSizeFactor: 1.2, color: context.getTextColor()),
+              style: Theme.of(context).textTheme.headline5!.apply(fontSizeFactor: 1.2, color: context.onSurfaceColor),
             ),
           ),
         ),
@@ -192,7 +192,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                   Center(
                     child: Text(
                       option,
-                      style: Theme.of(context).textTheme.headline5!.copyWith(color: context.getTextColor()),
+                      style: Theme.of(context).textTheme.headline5!.copyWith(color: context.onSurfaceColor),
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -212,7 +212,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
         builder: (context) => IconButton(
           splashRadius: 20,
           visualDensity: VisualDensity.compact,
-          icon: Icon(Icons.close, size: 20, color: context.getTextColor()),
+          icon: Icon(Icons.close, size: 20, color: context.onSurfaceColor),
           onPressed: () {
             setState(() {
               settingsOpen = false;
@@ -251,7 +251,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
         builder: (context) => IconButton(
           splashRadius: 20,
           visualDensity: VisualDensity.compact,
-          icon: Icon(Icons.settings_backup_restore, size: 20, color: context.getTextColor()),
+          icon: Icon(Icons.settings_backup_restore, size: 20, color: context.onSurfaceColor),
           onPressed: () {
             setState(() {
               resetOpen = true;
@@ -286,7 +286,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                 },
                 child: Text(
                   'Reset\nHealth',
-                  style: TextStyle(color: context.getTextColor()),
+                  style: TextStyle(color: context.onSurfaceColor),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -304,7 +304,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                 },
                 child: Text(
                   'Reset\nLeaderboard',
-                  style: TextStyle(color: context.getTextColor()),
+                  style: TextStyle(color: context.onSurfaceColor),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -327,7 +327,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
             children: [
               Text(
                 "Do you want to\nreset the ${isResettingHealth == true ? 'health' : 'leaderboard'}?",
-                style: TextStyle(color: context.getTextColor()),
+                style: TextStyle(color: context.onSurfaceColor),
                 textAlign: TextAlign.center,
               ),
               Row(

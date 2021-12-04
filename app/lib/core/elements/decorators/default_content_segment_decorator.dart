@@ -33,7 +33,7 @@ class DefaultContentSegmentDecorator implements ElementDecorator<ContentSegment>
       borderRadius: BorderRadius.circular(20),
       child: ThemedSurface(
         builder: (context, fillColor) => Material(
-          textStyle: TextStyle(color: context.getTextColor()),
+          textStyle: TextStyle(color: context.onSurfaceColor),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           color: fillColor.withOpacity(child != null ? 1 : 0.4),
           child: child ?? Container(),

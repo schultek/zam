@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../themes/trip_theme_data.dart';
 import '../../themes/widgets/themed_surface.dart';
 import '../../themes/widgets/trip_theme.dart';
 import '../quick_action.dart';
@@ -29,13 +30,12 @@ class CardQuickActionDecorator implements ElementDecorator<QuickAction> {
   }
 
   Widget actionLayout(BuildContext context, QuickAction element, {bool isPlaceholder = false}) {
-    var textColor = context.getTextColor();
-    var textStyle = Theme.of(context).textTheme.bodyText1!;
     return AspectRatio(
       aspectRatio: 1,
       child: ThemedSurface(
+        preference: ColorPreference(usePrimaryColor: true),
         builder: (context, fillColor) => Material(
-          textStyle: TextStyle(color: context.getTextColor()),
+          textStyle: TextStyle(color: context.onSurfaceColor),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           color: fillColor.withOpacity(isPlaceholder ? 0.8 : 1),
           child: isPlaceholder
@@ -44,11 +44,11 @@ class CardQuickActionDecorator implements ElementDecorator<QuickAction> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(element.icon, color: context.getTextColor()),
+                    Icon(element.icon, color: context.onSurfaceColor),
                     const SizedBox(height: 8),
                     Text(
                       element.text,
-                      style: textStyle.apply(color: textColor),
+                      style: Theme.of(context).textTheme.bodyText1!.apply(color: context.onSurfaceColor),
                     ),
                   ],
                 ),

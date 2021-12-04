@@ -19,7 +19,7 @@ class DefaultPageSegmentDecorator implements ElementDecorator<PageSegment> {
   @override
   Widget decorateElement(BuildContext context, PageSegment element, Widget child) {
     return Material(
-      textStyle: TextStyle(color: context.getTextColor()),
+      textStyle: TextStyle(color: context.onSurfaceColor),
       color: Colors.transparent,
       child: child,
     );

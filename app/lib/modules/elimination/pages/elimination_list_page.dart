@@ -59,13 +59,13 @@ class EliminationListPage extends StatelessWidget {
                     Text(
                       '$alive/$players alive',
                       textAlign: TextAlign.justify,
-                      style: Theme.of(context).textTheme.headline4!.copyWith(color: context.getTextColor()),
+                      style: Theme.of(context).textTheme.headline4!.copyWith(color: context.onSurfaceColor),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       '$untouchable immortal',
                       textAlign: TextAlign.justify,
-                      style: Theme.of(context).textTheme.headline5!.copyWith(color: context.getTextColor()),
+                      style: Theme.of(context).textTheme.headline5!.copyWith(color: context.onSurfaceColor),
                     ),
                   ],
                 ),

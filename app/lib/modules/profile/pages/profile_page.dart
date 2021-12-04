@@ -77,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           )
                         : null,
                   ),
-                  style: TextStyle(color: context.getTextColor()),
+                  style: TextStyle(color: context.onSurfaceColor),
                   onChanged: (text) {
                     setState(() => _name = text);
                   },

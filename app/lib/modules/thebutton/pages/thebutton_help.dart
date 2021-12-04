@@ -73,11 +73,11 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
             children: [
               Text(
                 'The Button',
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: context.getTextColor()),
+                style: Theme.of(context).textTheme.bodyText2!.copyWith(color: context.onSurfaceColor),
               ),
               Text(
                 'A social game where you have to keep the button alive.',
-                style: Theme.of(context).textTheme.caption!.apply(color: context.getTextColor(), fontSizeFactor: 0.9),
+                style: Theme.of(context).textTheme.caption!.apply(color: context.onSurfaceColor, fontSizeFactor: 0.9),
                 textAlign: TextAlign.center,
               ),
               TextButton(
@@ -88,7 +88,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                 onPressed: () => setState(() => instructionsOpen = true),
                 child: Text(
                   'How to play?',
-                  style: TextStyle(color: context.getTextColor()),
+                  style: TextStyle(color: context.onSurfaceColor),
                 ),
               ),
               TextButton(
@@ -99,7 +99,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                 onPressed: () => setState(() => leaderboardOpen = true),
                 child: Text(
                   'Leaderboard',
-                  style: TextStyle(color: context.getTextColor()),
+                  style: TextStyle(color: context.onSurfaceColor),
                 ),
               ),
             ],
@@ -122,25 +122,25 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
               Text(
                 'How to play',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.onSurfaceColor),
               ),
               const SizedBox(height: 10),
               Text(
                 "The main goal is to never let the button die. The button will slowly loose health until it's dead. You can heal the button anytime while it is still alive by tapping on it for two seconds. But once it's dead, it can never be brought back, so stay alert.",
                 textAlign: TextAlign.justify,
-                style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
+                style: Theme.of(context).textTheme.caption!.copyWith(color: context.onSurfaceColor),
               ),
               const SizedBox(height: 10),
               Text(
                 'The buttons health is synchronized across all players, so it is a group efford to keep it alive.',
                 textAlign: TextAlign.justify,
-                style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
+                style: Theme.of(context).textTheme.caption!.copyWith(color: context.onSurfaceColor),
               ),
               const SizedBox(height: 10),
               Text(
                 "When you save the button from its demise, you will get it's level. The lower the buttons health is the higher is level you get. But don't wait too long, someone else might just come along and save the button before you have the chance.",
                 textAlign: TextAlign.justify,
-                style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
+                style: Theme.of(context).textTheme.caption!.copyWith(color: context.onSurfaceColor),
               )
             ],
           ),
@@ -162,7 +162,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
               Text(
                 'Leaderboard',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.onSurfaceColor),
               ),
               const SizedBox(height: 12),
               for (var entry in ref.watch(theButtonLeaderboardProvider)) ...[
@@ -174,7 +174,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                       fit: FlexFit.tight,
                       child: Text(
                         entry.name,
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: context.getTextColor()),
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: context.onSurfaceColor),
                         overflow: TextOverflow.ellipsis,
                         softWrap: false,
                       ),
@@ -207,7 +207,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
       child: Builder(
         builder: (context) => IconButton(
           visualDensity: VisualDensity.compact,
-          icon: Icon(Icons.close, size: 20, color: context.getTextColor()),
+          icon: Icon(Icons.close, size: 20, color: context.onSurfaceColor),
           onPressed: () {
             setState(() {
               helpOpen = false;

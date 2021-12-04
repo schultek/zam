@@ -23,7 +23,7 @@ class DefaultQuickActionDecorator implements ElementDecorator<QuickAction> {
   }
 
   Widget actionLayout(BuildContext context, QuickAction element, {bool isPlaceholder = false, double opacity = 0}) {
-    var textColor = context.getTextColor();
+    var textColor = context.onSurfaceColor;
     var textStyle = Theme.of(context).textTheme.bodyText1!;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -45,7 +45,7 @@ class DefaultQuickActionDecorator implements ElementDecorator<QuickAction> {
               ),
               padding: const EdgeInsets.all(10),
               margin: const EdgeInsets.only(bottom: 10),
-              child: Icon(element.icon, color: isPlaceholder ? Colors.transparent : context.getTextColor()),
+              child: Icon(element.icon, color: isPlaceholder ? Colors.transparent : context.onSurfaceColor),
             ),
             if (isPlaceholder)
               Container(

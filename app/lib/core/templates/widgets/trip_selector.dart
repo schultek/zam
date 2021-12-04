@@ -52,12 +52,12 @@ class TripSelectorPage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         children: [
           if (selectedTrip != null) ...[
-            Text('Ausgewählter Trip', style: TextStyle(color: context.getTextColor())),
+            Text('Ausgewählter Trip', style: TextStyle(color: context.onSurfaceColor)),
             const SizedBox(height: 20),
             selectedTripTile(context, selectedTrip),
             const SizedBox(height: 40),
           ],
-          Text('Verfügbare Trips', style: TextStyle(color: context.getTextColor())),
+          Text('Verfügbare Trips', style: TextStyle(color: context.onSurfaceColor)),
           const SizedBox(height: 20),
           for (var trip in trips.where((t) => t.id != selectedTrip?.id)) ...[
             tripTile(context, trip),

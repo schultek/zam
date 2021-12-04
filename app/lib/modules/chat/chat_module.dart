@@ -20,7 +20,7 @@ class ChatModule extends ModuleBuilder<PageSegment> {
           return Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
-              color: context.getTextColor(),
+              color: context.onSurfaceColor,
             ),
             alignment: Alignment.center,
             child: Icon(Icons.chat, size: MediaQuery.of(context).size.width / 2),

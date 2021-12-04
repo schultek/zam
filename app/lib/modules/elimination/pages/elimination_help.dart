@@ -31,7 +31,7 @@ class _EliminationHelpState extends State<EliminationHelp> {
       left: 0,
       child: IconButton(
         visualDensity: VisualDensity.compact,
-        icon: Icon(Icons.help, size: 20, color: context.getTextColor()),
+        icon: Icon(Icons.help, size: 20, color: context.onSurfaceColor),
         onPressed: () => setState(() {
           helpOpen = true;
         }),
@@ -64,13 +64,13 @@ class _EliminationHelpState extends State<EliminationHelp> {
               Text(
                 'How to play',
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.getTextColor()),
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(color: context.onSurfaceColor),
               ),
               const SizedBox(height: 10),
               Text(
                 '"Eliminate" your target by the agreed way in real live. Then add the elimination to the list and receive a new target, until everyone but the last player is eliminated.',
                 textAlign: TextAlign.justify,
-                style: Theme.of(context).textTheme.caption!.copyWith(color: context.getTextColor()),
+                style: Theme.of(context).textTheme.caption!.copyWith(color: context.onSurfaceColor),
               ),
             ],
           ),
@@ -86,7 +86,7 @@ class _EliminationHelpState extends State<EliminationHelp> {
       child: Builder(
         builder: (context) => IconButton(
           visualDensity: VisualDensity.compact,
-          icon: Icon(Icons.close, size: 20, color: context.getTextColor()),
+          icon: Icon(Icons.close, size: 20, color: context.onSurfaceColor),
           onPressed: () {
             setState(() {
               helpOpen = false;

@@ -34,4 +34,7 @@ mixin SingleElementAreaMixin<U extends WidgetArea<T>, T extends ModuleElement> o
 
   @override
   bool didReorderItem(Offset offset, Key itemKey) => false;
+
+  @override
+  bool canInsertItem(T item) => element == null;
 }

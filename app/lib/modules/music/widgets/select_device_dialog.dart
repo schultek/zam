@@ -51,7 +51,7 @@ class _SelectDeviceDialogState extends State<SelectDeviceDialog> {
                 height: 180,
                 child: Center(
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(context.getTextColor()),
+                    valueColor: AlwaysStoppedAnimation(context.onSurfaceColor),
                   ),
                 ),
               );

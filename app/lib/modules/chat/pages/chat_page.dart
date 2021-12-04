@@ -29,7 +29,7 @@ class ChatPage extends StatelessWidget {
                 minLeadingWidth: 0,
                 title: Text(
                   channel.name,
-                  style: TextStyle(color: context.getTextColor()),
+                  style: TextStyle(color: context.onSurfaceColor),
                 ),
                 onTap: () {
                   Navigator.of(context).push(ChannelPage.route(channel.id));
@@ -41,7 +41,7 @@ class ChatPage extends StatelessWidget {
               leading: const Icon(Icons.add_box),
               title: Text(
                 'Channel hinzufügen',
-                style: TextStyle(color: context.getTextColor().withOpacity(0.5)),
+                style: TextStyle(color: context.onSurfaceColor.withOpacity(0.5)),
               ),
               onTap: () {
                 Navigator.of(context).push(AddChannelPage.route());

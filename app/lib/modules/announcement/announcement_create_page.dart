@@ -49,7 +49,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
             borderRadius: BorderRadius.circular(20),
             child: ThemedSurface(
               builder: (context, fillColor) => Material(
-                textStyle: TextStyle(color: context.getTextColor()),
+                textStyle: TextStyle(color: context.onSurfaceColor),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 color: fillColor.withOpacity(1),
                 child: AnnouncementCard(announcement: AsyncValue.data(announcement), onDismissed: () {}),
@@ -62,7 +62,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
             decoration: const InputDecoration(
               labelText: 'Title',
             ),
-            style: TextStyle(color: context.getTextColor()),
+            style: TextStyle(color: context.onSurfaceColor),
             onChanged: (text) => setState(() => announcement = announcement.copyWith(title: text)),
           ),
           const SizedBox(height: 20),
@@ -70,7 +70,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
             decoration: const InputDecoration(
               labelText: 'Message',
             ),
-            style: TextStyle(color: context.getTextColor()),
+            style: TextStyle(color: context.onSurfaceColor),
             onChanged: (text) => setState(() => announcement = announcement.copyWith(message: text)),
           ),
           const SizedBox(height: 20),

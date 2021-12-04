@@ -62,7 +62,7 @@ class AnnouncementModule extends ModuleBuilder<ContentSegment> {
                   const SizedBox(height: 5),
                   Text('New Announcement\n(Tap to create)',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyText1!.apply(color: context.getTextColor())),
+                      style: Theme.of(context).textTheme.bodyText1!.apply(color: context.onSurfaceColor)),
                 ],
               ),
             ),
