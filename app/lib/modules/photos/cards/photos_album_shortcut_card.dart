@@ -7,6 +7,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/core.dart';
+import '../providers/google_account_provider.dart';
 import '../providers/photos_provider.dart';
 
 class PhotosAlbumShortcutCard extends StatelessWidget {
@@ -16,13 +17,15 @@ class PhotosAlbumShortcutCard extends StatelessWidget {
   static Future<ContentSegment> segment(ModuleContext context) async {
     var album = await context.context.read(albumShortcutProvider(context.elementId!).future);
 
+    print('${album.albumUrl} ${album.id}');
     return ContentSegment(
       context: context,
       builder: (context) => PhotosAlbumShortcutCard(album),
-      onTap: () {
+      onTap: (context) {
         launch(album.albumUrl);
       },
       whenRemoved: (context) {
+        context.read(googleAccountProvider.notifier).signOut();
         context.read(photosLogicProvider).removeAlbumShortcut(album.id);
       },
     );
@@ -40,25 +43,28 @@ class PhotosAlbumShortcutCard extends StatelessWidget {
       child: ClipRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  album.title!,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
-                Text(
-                  '${album.itemsCount} Elemente',
-                  style: const TextStyle(fontSize: 12),
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
-              ],
+          child: Container(
+            color: context.theme.primaryColor.withOpacity(0.4),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    album.title!,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                  Text(
+                    '${album.itemsCount} Elemente',
+                    style: const TextStyle(fontSize: 12),
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

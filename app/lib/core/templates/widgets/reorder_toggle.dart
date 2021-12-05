@@ -8,7 +8,7 @@ import 'package:flare_flutter/flare_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
-import '../../themes/widgets/trip_theme.dart';
+import '../../themes/theme_context.dart';
 import '../widget_template.dart';
 
 class ReorderToggle extends StatefulWidget {
@@ -44,7 +44,7 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController {
         blendMode: BlendMode.srcIn,
         shaderCallback: (Rect bounds) {
           return LinearGradient(
-            colors: <Color>[context.theme.colorScheme.onBackground, context.theme.colorScheme.onBackground],
+            colors: <Color>[context.onSurfaceColor, context.onSurfaceColor],
           ).createShader(bounds);
         },
         child: AnimatedBuilder(

@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../../../core/core.dart';
+
 class RevealTextAnimation extends StatefulWidget {
   final String text;
   const RevealTextAnimation({Key? key, required this.text}) : super(key: key);
@@ -76,9 +78,9 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               'Eliminate:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, color: context.onSurfaceColor),
             ),
             const SizedBox(height: 5),
             ConstrainedBox(
@@ -92,7 +94,7 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
             ),
             Text(
               'Hold to reveal',
-              style: Theme.of(context).textTheme.caption!.apply(fontSizeFactor: 0.8),
+              style: context.theme.textTheme.caption!.apply(fontSizeFactor: 0.8, color: context.onSurfaceColor),
             ),
           ],
         ),
@@ -105,6 +107,7 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
       fontFamily: 'Cousine',
       fontSize: ((MediaQuery.of(context).size.width / 2) - 20) / (max(range.length, 4)),
       height: 1.4,
+      color: context.onSurfaceHighlightColor,
     );
     return AnimatedBuilder(
       animation: controller,

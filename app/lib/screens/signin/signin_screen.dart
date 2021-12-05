@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../core/core.dart';
 import '../../providers/auth/logic_provider.dart';
 import '../../providers/links/links_provider.dart';
 import '../../widgets/ju_background.dart';
@@ -35,7 +36,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: context.theme.primaryColor,
       body: JuBackground(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 40),

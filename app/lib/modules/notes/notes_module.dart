@@ -32,9 +32,7 @@ class NotesActionModule extends ModuleBuilder<QuickAction> {
       context: context,
       icon: Icons.sticky_note_2,
       text: 'Notes',
-      onTap: (BuildContext context) async {
-        Navigator.of(context).push(NotesPage.route());
-      },
+      onNavigate: (context) => const NotesPage(),
     );
   }
 }
@@ -46,9 +44,9 @@ class AddNoteActionModule extends ModuleBuilder<QuickAction> {
       context: context,
       icon: Icons.sticky_note_2,
       text: 'New Note',
-      onTap: (BuildContext context) async {
-        var note = await context.read(notesLogicProvider).createEmptyNote();
-        Navigator.of(context).push(EditNotePage.route(note));
+      onNavigate: (BuildContext context) {
+        var note = context.read(notesLogicProvider).createEmptyNote();
+        return EditNotePage(note);
       },
     );
   }
@@ -74,7 +72,7 @@ class NoteModule extends ModuleBuilder<ContentSegment> {
                   onTap: () {
                     Navigator.of(context).push(ModulePageRoute(
                       context,
-                      child: EditNotePage(data, area: WidgetArea.of<ContentSegment>(context)),
+                      child: EditNotePage(data),
                     ));
                   },
                   child: AbsorbPointer(child: NotePreview(note: data)),
@@ -103,5 +101,26 @@ class NoteModule extends ModuleBuilder<ContentSegment> {
         return null;
       }
     });
+  }
+}
+
+class NotesGridModule extends ModuleBuilder<ContentSegment> {
+  @override
+  FutureOr<ContentSegment?> build(ModuleContext context) {
+    return ContentSegment.items(
+      context: context,
+      itemsBuilder: NotesPage.cardsBuilder,
+      builder: (context, items) => LayoutBuilder(
+        builder: (context, constraints) => GridView.count(
+          padding: EdgeInsets.zero,
+          physics: const BouncingScrollPhysics(),
+          shrinkWrap: true,
+          crossAxisCount: 2,
+          mainAxisSpacing: constraints.maxWidth > 300 ? 20 : 10,
+          crossAxisSpacing: constraints.maxWidth > 300 ? 20 : 10,
+          children: items,
+        ),
+      ),
+    );
   }
 }

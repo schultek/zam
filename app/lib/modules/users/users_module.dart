@@ -34,7 +34,7 @@ class UsersActionModule extends ModuleBuilder<QuickAction> {
       context: context,
       icon: Icons.supervised_user_circle,
       text: 'Users',
-      onTap: (context) => Navigator.of(context).push(UsersPage.route()),
+      onNavigate: (context) => const UsersPage(),
     );
   }
 }

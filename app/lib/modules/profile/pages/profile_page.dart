@@ -49,10 +49,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           logic.uploadProfileImage(pngBytes);
                         }
                       },
-                      child: CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        backgroundImage:
-                            user?.profileUrl != null ? CachedNetworkImageProvider(user!.profileUrl!) : null,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: context.theme.colorScheme.primary, width: 2),
+                            shape: BoxShape.circle,
+                            image: user?.profileUrl != null
+                                ? DecorationImage(image: CachedNetworkImageProvider(user!.profileUrl!))
+                                : null,
+                            color: context.surfaceColor),
                         child: user?.profileUrl == null ? const Center(child: Icon(Icons.add, size: 60)) : null,
                       ),
                     ),

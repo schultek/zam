@@ -10,6 +10,8 @@ mixin ScrollMixin<T extends WidgetArea<E>, E extends ModuleElement> on WidgetAre
 
   Function? _activeScrollCb;
 
+  bool get scrollDownEnabled => true;
+
   Future<void> maybeScroll(Offset dragOffset, Key itemKey, Size itemSize) async {
     scrollCb() {
       _activeScrollCb = null;
@@ -27,7 +29,7 @@ mixin ScrollMixin<T extends WidgetArea<E>, E extends ModuleElement> on WidgetAre
     int duration = 15; // in ms
 
     MediaQueryData d = MediaQuery.of(context);
-    double padding = 20;
+    double padding = 0;
 
     if (position.axis == Axis.vertical) {
       double top = d.padding.top + padding;
@@ -61,7 +63,9 @@ mixin ScrollMixin<T extends WidgetArea<E>, E extends ModuleElement> on WidgetAre
     if (dragOffset < top && position.pixels > position.minScrollExtent) {
       var overdrag = max(top - dragOffset, overdragMax);
       return max(position.minScrollExtent, position.pixels - step * overdrag / overdragCoef);
-    } else if (dragOffset + dragSize.height > bottom && position.pixels < position.maxScrollExtent) {
+    } else if (scrollDownEnabled &&
+        dragOffset + dragSize.height > bottom &&
+        position.pixels < position.maxScrollExtent) {
       var overdrag = max<double>(dragOffset + dragSize.height - bottom, overdragMax);
       return min(position.maxScrollExtent, position.pixels + step * overdrag / overdragCoef);
     } else {

@@ -68,7 +68,7 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
     if (uri.path.startsWith('/invitation')) {
       if (uri.path.endsWith('/organizer') || uri.path.endsWith('/admin')) {
         state = LinkState(uri);
-      } else if (uri.path.endsWith('/models')) {
+      } else if (uri.path.endsWith('/trip')) {
         state = LinkState.processing();
         (() async {
           var user = ref.read(userProvider);

@@ -56,19 +56,20 @@ class AnnouncementModule extends ModuleBuilder<ContentSegment> {
                 children: [
                   Icon(
                     Icons.add,
-                    color: context.theme.colorScheme.primary,
+                    color: context.onSurfaceHighlightColor,
                     size: 50,
                   ),
                   const SizedBox(height: 5),
                   Text('New Announcement\n(Tap to create)',
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyText1!.apply(color: context.onSurfaceColor)),
+                      style: context.theme.textTheme.bodyText1!.apply(color: context.onSurfaceColor)),
                 ],
               ),
             ),
           ),
           onNavigate: (context) {
             return AnnouncementPage(
+              parentArea: WidgetArea.of<ContentSegment>(context)!,
               onCreate: (id) => idProvider.provide(context, id),
             );
           },

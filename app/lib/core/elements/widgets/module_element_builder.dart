@@ -37,7 +37,7 @@ mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
         decorationBuilder: _decorationBuilder,
         child: ReorderableListener<T>(
           delay: const Duration(milliseconds: 200),
-          child: AbsorbPointer(child: buildElement(context)),
+          child: AbsorbPointer(child: Builder(builder: buildElement)),
         ),
       );
     }
@@ -60,12 +60,13 @@ mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
             child: child,
           );
         } else {
-          return AbsorbPointer(child: buildElement(context));
+          return AbsorbPointer(child: Builder(builder: buildElement));
         }
       },
       decorationBuilder: _decorationBuilder,
       child: RemovableDraggableModuleWidget<T>(
         key: key,
+        element: element,
         child: Builder(builder: buildElement),
       ),
     );

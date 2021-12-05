@@ -6,11 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../main.mapper.g.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/nested_will_pop_scope.dart';
-import '../areas/body_widget_area.dart';
 import '../areas/full_page_area.dart';
+import '../areas/mixed_grid_area.dart';
 import '../elements/content_segment.dart';
 import '../elements/page_segment.dart';
-import '../themes/widgets/trip_theme.dart';
+import '../themes/theme_context.dart';
 import 'template_model.dart';
 import 'widget_template.dart';
 import 'widgets/reorder_toggle.dart';
@@ -125,7 +125,7 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                               const TripSelectorButton(),
                               Text(
                                 trip.name,
-                                style: Theme.of(context).textTheme.headline5!.apply(color: context.onSurfaceColor),
+                                style: context.theme.textTheme.headline5!.apply(color: context.onSurfaceColor),
                               ),
                               if (user.isOrganizer)
                                 const SizedBox(
@@ -142,7 +142,7 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
-                    sliver: SliverToBoxAdapter(child: BodyWidgetArea(_scrollController)),
+                    sliver: SliverToBoxAdapter(child: MixedGridArea(id: 'body', scrollController: _scrollController)),
                   ),
                   if (state.isEditing) SliverToBoxAdapter(child: Container(height: 130)),
                 ],

@@ -9,6 +9,7 @@ import '../../core/widgets/widget_selector.dart';
 import '../../providers/notifications/notifications_provider.dart';
 import 'pages/channel_page.dart';
 import 'pages/chat_page.dart';
+import 'widgets/channel_list.dart';
 
 class ChatModule extends ModuleBuilder<PageSegment> {
   @override
@@ -26,7 +27,7 @@ class ChatModule extends ModuleBuilder<PageSegment> {
             child: Icon(Icons.chat, size: MediaQuery.of(context).size.width / 2),
           );
         }
-        return const ChatPage();
+        return const ChannelList();
       },
     );
   }
@@ -56,5 +57,17 @@ class ChatModule extends ModuleBuilder<PageSegment> {
   void dispose() {
     _msgSub?.cancel();
     super.dispose();
+  }
+}
+
+class ChatActionModule extends ModuleBuilder<QuickAction> {
+  @override
+  FutureOr<QuickAction?> build(ModuleContext context) {
+    return QuickAction(
+      context: context,
+      icon: Icons.chat,
+      text: 'Chat',
+      onNavigate: (context) => const ChatPage(),
+    );
   }
 }

@@ -55,7 +55,7 @@ class NotesLogic {
   final DocumentReference doc;
   NotesLogic(this.ref) : doc = ref.watch(moduleDocProvider('notes'));
 
-  Future<Note> createEmptyNote({String? folder}) async {
+  Note createEmptyNote({String? folder}) {
     var note = doc.collection('notes').doc();
     var author = ref.read(userIdProvider)!;
     return Note(note.id, null, [], folder: folder, author: author, editors: [author]);

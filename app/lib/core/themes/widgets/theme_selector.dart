@@ -1,6 +1,8 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
+import '../theme_context.dart';
+
 const double _kWidthOfScrollItem = 67.2;
 
 class ThemeSelector extends StatefulWidget {
@@ -44,7 +46,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isLight = Theme.of(context).brightness == Brightness.light;
+    final bool isLight = context.theme.brightness == Brightness.light;
     return SizedBox(
       height: 76,
       child: Row(
@@ -65,7 +67,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
                   borderRadius: 0,
                   unselectedBorder: BorderSide.none,
                   selectedBorder: BorderSide(
-                    color: Theme.of(context).primaryColorLight,
+                    color: context.theme.primaryColorLight,
                     width: 4,
                   ),
                   onSelect: () {
@@ -75,7 +77,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
                     widget.onChange(index);
                   },
                   selected: schemeIndex == index,
-                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  backgroundColor: context.theme.colorScheme.surface,
                   flexSchemeColor: isLight ? FlexColor.schemesList[index].light : FlexColor.schemesList[index].dark,
                 );
               },

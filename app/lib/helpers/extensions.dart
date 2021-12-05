@@ -35,3 +35,18 @@ extension FillZero on num {
     return toString().padLeft(n, '0');
   }
 }
+
+extension ListHelper<T> on Iterable<T> {
+  Iterable<T> intersperse(T separator) sync* {
+    Iterator<T> it = iterator;
+
+    var isFirst = true;
+    while (it.moveNext()) {
+      if (!isFirst) {
+        yield separator;
+      }
+      yield it.current;
+      isFirst = false;
+    }
+  }
+}

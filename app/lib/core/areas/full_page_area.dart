@@ -22,11 +22,11 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment>
   final ElementDecorator<PageSegment> elementDecorator = DefaultPageSegmentDecorator();
 
   @override
-  EdgeInsetsGeometry getMargin() =>
+  EdgeInsets getMargin() =>
       template.isEditing ? const EdgeInsets.symmetric(horizontal: 10, vertical: 40) : super.getMargin();
 
   @override
-  EdgeInsetsGeometry getPadding() => template.isEditing ? super.getPadding() : EdgeInsets.zero;
+  EdgeInsets getPadding() => template.isEditing ? super.getPadding() : EdgeInsets.zero;
 
   @override
   Widget buildArea(BuildContext context) {

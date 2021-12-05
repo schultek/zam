@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/core.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/user_avatar.dart';
 import '../game_provider.dart';
@@ -13,7 +14,11 @@ class AllTargetsDialog extends StatefulWidget {
   _AllTargetsDialogState createState() => _AllTargetsDialogState();
 
   static Future<void> show(BuildContext context, {required String gameId}) async {
-    await showDialog<EliminationEntry>(context: context, builder: (context) => AllTargetsDialog(gameId: gameId));
+    await showDialog<EliminationEntry>(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => AllTargetsDialog(gameId: gameId),
+    );
   }
 }
 
@@ -50,7 +55,7 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
                           const SizedBox(height: 5),
                           Text(
                             ref.watch(nicknameProvider(playerId)) ?? 'Anonym',
-                            style: Theme.of(context).textTheme.caption,
+                            style: context.theme.textTheme.caption,
                           ),
                         ],
                       ),

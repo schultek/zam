@@ -94,8 +94,7 @@ class TheButtonLogic {
     doc.set({'aliveHours': h + m / 60}, SetOptions(merge: true));
   }
 
-  Future<int?> resetState() async {
-    int? points;
+  Future<void> resetState() async {
     await doc.firestore.runTransaction((transaction) async {
       var snapshot = await transaction.get(doc.mapped<TheButtonState>());
       var state = snapshot.data()!;
@@ -112,7 +111,6 @@ class TheButtonLogic {
         );
       }
     });
-    return points;
   }
 
   void resetHealth() {

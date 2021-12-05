@@ -9,7 +9,8 @@ import '../../../providers/auth/user_provider.dart';
 import '../thebutton_provider.dart';
 
 class TheButtonShape extends StatefulWidget {
-  const TheButtonShape({Key? key}) : super(key: key);
+  final Color highlightColor;
+  const TheButtonShape({required this.highlightColor, Key? key}) : super(key: key);
 
   @override
   _TheButtonShapeState createState() => _TheButtonShapeState();
@@ -22,7 +23,7 @@ class _TheButtonShapeState extends State<TheButtonShape> {
     var userId = context.read(userIdProvider);
     var userLevel = context.watch(theButtonUserLevelProvider(userId));
     return CustomPaint(
-      painter: TheButtonPainter(currentLevel, userLevel, context),
+      painter: TheButtonPainter(currentLevel, userLevel, context, widget.highlightColor),
     );
   }
 }
@@ -31,8 +32,9 @@ class TheButtonPainter extends CustomPainter {
   final int currentLevel;
   final int? userLevel;
   final BuildContext context;
+  final Color highlightColor;
 
-  TheButtonPainter(this.currentLevel, this.userLevel, this.context);
+  TheButtonPainter(this.currentLevel, this.userLevel, this.context, this.highlightColor);
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -51,7 +53,7 @@ class TheButtonPainter extends CustomPainter {
       var f = 0.7;
 
       var onEmpty = currentLevel == -1 || (userLevel ?? -1) < currentLevel;
-      var starColor = !onEmpty ? context.theme.colorScheme.onPrimary : context.theme.colorScheme.primary;
+      var starColor = !onEmpty ? context.surfaceColor : highlightColor;
 
       canvas.drawPath(
           StarPainter.star().shift(Offset(c + cos(ua) * c * f, c + sin(ua) * c * f)), Paint()..color = starColor);

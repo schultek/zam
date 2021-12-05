@@ -5,8 +5,6 @@ class ModulePageRoute extends PageRouteBuilder {
 
   ModulePageRoute(BuildContext context, {required this.child})
       : super(
-          //reverseTransitionDuration: Duration(seconds: 3),
-          //transitionDuration: Duration(seconds: 3),
           maintainState: false,
           pageBuilder: (ctx, animation, a2) {
             var transitionState = ModuleRouteTransition.of(context);
@@ -24,31 +22,17 @@ class ModulePageRoute extends PageRouteBuilder {
                 var transition = transitionState.onAnimate(context, animation.value);
                 return Stack(
                   children: [
-                    Positioned.fromRect(
-                      rect: transition.page,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 10,
-                              color: Colors.black.withOpacity(transition.cardShadow),
-                            )
-                          ],
-                          borderRadius: BorderRadius.circular(transition.clipRadius),
-                          color: Colors.transparent,
-                        ),
-                      ),
-                    ),
                     transition.card,
                     ClipRRect(
                       clipper: TransitionClipper(transition),
                       child: Opacity(
-                          opacity: transition.pageOpacity,
-                          child: Transform(
-                            alignment: Alignment.center,
-                            transform: getPageTransform(transition, ctx),
-                            child: child,
-                          )),
+                        opacity: transition.pageOpacity,
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform: getPageTransform(transition, ctx),
+                          child: child,
+                        ),
+                      ),
                     ),
                   ],
                 );

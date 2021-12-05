@@ -13,30 +13,33 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, _) {
-        var user = ref.watch(tripUserByIdProvider(id));
-        var showButtonLevel = ref.watch(theButtonProvider.select((v) => v.value?.showInAvatars ?? false));
-        var userLevel = ref.watch(theButtonUserLevelProvider(id));
-        return CircleAvatar(
-          backgroundColor: context.theme.colorScheme.primary,
-          foregroundColor: context.theme.colorScheme.onPrimary,
-          backgroundImage: user?.profileUrl != null ? CachedNetworkImageProvider(user!.profileUrl!) : null,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              if (user?.profileUrl == null)
-                if (user?.nickname != null)
-                  Center(child: Text(user!.nickname!.substring(0, 1)))
-                else
-                  const Center(child: Icon(Icons.account_circle_outlined, size: 25)),
-              if (showButtonLevel)
-                if (userLevel != null && userLevel >= 0 && userLevel < theButtonLevelsCount)
-                  Positioned(right: -13, bottom: -13, child: StarPaint(color: getColorForLevel(userLevel, context)))
-            ],
-          ),
-        );
-      },
+    return ThemedSurface(
+      preference: const ColorPreference(useHighlightColor: true),
+      builder: (context, color) => Consumer(
+        builder: (context, ref, _) {
+          var user = ref.watch(tripUserByIdProvider(id));
+          var showButtonLevel = ref.watch(theButtonProvider.select((v) => v.value?.showInAvatars ?? false));
+          var userLevel = ref.watch(theButtonUserLevelProvider(id));
+          return CircleAvatar(
+            backgroundColor: color,
+            foregroundColor: context.onSurfaceColor,
+            backgroundImage: user?.profileUrl != null ? CachedNetworkImageProvider(user!.profileUrl!) : null,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                if (user?.profileUrl == null)
+                  if (user?.nickname != null)
+                    Center(child: Text(user!.nickname!.substring(0, 1)))
+                  else
+                    const Center(child: Icon(Icons.account_circle_outlined, size: 25)),
+                if (showButtonLevel)
+                  if (userLevel != null && userLevel >= 0 && userLevel < theButtonLevelsCount)
+                    Positioned(right: -13, bottom: -13, child: StarPaint(color: getColorForLevel(userLevel, context)))
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

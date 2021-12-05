@@ -78,7 +78,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
       right: 0,
       child: IconButton(
         visualDensity: VisualDensity.compact,
-        icon: Icon(Icons.settings, size: 20, color: context.theme.colorScheme.primary),
+        icon: Icon(Icons.settings, size: 20, color: context.onSurfaceHighlightColor),
         onPressed: () => setState(() {
           settingsOpen = true;
           selectIndex(
@@ -157,7 +157,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
             builder: (context) => Text(
               'h',
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline5!.apply(fontSizeFactor: 1.2, color: context.onSurfaceColor),
+              style: context.theme.textTheme.headline5!.apply(fontSizeFactor: 1.2, color: context.onSurfaceColor),
             ),
           ),
         ),
@@ -192,7 +192,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                   Center(
                     child: Text(
                       option,
-                      style: Theme.of(context).textTheme.headline5!.copyWith(color: context.onSurfaceColor),
+                      style: context.theme.textTheme.headline5!.copyWith(color: context.onSurfaceColor),
                       textAlign: TextAlign.center,
                     ),
                   )

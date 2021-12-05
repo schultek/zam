@@ -23,17 +23,3 @@ class TripTheme extends InheritedWidget {
     return notify;
   }
 }
-
-extension ThemeColorsContext on BuildContext {
-  Color get surfaceColor {
-    return TripTheme.of(this)!.theme.surfaceColor;
-  }
-
-  Color get onSurfaceColor {
-    return TripTheme.of(this)!.theme.onSurfaceColor;
-  }
-
-  ThemeData get theme {
-    return Theme.of(this);
-  }
-}

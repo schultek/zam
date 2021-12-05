@@ -9,8 +9,8 @@ import '../../modules/profile/widgets/image_selector.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../templates/template_model.dart';
+import '../themes/theme_context.dart';
 import '../themes/widgets/theme_selector.dart';
-import '../themes/widgets/trip_theme.dart';
 import 'settings_section.dart';
 
 class TripSettings extends StatefulWidget {

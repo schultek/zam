@@ -39,8 +39,13 @@ class PhotosLogic {
   }
 }
 
-final albumShortcutProvider = StreamProvider.family<AlbumShortcut, String>(
-    (ref, id) => ref.watch(moduleDocProvider('photos')).collection('albums').doc(id).snapshotsMapped<AlbumShortcut>());
+final albumShortcutProvider = StreamProvider.family<AlbumShortcut, String>((ref, id) => ref
+    .watch(moduleDocProvider('photos'))
+    .collection('albums')
+    .doc(id)
+    .snapshotsMapped<AlbumShortcut?>()
+    .where((a) => a != null)
+    .cast());
 
 @MappableClass()
 class AlbumShortcut {

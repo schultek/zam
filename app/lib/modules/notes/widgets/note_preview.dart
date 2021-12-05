@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' show QuillController, QuillEditor, Document;
 
+import '../../../core/core.dart';
 import '../notes_provider.dart';
 
 class NotePreview extends StatelessWidget {
@@ -16,7 +17,7 @@ class NotePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -24,7 +25,7 @@ class NotePreview extends StatelessWidget {
             Text(
               note.title!,
               textAlign: TextAlign.left,
-              style: const TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 20, color: context.onSurfaceColor),
               overflow: TextOverflow.ellipsis,
             ),
           const SizedBox(height: 10),
@@ -38,15 +39,18 @@ class NotePreview extends StatelessWidget {
                   width: constraints.maxWidth,
                   child: AbsorbPointer(
                     child: ClipRect(
-                      child: QuillEditor(
-                        controller: _controller,
-                        scrollController: ScrollController(),
-                        scrollable: false,
-                        focusNode: FocusNode(),
-                        autoFocus: false,
-                        readOnly: true,
-                        expands: false,
-                        padding: EdgeInsets.zero,
+                      child: DefaultTextStyle(
+                        style: TextStyle(color: context.onSurfaceColor),
+                        child: QuillEditor(
+                          controller: _controller,
+                          scrollController: ScrollController(),
+                          scrollable: false,
+                          focusNode: FocusNode(),
+                          autoFocus: false,
+                          readOnly: true,
+                          expands: false,
+                          padding: EdgeInsets.zero,
+                        ),
                       ),
                     ),
                   ),

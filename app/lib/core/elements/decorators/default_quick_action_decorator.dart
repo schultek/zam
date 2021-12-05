@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../themes/theme_context.dart';
+import '../../themes/trip_theme_data.dart';
 import '../../themes/widgets/themed_surface.dart';
-import '../../themes/widgets/trip_theme.dart';
 import '../quick_action.dart';
 import 'element_decorator.dart';
 
 class DefaultQuickActionDecorator implements ElementDecorator<QuickAction> {
-  const DefaultQuickActionDecorator();
+  final ColorPreference colorPreference;
+  const DefaultQuickActionDecorator([this.colorPreference = const ColorPreference()]);
   @override
   Widget decorateDragged(BuildContext context, QuickAction element, Widget child, double opacity) {
     return actionLayout(context, element, opacity: opacity);
@@ -24,10 +26,11 @@ class DefaultQuickActionDecorator implements ElementDecorator<QuickAction> {
 
   Widget actionLayout(BuildContext context, QuickAction element, {bool isPlaceholder = false, double opacity = 0}) {
     var textColor = context.onSurfaceColor;
-    var textStyle = Theme.of(context).textTheme.bodyText1!;
+    var textStyle = context.theme.textTheme.bodyText1!;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ThemedSurface(
+        preference: colorPreference,
         builder: (context, fillColor) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -60,6 +63,9 @@ class DefaultQuickActionDecorator implements ElementDecorator<QuickAction> {
                   color: textColor,
                   shadows: [Shadow(blurRadius: 10, color: textColor.withOpacity(opacity * 0.5))],
                 ),
+                overflow: TextOverflow.visible,
+                softWrap: false,
+                textAlign: TextAlign.center,
               ),
           ],
         ),

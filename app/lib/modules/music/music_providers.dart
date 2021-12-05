@@ -105,6 +105,7 @@ class SpotifyApiSync with WidgetsBindingObserver {
       }
     } on oauth.AuthorizationException catch (e) {
       if (e.error == 'invalid_grant') {
+        print('SPOTIFY ERROR $e');
         await ref.read(musicLogicProvider).signOut();
         await _updatePlayer(null);
       } else {

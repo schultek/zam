@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
 import '../../widgets/loading_shimmer.dart';
@@ -15,9 +14,6 @@ class MusicModule extends ModuleBuilder<ContentSegment> {
   FutureOr<ContentSegment?> build(ModuleContext context) {
     return ContentSegment(
       context: context,
-      whenRemoved: (context) {
-        context.read(musicLogicProvider).signOut();
-      },
       builder: (context) => Consumer(
         builder: (context, ref, _) {
           var signedInValue = ref.watch(spotifyIsSignedInProvider);

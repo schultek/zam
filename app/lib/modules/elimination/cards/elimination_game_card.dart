@@ -9,7 +9,7 @@ import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/loading_shimmer.dart';
 import '../game_provider.dart';
 import '../pages/elimination_help.dart';
-import '../pages/elimination_list_page.dart';
+import '../pages/game_page.dart';
 import '../widgets/reveal_text_animation.dart';
 
 class EliminationGameCard extends StatefulWidget {
@@ -31,9 +31,9 @@ class EliminationGameCard extends StatefulWidget {
             right: 0,
             child: IconButton(
               visualDensity: VisualDensity.compact,
-              icon: Icon(Icons.leaderboard, size: 20, color: context.onSurfaceColor),
+              icon: Icon(Icons.leaderboard, size: 20, color: context.onSurfaceHighlightColor),
               onPressed: () {
-                Navigator.of(context).push(ModulePageRoute(context, child: EliminationListPage(gameId: id)));
+                Navigator.of(context).push(ModulePageRoute(context, child: GamePage(gameId: id)));
               },
             ),
           ),
@@ -55,17 +55,17 @@ class _EliminationGameCardState extends State<EliminationGameCard> {
             var userId = ref.watch(userIdProvider)!;
             var myTarget = data.currentTargets[userId];
             if (myTarget == null) {
-              return const Center(
+              return Center(
                 child: Text(
                   'Eliminated',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: context.onSurfaceColor),
                 ),
               );
             } else if (myTarget == ref.watch(userIdProvider)!) {
-              return const Center(
+              return Center(
                 child: Text(
                   'Immortal',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: context.onSurfaceColor),
                 ),
               );
             } else {

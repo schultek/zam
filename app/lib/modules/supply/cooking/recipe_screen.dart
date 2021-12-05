@@ -32,7 +32,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    icon: Icon(Icons.arrow_back, color: Theme.of(context).primaryColor),
+                    icon: Icon(Icons.arrow_back, color: context.theme.primaryColor),
                   ),
                 ],
               ),
@@ -41,7 +41,7 @@ class _RecipeScreenState extends State<RecipeScreen> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 35,
-                  color: Theme.of(context).primaryColor,
+                  color: context.theme.primaryColor,
                 ),
               ),
               Container(height: 20),

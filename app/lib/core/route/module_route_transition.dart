@@ -9,12 +9,13 @@ class _InheritedModuleRouteTransition extends InheritedWidget {
   bool updateShouldNotify(_InheritedModuleRouteTransition old) => true;
 }
 
-class ModuleRouteTransition extends StatefulWidget {
+class ModuleRouteTransition<T extends ModuleElement> extends StatefulWidget {
   final Widget child;
-  const ModuleRouteTransition({required this.child, Key? key}) : super(key: key);
+  final T element;
+  const ModuleRouteTransition({required this.child, required this.element, Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ModuleRouteTransitionState();
+  State<StatefulWidget> createState() => _ModuleRouteTransitionState<T>();
 
   static _ModuleRouteTransitionState? of(BuildContext context) {
     try {
@@ -25,18 +26,18 @@ class ModuleRouteTransition extends StatefulWidget {
   }
 }
 
-class _ModuleRouteTransitionState extends State<ModuleRouteTransition> with SingleTickerProviderStateMixin {
+class _ModuleRouteTransitionState<T extends ModuleElement> extends State<ModuleRouteTransition<T>>
+    with SingleTickerProviderStateMixin {
   Rect? fullRect;
   final containerKey = GlobalKey();
 
   Rect get moduleRect => containerKey.globalPaintBounds;
 
-  late RectTransform _moduleTransform;
+  bool isHidden = false;
 
   @override
   void initState() {
     super.initState();
-    _moduleTransform = RectTransform(Offset.zero, 1);
   }
 
   @override
@@ -45,14 +46,15 @@ class _ModuleRouteTransitionState extends State<ModuleRouteTransition> with Sing
       state: this,
       child: Container(
         key: containerKey,
-        child: Transform(
-          alignment: Alignment.center,
-          transform: _moduleTransform.toMatrix4(),
+        child: Opacity(
+          opacity: isHidden ? 0 : 1,
           child: widget.child,
         ),
       ),
     );
   }
+
+  WidgetAreaState<WidgetArea<T>, T> get widgetArea => WidgetArea.of<T>(context)!;
 
   ModuleTransition onAnimate(BuildContext context, double value) {
     fullRect ??= Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
@@ -65,24 +67,39 @@ class _ModuleRouteTransitionState extends State<ModuleRouteTransition> with Sing
     var dx = fullRect!.center.dx - moduleRect.center.dx;
     var dy = fullRect!.center.dy - moduleRect.center.dy;
 
-    _moduleTransform = RectTransform(
+    var transform = RectTransform(
       Offset(dx * dxCurve.transformRange(value, r: dRange), dy * dyCurve.transformRange(value, r: dRange)),
       1 + scaleCurve.transform(value) * 0.2,
     );
 
-    var cardRect = moduleRect.transform(_moduleTransform);
+    isHidden = value > 0;
 
-    var pageCurve = Curves.easeInOut;
+    var cardRect = moduleRect.transform(transform);
+
+    var pageCurve = Curves.easeInOutCubic;
     var pageRange = const Range(0.2, 1);
 
     var pageRect = Rect.lerp(cardRect, fullRect, pageCurve.transformRange(value, r: pageRange))!;
 
-    var card = value > 0
-        ? Positioned.fromRect(
-            rect: cardRect,
-            child: widget.child,
-          )
-        : Container();
+    Widget card = Container();
+
+    if (mounted && value > 0) {
+      card = Positioned.fromRect(
+        rect: cardRect,
+        child: InheritedWidgetArea<T>(
+          state: widgetArea,
+          child: TripTheme(
+            theme: widgetArea.theme,
+            child: widgetArea.elementDecorator.decorateDragged(
+              this.context,
+              widget.element,
+              widget.child,
+              value,
+            ),
+          ),
+        ),
+      );
+    }
 
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       if (mounted) setState(() {});
@@ -96,12 +113,10 @@ class ModuleTransition {
   Rect page;
   Widget card;
 
-  late double cardShadow;
   late double clipRadius;
   late double pageOpacity;
 
   ModuleTransition(this.page, this.card, double value) {
-    cardShadow = min(0.2, value);
     clipRadius = (1 - Curves.easeIn.transformRange(value, r: const Range(0.7, 1))) * 20;
     pageOpacity = Curves.easeInOut.transformRange(value, r: const Range(0.1, 0.6));
   }

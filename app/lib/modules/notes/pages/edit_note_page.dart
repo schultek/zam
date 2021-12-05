@@ -10,8 +10,7 @@ import 'note_info_page.dart';
 
 class EditNotePage extends StatefulWidget {
   final Note note;
-  final WidgetAreaState? area;
-  const EditNotePage(this.note, {this.area, Key? key}) : super(key: key);
+  const EditNotePage(this.note, {Key? key}) : super(key: key);
 
   @override
   _EditNotePageState createState() => _EditNotePageState();
@@ -37,6 +36,7 @@ class _EditNotePageState extends State<EditNotePage> {
       document: widget.note.content.isEmpty ? Document() : Document.fromJson(widget.note.content),
       selection: const TextSelection.collapsed(offset: 0),
     );
+    _title = widget.note.title;
     editorFocusNode.addListener(() {
       editorFocusListenable.value = editorFocusNode.hasPrimaryFocus;
     });
@@ -64,7 +64,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 var shouldDelete = await nav.push<bool>(NoteInfoPage.route(widget.note));
                 if (shouldDelete == true) {
                   logic.deleteNote(widget.note.id);
-                  widget.area?.removeWidgetWithId(widget.note.id);
+                  WidgetTemplate.of(context, listen: false).removeWidgetsWithId(widget.note.id);
                   nav.pop();
                 }
               },

@@ -47,12 +47,12 @@ class ReorderableLogic {
     );
   }
 
-  Offset _itemOffset(ReorderableItemState item) {
-    return (item.context.findRenderObject()! as RenderBox).localToGlobal(Offset.zero);
+  bool hasItem(Key key) {
+    return items[key] != null;
   }
 
   Offset itemOffset(Key key) {
-    return _itemOffset(items[key]!);
+    return (items[key]!.context.findRenderObject()! as RenderBox).localToGlobal(Offset.zero);
   }
 
   Size itemSize(Key key) {

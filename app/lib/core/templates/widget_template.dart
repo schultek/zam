@@ -86,6 +86,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
   void dispose() {
     _transitionController.dispose();
     _wiggleController.dispose();
+    widgetSelector?.close();
     widget.dispose();
     super.dispose();
   }
@@ -116,6 +117,12 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     });
 
     _unselectArea();
+  }
+
+  void removeWidgetsWithId(String id) {
+    for (var area in widgetAreas.values) {
+      area.removeWidgetWithId(id);
+    }
   }
 
   Future<List<T>> getWidgetsForArea<T extends ModuleElement>(String areaId) async {

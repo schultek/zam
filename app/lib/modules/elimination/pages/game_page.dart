@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
@@ -8,12 +9,12 @@ import '../game_provider.dart';
 import '../widgets/all_targets_dialog.dart';
 import '../widgets/elimination_dialog.dart';
 
-class EliminationListPage extends StatelessWidget {
+class GamePage extends StatelessWidget {
   final String gameId;
-  const EliminationListPage({Key? key, required this.gameId}) : super(key: key);
+  const GamePage({Key? key, required this.gameId}) : super(key: key);
 
   static Route route(String id) {
-    return MaterialPageRoute(builder: (context) => EliminationListPage(gameId: id));
+    return MaterialPageRoute(builder: (context) => GamePage(gameId: id));
   }
 
   @override
@@ -38,15 +39,48 @@ class EliminationListPage extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Elimination List'),
+            title: Text(game.name),
             actions: [
-              if (ref.watch(isOrganizerProvider))
+              if (ref.watch(isOrganizerProvider)) ...[
+                IconButton(
+                  onPressed: () async {
+                    var shouldDelete = await showDialog(
+                      context: context,
+                      useRootNavigator: false,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Delete ${game.name}?'),
+                          actions: [
+                            TextButton(
+                              child: const Text('Cancel'),
+                              onPressed: () => Navigator.pop(context),
+                            ),
+                            ElevatedButton(
+                              child: const Text('Delete'),
+                              onPressed: () {
+                                Navigator.pop(context, true);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    if (shouldDelete == true) {
+                      Navigator.pop(context);
+                      WidgetTemplate.of(context, listen: false).removeWidgetsWithId(game.id);
+                      context.read(gameLogicProvider).deleteGame(game.id);
+                    }
+                  },
+                  icon: const Icon(Icons.delete),
+                ),
                 IconButton(
                   onPressed: () async {
                     AllTargetsDialog.show(context, gameId: gameId);
                   },
                   icon: const Icon(Icons.visibility),
                 ),
+              ]
             ],
           ),
           body: ListView(
@@ -59,13 +93,13 @@ class EliminationListPage extends StatelessWidget {
                     Text(
                       '$alive/$players alive',
                       textAlign: TextAlign.justify,
-                      style: Theme.of(context).textTheme.headline4!.copyWith(color: context.onSurfaceColor),
+                      style: context.theme.textTheme.headline4!.copyWith(color: context.onSurfaceColor),
                     ),
                     const SizedBox(height: 10),
                     Text(
                       '$untouchable immortal',
                       textAlign: TextAlign.justify,
-                      style: Theme.of(context).textTheme.headline5!.copyWith(color: context.onSurfaceColor),
+                      style: context.theme.textTheme.headline5!.copyWith(color: context.onSurfaceColor),
                     ),
                   ],
                 ),
@@ -84,7 +118,7 @@ class EliminationListPage extends StatelessWidget {
                               const SizedBox(height: 5),
                               Text(
                                 ref.watch(nicknameProvider(elim.eliminatedBy)) ?? 'Anonym',
-                                style: Theme.of(context).textTheme.caption,
+                                style: context.theme.textTheme.caption,
                               ),
                             ],
                           ),
@@ -102,7 +136,7 @@ class EliminationListPage extends StatelessWidget {
                               const SizedBox(height: 5),
                               Text(
                                 ref.watch(nicknameProvider(elim.target)) ?? 'Anonym',
-                                style: Theme.of(context).textTheme.caption,
+                                style: context.theme.textTheme.caption,
                               ),
                             ],
                           ),
@@ -115,7 +149,7 @@ class EliminationListPage extends StatelessWidget {
                           children: [
                             Text(
                               elim.time.toTimeString(),
-                              style: Theme.of(context).textTheme.caption,
+                              style: context.theme.textTheme.caption,
                             ),
                             const SizedBox(height: 5),
                             Text(

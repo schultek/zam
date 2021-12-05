@@ -7,7 +7,7 @@ import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../providers/trips/trips_provider.dart';
 import '../../../screens/create_trip/create_trip_screen.dart';
 import '../../models/trip.dart';
-import '../../themes/widgets/trip_theme.dart';
+import '../../themes/theme_context.dart';
 import '../../widgets/trip_settings.dart';
 
 class TripSelectorButton extends StatelessWidget {
@@ -17,11 +17,12 @@ class TripSelectorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 50,
-      child: IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () {
+      child: InkResponse(
+        child: Icon(Icons.menu_open, color: context.onSurfaceColor),
+        onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TripSelectorPage()));
         },
+        onLongPress: context.read(isOrganizerProvider) ? () => Navigator.push(context, TripSettings.route()) : null,
       ),
     );
   }
@@ -87,7 +88,7 @@ class TripSelectorPage extends StatelessWidget {
                 Center(
                   child: Text(
                     trip.name,
-                    style: Theme.of(context).textTheme.headline4!.copyWith(color: context.theme.colorScheme.onPrimary),
+                    style: context.theme.textTheme.headline4!.copyWith(color: context.theme.colorScheme.onPrimary),
                   ),
                 ),
                 if (context.watch(isOrganizerProvider))
@@ -129,7 +130,7 @@ class TripSelectorPage extends StatelessWidget {
             child: Center(
                 child: Text(
               trip.name,
-              style: Theme.of(context).textTheme.headline4!.copyWith(color: Colors.white),
+              style: context.theme.textTheme.headline4!.copyWith(color: Colors.white),
             )),
             onTap: () {
               context.read(selectedTripIdProvider.notifier).state = trip.id;

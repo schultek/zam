@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-final googleSignInProvider = Provider(
-    (ref) => GoogleSignIn(scopes: <String>['profile', 'https://www.googleapis.com/auth/photoslibrary.readonly']));
+final googleSignInProvider = Provider((ref) => GoogleSignIn(scopes: <String>[
+      'profile',
+      'https://www.googleapis.com/auth/photoslibrary.readonly',
+    ]));
 
 final googleAccountProvider =
     StateNotifierProvider<GoogleAccountNotifier, GoogleSignInAccount?>((ref) => GoogleAccountNotifier(ref));
@@ -27,6 +29,11 @@ class GoogleAccountNotifier extends StateNotifier<GoogleSignInAccount?> {
 
   Future<bool> signIn() async {
     state = await ref.read(googleSignInProvider).signIn();
+    return state != null;
+  }
+
+  Future<bool> signOut() async {
+    state = await ref.read(googleSignInProvider).signOut();
     return state != null;
   }
 

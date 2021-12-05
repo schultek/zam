@@ -16,14 +16,11 @@ class TheButton extends StatefulWidget {
 
 class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
   late AnimationController tapAnimation;
-  late AnimationController pointsAnimation;
-  int? points;
 
   @override
   void initState() {
     super.initState();
     tapAnimation = AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    pointsAnimation = AnimationController(vsync: this, duration: const Duration(seconds: 1));
   }
 
   @override
@@ -36,12 +33,7 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
       },
       onTapUp: (event) {
         if (tapAnimation.value == 1) {
-          context.read(theButtonLogicProvider).resetState().then((points) {
-            if (points != null) {
-              this.points = points;
-              pointsAnimation.forward(from: 0);
-            }
-          }).whenComplete(() {
+          context.read(theButtonLogicProvider).resetState().whenComplete(() {
             tapAnimation.value = 0;
           });
         } else {
@@ -51,32 +43,15 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
       onTapCancel: () {
         tapAnimation.reverse();
       },
-      child: AnimatedBuilder(
-        animation: tapAnimation,
-        builder: (context, child) {
-          var level = context.read(theButtonLevelProvider);
-          return CustomPaint(
-            painter: TapProgressPainter(tapAnimation.value, level, context),
-            child: child,
-          );
-        },
-        child: AnimatedBuilder(
-          animation: pointsAnimation,
+      child: ThemedSurface(
+        preference: const ColorPreference(useHighlightColor: true),
+        builder: (context, highlightColor) => AnimatedBuilder(
+          animation: tapAnimation,
           builder: (context, child) {
-            return Stack(
-              children: [
-                Positioned.fill(child: child!),
-                if (points != null && pointsAnimation.isAnimating)
-                  Center(
-                    child: Text(
-                      '+ $points',
-                      style: TextStyle(
-                        fontSize: Curves.easeOut.transform(pointsAnimation.value) * 25,
-                        color: Colors.white.withOpacity(1 - Curves.easeInExpo.transform(pointsAnimation.value)),
-                      ),
-                    ),
-                  ),
-              ],
+            var level = context.read(theButtonLevelProvider);
+            return CustomPaint(
+              painter: TapProgressPainter(tapAnimation.value, level, context),
+              child: child,
             );
           },
           child: AbsorbPointer(
@@ -86,7 +61,7 @@ class _TheButtonState extends State<TheButton> with TickerProviderStateMixin {
                   shape: BoxShape.circle,
                   color: color,
                 ),
-                child: const TheButtonShape(),
+                child: TheButtonShape(highlightColor: highlightColor),
               ),
             ),
           ),
@@ -104,6 +79,7 @@ class TapProgressPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    var strokeWidth = size.width / 25;
     canvas.drawArc(
       Rect.fromLTWH(0, 0, size.width, size.height),
       0,
@@ -111,8 +87,8 @@ class TapProgressPainter extends CustomPainter {
       false,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 6
-        ..color = context.theme.colorScheme.primary,
+        ..strokeWidth = strokeWidth
+        ..color = context.surfaceColor,
     );
     canvas.drawArc(
       Rect.fromLTWH(0, 0, size.width, size.height),
@@ -121,8 +97,8 @@ class TapProgressPainter extends CustomPainter {
       false,
       Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 6
-        ..color = value == 1 ? getColorForLevel(level, context) : context.theme.colorScheme.onPrimary,
+        ..strokeWidth = strokeWidth
+        ..color = value == 1 ? getColorForLevel(level, context) : context.onSurfaceColor,
     );
   }
 

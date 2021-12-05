@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../themes/widgets/trip_theme.dart';
+import '../../themes/theme_context.dart';
 import '../page_segment.dart';
 import 'element_decorator.dart';
 

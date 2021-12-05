@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../core/core.dart';
 import '../../widgets/ju_background.dart';
 
 class LoadingLinkScreen extends StatelessWidget {
@@ -8,7 +9,7 @@ class LoadingLinkScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: context.theme.primaryColor,
       body: JuBackground(
         child: Padding(
           padding: const EdgeInsets.all(40.0),

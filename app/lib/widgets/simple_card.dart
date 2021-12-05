@@ -18,13 +18,13 @@ class SimpleCard extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: context.theme.colorScheme.primary,
+              color: context.onSurfaceHighlightColor,
               size: 50,
             ),
             const SizedBox(height: 10),
             Text(
               title,
-              style: Theme.of(context).textTheme.bodyText1!.apply(color: context.onSurfaceColor),
+              style: context.theme.textTheme.bodyText1!.apply(color: context.onSurfaceColor),
               textAlign: TextAlign.center,
             ),
           ],

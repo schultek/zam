@@ -23,6 +23,9 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
   ElementDecorator<QuickAction> get elementDecorator => widget.decorator;
 
   @override
+  EdgeInsets getPadding() => const EdgeInsets.all(5);
+
+  @override
   Widget buildArea(BuildContext context) {
     return SizedBox(
       key: _boxKey,
@@ -41,7 +44,8 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
   }
 
   @override
-  BoxConstraints constrainWidget(QuickAction widget) => const BoxConstraints(maxHeight: 100);
+  BoxConstraints constrainWidget(QuickAction widget) =>
+      BoxConstraints(maxHeight: 100, maxWidth: areaSize.width / 3 - 5);
 
   @override
   bool canInsertItem(item) => elements.length < 3;

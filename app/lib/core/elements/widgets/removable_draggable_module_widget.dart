@@ -4,12 +4,14 @@ import '../../areas/widget_area.dart';
 import '../../reorderable/reorderable_listener.dart';
 import '../../route/route.dart';
 import '../../templates/widget_template.dart';
-import '../../themes/widgets/trip_theme.dart';
+import '../../themes/theme_context.dart';
 import '../module_element.dart';
 
 class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessWidget {
   final Widget child;
-  const RemovableDraggableModuleWidget({required Key key, required this.child}) : super(key: key);
+  final T element;
+  const RemovableDraggableModuleWidget({required Key key, required this.child, required this.element})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +65,7 @@ class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessW
         },
       );
     } else {
-      return ModuleRouteTransition(child: child);
+      return ModuleRouteTransition<T>(child: child, element: element);
     }
   }
 }

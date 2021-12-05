@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
@@ -11,8 +12,8 @@ import '../elements/decorators/element_decorator.dart';
 import '../elements/module_element.dart';
 import '../reorderable/logic_provider.dart';
 import '../templates/widget_template.dart';
+import '../themes/theme_context.dart';
 import '../themes/trip_theme_data.dart';
-import '../themes/widgets/trip_theme.dart';
 
 class InheritedWidgetArea<T extends ModuleElement> extends InheritedWidget {
   final WidgetAreaState<WidgetArea<T>, T> state;
@@ -58,7 +59,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   Size get areaSize => _areaRenderBox.size;
   Offset get areaOffset => _areaRenderBox.localToGlobal(Offset.zero);
 
-  TripThemeData get theme => TripTheme.of(context, listen: false)!.theme;
+  TripThemeData get theme => context.tripTheme;
   WidgetTemplateState get template => WidgetTemplate.of(context, listen: false);
 
   @override
@@ -75,6 +76,14 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
     reload();
     context.listen(areaModulesProvider(id), (_, __) => reload());
+  }
+
+  @override
+  void deactivate() {
+    if (template.selectedArea == id) {
+      template.selectWidgetAreaById(null);
+    }
+    super.deactivate();
   }
 
   Future<void> reload() async {
@@ -99,8 +108,11 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     templateState.registerArea(this);
 
     var isSelected = templateState.selectedArea == id;
-    var backgroundColor = Colors.blue.withOpacity(0.05);
-    var borderColor = Colors.blue.withOpacity(0.5);
+    var isEditing = templateState.isEditing;
+    var highlightColor = context.onSurfaceHighlightColor;
+
+    var backgroundColor = highlightColor.withOpacity(0.05);
+    var borderColor = highlightColor.withOpacity(0.5);
 
     WidgetsBinding.instance!.addPostFrameCallback(updateAreaRenderBox);
 
@@ -113,15 +125,32 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
         },
         child: Container(
           margin: getMargin(),
-          padding: getPadding(),
-          decoration: isSelected
-              ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: backgroundColor,
-                  border: Border.all(color: borderColor),
-                )
-              : null,
-          child: Container(key: _areaKey, child: buildArea(context)),
+          decoration: BoxDecoration(
+            color: isSelected ? backgroundColor : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Stack(
+            fit: StackFit.passthrough,
+            children: [
+              Positioned.fill(
+                child: DottedBorder(
+                  borderType: BorderType.RRect,
+                  color: isSelected || isEditing ? borderColor : Colors.transparent,
+                  dashPattern: isSelected ? [100, 0] : [4, 8],
+                  strokeWidth: 1,
+                  radius: const Radius.circular(20),
+                  child: Container(),
+                ),
+              ),
+              Padding(
+                padding: getPadding(),
+                child: Container(
+                  key: _areaKey,
+                  child: buildArea(context),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -129,8 +158,8 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   Widget buildArea(BuildContext context);
 
-  EdgeInsetsGeometry getMargin() => EdgeInsets.zero;
-  EdgeInsetsGeometry getPadding() => const EdgeInsets.all(10);
+  EdgeInsets getMargin() => EdgeInsets.zero;
+  EdgeInsets getPadding() => const EdgeInsets.all(10);
 
   BoxConstraints constrainWidget(T widget);
 
@@ -139,9 +168,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
       var widget = getWidgetFromKey(key);
       removeItem(key);
       widget.onRemoved(context);
-
-      var templateState = WidgetTemplate.of(context, listen: false);
-      templateState.onWidgetRemoved(this, widget);
+      template.onWidgetRemoved(this, widget);
     });
     updateWidgetsInTrip();
   }

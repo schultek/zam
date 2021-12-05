@@ -93,7 +93,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
     dragSize = Size(renderBox.size.width, renderBox.size.height);
 
-    var height = isDropAccepted ? dragSize!.height : widgetSelector!.itemHeight;
+    var height = isDropAccepted ? dragSize!.height : widgetSelector!.startHeightFor(dragSize!);
     var width = height / dragSize!.height * dragSize!.width;
 
     dragOffset = renderBox.localToGlobal(Offset.zero) + Offset(width / 2, height / 2);
@@ -176,7 +176,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
     var dragScale = dragScaleAnimation!.value;
     var targetScale = isDropAccepted ? 1 : 0;
 
-    var targetHeight = isDropAccepted ? size.height : widgetSelector!.itemHeight;
+    var targetHeight = isDropAccepted ? size.height : widgetSelector!.startHeightFor(size);
     var targetWidth = targetHeight / size.height * size.width;
 
     var targetOffset = renderBox.localToGlobal(Offset.zero) + Offset(targetWidth / 2, targetHeight / 2);

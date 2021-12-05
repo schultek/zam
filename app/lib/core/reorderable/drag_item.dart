@@ -18,8 +18,11 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
   const DragItemWidget({Key? key, required this.area, required this.scaleAnimation, required this.decorationBuilder})
       : super(key: key);
 
-  double scaledHeight(Size size) =>
-      lerpDouble(area.template.widgetSelector!.state!.itemHeight, size.height, scaleAnimation.value)!;
+  double scaledHeight(Size size) => lerpDouble(
+        area.template.widgetSelector?.state!.startHeightFor(size) ?? size.height,
+        size.height,
+        scaleAnimation.value,
+      )!;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,6 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
                   );
                 },
                 child: FittedBox(
-                  fit: BoxFit.fitHeight,
                   child: SizedBox.fromSize(
                     size: size,
                     child: child,

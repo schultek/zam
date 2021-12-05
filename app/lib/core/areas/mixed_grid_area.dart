@@ -8,27 +8,27 @@ import 'mixins/grid_area_mixin.dart';
 import 'mixins/scroll_mixin.dart';
 import 'widget_area.dart';
 
-class BodyWidgetArea extends WidgetArea<ContentSegment> {
+class MixedGridArea extends WidgetArea<ContentSegment> {
   final ScrollController scrollController;
-  const BodyWidgetArea(this.scrollController, {Key? key}) : super('body', key: key);
+  const MixedGridArea({required String id, required this.scrollController, Key? key}) : super(id, key: key);
 
   @override
   State<StatefulWidget> createState() => BodyWidgetAreaState();
 }
 
-class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment>
-    with ScrollMixin<BodyWidgetArea, ContentSegment>, GridAreaMixin<BodyWidgetArea, ContentSegment> {
+class BodyWidgetAreaState extends WidgetAreaState<MixedGridArea, ContentSegment>
+    with ScrollMixin<MixedGridArea, ContentSegment>, GridAreaMixin<MixedGridArea, ContentSegment> {
   @override
   bool get wantKeepAlive => true;
 
   @override
-  final ElementDecorator<ContentSegment> elementDecorator = DefaultContentSegmentDecorator();
+  final ElementDecorator<ContentSegment> elementDecorator = const DefaultContentSegmentDecorator();
 
   @override
   SegmentSize sizeOf(ContentSegment element) => element.size;
 
   @override
-  EdgeInsetsGeometry getPadding() => EdgeInsets.zero;
+  EdgeInsets getPadding() => EdgeInsets.zero;
 
   @override
   Widget buildArea(BuildContext context) {
@@ -79,83 +79,92 @@ class BodyWidgetAreaState extends WidgetAreaState<BodyWidgetArea, ContentSegment
   ScrollController get scrollController => widget.scrollController;
 
   @override
+  bool scrollDownEnabled = false; // TODO find something better
+
+  @override
   bool didReorderItem(Offset offset, Key itemKey) {
     Offset itemOffset = getOffset(itemKey);
     Size itemSize = getSize(itemKey);
 
     maybeScroll(offset, itemKey, itemSize);
 
-    if (offset.dy < itemOffset.dy - itemSize.height / 2 - 20) {
+    if (offset.dy < itemOffset.dy - 20) {
       var dragIndex = indexOf(itemKey);
       if (dragIndex.row > 0) {
         var aboveRow = grid[dragIndex.row - 1];
+        var aboveSize = getSize(aboveRow[0].key);
 
-        if (dragIndex.size == SegmentSize.wide) {
-          _onReorder(itemKey, aboveRow[0].key);
-
-          translateY(aboveRow[0].key, -itemSize.height - 20);
-          if (aboveRow.length == 2) translateY(aboveRow[1].key, -itemSize.height - 20);
-        } else {
-          if (aboveRow.length == 2) {
-            var aboveItem = aboveRow[dragIndex.column];
-
-            _onReorder(itemKey, aboveItem.key);
-            translateY(aboveItem.key, -itemSize.height - 20);
-          } else {
-            var siblingItem = grid[dragIndex.row][1 - dragIndex.column];
-
+        if (offset.dy < itemOffset.dy - aboveSize.height / 2 - 20) {
+          if (dragIndex.size == SegmentSize.wide) {
             _onReorder(itemKey, aboveRow[0].key);
-            translateY(aboveRow[0].key, -itemSize.height - 20);
-            translateY(siblingItem.key, itemSize.height + 20);
-          }
-        }
 
-        return true;
+            translateY(aboveRow[0].key, -itemSize.height - 20);
+            if (aboveRow.length == 2) translateY(aboveRow[1].key, -itemSize.height - 20);
+          } else {
+            if (aboveRow.length == 2) {
+              var aboveItem = aboveRow[dragIndex.column];
+
+              _onReorder(itemKey, aboveItem.key);
+              translateY(aboveItem.key, -itemSize.height - 20);
+            } else if (grid[dragIndex.row].length == 2) {
+              var siblingItem = grid[dragIndex.row][1 - dragIndex.column];
+
+              _onReorder(itemKey, aboveRow[0].key);
+              translateY(aboveRow[0].key, -itemSize.height - 20);
+              translateY(siblingItem.key, itemSize.height + 20);
+            }
+          }
+
+          return true;
+        }
       }
-    } else if (offset.dy > itemOffset.dy + itemSize.height / 2 + 20) {
+    } else if (offset.dy > itemOffset.dy + 20) {
       var dragIndex = indexOf(itemKey);
       if (dragIndex.row < grid.length - 1) {
         var belowRow = grid[dragIndex.row + 1];
+        var belowSize = getSize(belowRow[0].key);
 
-        if (dragIndex.size == SegmentSize.wide) {
-          if (belowRow[0].size == SegmentSize.wide || belowRow.length == 2) {
-            _onReorder(itemKey, belowRow[0].key);
+        if (offset.dy > itemOffset.dy + belowSize.height / 2 + 20) {
+          if (dragIndex.size == SegmentSize.wide) {
+            if (belowRow[0].size == SegmentSize.wide || belowRow.length == 2) {
+              _onReorder(itemKey, belowRow[0].key);
 
-            translateY(belowRow[0].key, itemSize.height + 20);
+              translateY(belowRow[0].key, itemSize.height + 20);
+              if (belowRow.length == 2) {
+                translateY(belowRow[1].key, itemSize.height + 20);
+              }
+            }
+          } else {
             if (belowRow.length == 2) {
-              translateY(belowRow[1].key, itemSize.height + 20);
+              var belowItem = belowRow[dragIndex.column];
+
+              _onReorder(itemKey, belowItem.key);
+              translateY(belowItem.key, itemSize.height + 20);
+            } else if (belowRow[0].size == SegmentSize.wide) {
+              var siblingItem = grid[dragIndex.row][1 - dragIndex.column];
+
+              _onReorder(itemKey, belowRow[0].key);
+              translateY(belowRow[0].key, itemSize.height + 20);
+              translateY(siblingItem.key, -itemSize.height - 20);
+            } else if (dragIndex.column == 0) {
+              var belowItem = belowRow[0];
+
+              _onReorder(itemKey, belowItem.key);
+              translateY(belowItem.key, itemSize.height + 20);
+            } else {
+              var siblingItem = grid[dragIndex.row][0];
+              var belowItem = belowRow[0];
+
+              _onReorder(itemKey, siblingItem.key);
+              _onReorder(itemKey, belowItem.key);
+
+              translateX(siblingItem.key, -itemSize.width - 20);
+              translateY(belowItem.key, itemSize.height + 20);
             }
           }
-        } else {
-          if (belowRow.length == 2) {
-            var belowItem = belowRow[dragIndex.column];
 
-            _onReorder(itemKey, belowItem.key);
-            translateY(belowItem.key, itemSize.height + 20);
-          } else if (belowRow[0].size == SegmentSize.wide) {
-            var siblingItem = grid[dragIndex.row][1 - dragIndex.column];
-
-            _onReorder(itemKey, belowRow[0].key);
-            translateY(belowRow[0].key, itemSize.height + 20);
-            translateY(siblingItem.key, -itemSize.height - 20);
-          } else if (dragIndex.column == 0) {
-            var belowItem = belowRow[0];
-
-            _onReorder(itemKey, belowItem.key);
-            translateY(belowItem.key, itemSize.height + 20);
-          } else {
-            var siblingItem = grid[dragIndex.row][0];
-            var belowItem = belowRow[0];
-
-            _onReorder(itemKey, siblingItem.key);
-            _onReorder(itemKey, belowItem.key);
-
-            translateX(siblingItem.key, -itemSize.width - 20);
-            translateY(belowItem.key, itemSize.height + 20);
-          }
+          return true;
         }
-
-        return true;
       }
     } else if ((offset.dx - itemOffset.dx).abs() > itemSize.width / 2 + 20) {
       var dragIndex = indexOf(itemKey);

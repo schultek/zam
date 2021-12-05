@@ -2,6 +2,7 @@ import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../core/core.dart';
 import '../../providers/auth/claims_provider.dart';
 import '../../widgets/ju_background.dart';
 import '../create_trip/create_trip_screen.dart';
@@ -17,7 +18,7 @@ class _NoTripScreenState extends State<NoTripScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: context.theme.primaryColor,
       body: JuBackground(
         child: Padding(
           padding: const EdgeInsets.all(40.0),

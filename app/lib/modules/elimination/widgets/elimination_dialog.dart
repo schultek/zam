@@ -13,7 +13,11 @@ class EliminationDialog extends StatefulWidget {
   _EliminationDialogState createState() => _EliminationDialogState();
 
   static Future<EliminationEntry?> show(BuildContext context, {required String gameId}) {
-    return showDialog<EliminationEntry>(context: context, builder: (context) => EliminationDialog(gameId: gameId));
+    return showDialog<EliminationEntry>(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => EliminationDialog(gameId: gameId),
+    );
   }
 }
 

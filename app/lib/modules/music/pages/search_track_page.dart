@@ -32,54 +32,58 @@ class _SearchTrackPageState extends State<SearchTrackPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search Track'),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: TextField(
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-              hintText: 'Suche nach Liedern',
-              hintStyle: TextStyle(color: context.surfaceColor),
-              border: InputBorder.none,
-              filled: true,
-              fillColor: Colors.black12,
-            ),
-            focusNode: searchFocusNode,
-            style: DefaultTextStyle.of(context).style.copyWith(
-                  fontStyle: FontStyle.italic,
-                  color: context.surfaceColor,
+      body: Scaffold(
+        appBar: AppBar(
+          title: const Text('Search Track'),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(50),
+            child: Builder(builder: (context) {
+              return TextField(
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+                  hintText: 'Suche nach Liedern',
+                  hintStyle: TextStyle(color: context.onSurfaceColor),
+                  border: InputBorder.none,
+                  filled: true,
+                  fillColor: Colors.black12,
                 ),
-            onChanged: (text) async {
-              var results = await context.read(musicLogicProvider).search(text);
-              setState(() {
-                suggestions = results;
-              });
-            },
+                focusNode: searchFocusNode,
+                style: DefaultTextStyle.of(context).style.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: context.onSurfaceColor,
+                    ),
+                onChanged: (text) async {
+                  var results = await context.read(musicLogicProvider).search(text);
+                  setState(() {
+                    suggestions = results;
+                  });
+                },
+              );
+            }),
           ),
         ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              children: [
-                for (var track in suggestions)
-                  TrackTile(
-                    track: track.toSpotifyTrack(),
-                    onTap: () {
-                      Navigator.of(context).pop(TrackResult(track.toSpotifyTrack(), TrackAction.play));
-                    },
-                    onAction: (action) {
-                      Navigator.of(context).pop(TrackResult(track.toSpotifyTrack(), action));
-                    },
-                    actions: const {TrackAction.play, TrackAction.queue, TrackAction.addPlaylist},
-                  ),
-              ],
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                children: [
+                  for (var track in suggestions)
+                    TrackTile(
+                      track: track.toSpotifyTrack(),
+                      onTap: () {
+                        Navigator.of(context).pop(TrackResult(track.toSpotifyTrack(), TrackAction.play));
+                      },
+                      onAction: (action) {
+                        Navigator.of(context).pop(TrackResult(track.toSpotifyTrack(), action));
+                      },
+                      actions: const {TrackAction.play, TrackAction.queue, TrackAction.addPlaylist},
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
