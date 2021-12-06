@@ -136,7 +136,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     selectWidgetAreaById<T>(area?.id);
   }
 
-  void selectWidgetAreaById<T extends ModuleElement>(String? id) {
+  void selectWidgetAreaById<T extends ModuleElement>(String? id) async {
     if (!isEditing) return;
     if (_selectedArea == id) {
       return;
@@ -151,7 +151,7 @@ class WidgetTemplateState extends State<WidgetTemplate> with TickerProviderState
     setState(() {});
 
     if (widgetAreas[selectedArea]?.mounted ?? false) {
-      widgetSelector = WidgetSelector.show<T>(this);
+      widgetSelector = await WidgetSelector.show<T>(this);
     }
   }
 

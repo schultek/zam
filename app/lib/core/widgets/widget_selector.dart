@@ -32,16 +32,14 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
   @override
   WidgetSelectorState createState() => WidgetSelectorState<T>();
 
-  static WidgetSelectorController show<T extends ModuleElement>(WidgetTemplateState template) {
+  static Future<WidgetSelectorController> show<T extends ModuleElement>(WidgetTemplateState template) async {
     var selectorKey = GlobalKey<WidgetSelectorState<T>>();
 
     WidgetAreaState<WidgetArea<T>, T> widgetArea =
         template.widgetAreas[template.selectedArea]! as WidgetAreaState<WidgetArea<T>, T>;
 
-    List<T> widgets = registry
-        .getWidgetsOf<T>(template.context)
-        .where((w) => !widgetArea.getWidgets().any((ww) => ww.id == w.id))
-        .toList();
+    List<T> widgets = await registry.getWidgetsOf<T>(template.context);
+    widgets = widgets.where((w) => !widgetArea.getWidgets().any((ww) => ww.id == w.id)).toList();
 
     var widgetSelector = WidgetSelector<T>(selectorKey, widgets, widgetArea);
 

@@ -60,6 +60,13 @@ class NoteModule extends ModuleBuilder<ContentSegment> {
         context: context,
         builder: (context) => Consumer(
           builder: (context, ref, _) {
+            if (id.startsWith('%')) {
+              return FolderCard(
+                folder: id.substring(1),
+                needsSurface: true,
+              );
+            }
+
             var note = ref.watch(noteProvider(id));
             return note.when(
               data: (data) {
@@ -106,21 +113,25 @@ class NoteModule extends ModuleBuilder<ContentSegment> {
 
 class NotesGridModule extends ModuleBuilder<ContentSegment> {
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
-    return ContentSegment.items(
-      context: context,
-      itemsBuilder: NotesPage.cardsBuilder,
-      builder: (context, items) => LayoutBuilder(
-        builder: (context, constraints) => GridView.count(
-          padding: EdgeInsets.zero,
-          physics: const BouncingScrollPhysics(),
-          shrinkWrap: true,
-          crossAxisCount: 2,
-          mainAxisSpacing: constraints.maxWidth > 300 ? 20 : 10,
-          crossAxisSpacing: constraints.maxWidth > 300 ? 20 : 10,
-          children: items,
+  FutureOr<ContentSegment?> build(ModuleContext context) async {
+    var notes = await context.context.read(notesProvider.future);
+
+    if (notes.isNotEmpty) {
+      return ContentSegment.items(
+        context: context,
+        itemsBuilder: NotesPage.cardsBuilder,
+        builder: (context, items) => LayoutBuilder(
+          builder: (context, constraints) => GridView.count(
+            padding: EdgeInsets.zero,
+            physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
+            crossAxisCount: 2,
+            mainAxisSpacing: constraints.maxWidth > 300 ? 20 : 10,
+            crossAxisSpacing: constraints.maxWidth > 300 ? 20 : 10,
+            children: items,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }

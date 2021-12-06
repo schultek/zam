@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
 import 'cards/elimination_game_card.dart';
 import 'cards/games_card.dart';
 import 'cards/new_game_card.dart';
+import 'game_provider.dart';
 import 'pages/create_game_page.dart';
 import 'widgets/games_list.dart';
 
@@ -41,11 +43,14 @@ class EliminationGamesModule extends ModuleBuilder<ContentSegment> {
 
 class EliminationGamesListModule extends ModuleBuilder<ContentSegment> {
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
-    return ContentSegment.list(
-      context: context,
-      builder: GamesList.tilesBuilder,
-      spacing: 10,
-    );
+  FutureOr<ContentSegment?> build(ModuleContext context) async {
+    var games = await context.context.read(gamesProvider.future);
+    if (games.isNotEmpty) {
+      return ContentSegment.list(
+        context: context,
+        builder: GamesList.tilesBuilder,
+        spacing: 10,
+      );
+    }
   }
 }

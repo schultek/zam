@@ -8,6 +8,7 @@ import '../../../providers/trips/trips_provider.dart';
 import '../../../screens/create_trip/create_trip_screen.dart';
 import '../../models/trip.dart';
 import '../../themes/theme_context.dart';
+import '../../themes/widgets/themed_surface.dart';
 import '../../widgets/trip_settings.dart';
 
 class TripSelectorButton extends StatelessWidget {
@@ -55,13 +56,13 @@ class TripSelectorPage extends StatelessWidget {
           if (selectedTrip != null) ...[
             Text('Ausgewählter Trip', style: TextStyle(color: context.onSurfaceColor)),
             const SizedBox(height: 20),
-            selectedTripTile(context, selectedTrip),
+            tripTile(context, selectedTrip, true),
             const SizedBox(height: 40),
           ],
           Text('Verfügbare Trips', style: TextStyle(color: context.onSurfaceColor)),
           const SizedBox(height: 20),
           for (var trip in trips.where((t) => t.id != selectedTrip?.id)) ...[
-            tripTile(context, trip),
+            tripTile(context, trip, false),
             const SizedBox(height: 20),
           ],
         ],
@@ -69,72 +70,50 @@ class TripSelectorPage extends StatelessWidget {
     );
   }
 
-  Widget selectedTripTile(BuildContext context, Trip trip) {
+  Widget tripTile(BuildContext context, Trip trip, bool isSelected) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.theme.colorScheme.surface,
-          image: trip.pictureUrl != null
-              ? DecorationImage(image: CachedNetworkImageProvider(trip.pictureUrl!), fit: BoxFit.cover)
-              : null,
-        ),
-        height: 200,
-        child: Material(
-          color: context.theme.colorScheme.primary.withOpacity(0.4),
-          child: InkWell(
-            child: Stack(
-              children: [
-                Center(
-                  child: Text(
-                    trip.name,
-                    style: context.theme.textTheme.headline4!.copyWith(color: context.theme.colorScheme.onPrimary),
-                  ),
-                ),
-                if (context.watch(isOrganizerProvider))
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: IconButton(
-                      icon: Icon(Icons.settings, color: context.theme.colorScheme.onPrimary),
-                      onPressed: () {
-                        Navigator.push(context, TripSettings.route());
-                      },
+      child: ThemedSurface(
+        builder: (context, color) => Container(
+          decoration: BoxDecoration(
+            color: context.surfaceColor,
+            image: trip.pictureUrl != null
+                ? DecorationImage(image: CachedNetworkImageProvider(trip.pictureUrl!), fit: BoxFit.cover)
+                : null,
+          ),
+          height: isSelected ? 200 : 140,
+          child: Material(
+            color: context.surfaceColor.withOpacity(0.3),
+            child: InkWell(
+              child: Stack(
+                children: [
+                  Center(
+                    child: Text(
+                      trip.name,
+                      style: context.theme.textTheme.headline4!.copyWith(color: context.onSurfaceColor),
                     ),
                   ),
-              ],
+                  if (isSelected && context.watch(isOrganizerProvider))
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: IconButton(
+                        icon: Icon(Icons.settings, color: context.onSurfaceColor),
+                        onPressed: () {
+                          Navigator.push(context, TripSettings.route());
+                        },
+                      ),
+                    ),
+                ],
+              ),
+              onTap: () {
+                if (isSelected) {
+                  Navigator.pop(context);
+                } else {
+                  context.read(selectedTripIdProvider.notifier).state = trip.id;
+                }
+              },
             ),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget tripTile(BuildContext context, Trip trip) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        decoration: BoxDecoration(
-          color: context.theme.colorScheme.surface,
-          image: trip.pictureUrl != null
-              ? DecorationImage(image: CachedNetworkImageProvider(trip.pictureUrl!), fit: BoxFit.cover)
-              : null,
-        ),
-        height: 100,
-        child: Material(
-          color: context.theme.colorScheme.primary.withOpacity(0.4),
-          child: InkWell(
-            child: Center(
-                child: Text(
-              trip.name,
-              style: context.theme.textTheme.headline4!.copyWith(color: Colors.white),
-            )),
-            onTap: () {
-              context.read(selectedTripIdProvider.notifier).state = trip.id;
-            },
           ),
         ),
       ),

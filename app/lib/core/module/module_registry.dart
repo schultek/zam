@@ -24,16 +24,11 @@ class ModuleRegistry {
     return (builder as ModuleBuilder<T>?)?.build(context);
   }
 
-  List<T> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
-    return modules.entries
+  Future<List<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) async {
+    var widgets = await Future.wait(modules.entries
         .where((e) => e.value is ModuleBuilder<T>)
-        .map((e) {
-          var element = e.value.build(ModuleContext(context, e.key));
-          assert(element is T?, "ModuleBuilder's build() method must return synchronously when given no element id.");
-          return element as T?;
-        })
-        .whereNotNull()
-        .toList();
+        .map((e) async => await (e.value as ModuleBuilder<T>).build(ModuleContext(context, e.key))));
+    return widgets.whereNotNull().toList();
   }
 
   void preloadModules(BuildContext context) {

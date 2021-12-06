@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' show Document;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,36 +17,51 @@ class _SelectNotePageState extends State<SelectNotePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Select a Note or Folder'),
+      ),
       body: Consumer(
         builder: (context, ref, _) {
           var notes = ref.watch(notesProvider);
           print(notes);
           return notes.when(
-              data: (data) => ListView(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text(
-                          'Select a note',
-                          style: TextStyle(fontSize: 20),
+              data: (data) {
+                var folders = data.groupListsBy((n) => n.folder);
+
+                return ListView(
+                  children: [
+                    for (var note in data)
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                        title: Text(note.title ?? 'Untitled'),
+                        subtitle: Text(
+                          Document.fromJson(note.content).toPlainText().replaceAll('\n', '  '),
+                          overflow: TextOverflow.ellipsis,
                         ),
+                        leading: const Icon(Icons.sticky_note_2),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Future.delayed(const Duration(milliseconds: 300), () => widget.onSelect(note.id));
+                        },
                       ),
-                      const SizedBox(height: 20),
-                      for (var note in data)
+                    for (var folder in folders.entries)
+                      if (folder.key != null)
                         ListTile(
                           contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                          title: Text(note.title ?? 'Untitled'),
+                          title: Text(folder.key!),
                           subtitle: Text(
-                            Document.fromJson(note.content).toPlainText().replaceAll('\n', '  '),
+                            folder.value.map((n) => n.title).join(', '),
                             overflow: TextOverflow.ellipsis,
                           ),
+                          leading: const Icon(Icons.folder),
                           onTap: () {
                             Navigator.of(context).pop();
-                            Future.delayed(const Duration(milliseconds: 300), () => widget.onSelect(note.id));
+                            Future.delayed(const Duration(milliseconds: 300), () => widget.onSelect('%' + folder.key!));
                           },
                         ),
-                    ],
-                  ),
+                  ],
+                );
+              },
               loading: () => const Text('Loading...'),
               error: (e, st) => Text('Error $e'));
         },
