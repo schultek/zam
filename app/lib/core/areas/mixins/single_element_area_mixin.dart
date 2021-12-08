@@ -20,7 +20,7 @@ mixin SingleElementAreaMixin<U extends WidgetArea<T>, T extends ModuleElement> o
   bool hasKey(Key key) => element?.key == key;
 
   @override
-  void insertItem(T item) {
+  void insertItem(Offset offset, T item) {
     if (element != null) removeWidget(element!.key);
     setState(() => element = item);
   }

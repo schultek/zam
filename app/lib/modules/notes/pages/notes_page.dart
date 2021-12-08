@@ -33,6 +33,16 @@ class NotesPage extends StatefulWidget {
         ),
       for (var folder in folders.keys)
         if (folder != null) FolderCard(folder: folder, needsSurface: needsSurface),
+      NoteCard(
+        needsSurface: needsSurface,
+        child: Center(
+          child: Icon(Icons.add, size: 60, color: context.onSurfaceHighlightColor),
+        ),
+        onTap: () {
+          var note = context.read(notesLogicProvider).createEmptyNote();
+          Navigator.of(context).push(EditNotePage.route(note));
+        },
+      ),
     ];
   }
 }
@@ -50,19 +60,7 @@ class _NotesPageState extends State<NotesPage> {
           crossAxisCount: 2,
           mainAxisSpacing: 20,
           crossAxisSpacing: 20,
-          children: [
-            ...NotesPage.cardsBuilder(context, true),
-            NoteCard(
-              needsSurface: true,
-              child: Center(
-                child: Icon(Icons.add, size: 60, color: context.theme.colorScheme.primary),
-              ),
-              onTap: () {
-                var note = context.read(notesLogicProvider).createEmptyNote();
-                Navigator.of(context).push(EditNotePage.route(note));
-              },
-            ),
-          ],
+          children: NotesPage.cardsBuilder(context, true),
         ),
       ),
     );
@@ -100,7 +98,7 @@ class NoteCard extends StatelessWidget {
       child: Material(
         color: color ?? Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: child,
+        child: AspectRatio(aspectRatio: 1, child: child),
       ),
     );
   }
@@ -133,30 +131,33 @@ class FolderCard extends StatelessWidget {
       child: Material(
         color: color ?? Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                flex: 8,
-                child: Icon(
-                  Icons.folder,
-                  size: 40,
-                  color: context.onSurfaceHighlightColor,
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  flex: 8,
+                  child: Icon(
+                    Icons.folder,
+                    size: 40,
+                    color: context.onSurfaceHighlightColor,
+                  ),
                 ),
-              ),
-              const Spacer(),
-              Flexible(
-                flex: 6,
-                child: Text(
-                  folder,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: 20, color: context.onSurfaceColor),
-                  overflow: TextOverflow.ellipsis,
+                const Spacer(),
+                Flexible(
+                  flex: 6,
+                  child: Text(
+                    folder,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 20, color: context.onSurfaceColor),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

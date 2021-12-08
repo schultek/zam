@@ -127,7 +127,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
           margin: getMargin(),
           decoration: BoxDecoration(
             color: isSelected ? backgroundColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.all(getRadius()),
           ),
           child: Stack(
             fit: StackFit.passthrough,
@@ -138,7 +138,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
                   color: isSelected || isEditing ? borderColor : Colors.transparent,
                   dashPattern: isSelected ? [100, 0] : [4, 8],
                   strokeWidth: 1,
-                  radius: const Radius.circular(20),
+                  radius: getRadius(),
                   child: Container(),
                 ),
               ),
@@ -160,6 +160,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   EdgeInsets getMargin() => EdgeInsets.zero;
   EdgeInsets getPadding() => const EdgeInsets.all(10);
+  Radius getRadius() => const Radius.circular(20);
 
   BoxConstraints constrainWidget(T widget);
 
@@ -231,7 +232,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
       return false;
     }
 
-    insertItem(item);
+    insertItem(offset, item);
     reorderItem(offset, item.key);
     return true;
   }
@@ -259,7 +260,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   void removeItem(Key key);
   bool didReorderItem(Offset offset, Key itemKey);
   bool canInsertItem(T item) => true;
-  void insertItem(T item);
+  void insertItem(Offset offset, T item);
   bool hasKey(Key key);
 
   ElementDecorator<T> get elementDecorator;

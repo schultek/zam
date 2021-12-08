@@ -35,7 +35,7 @@ mixin ScrollMixin<T extends WidgetArea<E>, E extends ModuleElement> on WidgetAre
       double top = d.padding.top + padding;
       double bottom = position.viewportDimension - (d.padding.bottom) - padding;
 
-      double? newOffset = checkScrollPosition(position, dragOffset.dy, itemSize, top, bottom);
+      double? newOffset = checkScrollPosition(position, dragOffset.dy, itemSize.height, top, bottom);
 
       if (newOffset != null && (newOffset - position.pixels).abs() >= 1.0) {
         _activeScrollCb = scrollCb;
@@ -51,11 +51,28 @@ mixin ScrollMixin<T extends WidgetArea<E>, E extends ModuleElement> on WidgetAre
         }
       }
     } else {
-      // TODO
+      double left = padding;
+      double right = position.viewportDimension - padding;
+
+      double? newOffset = checkScrollPosition(position, dragOffset.dx, itemSize.width, left, right);
+
+      if (newOffset != null && (newOffset - position.pixels).abs() >= 1.0) {
+        _activeScrollCb = scrollCb;
+
+        await scrollController.position.animateTo(
+          newOffset,
+          duration: Duration(milliseconds: duration),
+          curve: Curves.linear,
+        );
+
+        if (_activeScrollCb != null) {
+          _activeScrollCb!();
+        }
+      }
     }
   }
 
-  double? checkScrollPosition(ScrollPosition position, double dragOffset, Size dragSize, double top, double bottom) {
+  double? checkScrollPosition(ScrollPosition position, double dragOffset, double dragSize, double top, double bottom) {
     double step = 1.0;
     double overdragMax = 40.0;
     double overdragCoef = 5.0;
@@ -63,10 +80,8 @@ mixin ScrollMixin<T extends WidgetArea<E>, E extends ModuleElement> on WidgetAre
     if (dragOffset < top && position.pixels > position.minScrollExtent) {
       var overdrag = max(top - dragOffset, overdragMax);
       return max(position.minScrollExtent, position.pixels - step * overdrag / overdragCoef);
-    } else if (scrollDownEnabled &&
-        dragOffset + dragSize.height > bottom &&
-        position.pixels < position.maxScrollExtent) {
-      var overdrag = max<double>(dragOffset + dragSize.height - bottom, overdragMax);
+    } else if (scrollDownEnabled && dragOffset + dragSize > bottom && position.pixels < position.maxScrollExtent) {
+      var overdrag = max<double>(dragOffset + dragSize - bottom, overdragMax);
       return min(position.maxScrollExtent, position.pixels + step * overdrag / overdragCoef);
     } else {
       return null;

@@ -85,11 +85,13 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
             const SizedBox(height: 5),
             ConstrainedBox(
               constraints: const BoxConstraints(minHeight: 40),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  for (var i in range) _slideCharacter(i),
-                ],
+              child: LayoutBuilder(
+                builder: (context, constraints) => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    for (var i in range) _slideCharacter(i, constraints),
+                  ],
+                ),
               ),
             ),
             Text(
@@ -102,10 +104,10 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
     );
   }
 
-  Widget _slideCharacter(int index) {
+  Widget _slideCharacter(int index, BoxConstraints constraints) {
     var textStyle = TextStyle(
       fontFamily: 'Cousine',
-      fontSize: ((MediaQuery.of(context).size.width / 2) - 20) / (max(range.length, 4)),
+      fontSize: constraints.maxWidth / (max(range.length, 4)),
       height: 1.4,
       color: context.onSurfaceHighlightColor,
     );

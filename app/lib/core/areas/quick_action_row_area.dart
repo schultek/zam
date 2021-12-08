@@ -83,7 +83,7 @@ class QuickActionRowAreaState extends WidgetAreaState<QuickActionRowArea, QuickA
   }
 
   @override
-  void insertItem(QuickAction item) {
+  void insertItem(Offset offset, QuickAction item) {
     var boxWidth = _boxKey.currentContext!.size!.width;
 
     if (elements.isEmpty) {

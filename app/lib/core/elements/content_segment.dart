@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../helpers/extensions.dart';
+import '../../widgets/cached_layout_builder.dart';
 import '../areas/widget_area.dart';
 import '../module/module_context.dart';
 import '../route/route.dart';
@@ -68,14 +69,24 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
     required List<Widget> Function(BuildContext context) builder,
     required double spacing,
   }) {
+    var layoutKey = GlobalKey();
     return ContentSegment.items(
       context: context,
       itemsBuilder: builder,
-      builder: (context, items) => ListView(
-        padding: EdgeInsets.zero,
-        physics: const BouncingScrollPhysics(),
-        shrinkWrap: true,
-        children: items.intersperse(SizedBox(height: spacing)).toList(),
+      builder: (context, items) => CachedLayoutBuilder(
+        key: layoutKey,
+        builder: (context, constraints) => ListView(
+          scrollDirection: constraints.hasBoundedWidth ? Axis.vertical : Axis.horizontal,
+          padding: EdgeInsets.zero,
+          physics: const BouncingScrollPhysics(),
+          shrinkWrap: true,
+          children: items
+              .intersperse(SizedBox(
+                height: constraints.hasBoundedWidth ? spacing : null,
+                width: constraints.hasBoundedWidth ? null : spacing,
+              ))
+              .toList(),
+        ),
       ),
     );
   }
@@ -85,17 +96,35 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
     required List<Widget> Function(BuildContext context) builder,
     required double spacing,
   }) {
+    var layoutKey = GlobalKey();
     return ContentSegment.items(
       context: context,
       itemsBuilder: builder,
-      builder: (context, items) => GridView.count(
-        padding: EdgeInsets.zero,
-        physics: const BouncingScrollPhysics(),
-        shrinkWrap: true,
-        crossAxisCount: 2,
-        mainAxisSpacing: spacing,
-        crossAxisSpacing: spacing,
-        children: items,
+      builder: (context, items) => CachedLayoutBuilder(
+        key: layoutKey,
+        builder: (context, constraints) {
+          if (constraints.hasBoundedWidth) {
+            var compSpacing = constraints.maxWidth > 300 ? spacing : spacing / 2;
+            return GridView.count(
+              padding: EdgeInsets.zero,
+              physics: const BouncingScrollPhysics(),
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              mainAxisSpacing: compSpacing,
+              crossAxisSpacing: compSpacing,
+              children: items,
+            );
+          } else {
+            return ListView(
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              shrinkWrap: true,
+              children:
+                  items.intersperse(SizedBox(width: constraints.maxHeight > 300 ? spacing : spacing / 2)).toList(),
+            );
+          }
+        },
       ),
     );
   }

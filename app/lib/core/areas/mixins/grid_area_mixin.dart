@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import '../../elements/module_element.dart';
 import '../widget_area.dart';
@@ -52,7 +53,7 @@ mixin GridAreaMixin<U extends WidgetArea<T>, T extends ModuleElement> on WidgetA
   }
 
   @override
-  void insertItem(T item) {
+  void insertItem(Offset offset, T item) {
     setState(() {
       if (grid.isEmpty || sizeOf(grid[grid.length - 1][0]) == SegmentSize.wide || grid[grid.length - 1].length == 2) {
         grid.add([item]);

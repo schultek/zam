@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -68,38 +69,47 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
       child: Builder(
         builder: (context) => Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          child: ListView(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.zero,
             children: [
               Text(
                 'The Button',
                 style: context.theme.textTheme.bodyText2!.copyWith(color: context.onSurfaceColor),
+                textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 5),
               Text(
                 'A social game where you have to keep the button alive.',
                 style: context.theme.textTheme.caption!.apply(color: context.onSurfaceColor, fontSizeFactor: 0.9),
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 5),
               TextButton(
                 style: TextButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 onPressed: () => setState(() => instructionsOpen = true),
-                child: Text(
+                child: AutoSizeText(
                   'How to play?',
                   style: TextStyle(color: context.onSurfaceColor),
+                  minFontSize: 8,
+                  maxLines: 1,
                 ),
               ),
+              const SizedBox(height: 5),
               TextButton(
                 style: TextButton.styleFrom(
                   visualDensity: VisualDensity.compact,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 onPressed: () => setState(() => leaderboardOpen = true),
-                child: Text(
+                child: AutoSizeText(
                   'Leaderboard',
                   style: TextStyle(color: context.onSurfaceColor),
+                  maxLines: 1,
+                  minFontSize: 8,
                 ),
               ),
             ],

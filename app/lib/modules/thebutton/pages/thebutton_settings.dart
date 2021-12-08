@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
@@ -192,7 +193,8 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                   Center(
                     child: Text(
                       option,
-                      style: context.theme.textTheme.headline5!.copyWith(color: context.onSurfaceColor),
+                      style: context.theme.textTheme.headline5!
+                          .copyWith(color: context.onSurfaceColor, fontSize: constraints.maxWidth / 8),
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -267,7 +269,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
       isOpen: resetOpen,
       corner: Corner.bottomLeft,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(10),
         child: Builder(
           builder: (context) => Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -284,10 +286,12 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                     isResettingHealth = true;
                   });
                 },
-                child: Text(
+                child: AutoSizeText(
                   'Reset\nHealth',
                   style: TextStyle(color: context.onSurfaceColor),
                   textAlign: TextAlign.center,
+                  maxLines: 2,
+                  minFontSize: 8,
                 ),
               ),
               TextButton(
@@ -302,10 +306,12 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                     isResettingHealth = false;
                   });
                 },
-                child: Text(
+                child: AutoSizeText(
                   'Reset\nLeaderboard',
                   style: TextStyle(color: context.onSurfaceColor),
                   textAlign: TextAlign.center,
+                  maxLines: 2,
+                  minFontSize: 8,
                 ),
               ),
             ],
@@ -320,22 +326,23 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
       isOpen: confirmOpen,
       corner: Corner.bottomLeft,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.only(top: 30, left: 10, right: 10),
         child: Builder(
           builder: (context) => Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text(
+              AutoSizeText(
                 "Do you want to\nreset the ${isResettingHealth == true ? 'health' : 'leaderboard'}?",
                 style: TextStyle(color: context.onSurfaceColor),
                 textAlign: TextAlign.center,
+                maxLines: 2,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Flexible(
                     child: IconButton(
-                      icon: const Icon(Icons.check, color: Colors.green, size: 30),
+                      icon: const Icon(Icons.check, color: Colors.green, size: 28),
                       onPressed: () {
                         if (isResettingHealth == true) {
                           context.read(theButtonLogicProvider).resetHealth();
@@ -352,7 +359,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                   ),
                   Flexible(
                     child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.red, size: 30),
+                      icon: const Icon(Icons.close, color: Colors.red, size: 28),
                       onPressed: () {
                         setState(() {
                           settingsOpen = false;

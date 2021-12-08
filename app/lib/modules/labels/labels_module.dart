@@ -38,7 +38,9 @@ class LabelModule extends ModuleBuilder<ContentSegment> {
 class LabelWidget extends StatefulWidget {
   final String? label;
   final IdProvider idProvider;
-  const LabelWidget({this.label, required this.idProvider, Key? key}) : super(key: key);
+  final EdgeInsets padding;
+  const LabelWidget({this.label, this.padding = const EdgeInsets.all(8), required this.idProvider, Key? key})
+      : super(key: key);
 
   @override
   State<LabelWidget> createState() => _LabelWidgetState();
@@ -81,7 +83,7 @@ class _LabelWidgetState extends State<LabelWidget> {
       );
     } else {
       child = Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: widget.padding,
         child: Text(
           widget.label ?? 'Add Label',
           style: context.theme.textTheme.headline6!.apply(color: context.onSurfaceColor),

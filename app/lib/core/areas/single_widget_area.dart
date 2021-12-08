@@ -30,7 +30,7 @@ class SingleWidgetAreaState extends WidgetAreaState<SingleWidgetArea, ContentSeg
 
   @override
   Widget buildArea(BuildContext context) {
-    if (element != null) return element!;
+    if (element != null) return Center(child: element!);
 
     if (template.isEditing) return Container();
 
@@ -45,5 +45,5 @@ class SingleWidgetAreaState extends WidgetAreaState<SingleWidgetArea, ContentSeg
   }
 
   @override
-  BoxConstraints constrainWidget(ContentSegment widget) => BoxConstraints.tight(areaSize);
+  BoxConstraints constrainWidget(ContentSegment widget) => BoxConstraints.loose(areaSize);
 }

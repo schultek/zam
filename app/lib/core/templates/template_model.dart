@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/trips/logic_provider.dart';
+import 'drops_template.dart';
 import 'focus_template.dart';
 import 'grid_template.dart';
 import 'swipe_template.dart';
@@ -23,6 +24,7 @@ abstract class TemplateModel {
       GridTemplateModel(),
       SwipeTemplateModel(),
       FocusTemplateModel(),
+      DropsTemplateModel(),
     ];
   }
 }

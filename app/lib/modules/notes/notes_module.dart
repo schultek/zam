@@ -117,20 +117,10 @@ class NotesGridModule extends ModuleBuilder<ContentSegment> {
     var notes = await context.context.read(notesProvider.future);
 
     if (notes.isNotEmpty) {
-      return ContentSegment.items(
+      return ContentSegment.grid(
         context: context,
-        itemsBuilder: NotesPage.cardsBuilder,
-        builder: (context, items) => LayoutBuilder(
-          builder: (context, constraints) => GridView.count(
-            padding: EdgeInsets.zero,
-            physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            mainAxisSpacing: constraints.maxWidth > 300 ? 20 : 10,
-            crossAxisSpacing: constraints.maxWidth > 300 ? 20 : 10,
-            children: items,
-          ),
-        ),
+        builder: NotesPage.cardsBuilder,
+        spacing: 20,
       );
     }
   }
