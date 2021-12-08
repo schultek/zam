@@ -86,10 +86,12 @@ class _EditNotePageState extends State<EditNotePage> {
           Builder(
             builder: (context) => Expanded(
               child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () {
                   if (!editorFocusNode.hasPrimaryFocus) {
                     editorFocusNode.requestFocus();
                   }
+                  _controller.updateSelection(const TextSelection.collapsed(offset: 99999), ChangeSource.LOCAL);
                 },
                 child: Align(
                   alignment: Alignment.topCenter,
@@ -106,12 +108,16 @@ class _EditNotePageState extends State<EditNotePage> {
                         readOnly: !isEditor,
                         expands: false,
                         padding: const EdgeInsets.all(20.0),
-                        keyboardAppearance: Brightness.dark,
+                        keyboardAppearance: context.theme.brightness,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: TextFormField(
-                          decoration: const InputDecoration(hintText: 'Title'),
+                          decoration: const InputDecoration(
+                            hintText: 'Title',
+                            filled: false,
+                            border: InputBorder.none,
+                          ),
                           style: TextStyle(fontSize: 30, color: context.onSurfaceColor),
                           initialValue: widget.note.title,
                           onChanged: (text) => _title = text,
@@ -141,9 +147,15 @@ class _EditNotePageState extends State<EditNotePage> {
                         child: QuillToolbar.basic(
                           controller: _controller,
                           onImagePickCallback: (file) async {
-                            return logic.uploadImage(widget.note.id, file);
+                            return logic.uploadFile(widget.note.id, file);
+                          },
+                          onVideoPickCallback: (file) async {
+                            return logic.uploadFile(widget.note.id, file);
                           },
                           showCameraButton: false,
+                          dialogTheme: QuillDialogTheme(
+                            dialogBackgroundColor: context.surfaceColor,
+                          ),
                         ),
                       ),
                     ),

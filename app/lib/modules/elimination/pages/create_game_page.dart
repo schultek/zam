@@ -17,6 +17,7 @@ class CreateGamePage extends StatefulWidget {
 
 class _CreateGamePageState extends State<CreateGamePage> {
   String? _name;
+  bool _allowLoops = true;
 
   bool get isValid => _name != null;
 
@@ -30,7 +31,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
             icon: const Icon(Icons.check),
             onPressed: isValid
                 ? () async {
-                    var game = await context.read(gameLogicProvider).createGame(_name!);
+                    var game = await context.read(gameLogicProvider).createGame(_name!, _allowLoops);
                     Navigator.pop(context, game.id);
                   }
                 : null,
@@ -44,10 +45,17 @@ class _CreateGamePageState extends State<CreateGamePage> {
             padding: const EdgeInsets.all(14),
             children: [
               TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
+                decoration: const InputDecoration(labelText: 'Name'),
                 onChanged: (text) => setState(() => _name = text),
+              ),
+            ],
+          ),
+          SettingsSection(
+            children: [
+              SwitchListTile(
+                value: _allowLoops,
+                title: const Text('Allow Loops'),
+                onChanged: (value) => setState(() => _allowLoops = value),
               ),
             ],
           ),

@@ -5,6 +5,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/core.dart';
+import '../../../providers/auth/user_provider.dart';
 import '../../../providers/links/links_provider.dart';
 import '../../../providers/trips/logic_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
@@ -19,7 +20,35 @@ class UsersPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Users'),
         actions: [
-          if (context.read(isOrganizerProvider))
+          if (context.read(isOrganizerProvider)) ...[
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () async {
+                String? name;
+                var userName = await showDialog<String>(
+                  context: context,
+                  useRootNavigator: false,
+                  builder: (BuildContext context) => StatefulBuilder(
+                    builder: (context, setState) => AlertDialog(
+                      title: const Text('Add User'),
+                      content: TextFormField(
+                        decoration: const InputDecoration(labelText: 'Name'),
+                        onChanged: (text) => setState(() => name = text),
+                      ),
+                      actions: [
+                        TextButton(
+                          child: const Text('Add'),
+                          onPressed: name != null ? () => Navigator.of(context).pop(name) : null,
+                        )
+                      ],
+                    ),
+                  ),
+                );
+                if (userName != null) {
+                  await context.read(tripsLogicProvider).addUser(userName);
+                }
+              },
+            ),
             PopupMenuButton<String>(
               offset: const Offset(0, 56),
               itemBuilder: (context) => [
@@ -43,6 +72,7 @@ class UsersPage extends StatelessWidget {
                 }
               },
             ),
+          ],
         ],
       ),
       body: SafeArea(
@@ -70,7 +100,7 @@ class UsersPage extends StatelessWidget {
       leading: UserAvatar(id: e.key),
       title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.onSurfaceColor)),
       subtitle: Text(e.value.role.capitalize()),
-      trailing: context.read(isOrganizerProvider)
+      trailing: context.read(isOrganizerProvider) && e.key != context.read(userIdProvider)
           ? PopupMenuButton<String>(
               offset: const Offset(0, 56),
               itemBuilder: (context) => [

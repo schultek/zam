@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../auth/user_provider.dart';
 import 'selected_trip_provider.dart';
 
@@ -20,6 +21,13 @@ class TripsLogic {
   Future<void> setUserName(String text) {
     return FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
       'users.$_userId.nickname': text,
+    });
+  }
+
+  Future<void> addUser(String name) {
+    var userId = generateRandomId();
+    return FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
+      'users.$userId': {'nickname': name, 'role': UserRoles.participant},
     });
   }
 

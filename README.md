@@ -26,7 +26,7 @@ Jugend-Freizeit-App
   - Custom chat ui
   - Smart Attachments (Notes, Games, Music, Announcement, Poll)
 - [x] Elimination Game
-  - Create Game Page (Name, /-Select-User-+-Fake-User-/)
+  - Create Game Page (Name, Allow Loops)
   - Games List Page, Game Summary
 - [x] The Button Game
   - Ranks instead of points
@@ -37,8 +37,8 @@ Jugend-Freizeit-App
 - [x] Profile
   - Better Picture selector + cropper
   - Save Button
-- Notes
-  - Visibility settings for notes / folders
+- [x] Notes
+  - // Visibility settings for notes / folders
   - More Attachment options
 - Music
   - Better connection persistence?

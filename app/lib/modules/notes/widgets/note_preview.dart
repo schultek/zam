@@ -30,13 +30,13 @@ class NotePreview extends StatelessWidget {
             ),
           const SizedBox(height: 10),
           Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) => FittedBox(
+            child: ClipRect(
+              child: FittedBox(
                 alignment: Alignment.topLeft,
-                fit: BoxFit.fitHeight,
+                fit: BoxFit.cover,
                 child: SizedBox(
-                  height: constraints.maxHeight * 2,
-                  width: constraints.maxWidth,
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width * 0.5,
                   child: AbsorbPointer(
                     child: ClipRect(
                       child: DefaultTextStyle(

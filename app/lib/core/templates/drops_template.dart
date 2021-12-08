@@ -1,12 +1,11 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
 import '../../modules/labels/labels_module.dart';
 import '../../providers/trips/selected_trip_provider.dart';
@@ -15,6 +14,8 @@ import '../areas/single_widget_area.dart';
 import '../elements/content_segment.dart';
 import '../elements/decorators/clipped_content_segment_decorator.dart';
 import '../themes/theme_context.dart';
+import '../themes/trip_theme_data.dart';
+import '../themes/widgets/themed_surface.dart';
 import 'template_model.dart';
 import 'widget_template.dart';
 import 'widgets/reorder_toggle.dart';
@@ -62,40 +63,35 @@ class DropsTemplate extends WidgetTemplate<DropsTemplateModel> {
         physics: const BouncingScrollPhysics(),
         controller: _scrollController,
         slivers: [
-          SliverPadding(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
-            sliver: SliverToBoxAdapter(
-              child: Consumer(
-                builder: (context, ref, _) {
-                  var trip = ref.watch(selectedTripProvider)!;
-                  var user = ref.watch(tripUserProvider)!;
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const TripSelectorButton(),
-                      Text(
-                        trip.name,
-                        style: context.theme.textTheme.headline5!.apply(color: context.onSurfaceColor),
+          SliverToBoxAdapter(
+            child: ThemedSurface(
+              preference: const ColorPreference(useHighlightColor: true),
+              builder: (context, color) => Container(
+                color: color,
+                padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 10, right: 10, bottom: 10),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10, right: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const TripSelectorButton(),
+                          Text(
+                            context.watch(selectedTripProvider.select((trip) => trip!.name)),
+                            style: context.theme.textTheme.headline5!.apply(color: context.onSurfaceColor),
+                          ),
+                          SizedBox(width: 50, child: context.watch(isOrganizerProvider) ? const ReorderToggle() : null),
+                        ],
                       ),
-                      if (user.isOrganizer)
-                        const SizedBox(
-                          width: 50,
-                          child: ReorderToggle(),
-                        )
-                      else
-                        const SizedBox(width: 50),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ),
-          const SliverPadding(
-            padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
-            sliver: SliverToBoxAdapter(
-              child: SizedBox(
-                height: 200,
-                child: SingleWidgetArea(id: 'focus', decorator: ClippedContentSegmentDecorator()),
+                    ),
+                    const SizedBox(height: 20),
+                    const SizedBox(
+                      height: 200,
+                      child: SingleWidgetArea(id: 'focus', decorator: ClippedContentSegmentDecorator()),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -171,10 +167,5 @@ class DropsTemplate extends WidgetTemplate<DropsTemplateModel> {
         ],
       ),
     );
-  }
-
-  String generateRandomId() {
-    var random = Random();
-    return base64.encode(List.generate(12, (index) => random.nextInt(255)));
   }
 }

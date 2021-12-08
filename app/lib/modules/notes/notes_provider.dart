@@ -81,7 +81,7 @@ class NotesLogic {
     });
   }
 
-  Future<String?> uploadImage(String noteId, File file) async {
+  Future<String?> uploadFile(String noteId, File file) async {
     var fileName = Uri.parse(file.path).pathSegments.last;
     var ref = FirebaseStorage.instance.ref('notes/$noteId/$fileName');
     await ref.putFile(file);

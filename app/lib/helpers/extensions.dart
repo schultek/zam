@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
@@ -49,4 +50,10 @@ extension ListHelper<T> on Iterable<T> {
       isFirst = false;
     }
   }
+}
+
+String generateRandomId([int length = 20]) {
+  var random = Random();
+  var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  return List.generate(length, (index) => chars[random.nextInt(chars.length)]).join();
 }
