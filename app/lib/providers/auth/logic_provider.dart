@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 
+import '../trips/selected_trip_provider.dart';
+
 final authLogicProvider = Provider((ref) => AuthLogic(ref));
 
 class AuthLogic {
@@ -44,7 +46,12 @@ class AuthLogic {
   }
 
   Future<User> signInUser(AuthCredential phoneAuthCredential) async {
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
+    UserCredential userCredential;
+    if (FirebaseAuth.instance.currentUser != null) {
+      userCredential = await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential);
+    } else {
+      userCredential = await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
+    }
     return userCredential.user!;
   }
 
@@ -59,5 +66,10 @@ class AuthLogic {
     } else {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: udid);
     }
+  }
+
+  Future<void> signOut() async {
+    ref.read(selectedTripIdProvider.notifier).state = null;
+    await FirebaseAuth.instance.signOut();
   }
 }

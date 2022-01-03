@@ -1,11 +1,9 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/trips/selected_trip_provider.dart';
 import '../areas/areas.dart';
-import '../areas/mixed_grid_area.dart';
 import '../areas/single_widget_area.dart';
 import '../elements/decorators/card_quick_action_decorator.dart';
 import '../elements/decorators/clipped_content_segment_decorator.dart';

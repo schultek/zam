@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -40,8 +42,16 @@ class LinkState {
 class LinkStateNotifier extends StateNotifier<LinkState> {
   final Ref ref;
 
+  StreamSubscription<PendingDynamicLinkData>? _linkSub;
+
   LinkStateNotifier(this.ref) : super(LinkState.loading()) {
     setup();
+  }
+
+  @override
+  void dispose() {
+    _linkSub?.cancel();
+    super.dispose();
   }
 
   Future<void> setup() async {
@@ -50,14 +60,12 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
     var link = await FirebaseDynamicLinks.instance.getInitialLink();
     if (link != null) {
       await _handleDynamicLink(link);
-    } else {
-      await ref.read(authLogicProvider).signInAnonymously();
     }
     if (state is LoadingLinkState) {
       state = LinkState.noLink();
     }
 
-    FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData? link) async {
+    _linkSub = FirebaseDynamicLinks.instance.onLink.listen((PendingDynamicLinkData? link) async {
       if (link == null) return;
       await _handleDynamicLink(link);
     });
@@ -143,12 +151,12 @@ class LinkLogic {
   Future<String> _buildDynamicLink({required String link, SocialMetaTagParameters? meta}) async {
     var parameters = DynamicLinkParameters(
       uriPrefix: 'https://jufa.page.link',
-      androidParameters: AndroidParameters(packageName: 'de.schultek.jufa'),
-      iosParameters: IosParameters(appStoreId: '1582879434', bundleId: 'de.schultek.jufa'),
+      androidParameters: const AndroidParameters(packageName: 'de.schultek.jufa'),
+      iosParameters: const IOSParameters(appStoreId: '1582879434', bundleId: 'de.schultek.jufa'),
       socialMetaTagParameters: meta,
       link: Uri.parse(link),
     );
-    ShortDynamicLink dynamicUrl = await parameters.buildShortLink();
+    ShortDynamicLink dynamicUrl = await FirebaseDynamicLinks.instance.buildShortLink(parameters);
     return dynamicUrl.shortUrl.toString();
   }
 }

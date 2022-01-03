@@ -9,8 +9,6 @@ import '../../core/core.dart';
 import '../../providers/firebase/doc_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 
-export '../../main.mapper.g.dart' show NoteMapperExtension;
-
 @MappableClass()
 class EliminationGame {
   final String id;

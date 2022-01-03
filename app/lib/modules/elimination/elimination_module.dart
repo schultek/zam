@@ -9,6 +9,7 @@ import 'cards/games_card.dart';
 import 'cards/new_game_card.dart';
 import 'game_provider.dart';
 import 'pages/create_game_page.dart';
+import 'pages/games_page.dart';
 import 'widgets/games_list.dart';
 
 class EliminationGameModule extends ModuleBuilder<ContentSegment> {
@@ -30,6 +31,18 @@ class EliminationNewGameActionModule extends ModuleBuilder<QuickAction> {
       icon: Icons.add,
       text: 'New Game',
       onNavigate: (context) => const CreateGamePage(),
+    );
+  }
+}
+
+class EliminationGamesActionModule extends ModuleBuilder<QuickAction> {
+  @override
+  FutureOr<QuickAction?> build(ModuleContext context) {
+    return QuickAction(
+      context: context,
+      icon: Icons.list,
+      text: 'Elimination Games',
+      onNavigate: (context) => const GamesPage(),
     );
   }
 }

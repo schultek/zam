@@ -8,14 +8,8 @@ import '../general/preferences_provider.dart';
 import 'trips_provider.dart';
 
 final selectedTripIdProvider = StateNotifierProvider<TripIdNotifier, String?>((ref) {
-  var trips = ref.watch(tripsProvider);
   var prefs = ref.watch(sharedPreferencesProvider).value;
-
-  var initialState = prefs?.getString('selected_trip_id') ?? trips.value?.firstOrNull?.id;
-
-  if (trips.value?.every((t) => t.id != initialState) ?? false) {
-    initialState = trips.value?.firstOrNull?.id;
-  }
+  var initialState = prefs?.getString('selected_trip_id');
 
   return TripIdNotifier(ref, initialState);
 });
@@ -31,6 +25,8 @@ class TripIdNotifier extends StateNotifier<String?> {
   set state(String? value) {
     if (value != null) {
       prefs?.setString('selected_trip_id', value);
+    } else {
+      prefs?.remove('selected_trip_id');
     }
     super.state = value;
   }

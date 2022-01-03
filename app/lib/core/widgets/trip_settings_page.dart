@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -13,18 +12,18 @@ import '../themes/theme_context.dart';
 import '../themes/widgets/theme_selector.dart';
 import 'settings_section.dart';
 
-class TripSettings extends StatefulWidget {
-  const TripSettings({Key? key}) : super(key: key);
+class TripSettingsPage extends StatefulWidget {
+  const TripSettingsPage({Key? key}) : super(key: key);
 
   @override
-  _TripSettingsState createState() => _TripSettingsState();
+  _TripSettingsPageState createState() => _TripSettingsPageState();
 
   static Route route() {
-    return MaterialPageRoute(builder: (context) => const TripSettings());
+    return MaterialPageRoute(builder: (context) => const TripSettingsPage());
   }
 }
 
-class _TripSettingsState extends State<TripSettings> {
+class _TripSettingsPageState extends State<TripSettingsPage> {
   @override
   Widget build(BuildContext context) {
     var trip = context.watch(selectedTripProvider)!;

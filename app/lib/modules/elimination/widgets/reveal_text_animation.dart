@@ -114,6 +114,9 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
     return AnimatedBuilder(
       animation: controller,
       builder: (context, _) {
+        if (index >= tweens.length) {
+          return Container();
+        }
         var tween = tweens[index];
         var value = tween.transform(controller.value).clamp(0.0, 1.0);
         if (controller.velocity > 0) {

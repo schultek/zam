@@ -18,6 +18,17 @@ class CreateTripScreen extends StatefulWidget {
 class _CreateTripScreenState extends State<CreateTripScreen> {
   String? tripName;
 
+  static Future<DocumentReference> createNewTrip(String tripName, String userId) {
+    var trip = Trip(
+      id: '',
+      name: tripName,
+      users: {userId: TripUser(role: UserRoles.organizer)},
+      template: SwipeTemplateModel(),
+      theme: const ThemeModel(),
+    );
+    return FirebaseFirestore.instance.collection('trips').add(trip.toMap());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +55,10 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                       decoration: const InputDecoration(
                         hintText: 'Ausflugsname eingeben',
                         border: InputBorder.none,
+                        hintStyle: TextStyle(color: Colors.black45),
+                        fillColor: Colors.transparent,
                       ),
+                      style: const TextStyle(color: Colors.black),
                       onChanged: (text) {
                         setState(() {
                           tripName = text;
@@ -71,7 +85,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                       padding: EdgeInsets.all(28.0),
                       child: Text(
                         'Erstellen',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ),
                   ),
@@ -83,16 +97,5 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
         ),
       ),
     );
-  }
-
-  static Future<DocumentReference> createNewTrip(String tripName, String userId) {
-    var trip = Trip(
-      id: '',
-      name: tripName,
-      users: {userId: TripUser(role: UserRoles.organizer)},
-      template: SwipeTemplateModel(),
-      theme: const ThemeModel(),
-    );
-    return FirebaseFirestore.instance.collection('trips').add(trip.toMap());
   }
 }

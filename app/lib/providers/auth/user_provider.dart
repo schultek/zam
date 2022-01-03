@@ -8,5 +8,7 @@ final userProvider = StreamProvider<User?>((ref) => ref.watch(firebaseProvider).
       orElse: () => const Stream.empty(),
     ));
 
+final isSignedInProvider = Provider((ref) => ref.watch(userProvider).value != null);
+
 final userIdProvider =
     Provider((ref) => ref.watch(userProvider).maybeWhen(data: (data) => data?.uid, orElse: () => null));

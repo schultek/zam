@@ -72,6 +72,18 @@ Jugend-Freizeit-App
   - Picture Story, continuing per person
   - 2 True, 1 Lie
   - Real life among us?
+      - Innocent, Traitor
+      - Tasks
+        - SchereSteinPapier Duell
+        - Selfie mit anderem Spieler
+        - 5 Liegestützen (an bestimmtem Ort)
+        - Tausche eine Socket mit Spieler
+        - Trinke ein Glas Wasser
+        - Neues Oberteil anziehen
+        - ...
+      - Death
+        - Gegenstand übergeben
+        - Antippen
   - 1000 white cards (Random rules for a random game)
   - Random Facts, guess the participant
   - Great minds think alike (Same answer to a question)
@@ -97,3 +109,31 @@ Jugend-Freizeit-App
 - Screentime Tree
   - Data Notification and Pong
 - Money Split
+- Map
+  - Add Markers / Routes
+  - Share Live Location
+  - Link Event / Note
+
+
+
+## Case Studies
+
+### Ü18 Freizeit
+
+- Planung und Übersicht Aktivitäten
+- Planung und Übersicht Essen
+- Organisation Einkaufen
+- Kommunikation
+- Spiele
+
+### Segel Trip
+
+- Planen & Verfolgen der Segelroute
+- Kommunikation bei Landgängen
+- Bordkasse und Ausgaben managen
+- Essen und Einkaufen planen
+
+### Klassenfahrt
+
+
+### 

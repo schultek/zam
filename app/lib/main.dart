@@ -1,15 +1,17 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import 'core/core.dart';
 //ignore: unused_import
-import 'modules/modules.dart';
+import 'core/widgets/trip_selector_page.dart';
+import 'providers/auth/user_provider.dart';
 import 'providers/general/loading_provider.dart';
 import 'providers/links/links_provider.dart';
 import 'providers/trips/selected_trip_provider.dart';
 import 'screens/loading/loading_link_screen.dart';
 import 'screens/loading/loading_screen.dart';
-import 'screens/no_trip/no_trip_screen.dart';
 import 'screens/signin/signin_screen.dart';
 import 'screens/trip/trip_screen.dart';
 
@@ -49,9 +51,9 @@ class _JufaAppState extends State<JufaApp> {
       return const LoadingLinkScreen();
     }
 
-    var link = context.watch(linkProvider);
-    if (link != null) {
-      return SignInScreen(link);
+    var isSignedIn = context.watch(isSignedInProvider);
+    if (!isSignedIn) {
+      return const SignInScreen();
     }
 
     var selectedTrip = context.watch(selectedTripProvider);
@@ -59,6 +61,6 @@ class _JufaAppState extends State<JufaApp> {
       return TripScreen(selectedTrip, key: ValueKey(selectedTrip.id));
     }
 
-    return const NoTripScreen();
+    return TripTheme(theme: TripThemeData(FlexScheme.material, true), child: const TripSelectorPage());
   }
 }
