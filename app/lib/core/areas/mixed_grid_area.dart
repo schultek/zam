@@ -30,12 +30,20 @@ class BodyWidgetAreaState extends WidgetAreaState<MixedGridArea, ContentSegment>
   @override
   EdgeInsets getPadding() => EdgeInsets.zero;
 
+  bool didInsertOrRemove = false;
+
+  @override
+  void insertItem(Offset offset, ContentSegment item) {
+    super.insertItem(offset, item);
+    didInsertOrRemove = true;
+  }
+
   @override
   Widget buildArea(BuildContext context) {
     return ConstrainedBox(
       constraints: const BoxConstraints(minHeight: 100),
       child: AnimatedSize(
-        duration: const Duration(milliseconds: 300),
+        duration: didInsertOrRemove ? const Duration(milliseconds: 300) : Duration.zero,
         alignment: Alignment.topCenter,
         curve: Curves.easeInOut,
         child: ListView.builder(
@@ -205,6 +213,7 @@ class BodyWidgetAreaState extends WidgetAreaState<MixedGridArea, ContentSegment>
   void removeItem(Key key) {
     var index = indexOf(key);
     _removeAtIndex(index);
+    didInsertOrRemove = true;
   }
 
   void _removeAtIndex(GridIndex index) {

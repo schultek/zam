@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -30,6 +31,46 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
   String? phoneNumber;
   late final Uri? invitationLink;
 
+  TextEditingValue formatPhoneNumberInput(TextEditingValue oldValue, TextEditingValue newValue) {
+    var text = '';
+    var selection = newValue.selection.baseOffset;
+    var newText = newValue.text.split('');
+    var i = 0;
+    while (newText.isNotEmpty) {
+      var char = newText.removeAt(0);
+      if (i == 0) {
+        if (char == '+') {
+          text += char;
+        } else if (char == '0') {
+          text += '+49';
+          i += 2;
+          selection += 2;
+        } else {
+          text += '+$char';
+          i++;
+          selection++;
+        }
+      } else {
+        if (i == 3 || i == 7) {
+          text += ' ';
+          selection++;
+        }
+
+        if (char == '+') {
+          i--;
+          selection--;
+        } else {
+          text += char;
+        }
+      }
+      i++;
+    }
+    return TextEditingValue(
+      text: text,
+      selection: TextSelection.collapsed(offset: selection),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +83,58 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
     if (invitationLink != null) {
       await context.read(linkStateProvider.notifier).handleReceivedLink(invitationLink!);
     }
+  }
+
+  String _getTitleText() {
+    if (invitationLink?.path.endsWith('/organizer') ?? false) {
+      return 'Werde Organisator*in.';
+    } else if (invitationLink?.path.endsWith('/admin') ?? false) {
+      return 'Werde Administrator.';
+    } else if (context.read(userProvider).value != null) {
+      return 'Telefonnummer hinzufügen';
+    } else {
+      return 'Mit Telefonnummer anmelden.';
+    }
+  }
+
+  Future<void> verifyPhoneNumber([int? smsToken]) async {
+    var completer = Completer();
+    await context.read(authLogicProvider).verifyPhoneNumber(
+          phoneNumber ?? '',
+          resendToken: smsToken,
+          onSent: (String verificationId, int? resendToken) async {
+            completer.complete();
+            if (smsToken == null) {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => SmsCodeScreen(
+                  verificationId,
+                  _onSignedIn,
+                  () => verifyPhoneNumber(resendToken),
+                ),
+              ));
+            }
+          },
+          onCompleted: _onSignedIn,
+          onFailed: (err) {
+            var msg = '';
+            switch (err.code) {
+              case 'invalid-phone-number':
+                msg = 'Falsche Telefonnummer';
+                break;
+              default:
+                msg = 'Unbekannter Fehler (${err.code})';
+                break;
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              backgroundColor: Colors.red,
+              content: Text(msg),
+            ));
+
+            completer.complete();
+          },
+        );
+    await completer.future;
   }
 
   @override
@@ -74,6 +167,10 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
                         hintStyle: TextStyle(color: Colors.black45, fontSize: 18),
                         fillColor: Colors.transparent,
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp('[+0-9]')),
+                        TextInputFormatter.withFunction(formatPhoneNumberInput),
+                      ],
                       style: const TextStyle(fontSize: 24),
                       onChanged: (text) => setState(() => phoneNumber = text),
                       keyboardType: TextInputType.phone,
@@ -93,8 +190,9 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
                 radius: const BorderRadius.all(Radius.circular(50.0)),
                 child: InkWell(
                   onTap: () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
                     setState(() => isLoading = true);
-                    await verifyPhoneNumber().catchError((_) {});
+                    await verifyPhoneNumber();
                     setState(() => isLoading = false);
                   },
                   child: Center(
@@ -118,41 +216,5 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
         ),
       ),
     );
-  }
-
-  String _getTitleText() {
-    if (invitationLink?.path.endsWith('/organizer') ?? false) {
-      return 'Werde Organisator*in.';
-    } else if (invitationLink?.path.endsWith('/admin') ?? false) {
-      return 'Werde Administrator.';
-    } else if (context.read(userProvider).value != null) {
-      return 'Telefonnummer hinzufügen';
-    } else {
-      return 'Mit Telefonnummer anmelden.';
-    }
-  }
-
-  Future<void> verifyPhoneNumber([int? resendToken]) async {
-    var completer = Completer();
-    await context.read(authLogicProvider).verifyPhoneNumber(
-      phoneNumber ?? '',
-      resendToken: resendToken,
-      onSent: (String verificationId, int? resendToken) async {
-        completer.complete();
-        if (resendToken == null) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => SmsCodeScreen(
-              verificationId,
-              _onSignedIn,
-              () => verifyPhoneNumber(resendToken),
-            ),
-          ));
-        }
-      },
-      onCompleted: _onSignedIn,
-    ).catchError((e) {
-      print(e);
-    });
-    await completer.future;
   }
 }

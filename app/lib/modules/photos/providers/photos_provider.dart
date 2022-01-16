@@ -1,5 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../api_client/photoslibrary.dart';
 import '../../../providers/firebase/doc_provider.dart';
@@ -26,16 +28,27 @@ class PhotosLogic {
   }
 
   Future<String> createAlbumShortcut(Album album) async {
-    var doc = await ref
+    var response = await http.get(Uri.parse(album.coverPhotoBaseUrl! + '=w256-h256-c'));
+
+    var coverRef = FirebaseStorage.instance.ref('albums/${album.id}/coverPhoto.png');
+    await coverRef.putData(response.bodyBytes);
+    var coverLink = await coverRef.getDownloadURL();
+
+    await ref
         .read(moduleDocProvider('photos'))
         .collection('albums')
         .mapped<AlbumShortcut>()
-        .add(AlbumShortcut('', album.title, album.productUrl!, album.coverPhotoBaseUrl, album.mediaItemsCount));
-    return doc.id;
+        .doc(album.id)
+        .set(AlbumShortcut(album.id!, album.title, album.productUrl!, coverLink, album.mediaItemsCount));
+
+    return album.id!;
   }
 
   Future<void> removeAlbumShortcut(String id) async {
-    await ref.read(moduleDocProvider('photos')).collection('albums').doc(id).delete();
+    await Future.wait([
+      FirebaseStorage.instance.ref('albums/$id/coverPhoto.png').delete(),
+      ref.read(moduleDocProvider('photos')).collection('albums').doc(id).delete(),
+    ]);
   }
 }
 

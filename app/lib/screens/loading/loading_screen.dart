@@ -18,14 +18,36 @@ class LoadingScreen extends StatelessWidget {
           return JuBackground(
             transform: transform * transform,
             child: Center(
-                child: Text(
-              'JUFA',
-              style: TextStyle(
-                fontSize: 30 + 30 * transform * transform,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+              child: Stack(
+                fit: StackFit.passthrough,
+                children: [
+                  Text('JUFA',
+                      style: TextStyle(
+                        fontSize: 30 + 40 * transform * transform,
+                        fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..style = PaintingStyle.stroke
+                          ..strokeWidth = 2
+                          ..strokeJoin = StrokeJoin.round
+                          ..color = Colors.grey.shade300,
+                        shadows: [
+                          Shadow(
+                            offset: const Offset(-2, 2),
+                            color: Colors.grey.shade300,
+                          )
+                        ],
+                      )),
+                  Text(
+                    'JUFA',
+                    style: TextStyle(
+                      fontSize: 30 + 40 * transform * transform,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
-            )),
+            ),
           );
         },
         child: const Icon(Icons.aspect_ratio),

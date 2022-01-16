@@ -88,8 +88,27 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                 child: InkWell(
                   onTap: () async {
                     setState(() => isLoading = true);
-                    var user = await context.read(authLogicProvider).verifyCode(code, widget.verificationId);
-                    await widget.onSignedIn(user);
+                    try {
+                      var user = await context.read(authLogicProvider).verifyCode(code, widget.verificationId);
+                      await widget.onSignedIn(user);
+                    } on FirebaseAuthException catch (e) {
+                      var msg = '';
+                      switch (e.code) {
+                        case 'credential-already-in-use':
+                          msg = 'Telefonnummer wird bereits verwendet.';
+                          break;
+                        case 'invalid-verification-code':
+                          msg = 'Fehlerhafter Code.';
+                          break;
+                        default:
+                          msg = 'Unbekannter Fehler (${e.code})';
+                          break;
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: Colors.red,
+                        content: Text(msg),
+                      ));
+                    }
                     setState(() => isLoading = false);
                   },
                   child: Center(

@@ -13,29 +13,26 @@ class AuthLogic {
   final Ref ref;
   AuthLogic(this.ref);
 
-  Future<void> verifyPhoneNumber(
-    String phoneNumber, {
-    int? resendToken,
-    void Function(String, int?)? onSent,
-    void Function(User)? onCompleted,
-  }) async {
+  Future<void> verifyPhoneNumber(String phoneNumber,
+      {int? resendToken,
+      void Function(String, int?)? onSent,
+      void Function(User)? onCompleted,
+      void Function(FirebaseAuthException)? onFailed}) async {
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: phoneNumber,
       forceResendingToken: resendToken,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        print('VERIFY COMPLETED');
         var user = await signInUser(credential);
         onCompleted?.call(user);
       },
       verificationFailed: (FirebaseAuthException exception) {
-        print('VERIFY ERROR');
-        print(exception.message);
+        onFailed?.call(exception);
       },
       codeSent: (String verificationId, int? resendToken) {
         onSent?.call(verificationId, resendToken);
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        print('VERIFY TIMEOUT');
+        onFailed?.call(FirebaseAuthException(code: 'auto-retrieval-timeout'));
       },
     );
   }
