@@ -116,6 +116,8 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
           },
           onCompleted: _onSignedIn,
           onFailed: (err) {
+            print(err);
+
             var msg = '';
             switch (err.code) {
               case 'invalid-phone-number':
@@ -131,7 +133,9 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
               content: Text(msg),
             ));
 
-            completer.complete();
+            if (!completer.isCompleted) {
+              completer.complete();
+            }
           },
         );
     await completer.future;

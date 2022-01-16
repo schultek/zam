@@ -15,7 +15,7 @@ class PhotosAlbumShortcutCard extends StatelessWidget {
   const PhotosAlbumShortcutCard(this.album, {Key? key}) : super(key: key);
 
   static Future<ContentSegment> segment(ModuleContext context) async {
-    var album = await context.context.read(albumShortcutProvider(context.elementId!).future);
+    var album = await context.context.read(albumShortcutProvider(context.dataId!).future);
 
     print('${album.albumUrl} ${album.id}');
     return ContentSegment(
@@ -36,7 +36,7 @@ class PhotosAlbumShortcutCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: CachedNetworkImageProvider(album.coverUrl! + '=w256-h256-c'),
+          image: CachedNetworkImageProvider(album.coverUrl),
         ),
       ),
       alignment: Alignment.bottomLeft,

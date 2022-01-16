@@ -12,8 +12,15 @@ import 'pages/chat_page.dart';
 import 'widgets/channel_list.dart';
 
 class ChatModule extends ModuleBuilder<PageSegment> {
+  ChatModule() : super('chat');
+
   @override
-  FutureOr<PageSegment?> build(ModuleContext context) {
+  Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'channels': buildPageSegment,
+        'action': buildAction,
+      };
+
+  FutureOr<PageSegment?> buildPageSegment(ModuleContext context) {
     return PageSegment(
       context: context,
       builder: (context) {
@@ -29,6 +36,15 @@ class ChatModule extends ModuleBuilder<PageSegment> {
         }
         return const ChannelList();
       },
+    );
+  }
+
+  FutureOr<QuickAction?> buildAction(ModuleContext context) {
+    return QuickAction(
+      context: context,
+      icon: Icons.chat,
+      text: 'Chat',
+      onNavigate: (context) => const ChatPage(),
     );
   }
 
@@ -57,17 +73,5 @@ class ChatModule extends ModuleBuilder<PageSegment> {
   void dispose() {
     _msgSub?.cancel();
     super.dispose();
-  }
-}
-
-class ChatActionModule extends ModuleBuilder<QuickAction> {
-  @override
-  FutureOr<QuickAction?> build(ModuleContext context) {
-    return QuickAction(
-      context: context,
-      icon: Icons.chat,
-      text: 'Chat',
-      onNavigate: (context) => const ChatPage(),
-    );
   }
 }

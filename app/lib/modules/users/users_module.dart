@@ -7,8 +7,15 @@ import '../../widgets/simple_card.dart';
 import 'pages/users_page.dart';
 
 class UsersModule extends ModuleBuilder<ContentSegment> {
+  UsersModule() : super('users');
+
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'users': buildUsers,
+        'users_action': buildUsersAction,
+      };
+
+  FutureOr<ContentSegment?> buildUsers(ModuleContext context) {
     return ContentSegment(
       context: context,
       builder: (context) => const SimpleCard(title: 'Users', icon: Icons.supervised_user_circle),
@@ -25,11 +32,8 @@ class UsersModule extends ModuleBuilder<ContentSegment> {
       ),
     ]);
   }
-}
 
-class UsersActionModule extends ModuleBuilder<QuickAction> {
-  @override
-  FutureOr<QuickAction?> build(ModuleContext context) {
+  FutureOr<QuickAction?> buildUsersAction(ModuleContext context) {
     return QuickAction(
       context: context,
       icon: Icons.supervised_user_circle,

@@ -36,13 +36,16 @@ class TripSelectorPage extends StatelessWidget {
             Text('Ausgewählter Trip', style: TextStyle(color: context.onSurfaceColor)),
             const SizedBox(height: 20),
             tripTile(context, selectedTrip, true),
-            const SizedBox(height: 40),
-          ],
-          Text('Verfügbare Trips', style: TextStyle(color: context.onSurfaceColor)),
-          const SizedBox(height: 20),
-          for (var trip in trips.where((t) => t.id != selectedTrip?.id)) ...[
-            tripTile(context, trip, false),
             const SizedBox(height: 20),
+          ],
+          if (trips.where((t) => t.id != selectedTrip?.id).isNotEmpty) ...[
+            const SizedBox(height: 20),
+            Text('Verfügbare Trips', style: TextStyle(color: context.onSurfaceColor)),
+            const SizedBox(height: 20),
+            for (var trip in trips.where((t) => t.id != selectedTrip?.id)) ...[
+              tripTile(context, trip, false),
+              const SizedBox(height: 20),
+            ],
           ],
           if (context.watch(claimsProvider).isOrganizer) ...createTripSection(context),
           const SizedBox(height: 40),

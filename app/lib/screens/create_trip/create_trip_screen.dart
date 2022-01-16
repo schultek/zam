@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -24,7 +25,8 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
       name: tripName,
       users: {userId: TripUser(role: UserRoles.organizer)},
       template: SwipeTemplateModel(),
-      theme: const ThemeModel(),
+      theme: ThemeModel(schemeIndex: FlexScheme.blue.index),
+      moduleBlacklist: ['music', 'photos'],
     );
     return FirebaseFirestore.instance.collection('trips').add(trip.toMap());
   }

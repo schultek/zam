@@ -15,19 +15,26 @@ import 'pages/select_note_page.dart';
 import 'widgets/note_preview.dart';
 
 class NotesModule extends ModuleBuilder<ContentSegment> {
+  NotesModule() : super('notes');
+
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'notes': buildNotes,
+        'note': buildNote,
+        'notes_action': buildNotesAction,
+        'add_note_action': buildAddNoteAction,
+        'notes_grid': buildNotesGrid,
+      };
+
+  FutureOr<ContentSegment?> buildNotes(ModuleContext context) {
     return ContentSegment(
       context: context,
       builder: (context) => const SimpleCard(title: 'Notes', icon: Icons.sticky_note_2),
       onNavigate: (context) => const NotesPage(),
     );
   }
-}
 
-class NotesActionModule extends ModuleBuilder<QuickAction> {
-  @override
-  FutureOr<QuickAction?> build(ModuleContext context) {
+  FutureOr<QuickAction?> buildNotesAction(ModuleContext context) {
     return QuickAction(
       context: context,
       icon: Icons.sticky_note_2,
@@ -35,11 +42,8 @@ class NotesActionModule extends ModuleBuilder<QuickAction> {
       onNavigate: (context) => const NotesPage(),
     );
   }
-}
 
-class AddNoteActionModule extends ModuleBuilder<QuickAction> {
-  @override
-  FutureOr<QuickAction?> build(ModuleContext context) {
+  FutureOr<QuickAction?> buildAddNoteAction(ModuleContext context) {
     return QuickAction(
       context: context,
       icon: Icons.sticky_note_2,
@@ -50,11 +54,8 @@ class AddNoteActionModule extends ModuleBuilder<QuickAction> {
       },
     );
   }
-}
 
-class NoteModule extends ModuleBuilder<ContentSegment> {
-  @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  FutureOr<ContentSegment?> buildNote(ModuleContext context) {
     return context.when(withId: (id) {
       return ContentSegment(
         context: context,
@@ -109,11 +110,8 @@ class NoteModule extends ModuleBuilder<ContentSegment> {
       }
     });
   }
-}
 
-class NotesGridModule extends ModuleBuilder<ContentSegment> {
-  @override
-  FutureOr<ContentSegment?> build(ModuleContext context) async {
+  FutureOr<ContentSegment?> buildNotesGrid(ModuleContext context) async {
     var notes = await context.context.read(notesProvider.future);
 
     if (notes.isNotEmpty) {

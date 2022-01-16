@@ -13,19 +13,26 @@ import 'pages/games_page.dart';
 import 'widgets/games_list.dart';
 
 class EliminationGameModule extends ModuleBuilder<ContentSegment> {
+  EliminationGameModule() : super('elimination');
+
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'game': buildGame,
+        'new_game': buildNewGameAction,
+        'games_action': buildGamesAction,
+        'games': buildGames,
+        'games_list': buildGamesList,
+      };
+
+  FutureOr<ContentSegment?> buildGame(ModuleContext context) {
     return context.when(withId: (id) {
       return EliminationGameCard.segment(context, id);
     }, withoutId: () {
       return NewGameCard.segment(context);
     });
   }
-}
 
-class EliminationNewGameActionModule extends ModuleBuilder<QuickAction> {
-  @override
-  FutureOr<QuickAction?> build(ModuleContext context) {
+  FutureOr<QuickAction?> buildNewGameAction(ModuleContext context) {
     return QuickAction(
       context: context,
       icon: Icons.add,
@@ -33,11 +40,8 @@ class EliminationNewGameActionModule extends ModuleBuilder<QuickAction> {
       onNavigate: (context) => const CreateGamePage(),
     );
   }
-}
 
-class EliminationGamesActionModule extends ModuleBuilder<QuickAction> {
-  @override
-  FutureOr<QuickAction?> build(ModuleContext context) {
+  FutureOr<QuickAction?> buildGamesAction(ModuleContext context) {
     return QuickAction(
       context: context,
       icon: Icons.list,
@@ -45,18 +49,12 @@ class EliminationGamesActionModule extends ModuleBuilder<QuickAction> {
       onNavigate: (context) => const GamesPage(),
     );
   }
-}
 
-class EliminationGamesModule extends ModuleBuilder<ContentSegment> {
-  @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  FutureOr<ContentSegment?> buildGames(ModuleContext context) {
     return GamesCard.segment(context);
   }
-}
 
-class EliminationGamesListModule extends ModuleBuilder<ContentSegment> {
-  @override
-  FutureOr<ContentSegment?> build(ModuleContext context) async {
+  FutureOr<ContentSegment?> buildGamesList(ModuleContext context) async {
     var games = await context.context.read(gamesProvider.future);
     if (games.isNotEmpty) {
       return ContentSegment.list(

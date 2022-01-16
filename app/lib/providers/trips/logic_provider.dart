@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/core.dart';
 import '../../helpers/extensions.dart';
+import '../auth/claims_provider.dart';
 import '../auth/user_provider.dart';
 import 'selected_trip_provider.dart';
 
@@ -58,6 +59,12 @@ class TripsLogic {
     await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
       'users.$_userId': FieldValue.delete(),
     });
+  }
+
+  Future<void> deleteSelectedTrip() async {
+    if (ref.read(claimsProvider).isOrganizer) {
+      await FirebaseFirestore.instance.collection('trips').doc(_tripId).delete();
+    }
   }
 
   Future<void> setPushToken(String? token) async {

@@ -5,11 +5,11 @@ import 'package:riverpod_context/riverpod_context.dart';
 import '../../main.mapper.g.dart';
 import '../../modules/modules.dart';
 import '../../modules/profile/widgets/image_selector.dart';
+import '../../providers/auth/claims_provider.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
-import '../templates/template_model.dart';
-import '../themes/theme_context.dart';
-import '../themes/widgets/theme_selector.dart';
+import '../templates/templates.dart';
+import '../themes/themes.dart';
 import 'settings_section.dart';
 
 class TripSettingsPage extends StatefulWidget {
@@ -51,14 +51,16 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
                 aspectRatio: 1,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    color: Colors.grey.shade800,
-                    child: trip.pictureUrl == null
-                        ? const Center(child: Icon(Icons.add, size: 60))
-                        : CachedNetworkImage(
-                            imageUrl: trip.pictureUrl!,
-                            fit: BoxFit.contain,
-                          ),
+                  child: ThemedSurface(
+                    builder: (context, color) => Container(
+                      color: color,
+                      child: trip.pictureUrl == null
+                          ? Center(child: Icon(Icons.add, size: 60, color: context.onSurfaceHighlightColor))
+                          : CachedNetworkImage(
+                              imageUrl: trip.pictureUrl!,
+                              fit: BoxFit.contain,
+                            ),
+                    ),
                   ),
                 ),
               ),
@@ -137,14 +139,56 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
               title: settings.title,
               children: settings.settings,
             ),
-          SettingsSection(children: [
+          SettingsSection(title: 'Danger Zone', children: [
             ListTile(
-              title: const Text('Leave', style: TextStyle(color: Colors.red)),
+              title: Text(
+                'Leave',
+                style: TextStyle(color: context.theme.colorScheme.error, fontWeight: FontWeight.bold),
+              ),
               onTap: () {
-                context.read(tripsLogicProvider).leaveSelectedTrip();
+                showConfirmDialog(
+                  context,
+                  'Do you want to leave ${trip.name}?',
+                  'Leave',
+                  () => context.read(tripsLogicProvider).leaveSelectedTrip(),
+                );
               },
             ),
+            if (context.read(claimsProvider).isOrganizer)
+              ListTile(
+                title: Text(
+                  'Delete',
+                  style: TextStyle(color: context.theme.colorScheme.error, fontWeight: FontWeight.bold),
+                ),
+                onTap: () {
+                  showConfirmDialog(
+                    context,
+                    'Do you want to delete ${trip.name}? This can\'t be undone.',
+                    'Delete',
+                    () => context.read(tripsLogicProvider).deleteSelectedTrip(),
+                  );
+                },
+              ),
           ]),
+        ],
+      ),
+    );
+  }
+
+  void showConfirmDialog(BuildContext context, String title, String action, Function() onConfirmed) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        actions: [
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: Text(action),
+            onPressed: onConfirmed,
+          ),
         ],
       ),
     );

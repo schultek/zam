@@ -16,9 +16,7 @@ class IdProvider {
     WidgetArea.of<ContentSegment>(context)!.updateWidgetsInTrip();
   }
 
-  String? _getId(String id) {
-    return _id != null ? id.split('/').take(1).followedBy([_id!]).join('/') : id;
-  }
+  String? _getId(String id) => ModuleContext.setDataId(id, _id);
 }
 
 class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegment> {

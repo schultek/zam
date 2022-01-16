@@ -10,8 +10,14 @@ import 'widgets/signed_out_player.dart';
 import 'widgets/spotify_player.dart';
 
 class MusicModule extends ModuleBuilder<ContentSegment> {
+  MusicModule() : super('music');
+
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'player': buildPlayer,
+      };
+
+  FutureOr<ContentSegment?> buildPlayer(ModuleContext context) {
     return ContentSegment(
       context: context,
       builder: (context) => Consumer(

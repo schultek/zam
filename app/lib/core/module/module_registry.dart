@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../providers/trips/selected_trip_provider.dart';
 import '../elements/module_element.dart';
 import 'module_builder.dart';
 import 'module_context.dart';
@@ -16,18 +18,26 @@ class ModuleSettings {
 
 class ModuleRegistry {
   final Map<String, ModuleBuilder> modules;
-  ModuleRegistry(this.modules);
+  ModuleRegistry(List<ModuleBuilder> modules) : modules = Map.fromEntries(modules.map((m) => MapEntry(m.id, m)));
 
   FutureOr<T?> getWidget<T extends ModuleElement>(ModuleContext context) async {
-    var builder = modules[context.moduleId];
-    assert(builder is ModuleBuilder<T>?, 'Expected ModuleBuilder<T> for module ${context.moduleId}.');
-    return (builder as ModuleBuilder<T>?)?.build(context);
+    var builder = modules[context.moduleId]?.elements[context.elementId];
+    assert(builder is ElementBuilder<T>?,
+        'Expected ElementBuilder<$T> for module ${context.moduleId}/${context.elementId}.');
+    return (builder as ElementBuilder<T>?)?.call(context);
   }
 
   Future<List<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) async {
-    var widgets = await Future.wait(modules.entries
-        .where((e) => e.value is ModuleBuilder<T>)
-        .map((e) async => await (e.value as ModuleBuilder<T>).build(ModuleContext(context, e.key))));
+    var moduleBlacklist = context.read(selectedTripProvider)!.moduleBlacklist;
+    var widgets = await Future.wait([
+      for (var m in modules.entries)
+        if (!moduleBlacklist.contains(m.key))
+          for (var e in m.value.elements.entries)
+            if (e.value is ElementBuilder<T>)
+              (e.value as ElementBuilder<T>)(
+                ModuleContext(context, '${m.key}/${e.key}'),
+              ),
+    ].map((f) async => await f));
     return widgets.whereNotNull().toList();
   }
 

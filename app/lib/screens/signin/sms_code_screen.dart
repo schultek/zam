@@ -92,6 +92,8 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                       var user = await context.read(authLogicProvider).verifyCode(code, widget.verificationId);
                       await widget.onSignedIn(user);
                     } on FirebaseAuthException catch (e) {
+                      print(e);
+
                       var msg = '';
                       switch (e.code) {
                         case 'credential-already-in-use':
@@ -104,6 +106,7 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                           msg = 'Unbekannter Fehler (${e.code})';
                           break;
                       }
+
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: Colors.red,
                         content: Text(msg),

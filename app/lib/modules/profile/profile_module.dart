@@ -8,30 +8,32 @@ import 'pages/profile_page.dart';
 import 'widgets/profile_image_widget.dart';
 
 class ProfileModule extends ModuleBuilder<ContentSegment> {
+  ProfileModule() : super('profile');
+
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'profile': buildProfile,
+        'profile_image': buildProfileImage,
+        'profile_action': buildProfileAction,
+      };
+
+  FutureOr<ContentSegment?> buildProfile(ModuleContext context) {
     return ContentSegment(
       context: context,
       builder: (context) => const SimpleCard(title: 'Profil', icon: Icons.account_circle),
       onNavigate: (context) => const ProfilePage(),
     );
   }
-}
 
-class ProfileImageModule extends ModuleBuilder<ContentSegment> {
-  @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  FutureOr<ContentSegment?> buildProfileImage(ModuleContext context) {
     return ContentSegment(
       context: context,
       builder: (context) => const ProfileImageWidget(),
       onNavigate: (context) => const ProfilePage(),
     );
   }
-}
 
-class ProfileActionModule extends ModuleBuilder<QuickAction> {
-  @override
-  FutureOr<QuickAction?> build(ModuleContext context) {
+  FutureOr<QuickAction?> buildProfileAction(ModuleContext context) {
     return QuickAction(
       context: context,
       icon: Icons.account_circle,

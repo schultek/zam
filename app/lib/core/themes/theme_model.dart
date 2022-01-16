@@ -5,5 +5,5 @@ class ThemeModel {
   final int schemeIndex;
   final bool dark;
 
-  const ThemeModel({this.schemeIndex = 0, this.dark = false});
+  const ThemeModel({required this.schemeIndex, this.dark = false});
 }

@@ -6,7 +6,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
-import '../../modules/labels/labels_module.dart';
+import '../../modules/labels/widgets/label_widget.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../areas/horizontal_scroll_area.dart';
 import '../areas/single_widget_area.dart';

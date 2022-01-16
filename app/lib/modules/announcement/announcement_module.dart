@@ -11,8 +11,14 @@ import 'announcement_provider.dart';
 import 'widgets/announcement_card.dart';
 
 class AnnouncementModule extends ModuleBuilder<ContentSegment> {
+  AnnouncementModule() : super('announcements');
+
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'announcement': buildAnnouncement,
+      };
+
+  FutureOr<ContentSegment?> buildAnnouncement(ModuleContext context) {
     return context.when(withId: (id) async {
       if (await context.context.read(isDismissedProvider(id).future)) {
         return null;

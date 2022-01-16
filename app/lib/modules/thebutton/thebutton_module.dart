@@ -13,8 +13,14 @@ import 'thebutton_provider.dart';
 import 'widgets/thebutton_widget.dart';
 
 class TheButtonModule extends ModuleBuilder<ContentSegment> {
+  TheButtonModule() : super('thebutton');
+
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'thebutton': buildTheButton,
+      };
+
+  FutureOr<ContentSegment?> buildTheButton(ModuleContext context) {
     var buttonHelpKey = GlobalKey();
     var buttonSettingsKey = GlobalKey();
     return ContentSegment(

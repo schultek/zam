@@ -7,7 +7,10 @@ import 'module_context.dart';
 import 'module_registry.dart';
 
 abstract class ModuleBuilder<T extends ModuleElement> {
-  FutureOr<T?> build(ModuleContext context);
+  final String id;
+  ModuleBuilder(this.id);
+
+  Map<String, ElementBuilder> get elements;
 
   void preload(BuildContext context) {}
 
@@ -18,3 +21,5 @@ abstract class ModuleBuilder<T extends ModuleElement> {
 
   ModuleSettings? getSettings(BuildContext context) => null;
 }
+
+typedef ElementBuilder<T extends ModuleElement> = FutureOr<T?> Function(ModuleContext);

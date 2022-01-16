@@ -44,6 +44,7 @@ class AuthLogic {
 
   Future<User> signInUser(AuthCredential phoneAuthCredential) async {
     UserCredential userCredential;
+
     if (FirebaseAuth.instance.currentUser != null) {
       userCredential = await FirebaseAuth.instance.currentUser!.linkWithCredential(phoneAuthCredential);
     } else {

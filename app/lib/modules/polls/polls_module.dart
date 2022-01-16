@@ -11,19 +11,25 @@ import 'pages/create_poll_page.dart';
 import 'polls_provider.dart';
 import 'widgets/polls_list.dart';
 
-class PollModule extends ModuleBuilder<ContentSegment> {
+class PollsModule extends ModuleBuilder<ContentSegment> {
+  PollsModule() : super('polls');
+
   @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'poll': buildPoll,
+        'new_poll_action': buildNewPollAction,
+        'polls': buildPolls,
+        'polls_list': buildPollsList,
+      };
+
+  FutureOr<ContentSegment?> buildPoll(ModuleContext context) {
     return context.when(
       withId: (id) => PollCard.segment(context, id),
       withoutId: () => NewPollCard.segment(context),
     );
   }
-}
 
-class NewPollActionModule extends ModuleBuilder<QuickAction> {
-  @override
-  FutureOr<QuickAction?> build(ModuleContext context) {
+  FutureOr<QuickAction?> buildNewPollAction(ModuleContext context) {
     return QuickAction(
       context: context,
       icon: Icons.add,
@@ -31,18 +37,12 @@ class NewPollActionModule extends ModuleBuilder<QuickAction> {
       onNavigate: (context) => const CreatePollPage(),
     );
   }
-}
 
-class PollsModule extends ModuleBuilder<ContentSegment> {
-  @override
-  FutureOr<ContentSegment?> build(ModuleContext context) {
+  FutureOr<ContentSegment?> buildPolls(ModuleContext context) {
     return PollsCard.segment(context);
   }
-}
 
-class PollsListModule extends ModuleBuilder<ContentSegment> {
-  @override
-  FutureOr<ContentSegment?> build(ModuleContext context) async {
+  FutureOr<ContentSegment?> buildPollsList(ModuleContext context) async {
     var polls = await context.context.read(pollsProvider.future);
     if (polls.isNotEmpty) {
       return ContentSegment.list(

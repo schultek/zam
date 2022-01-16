@@ -13,15 +13,18 @@ class Trip with Mappable {
   final ThemeModel theme;
   final Map<String, TripUser> users;
   final Map<String, List<String>> modules;
+  final List<String> moduleBlacklist;
 
-  Trip(
-      {required this.id,
-      required this.name,
-      this.pictureUrl,
-      required this.template,
-      this.theme = const ThemeModel(),
-      this.users = const {},
-      this.modules = const {}});
+  Trip({
+    required this.id,
+    required this.name,
+    this.pictureUrl,
+    required this.template,
+    required this.theme,
+    this.users = const {},
+    this.modules = const {},
+    this.moduleBlacklist = const [],
+  });
 }
 
 @MappableClass()
