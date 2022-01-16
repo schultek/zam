@@ -1,6 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+extension LocalizedContext on BuildContext {
+  AppLocalizations get tr => AppLocalizations.of(this)!;
+}
 
 extension PropertyCompare<T> on Set<T> {
   bool containsAllBy<U>(Iterable<T> other, U Function(T object) propertyGetter) {

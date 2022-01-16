@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../helpers/extensions.dart';
 import '../../providers/auth/claims_provider.dart';
 import '../../providers/auth/logic_provider.dart';
 import '../../providers/auth/user_provider.dart';
@@ -27,20 +28,20 @@ class TripSelectorPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Trips'),
+        title: Text(context.tr.trips),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
           if (selectedTrip != null) ...[
-            Text('Ausgewählter Trip', style: TextStyle(color: context.onSurfaceColor)),
+            Text(context.tr.selected_trip, style: TextStyle(color: context.onSurfaceColor)),
             const SizedBox(height: 20),
             tripTile(context, selectedTrip, true),
             const SizedBox(height: 20),
           ],
           if (trips.where((t) => t.id != selectedTrip?.id).isNotEmpty) ...[
             const SizedBox(height: 20),
-            Text('Verfügbare Trips', style: TextStyle(color: context.onSurfaceColor)),
+            Text(context.tr.available_trips, style: TextStyle(color: context.onSurfaceColor)),
             const SizedBox(height: 20),
             for (var trip in trips.where((t) => t.id != selectedTrip?.id)) ...[
               tripTile(context, trip, false),
@@ -79,7 +80,7 @@ class TripSelectorPage extends StatelessWidget {
                       const Icon(Icons.add),
                       const SizedBox(width: 10),
                       Text(
-                        'Create new Trip',
+                        context.tr.create_trip,
                         style: context.theme.textTheme.headline5!.copyWith(color: context.onSurfaceColor),
                       ),
                     ],
@@ -101,12 +102,12 @@ class TripSelectorPage extends StatelessWidget {
     return [
       const SizedBox(height: 20),
       Text(
-        'Made with ❤️ & 🍫 in Munich',
+        context.tr.made_with_love,
         textAlign: TextAlign.center,
         style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
       ),
       Text(
-        'Copyright @ 2022 Kilian Schulte',
+        context.tr.copyright,
         textAlign: TextAlign.center,
         style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
       ),
@@ -118,7 +119,7 @@ class TripSelectorPage extends StatelessWidget {
     var user = context.read(userProvider).value!;
 
     var logoutButton = TextButton(
-      child: const Text('Log out'),
+      child: Text(context.tr.logout),
       onPressed: () {
         context.read(authLogicProvider).signOut();
       },
@@ -126,19 +127,19 @@ class TripSelectorPage extends StatelessWidget {
 
     if (user.providerData.any((p) => p.providerId == PhoneAuthProvider.PROVIDER_ID)) {
       return [
-        Center(child: Text('Logged in with ${user.phoneNumber}')),
+        Center(child: Text('${context.tr.logged_in_with} ${user.phoneNumber}')),
         Center(child: logoutButton),
       ];
     } else {
       return [
         Text(
-          'Logged in as a guest.',
+          context.tr.logged_in_as_guest,
           textAlign: TextAlign.center,
           style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
         ),
         const SizedBox(height: 10),
         Text(
-          'You can add your phone number\nto access your trips on another device.',
+          context.tr.add_phone_number_hint,
           textAlign: TextAlign.center,
           style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
         ),
@@ -147,7 +148,7 @@ class TripSelectorPage extends StatelessWidget {
           children: [
             logoutButton,
             TextButton(
-              child: const Text('Add Phone Number'),
+              child: Text(context.tr.add_phone_number),
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).push(PhoneSignInScreen.route());
               },

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/ju_background.dart';
@@ -40,9 +41,9 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
           child: Column(
             children: [
               const Spacer(),
-              const Text(
-                'Neuen Ausflug erstellen.',
-                style: TextStyle(color: Colors.white, fontSize: 45),
+              Text(
+                context.tr.create_trip,
+                style: const TextStyle(color: Colors.white, fontSize: 45),
               ),
               const Spacer(
                 flex: 3,
@@ -54,17 +55,15 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
                     child: TextField(
-                      decoration: const InputDecoration(
-                        hintText: 'Ausflugsname eingeben',
+                      decoration: InputDecoration(
+                        hintText: context.tr.enter_trip_name,
                         border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.black45),
+                        hintStyle: const TextStyle(color: Colors.black45),
                         fillColor: Colors.transparent,
                       ),
                       style: const TextStyle(color: Colors.black),
                       onChanged: (text) {
-                        setState(() {
-                          tripName = text;
-                        });
+                        setState(() => tripName = text);
                       },
                     ),
                   ),
@@ -82,12 +81,12 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                     DocumentReference doc = await createNewTrip(tripName!, context.read(userIdProvider)!);
                     context.read(selectedTripIdProvider.notifier).state = doc.id;
                   },
-                  child: const Center(
+                  child: Center(
                     child: Padding(
-                      padding: EdgeInsets.all(28.0),
+                      padding: const EdgeInsets.all(28.0),
                       child: Text(
-                        'Erstellen',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                        context.tr.create,
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ),
                   ),

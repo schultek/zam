@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../providers/auth/logic_provider.dart';
 import '../../widgets/ju_background.dart';
 import 'phone_signin_screen.dart';
@@ -20,9 +21,9 @@ class SignInScreen extends StatelessWidget {
           child: Column(
             children: [
               const Spacer(),
-              const Text(
-                'Bei Jufa anmelden',
-                style: TextStyle(color: Colors.white, fontSize: 45),
+              Text(
+                context.tr.login_to_jufa,
+                style: const TextStyle(color: Colors.white, fontSize: 45),
               ),
               const Spacer(flex: 1),
               CupertinoCard(
@@ -32,12 +33,12 @@ class SignInScreen extends StatelessWidget {
                   onTap: () async {
                     context.read(authLogicProvider).signInAnonymously();
                   },
-                  child: const Center(
+                  child: Center(
                     child: Padding(
-                      padding: EdgeInsets.all(28.0),
+                      padding: const EdgeInsets.all(28.0),
                       child: Text(
-                        'Als Gast anmelden',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        context.tr.login_as_guest,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -51,12 +52,12 @@ class SignInScreen extends StatelessWidget {
                   onTap: () async {
                     Navigator.of(context).push(PhoneSignInScreen.route());
                   },
-                  child: const Center(
+                  child: Center(
                     child: Padding(
-                      padding: EdgeInsets.all(28.0),
+                      padding: const EdgeInsets.all(28.0),
                       child: Text(
-                        'Mit Telefonnummer anmelden',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        context.tr.login_with_phone,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),

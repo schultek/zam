@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../providers/auth/logic_provider.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/links/links_provider.dart';
@@ -87,13 +88,13 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
 
   String _getTitleText() {
     if (invitationLink?.path.endsWith('/organizer') ?? false) {
-      return 'Werde Organisator*in.';
+      return context.tr.become_organizer;
     } else if (invitationLink?.path.endsWith('/admin') ?? false) {
-      return 'Werde Administrator.';
+      return context.tr.become_admin;
     } else if (context.read(userProvider).value != null) {
-      return 'Telefonnummer hinzufügen';
+      return context.tr.add_phone_number;
     } else {
-      return 'Mit Telefonnummer anmelden.';
+      return context.tr.login_with_phone;
     }
   }
 
@@ -121,10 +122,10 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
             var msg = '';
             switch (err.code) {
               case 'invalid-phone-number':
-                msg = 'Falsche Telefonnummer';
+                msg = context.tr.invalid_phone_number;
                 break;
               default:
-                msg = 'Unbekannter Fehler (${err.code})';
+                msg = '${context.tr.unknown_error} (${err.code})';
                 break;
             }
 
@@ -165,10 +166,10 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
                     child: TextFormField(
-                      decoration: const InputDecoration(
-                        hintText: 'Telefonnummer eingeben',
+                      decoration: InputDecoration(
+                        hintText: context.tr.enter_phone_number,
                         border: InputBorder.none,
-                        hintStyle: TextStyle(color: Colors.black45, fontSize: 18),
+                        hintStyle: const TextStyle(color: Colors.black45, fontSize: 18),
                         fillColor: Colors.transparent,
                       ),
                       inputFormatters: [
@@ -184,7 +185,7 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
               ),
               const Spacer(flex: 3),
               Text(
-                'Wenn du fortfährst, akzeptierst du Jufas Nutzungsbedingungen und bestätigst, dass du Jufas Datenschutzerklärung gelesen hast. Wenn du dich per SMS registrierst, können SMS-Gebühren anfallen',
+                context.tr.proceed_and_accept_disclaimer,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white.withOpacity(0.95)),
               ),
@@ -206,9 +207,9 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
                           ? const CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation(Colors.black87),
                             )
-                          : const Text(
-                              'Code Senden',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          : Text(
+                              context.tr.send_code,
+                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                     ),
                   ),

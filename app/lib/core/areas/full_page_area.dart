@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../helpers/extensions.dart';
 import '../elements/decorators/default_page_segment_decorator.dart';
 import '../elements/decorators/element_decorator.dart';
 import '../elements/page_segment.dart';
@@ -30,7 +31,7 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment>
 
   @override
   Widget buildArea(BuildContext context) {
-    return element ?? const Center(child: Text('No Content'));
+    return element ?? Center(child: Text(context.tr.no_content));
   }
 
   @override

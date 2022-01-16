@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../widgets/ju_background.dart';
 
 class LoadingLinkScreen extends StatefulWidget {
@@ -45,9 +46,9 @@ class _LoadingLinkScreenState extends State<LoadingLinkScreen> with TickerProvid
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(height: 40),
-                const Text(
-                  'JUFA',
-                  style: TextStyle(
+                Text(
+                  context.tr.jufa,
+                  style: const TextStyle(
                     fontSize: 50,
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
@@ -55,7 +56,7 @@ class _LoadingLinkScreenState extends State<LoadingLinkScreen> with TickerProvid
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Fast geschafft.\nWir bereiten alles für dich vor...',
+                  context.tr.almost_done,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 18,

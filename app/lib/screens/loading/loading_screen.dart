@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../widgets/ju_background.dart';
 
 class LoadingScreen extends StatelessWidget {
@@ -21,7 +22,7 @@ class LoadingScreen extends StatelessWidget {
               child: Stack(
                 fit: StackFit.passthrough,
                 children: [
-                  Text('JUFA',
+                  Text(context.tr.jufa,
                       style: TextStyle(
                         fontSize: 30 + 40 * transform * transform,
                         fontWeight: FontWeight.bold,
@@ -38,7 +39,7 @@ class LoadingScreen extends StatelessWidget {
                         ],
                       )),
                   Text(
-                    'JUFA',
+                    context.tr.jufa,
                     style: TextStyle(
                       fontSize: 30 + 40 * transform * transform,
                       fontWeight: FontWeight.bold,

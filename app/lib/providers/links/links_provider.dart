@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../auth/claims_provider.dart';
 import '../auth/logic_provider.dart';
 import '../auth/user_provider.dart';
@@ -106,27 +108,27 @@ class LinkLogic {
   final Ref ref;
   LinkLogic(this.ref);
 
-  Future<String> createOrganizerLink({required String phoneNumber}) async {
+  Future<String> createOrganizerLink({required BuildContext context, required String phoneNumber}) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createOrganizerLink');
     var res = await callable.call({'phoneNumber': phoneNumber});
     return _buildDynamicLink(
       link: res.data as String,
       meta: SocialMetaTagParameters(
-        title: 'Werde Organisator',
-        description: 'Erstelle und manage Ausflüge und andere Gruppen-Events.',
+        title: context.tr.become_organizer,
+        description: context.tr.become_organizer_desc,
         imageUrl: Uri.parse('https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
       ),
     );
   }
 
-  Future<String> createAdminLink({required String phoneNumber}) async {
+  Future<String> createAdminLink({required BuildContext context, required String phoneNumber}) async {
     HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createAdminLink');
     var res = await callable.call({'phoneNumber': phoneNumber});
     return _buildDynamicLink(
       link: res.data as String,
       meta: SocialMetaTagParameters(
-        title: 'Werde Admin',
-        description: 'Erhalte Admin Rechte in der Jufa App.',
+        title: context.tr.become_admin,
+        description: context.tr.become_admin_desc,
         imageUrl: Uri.parse('https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
       ),
     );
@@ -140,7 +142,7 @@ class LinkLogic {
       meta: SocialMetaTagParameters(
         title: role == UserRoles.participant
             ? trip.name
-            : "Werde ${role == UserRoles.organizer ? 'Organisator' : 'Leiter'} bei ${trip.name}",
+            : "Werde ${role == UserRoles.organizer ? 'Organisator' : 'Teilnehmer'} bei ${trip.name}",
         description: 'Trete dem Ausflug bei.',
         imageUrl: Uri.parse(
             trip.pictureUrl ?? 'https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),

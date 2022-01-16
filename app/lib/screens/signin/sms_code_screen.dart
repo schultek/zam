@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../helpers/extensions.dart';
 import '../../providers/auth/logic_provider.dart';
 import '../../widgets/ju_background.dart';
 
@@ -32,9 +33,9 @@ class _EnterCodeState extends State<SmsCodeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
-              const Text(
-                'SMS-Code eingeben.',
-                style: TextStyle(color: Colors.white, fontSize: 45),
+              Text(
+                context.tr.enter_sms_code,
+                style: const TextStyle(color: Colors.white, fontSize: 45),
               ),
               const Spacer(
                 flex: 3,
@@ -46,14 +47,12 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
                     child: TextField(
-                      decoration: const InputDecoration(
-                        hintText: 'Code eingeben',
+                      decoration: InputDecoration(
+                        hintText: context.tr.enter_code,
                         border: InputBorder.none,
                       ),
                       onChanged: (text) {
-                        setState(() {
-                          code = text;
-                        });
+                        setState(() => code = text);
                       },
                     ),
                   ),
@@ -62,10 +61,10 @@ class _EnterCodeState extends State<SmsCodeScreen> {
               const SizedBox(height: 40),
               RichText(
                 text: TextSpan(
-                  text: 'Keine SMS erhalten? ',
+                  text: context.tr.no_sms_received,
                   children: [
                     TextSpan(
-                      text: 'Nochmal senden',
+                      text: context.tr.resend_sms,
                       style: const TextStyle(fontWeight: FontWeight.bold),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
@@ -97,13 +96,13 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                       var msg = '';
                       switch (e.code) {
                         case 'credential-already-in-use':
-                          msg = 'Telefonnummer wird bereits verwendet.';
+                          msg = context.tr.phone_already_used;
                           break;
                         case 'invalid-verification-code':
-                          msg = 'Fehlerhafter Code.';
+                          msg = context.tr.invalid_code;
                           break;
                         default:
-                          msg = 'Unbekannter Fehler (${e.code})';
+                          msg = '${context.tr.unknown_error} (${e.code})';
                           break;
                       }
 
@@ -121,9 +120,9 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                           ? const CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation(Colors.black87),
                             )
-                          : const Text(
-                              'Bestätigen',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          : Text(
+                              context.tr.confirm,
+                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                     ),
                   ),
