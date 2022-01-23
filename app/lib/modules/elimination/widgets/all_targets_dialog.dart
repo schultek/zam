@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/user_avatar.dart';
 import '../game_provider.dart';
@@ -29,7 +30,7 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
   Widget build(BuildContext context) {
     if (playerId == null) {
       return AlertDialog(
-        title: const Text('Select Player'),
+        title: Text(context.tr.select_player),
         content: SizedBox(
           height: 400,
           width: 400,
@@ -54,7 +55,7 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
                           UserAvatar(id: playerId),
                           const SizedBox(height: 5),
                           Text(
-                            ref.watch(nicknameProvider(playerId)) ?? 'Anonym',
+                            ref.watch(nicknameProvider(playerId)) ?? context.tr.anonymous,
                             style: context.theme.textTheme.caption,
                           ),
                         ],
@@ -68,18 +69,18 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
       );
     } else {
       return AlertDialog(
-        title: const Text('Player Status'),
+        title: Text(context.tr.player_status),
         content: Consumer(
           builder: (context, ref, _) {
             var game = ref.watch(gameProvider(widget.gameId)).asData!.value;
             var player = game.currentTargets[playerId!];
             if (player == null) {
-              return const Text('Eliminated');
+              return Text(context.tr.eliminated);
             }
             if (player == playerId) {
-              return const Text('Immortal');
+              return Text(context.tr.immortal);
             }
-            return Text('Target: ${ref.watch(nicknameProvider(player)) ?? 'Anonym'}');
+            return Text('${context.tr.target_player}: ${ref.watch(nicknameProvider(player)) ?? 'Anonym'}');
           },
         ),
       );

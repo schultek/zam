@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../helpers/extensions.dart';
 import '../widgets/channel_list.dart';
 
 class ChatPage extends StatelessWidget {
@@ -9,7 +10,7 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chat'),
+        title: Text(context.tr.chat),
       ),
       body: const ChannelList(),
     );

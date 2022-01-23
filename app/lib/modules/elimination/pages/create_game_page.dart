@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/widgets/settings_section.dart';
+import '../../../helpers/extensions.dart';
 import '../game_provider.dart';
 
 class CreateGamePage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Game'),
+        title: Text(context.tr.create_game),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
@@ -45,7 +46,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
             padding: const EdgeInsets.all(14),
             children: [
               TextField(
-                decoration: const InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: context.tr.name),
                 onChanged: (text) => setState(() => _name = text),
               ),
             ],
@@ -54,7 +55,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
             children: [
               SwitchListTile(
                 value: _allowLoops,
-                title: const Text('Allow Loops'),
+                title: Text(context.tr.allow_loops),
                 onChanged: (value) => setState(() => _allowLoops = value),
               ),
             ],

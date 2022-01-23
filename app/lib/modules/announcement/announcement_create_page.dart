@@ -4,6 +4,7 @@ import 'package:o_color_picker/o_color_picker.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import 'announcement_provider.dart';
 import 'widgets/announcement_card.dart';
 
@@ -40,7 +41,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Announcement'),
+        title: Text(context.tr.create_announcement),
         actions: [
           IconButton(
             onPressed: isCreating
@@ -88,30 +89,26 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
               padding: const EdgeInsets.all(20),
               children: [
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                  ),
+                  decoration: InputDecoration(labelText: context.tr.title),
                   style: TextStyle(color: context.onSurfaceColor),
                   onChanged: (text) => setState(() => announcement = announcement.copyWith(title: text)),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Message',
-                  ),
+                  decoration: InputDecoration(labelText: context.tr.message),
                   style: TextStyle(color: context.onSurfaceColor),
                   onChanged: (text) => setState(() => announcement = announcement.copyWith(message: text)),
                 ),
                 const SizedBox(height: 20),
                 CheckboxListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 5),
-                  title: const Text('Dismissible'),
+                  title: Text(context.tr.dismissible),
                   onChanged: (dismiss) => setState(() => announcement = announcement.copyWith(isDismissible: dismiss)),
                   value: announcement.isDismissible,
                 ),
                 const SizedBox(height: 20),
                 ...colorPicker(
-                  label: 'Text Color',
+                  label: context.tr.text_color,
                   value: announcement.textColor,
                   onRemove: () => setState(() => announcement = Announcement(
                         title: announcement.title,
@@ -123,7 +120,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                 ),
                 const SizedBox(height: 20),
                 ...colorPicker(
-                  label: 'Background Color',
+                  label: context.tr.background_color,
                   value: announcement.backgroundColor,
                   onRemove: () => setState(() => announcement = Announcement(
                         title: announcement.title,
@@ -142,8 +139,12 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
     );
   }
 
-  Iterable<Widget> colorPicker(
-      {required String label, Color? value, VoidCallback? onRemove, Function(Color)? onChange}) {
+  Iterable<Widget> colorPicker({
+    required String label,
+    Color? value,
+    VoidCallback? onRemove,
+    Function(Color)? onChange,
+  }) {
     return [
       Row(
         children: [

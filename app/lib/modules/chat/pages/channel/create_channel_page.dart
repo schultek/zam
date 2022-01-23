@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../../helpers/extensions.dart';
 import '../../../../providers/auth/user_provider.dart';
 import '../../chat_provider.dart';
 import 'add_members_page.dart';
@@ -33,11 +34,11 @@ class _CreateChannelPageState extends State<CreateChannelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Neuer Channel'),
+        title: Text(context.tr.new_channel),
         actions: [
           TextButton(
             onPressed: name != null && name!.isNotEmpty ? createChannel : null,
-            child: const Text('Erstellen'),
+            child: Text(context.tr.create),
           ),
         ],
       ),
@@ -46,9 +47,9 @@ class _CreateChannelPageState extends State<CreateChannelPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Name',
-                prefixIcon: Icon(Icons.tag),
+              decoration: InputDecoration(
+                labelText: context.tr.name,
+                prefixIcon: const Icon(Icons.tag),
                 border: InputBorder.none,
               ),
               onChanged: (text) => setState(() => name = text),
@@ -57,7 +58,7 @@ class _CreateChannelPageState extends State<CreateChannelPage> {
           const Divider(),
           SwitchListTile(
             controlAffinity: ListTileControlAffinity.trailing,
-            title: const Text('Auf "Geschlossen" setzen'),
+            title: Text(context.tr.set_closed),
             value: !isOpen,
             onChanged: (v) {
               setState(() => isOpen = !v);

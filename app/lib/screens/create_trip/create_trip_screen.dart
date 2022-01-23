@@ -42,7 +42,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
             children: [
               const Spacer(),
               Text(
-                context.tr.create_trip,
+                context.tr.create_new_trip,
                 style: const TextStyle(color: Colors.white, fontSize: 45),
               ),
               const Spacer(
@@ -85,7 +85,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(28.0),
                       child: Text(
-                        context.tr.create,
+                        context.tr.create_trip,
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ),

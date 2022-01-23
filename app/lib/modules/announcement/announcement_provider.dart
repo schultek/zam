@@ -38,7 +38,6 @@ class AnnouncementLogic {
 
   Future<void> dismiss(String id) async {
     var box = await ref.read(dismissedAnnouncementsBoxProvider.future);
-    print('DISMISS $id');
     await box.add(id);
   }
 }

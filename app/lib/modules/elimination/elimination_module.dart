@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import 'cards/elimination_game_card.dart';
 import 'cards/games_card.dart';
 import 'cards/new_game_card.dart';
@@ -36,7 +37,7 @@ class EliminationGameModule extends ModuleBuilder<ContentSegment> {
     return QuickAction(
       context: context,
       icon: Icons.add,
-      text: 'New Game',
+      text: context.context.tr.new_game,
       onNavigate: (context) => const CreateGamePage(),
     );
   }
@@ -45,7 +46,7 @@ class EliminationGameModule extends ModuleBuilder<ContentSegment> {
     return QuickAction(
       context: context,
       icon: Icons.list,
-      text: 'Elimination Games',
+      text: context.context.tr.elimination_games,
       onNavigate: (context) => const GamesPage(),
     );
   }

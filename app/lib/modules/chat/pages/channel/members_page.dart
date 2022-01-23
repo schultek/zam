@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../helpers/extensions.dart';
 import '../../../../providers/trips/selected_trip_provider.dart';
 import '../../../../widgets/user_avatar.dart';
 import '../../chat_provider.dart';
@@ -22,7 +23,7 @@ class _MembersPageState extends State<MembersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mitglieder'),
+        title: Text(context.tr.members),
       ),
       body: Consumer(
         builder: (context, ref, _) {
@@ -33,7 +34,7 @@ class _MembersPageState extends State<MembersPage> {
             itemCount: users.length,
             itemBuilder: (context, index) => ListTile(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              title: Text(users[index].value.nickname ?? 'Anonym'),
+              title: Text(users[index].value.nickname ?? context.tr.anonymous),
               leading: UserAvatar(id: users[index].key),
             ),
             separatorBuilder: (context, index) => const SizedBox(height: 10),

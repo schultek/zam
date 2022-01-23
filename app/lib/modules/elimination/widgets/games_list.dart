@@ -49,8 +49,8 @@ class GameTile extends StatelessWidget {
     var immortalPlayers = curTargets.entries.where((e) => e.value == e.key);
 
     var labels = [
-      if (immortalPlayers.isNotEmpty) 'Immortal',
-      if (alivePlayers.isNotEmpty) 'Alive',
+      if (immortalPlayers.isNotEmpty) context.tr.immortal,
+      if (alivePlayers.isNotEmpty) context.tr.alive,
     ];
 
     var area = WidgetArea.of<ContentSegment>(context);
@@ -78,7 +78,7 @@ class GameTile extends StatelessWidget {
                 Text(game.name, style: TextStyle(color: context.onSurfaceColor)),
                 const SizedBox(height: 5),
                 Text(
-                  'Started ${game.startedAt.toDateString()}',
+                  '${context.tr.started} ${game.startedAt.toDateString()}',
                   style: context.theme.textTheme.caption!.copyWith(color: context.onSurfaceColor.withOpacity(0.8)),
                   overflow: TextOverflow.fade,
                   softWrap: false,

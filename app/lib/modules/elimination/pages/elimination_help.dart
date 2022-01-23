@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../thebutton/widgets/clip_layer.dart';
 
 class EliminationHelp extends StatefulWidget {
@@ -62,13 +63,13 @@ class _EliminationHelpState extends State<EliminationHelp> {
             physics: const BouncingScrollPhysics(),
             children: [
               Text(
-                'How to play',
+                context.tr.how_to_play,
                 textAlign: TextAlign.center,
                 style: context.theme.textTheme.subtitle2!.copyWith(color: context.onSurfaceColor),
               ),
               const SizedBox(height: 10),
               Text(
-                '"Eliminate" your target by the agreed way in real live. Then add the elimination to the list and receive a new target, until everyone but the last player is eliminated.',
+                context.tr.game_instructions,
                 textAlign: TextAlign.justify,
                 style: context.theme.textTheme.caption!.copyWith(color: context.onSurfaceColor),
               ),

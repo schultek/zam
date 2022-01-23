@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import 'announcement_create_page.dart';
 import 'announcement_provider.dart';
@@ -66,9 +67,11 @@ class AnnouncementModule extends ModuleBuilder<ContentSegment> {
                     size: 50,
                   ),
                   const SizedBox(height: 5),
-                  Text('New Announcement\n(Tap to create)',
-                      textAlign: TextAlign.center,
-                      style: context.theme.textTheme.bodyText1!.apply(color: context.onSurfaceColor)),
+                  Text(
+                    context.tr.new_announcement,
+                    textAlign: TextAlign.center,
+                    style: context.theme.textTheme.bodyText1!.apply(color: context.onSurfaceColor),
+                  ),
                 ],
               ),
             ),

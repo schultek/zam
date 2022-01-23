@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/user_avatar.dart';
 import '../game_provider.dart';
@@ -35,7 +36,7 @@ class _EliminationDialogState extends State<EliminationDialog> {
   Widget build(BuildContext context) {
     if (step == 0) {
       return AlertDialog(
-        title: const Text('Select the target'),
+        title: Text(context.tr.select_target),
         contentPadding: const EdgeInsets.symmetric(vertical: 20),
         content: SizedBox(
           height: 400,
@@ -51,7 +52,7 @@ class _EliminationDialogState extends State<EliminationDialog> {
                     ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 26),
                       leading: UserAvatar(id: entry.value!),
-                      title: Text(ref.watch(nicknameProvider(entry.value!)) ?? 'Anonym'),
+                      title: Text(ref.watch(nicknameProvider(entry.value!)) ?? context.tr.anonymous),
                       onTap: () {
                         setState(() {
                           targetEntry = MapEntry(entry.key, entry.value!);
@@ -67,12 +68,12 @@ class _EliminationDialogState extends State<EliminationDialog> {
       );
     } else {
       return AlertDialog(
-        title: const Text('Add a description'),
+        title: Text(context.tr.add_description),
         content: SizedBox(
           width: 400,
           child: TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'How did it happen?',
+            decoration: InputDecoration(
+              hintText: context.tr.how_happen,
             ),
             onChanged: (text) {
               setState(() {
@@ -89,7 +90,7 @@ class _EliminationDialogState extends State<EliminationDialog> {
             onPressed: () {
               close();
             },
-            child: const Text('Finish'),
+            child: Text(context.tr.finish),
           )
         ],
       );

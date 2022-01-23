@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../widgets/loading_shimmer.dart';
 import '../announcement_provider.dart';
 
@@ -30,9 +31,10 @@ class AnnouncementCard extends StatelessWidget {
                         child: AutoSizeText(
                           data.title!,
                           style: TextStyle(
-                              fontSize: 70,
-                              fontWeight: FontWeight.bold,
-                              color: data.textColor ?? context.onSurfaceColor),
+                            fontSize: 70,
+                            fontWeight: FontWeight.bold,
+                            color: data.textColor ?? context.onSurfaceColor,
+                          ),
                           maxLines: 5,
                           stepGranularity: 10,
                           minFontSize: 10,
@@ -48,7 +50,10 @@ class AnnouncementCard extends StatelessWidget {
                       child: AutoSizeText(
                         data.message,
                         style: TextStyle(
-                            fontSize: 70, fontWeight: FontWeight.bold, color: data.textColor ?? context.onSurfaceColor),
+                          fontSize: 70,
+                          fontWeight: FontWeight.bold,
+                          color: data.textColor ?? context.onSurfaceColor,
+                        ),
                         maxLines: 5,
                         stepGranularity: 10,
                         minFontSize: 10,
@@ -78,7 +83,7 @@ class AnnouncementCard extends StatelessWidget {
           return child;
         },
         loading: () => const LoadingShimmer(),
-        error: (e, st) => Center(child: Text('Error $e')),
+        error: (e, st) => Center(child: Text('${context.tr.error} $e')),
       ),
     );
   }

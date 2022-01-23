@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../widgets/games_list.dart';
 import 'create_game_page.dart';
@@ -12,7 +13,7 @@ class GamesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Elimination Games'),
+        title: Text(context.tr.elimination_games),
         actions: [
           if (context.read(isOrganizerProvider))
             IconButton(

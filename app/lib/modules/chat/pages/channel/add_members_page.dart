@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../../helpers/extensions.dart';
 import '../../../../providers/trips/selected_trip_provider.dart';
 import '../../../../widgets/user_avatar.dart';
 import '../../chat_provider.dart';
@@ -32,11 +33,11 @@ class _AddMembersPageState extends State<AddMembersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mitglieder hinzufügen'),
+        title: Text(context.tr.add_members),
         actions: [
           TextButton(
             onPressed: selectedUsers.isNotEmpty ? addMembers : null,
-            child: const Text('Hinzufügen'),
+            child: Text(context.tr.add),
           )
         ],
       ),
@@ -53,7 +54,7 @@ class _AddMembersPageState extends State<AddMembersPage> {
               onChanged: (v) {
                 setState(() => shouldAddUser = {...shouldAddUser, users[index].key: v ?? false});
               },
-              title: Text(users[index].value.nickname ?? 'Anonym'),
+              title: Text(users[index].value.nickname ?? context.tr.anonymous),
               controlAffinity: ListTileControlAffinity.trailing,
               secondary: UserAvatar(id: users[index].key),
             ),

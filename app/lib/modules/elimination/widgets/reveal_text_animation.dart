@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 
 class RevealTextAnimation extends StatefulWidget {
   final String text;
@@ -79,7 +80,7 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Eliminate:',
+              '${context.tr.eliminate}:',
               style: TextStyle(fontWeight: FontWeight.bold, color: context.onSurfaceColor),
             ),
             const SizedBox(height: 5),
@@ -95,7 +96,7 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
               ),
             ),
             Text(
-              'Hold to reveal',
+              context.tr.hold_to_reveal,
               style: context.theme.textTheme.caption!.apply(fontSizeFactor: 0.8, color: context.onSurfaceColor),
             ),
           ],

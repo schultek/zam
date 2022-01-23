@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/user_avatar.dart';
 import '../game_provider.dart';
@@ -49,14 +50,14 @@ class GamePage extends StatelessWidget {
                       useRootNavigator: false,
                       builder: (context) {
                         return AlertDialog(
-                          title: Text('Delete ${game.name}?'),
+                          title: Text('${context.tr.delete} ${game.name}?'),
                           actions: [
                             TextButton(
-                              child: const Text('Cancel'),
+                              child: Text(context.tr.cancel),
                               onPressed: () => Navigator.pop(context),
                             ),
                             ElevatedButton(
-                              child: const Text('Delete'),
+                              child: Text(context.tr.delete),
                               onPressed: () {
                                 Navigator.pop(context, true);
                               },
@@ -91,13 +92,13 @@ class GamePage extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      '$alive/$players alive',
+                      '$alive/$players ${context.tr.alive.toLowerCase()}',
                       textAlign: TextAlign.justify,
                       style: context.theme.textTheme.headline4!.copyWith(color: context.onSurfaceColor),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      '$untouchable immortal',
+                      '$untouchable ${context.tr.immortal.toLowerCase()}',
                       textAlign: TextAlign.justify,
                       style: context.theme.textTheme.headline5!.copyWith(color: context.onSurfaceColor),
                     ),
@@ -117,7 +118,7 @@ class GamePage extends StatelessWidget {
                               UserAvatar(id: elim.eliminatedBy),
                               const SizedBox(height: 5),
                               Text(
-                                ref.watch(nicknameProvider(elim.eliminatedBy)) ?? 'Anonym',
+                                ref.watch(nicknameProvider(elim.eliminatedBy)) ?? context.tr.anonymous,
                                 style: context.theme.textTheme.caption,
                               ),
                             ],
@@ -135,7 +136,7 @@ class GamePage extends StatelessWidget {
                               UserAvatar(id: elim.target),
                               const SizedBox(height: 5),
                               Text(
-                                ref.watch(nicknameProvider(elim.target)) ?? 'Anonym',
+                                ref.watch(nicknameProvider(elim.target)) ?? context.tr.anonymous,
                                 style: context.theme.textTheme.caption,
                               ),
                             ],
@@ -169,10 +170,10 @@ class GamePage extends StatelessWidget {
                     padding: const EdgeInsets.all(20.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.add, size: 30),
-                        SizedBox(width: 10),
-                        Text('Add Elimination'),
+                      children: [
+                        const Icon(Icons.add, size: 30),
+                        const SizedBox(width: 10),
+                        Text(context.tr.add_elimination),
                       ],
                     ),
                   ),

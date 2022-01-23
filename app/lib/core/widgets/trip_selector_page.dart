@@ -80,7 +80,7 @@ class TripSelectorPage extends StatelessWidget {
                       const Icon(Icons.add),
                       const SizedBox(width: 10),
                       Text(
-                        context.tr.create_trip,
+                        context.tr.create_new_trip,
                         style: context.theme.textTheme.headline5!.copyWith(color: context.onSurfaceColor),
                       ),
                     ],

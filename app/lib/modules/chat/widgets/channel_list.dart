@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../chat_provider.dart';
 import '../pages/channel/add_channel_page.dart';
 import '../pages/channel_page.dart';
@@ -18,9 +19,9 @@ class ChannelList extends StatelessWidget {
         return ListView(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 40, left: 16.0, bottom: 20),
-              child: Text('Channels', style: TextStyle(fontWeight: FontWeight.bold)),
+            Padding(
+              padding: const EdgeInsets.only(top: 40, left: 16.0, bottom: 20),
+              child: Text(context.tr.channels, style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
             for (var channel in data)
               ListTile(
@@ -40,7 +41,7 @@ class ChannelList extends StatelessWidget {
               minLeadingWidth: 0,
               leading: const Icon(Icons.add_box),
               title: Text(
-                'Channel hinzufügen',
+                context.tr.add_channel,
                 style: TextStyle(color: context.onSurfaceColor.withOpacity(0.5)),
               ),
               onTap: () {
@@ -50,8 +51,8 @@ class ChannelList extends StatelessWidget {
           ],
         );
       },
-      loading: () => const Text('Loading'),
-      error: (e, st) => Text('Error $e'),
+      loading: () => Text(context.tr.loading),
+      error: (e, st) => Text('${context.tr.error}: $e'),
     );
   }
 }

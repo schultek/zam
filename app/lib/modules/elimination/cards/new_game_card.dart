@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/simple_card.dart';
 import '../pages/create_game_page.dart';
@@ -21,7 +22,7 @@ class NewGameCard extends StatelessWidget {
           idProvider.provide(context, gameId);
         }
       },
-      child: const SimpleCard(title: 'New game\n(Tap to setup)', icon: Icons.add),
+      child: SimpleCard(title: context.tr.new_game_setup, icon: Icons.add),
     );
   }
 

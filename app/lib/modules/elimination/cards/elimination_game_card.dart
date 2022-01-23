@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/auth/user_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/loading_shimmer.dart';
@@ -57,23 +58,23 @@ class _EliminationGameCardState extends State<EliminationGameCard> {
             if (myTarget == null) {
               return Center(
                 child: Text(
-                  'Eliminated',
+                  context.tr.eliminated,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: context.onSurfaceColor),
                 ),
               );
             } else if (myTarget == ref.watch(userIdProvider)!) {
               return Center(
                 child: Text(
-                  'Immortal',
+                  context.tr.immortal,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: context.onSurfaceColor),
                 ),
               );
             } else {
-              return RevealTextAnimation(text: ref.watch(nicknameProvider(myTarget)) ?? 'Anonym');
+              return RevealTextAnimation(text: ref.watch(nicknameProvider(myTarget)) ?? context.tr.anonymous);
             }
           },
           loading: () => const LoadingShimmer(),
-          error: (e, st) => Center(child: Text('Error $e')),
+          error: (e, st) => Center(child: Text('${context.tr.error}: $e')),
         );
       },
     );

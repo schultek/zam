@@ -6,6 +6,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
 import '../../core/widgets/widget_selector.dart';
+import '../../helpers/extensions.dart';
 import '../../providers/notifications/notifications_provider.dart';
 import 'pages/channel_page.dart';
 import 'pages/chat_page.dart';
@@ -43,7 +44,7 @@ class ChatModule extends ModuleBuilder<PageSegment> {
     return QuickAction(
       context: context,
       icon: Icons.chat,
-      text: 'Chat',
+      text: context.context.tr.chat,
       onNavigate: (context) => const ChatPage(),
     );
   }
@@ -66,7 +67,6 @@ class ChatModule extends ModuleBuilder<PageSegment> {
         Navigator.of(context).push(ChannelPage.route(m!.data['channelId'] as String));
       }
     });
-    print('Subscribed to messages');
   }
 
   @override

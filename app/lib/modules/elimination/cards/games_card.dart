@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../widgets/simple_card.dart';
 import '../pages/games_page.dart';
 
@@ -11,7 +12,7 @@ class GamesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SimpleCard(title: 'Elimination\nGames', icon: Icons.list);
+    return SimpleCard(title: context.tr.elimination_games.replaceFirst(' ', '\n'), icon: Icons.list);
   }
 
   static FutureOr<ContentSegment?> segment(ModuleContext context) {

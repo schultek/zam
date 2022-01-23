@@ -1,16 +1,38 @@
 {
   "@@locale": "de",
   "jufa": "JUFA",
+
+  "GENERAL": {},
+
+  "error": "Fehler",
+  "title": "Titel",
+  "message": "Nachricht",
+  "add": "Hinzufügen",
+  "anonymous": "Anonym",
+  "leave": "Verlassen",
+  "create": "Erstellen",
+  "name": "Name",
+  "loading": "Laden",
+  "started": "Gestartet",
+  "finish": "Fertig",
+  "delete": "Lösche",
+  "cancel": "Abbrechen",
+
+  "@LOGIN": {},
+
   "almost_done": "Fast geschafft.\nWir bereiten alles für dich vor...",
   "login_to_jufa": "Bei Jufa anmelden",
   "login_as_guest": "Als Gast anmelden",
   "login_with_phone": "Mit Telefonnummer anmelden",
   "become_organizer": "Werde Organisator*in",
   "become_admin": "Werde Administrator*in",
+  "proceed_and_accept_disclaimer": "Wenn du fortfährst, akzeptierst du Jufas Nutzungsbedingungen und bestätigst, dass du Jufas Datenschutzerklärung gelesen hast. Wenn du dich per SMS registrierst, können SMS-Gebühren anfallen.",
+
+  "@PHONE_LOGIN": {},
+
   "add_phone_number": "Telefonnummer hinzufügen",
   "invalid_phone_number": "Ungültige Telefonnummer",
   "enter_phone_number": "Telefonnummer eingeben",
-  "proceed_and_accept_disclaimer": "Wenn du fortfährst, akzeptierst du Jufas Nutzungsbedingungen und bestätigst, dass du Jufas Datenschutzerklärung gelesen hast. Wenn du dich per SMS registrierst, können SMS-Gebühren anfallen.",
   "send_code": "Code senden",
   "enter_sms_code": "SMS-Code eingeben",
   "enter_code": "Code eingeben",
@@ -20,9 +42,12 @@
   "invalid_code": "Fehlerhafter Code",
   "unknown_error": "Unbekannter Fehler",
   "confirm": "Bestätigen",
-  "create_trip": "Neuen Trip erstellen",
+
+  "@MANAGE_TRIPS": {},
+
+  "create_new_trip": "Neuen Trip erstellen",
   "enter_trip_name": "Trip-Namen eingeben",
-  "create": "Erstellen",
+  "create_trip": "Trip erstellen",
   "become_organizer_desc": "Erstelle und manage Ausflüge und andere Gruppen-Events",
   "become_admin_desc": "Erhalte Admin Rechte in der Jufa App",
   "no_content": "Kein Inhalt",
@@ -30,8 +55,50 @@
   "selected_trip": "Ausgewählter Trip",
   "available_trips": "Verfügbare Trips",
   "made_with_love": "Mit ❤️ & 🍫 aus München",
+  "copyright": "Copyright @ 2022 Kilian Schulte",
   "logged_in_as_guest": "Als Gast angemeldet",
   "logged_in_with": "Angemeldet mit",
   "add_phone_number_hint": "Du kannst deine Telefonnummer hinzufügen,\num deine Trips auf anderen Geräten zu nutzen",
-  "logout": "Abmelden"
+  "logout": "Abmelden",
+
+  "@ANNOUNCEMENTS": {},
+
+  "create_announcement": "Mitteilung erstellen",
+  "dismissible": "Verwerfbar",
+  "text_color": "Textfarbe",
+  "background_color": "Hintergrundfarbe",
+  "new_announcement": "Neue Mitteilung\n(Tippe zum Erstellen)",
+
+  "@CHAT": {},
+
+  "chat": "Chat",
+  "channels": "Channels",
+  "add_members": "Mitglieder hinzufügen",
+  "channel_details": "Channel Details",
+  "members": "Mitglieder",
+  "new_channel": "Neuer Channel",
+  "set_closed": "Auf 'Geschlossen' setzen",
+  "add_channel": "Channel hinzufügen",
+
+  "@ELIMINATION": {},
+
+  "elimination_games": "Eliminierungs Spiele",
+  "new_game": "Neues Spiel",
+  "eliminate": "Eliminiere",
+  "hold_to_reveal": "Halte zum Aufdecken",
+  "immortal": "Unsterblich",
+  "alive": "Lebendig",
+  "select_target": "Zielperson auswählen",
+  "add_description": "Füge eine Beschreibung hinzu",
+  "how_happen": "Wie ist es passiert?",
+  "select_player": "Spieler auswählen",
+  "player_status": "Spieler Status",
+  "eliminated": "Eliminiert",
+  "target_player": "Zielperson",
+  "add_elimination": "Eliminierung hinzufügen",
+  "new_game_setup": "Neues Spiel\n(Tippe zum Erstellen)",
+  "allow_loops": "Schleifen erlauben",
+  "create_game": "Spiel erstellen",
+  "how_to_play": "Spielanleitung",
+  "game_instructions": "'Eliminiere' deine Zielperson durch den vereinbarten Weg im echten Leben. Füge die Eliminierung der Liste hinzu und erhalte eine neue Zielperson, bis nur noch ein Spieler übrig ist."
 }

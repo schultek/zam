@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/auth/user_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../chat_provider.dart';
@@ -134,7 +135,7 @@ class _ChannelPageState extends State<ChannelPage> {
                               author: types.User(
                                 id: m.sender,
                                 imageUrl: trip.users[m.sender]?.profileUrl,
-                                firstName: trip.users[m.sender]?.nickname ?? 'Anonym',
+                                firstName: trip.users[m.sender]?.nickname ?? context.tr.anonymous,
                               ),
                               id: m.uri,
                               uri: m.uri,
@@ -146,7 +147,7 @@ class _ChannelPageState extends State<ChannelPage> {
                               author: types.User(
                                 id: m.sender,
                                 imageUrl: trip.users[m.sender]?.profileUrl,
-                                firstName: trip.users[m.sender]?.nickname ?? 'Anonym',
+                                firstName: trip.users[m.sender]?.nickname ?? context.tr.anonymous,
                               ),
                               id: m.uri,
                               uri: m.uri,
@@ -158,7 +159,7 @@ class _ChannelPageState extends State<ChannelPage> {
                               author: types.User(
                                 id: m.sender,
                                 imageUrl: trip.users[m.sender]?.profileUrl,
-                                firstName: trip.users[m.sender]?.nickname ?? 'Anonym',
+                                firstName: trip.users[m.sender]?.nickname ?? context.tr.anonymous,
                               ),
                               id: m.text,
                               text: m.text,
