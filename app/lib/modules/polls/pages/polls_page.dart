@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../helpers/extensions.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../providers/trips/selected_trip_provider.dart';
@@ -12,7 +13,7 @@ class PollsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Polls'),
+        title: Text(context.tr.polls),
         actions: [
           if (context.read(isOrganizerProvider))
             IconButton(

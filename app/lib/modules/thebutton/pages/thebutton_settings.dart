@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../thebutton_provider.dart';
 import '../widgets/clip_layer.dart';
 import '../widgets/expand_clipper.dart';
@@ -287,7 +288,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                   });
                 },
                 child: AutoSizeText(
-                  'Reset\nHealth',
+                  context.tr.reset_health,
                   style: TextStyle(color: context.onSurfaceColor),
                   textAlign: TextAlign.center,
                   maxLines: 2,
@@ -307,7 +308,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                   });
                 },
                 child: AutoSizeText(
-                  'Reset\nLeaderboard',
+                  context.tr.reset_leaderboard,
                   style: TextStyle(color: context.onSurfaceColor),
                   textAlign: TextAlign.center,
                   maxLines: 2,
@@ -332,7 +333,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               AutoSizeText(
-                "Do you want to\nreset the ${isResettingHealth == true ? 'health' : 'leaderboard'}?",
+                context.tr.confirm_reset(isResettingHealth ?? false),
                 style: TextStyle(color: context.onSurfaceColor),
                 textAlign: TextAlign.center,
                 maxLines: 2,

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/loading_shimmer.dart';
 import 'pages/thebutton_help.dart';
@@ -49,7 +50,7 @@ class TheButtonModule extends ModuleBuilder<ContentSegment> {
               );
             },
             loading: () => const LoadingShimmer(),
-            error: (e, st) => Text('Error: $e'),
+            error: (e, st) => Text('${context.tr.error}: $e'),
           );
         });
       },
@@ -62,9 +63,9 @@ class TheButtonModule extends ModuleBuilder<ContentSegment> {
 
     return state.whenOrNull<ModuleSettings?>(
       data: (state) => state != null
-          ? ModuleSettings('The Button', [
+          ? ModuleSettings(context.tr.the_button, [
               SwitchListTile(
-                title: const Text('Show level in user avatars'),
+                title: Text(context.tr.show_level_in_avatars),
                 value: state.showInAvatars,
                 onChanged: (v) => context.read(theButtonLogicProvider).setShowInAvatars(v),
               ),

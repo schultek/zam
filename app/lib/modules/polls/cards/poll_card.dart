@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../widgets/simple_card.dart';
 
 class PollCard extends StatelessWidget {
@@ -18,6 +19,6 @@ class PollCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleCard(title: 'Poll\n$id', icon: Icons.add_reaction);
+    return SimpleCard(title: '${context.tr.poll}\n$id', icon: Icons.add_reaction);
   }
 }

@@ -17,6 +17,8 @@
   "finish": "Fertig",
   "delete": "Lösche",
   "cancel": "Abbrechen",
+  "continuee": "Weiter",
+  "hello": "Hallo",
 
   "@LOGIN": {},
 
@@ -100,5 +102,86 @@
   "allow_loops": "Schleifen erlauben",
   "create_game": "Spiel erstellen",
   "how_to_play": "Spielanleitung",
-  "game_instructions": "'Eliminiere' deine Zielperson durch den vereinbarten Weg im echten Leben. Füge die Eliminierung der Liste hinzu und erhalte eine neue Zielperson, bis nur noch ein Spieler übrig ist."
+  "game_instructions": "'Eliminiere' deine Zielperson durch den vereinbarten Weg im echten Leben. Füge die Eliminierung der Liste hinzu und erhalte eine neue Zielperson, bis nur noch ein Spieler übrig ist.",
+
+  "@LABEL": {},
+
+  "add_label": "Label hinzufügen",
+
+  "@MUSIC": {},
+
+  "play": "Abspielen",
+  "add_to_queue": "Zur Warteschlange hinzufügen",
+  "add_to_playlist": "Zur Playlist hinzufügen",
+  "remove_from_playlist": "Von Playlist entfernen",
+  "play_spotify": "Spotify abspielen\n(Tippe zum anmelden)",
+  "connect_to_device": "Mit Gerät verbinden",
+  "select_playlist": "Playlist auswählen",
+  "search_track": "Lied suchen",
+  "search_for_songs": "Suche nach Liedern",
+  "playlist": "Playlist",
+  "create_shared_playlist": "Geteilte Playlist erstellen",
+
+  "@NOTES": {},
+
+  "notes": "Notizen",
+  "new_note": "Neue Notiz",
+  "add_note": "Notiz hinzufügen\n(Tippe zum auswählen)",
+  "select_note_or_folder": "Notiz oder Ordner auswählen",
+  "untitled": "Ohne Titel",
+  "untitled_note": "Unbenannte Notiz",
+  "folder": "Ordner",
+  "no_folder": "Kein Ordner",
+  "author": "Autor",
+  "editors": "Editoren",
+  "change_folder": "Ordner wechseln",
+  "create_new_folder": "Neuen Ordner erstellen",
+  "add_editors": "Editoren hinzufügen",
+
+  "@PHOTOS": {},
+
+  "select_album": "Album auswählen",
+  "elements": "Elemente",
+  "sign_in_google": "Mit Google einloggen",
+  "sign_in_google_desc": "Um das geteilte Album zu nutzen musst du dich mit deinem Google Account einloggen.",
+
+  "@POLLS": {},
+
+  "polls": "Umfragen",
+  "new_poll": "Neue Umfrage",
+  "create_poll": "Umfrage erstellen",
+  "poll": "Umfrage",
+  "new_poll_create": "Neue Umfrage\n(Tippe zum erstellen)",
+
+  "@PROFILE": {},
+
+  "profile": "Profil",
+  "good_night": "Gute Nacht",
+  "good_morning": "Guten Morgen",
+  "good_evening": "Guten Abend",
+  "cut_picture": "Foto zuschneiden",
+
+  "@THEBUTTON": {},
+
+  "the_button": "Der Button",
+  "show_level_in_avatars": "Level in Avataren zeigen",
+  "reset_health": "Gesundheit zurücksetzen",
+  "reset_leaderboard": "Bestenliste zurücksetzen",
+  "confirm_reset": "Möchtest du die\n{isHealth, select, true{Gesundheit} false{Bestenliste}} zurücksetzen?",
+  "the_button_tagline": "Ein soziales Spiel bei dem der Button am leben gehalten werden muss.",
+  "leaderboard": "Bestenliste",
+  "the_button_description": "Ziel des Spiels ist es den Button nicht sterben zu lassen. Der Button wird langsam an Gesundheit verlieren bis er stirbt. Du kannst den Button jederzeit heilen wenn er noch am Leben ist durch Antippen für 2 Sekunden. Aber sobald er tot ist, kann er nicht wiederbelebt werden, also bleib wachsam.\n\nDie Gesundheit des Buttons ist synchronisiert über alle Spieler, somit ist es eine gemeinsame Anstrengung ihn am Leben zu erhalten.\n\nWenn du den Button vor seinem Ableben rettest wirst du sein aktuelles Level erhalten. Je niedriger die Gesundheit desto höher das Level was du erhälst. Aber warte nicht zu lange, jemand anderes könnte den Button retten bevor du die Chance hast.",
+
+  "@USERS": {},
+
+  "users": "Nutzer",
+  "open_users": "Nutzer öffnen",
+  "user_options": "Nutzer Optionen",
+  "remove_organizer": "Entferne Organisator Status",
+  "make_organizer": "Zum Organisator machen",
+  "add_user": "Nutzer hinzufügen",
+  "invite_participant": "Teilnehmer einladen",
+  "invite_organizer": "Organisator einladen",
+  "click_link_to_join": "Klicke auf den Link um {name} beizutreten",
+  "click_link_to_organize": "Klicke auf den Link um Organisator für {name} zu werden"
 }

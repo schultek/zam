@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/widgets/settings_section.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../notes_provider.dart';
 import 'add_editors_page.dart';
@@ -30,25 +31,26 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
 
       return Scaffold(
         appBar: AppBar(
-          title: Text(note.title ?? 'Untitled Note'),
+          title: Text(note.title ?? context.tr.untitled_note),
         ),
         body: ListView(
           children: [
             SettingsSection(children: [
               ListTile(
-                title: const Text('Folder'),
-                subtitle: Text(note.folder ?? 'No Folder'),
+                title: Text(context.tr.folder),
+                subtitle: Text(note.folder ?? context.tr.no_folder),
                 onTap: () {
                   Navigator.of(context).push(ChangeFolderPage.route(note));
                 },
               ),
               ListTile(
-                title: const Text('Author'),
-                subtitle: Text(ref.read(nicknameProvider(note.author)) ?? 'Anonym'),
+                title: Text(context.tr.author),
+                subtitle: Text(ref.read(nicknameProvider(note.author)) ?? context.tr.anonymous),
               ),
               ListTile(
-                title: const Text('Editors'),
-                subtitle: Text(note.editors.map((e) => ref.read(nicknameProvider(e)) ?? 'Anonym').join(', ')),
+                title: Text(context.tr.editors),
+                subtitle:
+                    Text(note.editors.map((e) => ref.read(nicknameProvider(e)) ?? context.tr.anonymous).join(', ')),
                 onTap: () {
                   Navigator.of(context).push(AddEditorsPage.route(note));
                 },
@@ -56,9 +58,9 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
             ]),
             SettingsSection(children: [
               ListTile(
-                title: const Text(
-                  'Delete',
-                  style: TextStyle(color: Colors.red),
+                title: Text(
+                  context.tr.delete,
+                  style: const TextStyle(color: Colors.red),
                 ),
                 onTap: () async {
                   Navigator.pop(context, true);

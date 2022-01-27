@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/core.dart';
 import '../../../core/widgets/settings_section.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/logic_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../widgets/image_selector.dart';
@@ -28,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profil'),
+        title: Text(context.tr.profile),
       ),
       body: Consumer(
         builder: (context, ref, _) {
@@ -69,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   initialValue: user?.nickname,
                   focusNode: _focusNode,
                   decoration: InputDecoration(
-                    labelText: 'Name',
+                    labelText: context.tr.name,
                     suffixIcon: _name != null
                         ? IconButton(
                             icon: const Icon(Icons.check),

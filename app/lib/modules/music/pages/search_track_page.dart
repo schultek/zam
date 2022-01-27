@@ -3,6 +3,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'package:spotify/spotify.dart' show Track;
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../music_models.dart';
 import '../music_providers.dart';
 import '../widgets/track_tile.dart';
@@ -34,14 +35,14 @@ class _SearchTrackPageState extends State<SearchTrackPage> {
     return Scaffold(
       body: Scaffold(
         appBar: AppBar(
-          title: const Text('Search Track'),
+          title: Text(context.tr.search_track),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(50),
             child: Builder(builder: (context) {
               return TextField(
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                  hintText: 'Suche nach Liedern',
+                  hintText: context.tr.search_for_songs,
                   hintStyle: TextStyle(color: context.onSurfaceColor),
                   border: InputBorder.none,
                   filled: true,

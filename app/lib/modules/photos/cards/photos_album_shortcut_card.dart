@@ -7,6 +7,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../providers/google_account_provider.dart';
 import '../providers/photos_provider.dart';
 
@@ -58,7 +59,7 @@ class PhotosAlbumShortcutCard extends StatelessWidget {
                     softWrap: false,
                   ),
                   Text(
-                    '${album.itemsCount} Elemente',
+                    '${album.itemsCount} ${context.tr.elements}',
                     style: const TextStyle(fontSize: 12),
                     overflow: TextOverflow.fade,
                     softWrap: false,

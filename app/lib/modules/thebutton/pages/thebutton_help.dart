@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../thebutton_provider.dart';
 import '../widgets/clip_layer.dart';
 
 class LeaderboardEntry {
-  String name;
+  String? name;
   int level;
   LeaderboardEntry(this.name, this.level);
 }
@@ -18,7 +19,7 @@ final theButtonLeaderboardProvider = Provider.autoDispose((ref) {
   var trip = ref.watch(selectedTripProvider);
   return (state?.leaderboard ?? {})
       .entries
-      .map((e) => LeaderboardEntry(trip?.users[e.key]?.nickname ?? 'Anonym', e.value.round()))
+      .map((e) => LeaderboardEntry(trip?.users[e.key]?.nickname, e.value.round()))
       .toList()
     ..sort((a, b) => b.level.compareTo(a.level));
 });
@@ -74,13 +75,13 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
             padding: EdgeInsets.zero,
             children: [
               Text(
-                'The Button',
+                context.tr.the_button,
                 style: context.theme.textTheme.bodyText2!.copyWith(color: context.onSurfaceColor),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 5),
               Text(
-                'A social game where you have to keep the button alive.',
+                context.tr.the_button_tagline,
                 style: context.theme.textTheme.caption!.apply(color: context.onSurfaceColor, fontSizeFactor: 0.9),
                 textAlign: TextAlign.center,
               ),
@@ -92,7 +93,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                 ),
                 onPressed: () => setState(() => instructionsOpen = true),
                 child: AutoSizeText(
-                  'How to play?',
+                  context.tr.how_to_play,
                   style: TextStyle(color: context.onSurfaceColor),
                   minFontSize: 8,
                   maxLines: 1,
@@ -106,7 +107,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                 ),
                 onPressed: () => setState(() => leaderboardOpen = true),
                 child: AutoSizeText(
-                  'Leaderboard',
+                  context.tr.leaderboard,
                   style: TextStyle(color: context.onSurfaceColor),
                   maxLines: 1,
                   minFontSize: 8,
@@ -130,28 +131,16 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
             physics: const BouncingScrollPhysics(),
             children: [
               Text(
-                'How to play',
+                context.tr.how_to_play,
                 textAlign: TextAlign.center,
                 style: context.theme.textTheme.subtitle2!.copyWith(color: context.onSurfaceColor),
               ),
               const SizedBox(height: 10),
               Text(
-                "The main goal is to never let the button die. The button will slowly loose health until it's dead. You can heal the button anytime while it is still alive by tapping on it for two seconds. But once it's dead, it can never be brought back, so stay alert.",
+                context.tr.the_button_description,
                 textAlign: TextAlign.justify,
                 style: context.theme.textTheme.caption!.copyWith(color: context.onSurfaceColor),
               ),
-              const SizedBox(height: 10),
-              Text(
-                'The buttons health is synchronized across all players, so it is a group efford to keep it alive.',
-                textAlign: TextAlign.justify,
-                style: context.theme.textTheme.caption!.copyWith(color: context.onSurfaceColor),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                "When you save the button from its demise, you will get it's level. The lower the buttons health is the higher is level you get. But don't wait too long, someone else might just come along and save the button before you have the chance.",
-                textAlign: TextAlign.justify,
-                style: context.theme.textTheme.caption!.copyWith(color: context.onSurfaceColor),
-              )
             ],
           ),
         ),
@@ -170,7 +159,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
             physics: const BouncingScrollPhysics(),
             children: [
               Text(
-                'Leaderboard',
+                context.tr.leaderboard,
                 textAlign: TextAlign.center,
                 style: context.theme.textTheme.subtitle2!.copyWith(color: context.onSurfaceColor),
               ),
@@ -183,7 +172,7 @@ class _TheButtonHelpState extends State<TheButtonHelp> {
                       flex: 3,
                       fit: FlexFit.tight,
                       child: Text(
-                        entry.name,
+                        entry.name ?? context.tr.anonymous,
                         style: context.theme.textTheme.bodyText1!.copyWith(color: context.onSurfaceColor),
                         overflow: TextOverflow.ellipsis,
                         softWrap: false,

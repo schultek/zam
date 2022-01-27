@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../widgets/simple_card.dart';
 import 'pages/profile_page.dart';
 import 'widgets/profile_image_widget.dart';
@@ -20,7 +21,7 @@ class ProfileModule extends ModuleBuilder<ContentSegment> {
   FutureOr<ContentSegment?> buildProfile(ModuleContext context) {
     return ContentSegment(
       context: context,
-      builder: (context) => const SimpleCard(title: 'Profil', icon: Icons.account_circle),
+      builder: (context) => SimpleCard(title: context.tr.profile, icon: Icons.account_circle),
       onNavigate: (context) => const ProfilePage(),
     );
   }
@@ -37,7 +38,7 @@ class ProfileModule extends ModuleBuilder<ContentSegment> {
     return QuickAction(
       context: context,
       icon: Icons.account_circle,
-      text: 'Profil',
+      text: context.context.tr.profile,
       onNavigate: (context) => const ProfilePage(),
     );
   }

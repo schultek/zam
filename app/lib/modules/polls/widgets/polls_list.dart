@@ -66,7 +66,7 @@ class PollTile extends StatelessWidget {
                 Text(poll.name, style: TextStyle(color: context.onSurfaceColor)),
                 const SizedBox(height: 5),
                 Text(
-                  'Started ${poll.startedAt.toDateString()}',
+                  '${context.tr.started} ${poll.startedAt.toDateString()}',
                   style: context.theme.textTheme.caption!.copyWith(color: context.onSurfaceColor.withOpacity(0.8)),
                   overflow: TextOverflow.fade,
                   softWrap: false,

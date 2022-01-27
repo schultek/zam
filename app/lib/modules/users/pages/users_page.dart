@@ -4,6 +4,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/auth/user_provider.dart';
 import '../../../providers/links/links_provider.dart';
 import '../../../providers/trips/logic_provider.dart';
@@ -17,7 +18,7 @@ class UsersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Users'),
+        title: Text(context.tr.users),
         actions: [
           if (context.read(isOrganizerProvider)) ...[
             IconButton(
@@ -29,14 +30,14 @@ class UsersPage extends StatelessWidget {
                   useRootNavigator: false,
                   builder: (BuildContext context) => StatefulBuilder(
                     builder: (context, setState) => AlertDialog(
-                      title: const Text('Add User'),
+                      title: Text(context.tr.add_user),
                       content: TextFormField(
-                        decoration: const InputDecoration(labelText: 'Name'),
+                        decoration: InputDecoration(labelText: context.tr.name),
                         onChanged: (text) => setState(() => name = text),
                       ),
                       actions: [
                         TextButton(
-                          child: const Text('Add'),
+                          child: Text(context.tr.add),
                           onPressed: name != null ? () => Navigator.of(context).pop(name) : null,
                         )
                       ],
@@ -51,12 +52,12 @@ class UsersPage extends StatelessWidget {
             PopupMenuButton<String>(
               offset: const Offset(0, 56),
               itemBuilder: (context) => [
-                const PopupMenuItem(
-                  child: ListTile(title: Text('Teilnehmer einladen')),
+                PopupMenuItem(
+                  child: ListTile(title: Text(context.tr.invite_participant)),
                   value: UserRoles.participant,
                 ),
-                const PopupMenuItem(
-                  child: ListTile(title: Text('Organisator einladen')),
+                PopupMenuItem(
+                  child: ListTile(title: Text(context.tr.invite_organizer)),
                   value: UserRoles.organizer,
                 ),
               ],
@@ -65,9 +66,9 @@ class UsersPage extends StatelessWidget {
                 var trip = context.read(selectedTripProvider)!;
                 String link = await context.read(linkLogicProvider).createTripInvitationLink(trip: trip, role: role);
                 if (role == UserRoles.participant) {
-                  Share.share('Um dich bei ${trip.name} anzumelden, klicke auf den Link: $link');
+                  Share.share('${context.tr.click_link_to_join(trip.name)}: $link');
                 } else if (role == UserRoles.organizer) {
-                  Share.share('Um dich als Organisator bei ${trip.name} anzumelden, klicke auf den Link: $link');
+                  Share.share('${context.tr.click_link_to_organize(trip.name)}: $link');
                 }
               },
             ),
@@ -97,24 +98,24 @@ class UsersPage extends StatelessWidget {
   Widget userTile(BuildContext context, MapEntry<String, TripUser> e) {
     return ListTile(
       leading: UserAvatar(id: e.key),
-      title: Text(e.value.nickname ?? 'Anonym', style: TextStyle(color: context.onSurfaceColor)),
+      title: Text(e.value.nickname ?? context.tr.anonymous, style: TextStyle(color: context.onSurfaceColor)),
       subtitle: Text(e.value.role.capitalize()),
       trailing: context.read(isOrganizerProvider) && e.key != context.read(userIdProvider)
           ? PopupMenuButton<String>(
               offset: const Offset(0, 56),
               itemBuilder: (context) => [
-                const PopupMenuItem(
-                  child: ListTile(title: Text('Löschen')),
+                PopupMenuItem(
+                  child: ListTile(title: Text(context.tr.delete)),
                   value: 'delete',
                 ),
                 if (e.value.role != UserRoles.organizer)
-                  const PopupMenuItem(
-                    child: ListTile(title: Text('Organisator machen')),
+                  PopupMenuItem(
+                    child: ListTile(title: Text(context.tr.make_organizer)),
                     value: UserRoles.organizer,
                   )
                 else
-                  const PopupMenuItem(
-                    child: ListTile(title: Text('Organisator entfernen')),
+                  PopupMenuItem(
+                    child: ListTile(title: Text(context.tr.remove_organizer)),
                     value: UserRoles.organizer,
                   )
               ],

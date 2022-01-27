@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../notes_provider.dart';
 import '../widgets/note_preview.dart';
 import 'edit_note_page.dart';
@@ -52,7 +53,7 @@ class _NotesPageState extends State<NotesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notes'),
+        title: Text(context.tr.notes),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 
 class ProfileImageWidget extends StatelessWidget {
@@ -15,17 +16,15 @@ class ProfileImageWidget extends StatelessWidget {
     var date = DateTime.now();
     String greeting;
     if (date.hour < 6) {
-      greeting = 'Gute Nacht';
+      greeting = context.tr.good_night;
     } else if (date.hour < 11) {
-      greeting = 'Guten Morgen';
-    } else if (date.hour < 13) {
-      greeting = 'Guten Mittag';
+      greeting = context.tr.good_morning;
     } else if (date.hour < 18) {
-      greeting = 'Hallo';
+      greeting = context.tr.hello;
     } else if (date.hour < 22) {
-      greeting = 'Guten Abend';
+      greeting = context.tr.good_evening;
     } else {
-      greeting = 'Gute Nacht';
+      greeting = context.tr.good_night;
     }
 
     return Container(

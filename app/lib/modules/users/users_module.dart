@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../widgets/simple_card.dart';
 import 'pages/users_page.dart';
 
@@ -18,16 +19,16 @@ class UsersModule extends ModuleBuilder<ContentSegment> {
   FutureOr<ContentSegment?> buildUsers(ModuleContext context) {
     return ContentSegment(
       context: context,
-      builder: (context) => const SimpleCard(title: 'Users', icon: Icons.supervised_user_circle),
+      builder: (context) => SimpleCard(title: context.tr.users, icon: Icons.supervised_user_circle),
       onNavigate: (context) => const UsersPage(),
     );
   }
 
   @override
   ModuleSettings? getSettings(BuildContext context) {
-    return ModuleSettings('Users', [
+    return ModuleSettings(context.tr.users, [
       ListTile(
-        title: const Text('Open Users'),
+        title: Text(context.tr.open_users),
         onTap: () => Navigator.of(context).push(UsersPage.route()),
       ),
     ]);
@@ -37,7 +38,7 @@ class UsersModule extends ModuleBuilder<ContentSegment> {
     return QuickAction(
       context: context,
       icon: Icons.supervised_user_circle,
-      text: 'Users',
+      text: context.context.tr.users,
       onNavigate: (context) => const UsersPage(),
     );
   }

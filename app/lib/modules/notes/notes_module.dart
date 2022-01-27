@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../../widgets/loading_shimmer.dart';
 import '../../widgets/simple_card.dart';
@@ -29,7 +30,7 @@ class NotesModule extends ModuleBuilder<ContentSegment> {
   FutureOr<ContentSegment?> buildNotes(ModuleContext context) {
     return ContentSegment(
       context: context,
-      builder: (context) => const SimpleCard(title: 'Notes', icon: Icons.sticky_note_2),
+      builder: (context) => SimpleCard(title: context.tr.notes, icon: Icons.sticky_note_2),
       onNavigate: (context) => const NotesPage(),
     );
   }
@@ -38,7 +39,7 @@ class NotesModule extends ModuleBuilder<ContentSegment> {
     return QuickAction(
       context: context,
       icon: Icons.sticky_note_2,
-      text: 'Notes',
+      text: context.context.tr.notes,
       onNavigate: (context) => const NotesPage(),
     );
   }
@@ -47,7 +48,7 @@ class NotesModule extends ModuleBuilder<ContentSegment> {
     return QuickAction(
       context: context,
       icon: Icons.sticky_note_2,
-      text: 'New Note',
+      text: context.context.tr.new_note,
       onNavigate: (BuildContext context) {
         var note = context.read(notesLogicProvider).createEmptyNote();
         return EditNotePage(note);
@@ -87,7 +88,7 @@ class NotesModule extends ModuleBuilder<ContentSegment> {
                 );
               },
               loading: () => const LoadingShimmer(),
-              error: (e, st) => Center(child: Text('Error $e')),
+              error: (e, st) => Center(child: Text('${context.tr.error} $e')),
             );
           },
         ),
@@ -98,7 +99,7 @@ class NotesModule extends ModuleBuilder<ContentSegment> {
         return ContentSegment(
           context: context,
           idProvider: idProvider,
-          builder: (context) => const SimpleCard(title: 'Add Note\n(Tap to select)', icon: Icons.add),
+          builder: (context) => SimpleCard(title: context.tr.add_note, icon: Icons.add),
           onNavigate: (context) {
             return SelectNotePage(
               onSelect: (id) => idProvider.provide(context, id),

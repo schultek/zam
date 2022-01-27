@@ -7,6 +7,8 @@ import 'package:cropperx/cropperx.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../helpers/extensions.dart';
+
 class ImageSelector {
   static Future<Uint8List?> fromGallery(BuildContext context) async {
     XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -36,7 +38,7 @@ class _CropDialogState extends State<CropDialog> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Foto zuschneiden'),
+        title: Text(context.tr.cut_picture),
         actions: [
           IconButton(
             onPressed: () async {

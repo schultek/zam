@@ -77,20 +77,17 @@ class SpotifyApiSync with WidgetsBindingObserver {
 
   Future<void> syncPlayer() async {
     var wasTimer = playerTimer != null && !playerTimer!.isActive;
-    print('WAS TIMER $wasTimer');
 
     playerTimer?.cancel();
     playerTimer = null;
 
     if (api == null) return;
-    print('RELOAD PLAYER');
     try {
       var player = (await api!.me.player())?.toSpotifyPlayer();
       var curPlayer = ref.read(playerProvider);
 
       if (player?.isPlaying == curPlayer?.isPlaying && player?.track == curPlayer?.track) {
         if (!wasTimer) {
-          print('NO CHANGES AFTER SYNC, TRY AGAIN IN 1s');
           playerTimer = Timer(const Duration(milliseconds: 1000), syncPlayer);
           return;
         }
@@ -100,19 +97,16 @@ class SpotifyApiSync with WidgetsBindingObserver {
 
       if (player?.isPlaying == true && player?.track != null) {
         int trackMs = max(0, (player!.track.durationMs) - (player.progressMs ?? 0)) + 1000;
-        print('SET TIMER FOR $trackMs');
         playerTimer = Timer(Duration(milliseconds: trackMs), syncPlayer);
       }
     } on oauth.AuthorizationException catch (e) {
       if (e.error == 'invalid_grant') {
-        print('SPOTIFY ERROR $e');
         await ref.read(musicLogicProvider).signOut();
         await _updatePlayer(null);
       } else {
         rethrow;
       }
     } catch (e) {
-      print('ERROR ON PLAYER $backoffSeconds: $e');
       await _updatePlayer(null);
       backoffSeconds *= 2;
       playerTimer = Timer(Duration(seconds: backoffSeconds), syncPlayer);
@@ -125,7 +119,6 @@ class SpotifyApiSync with WidgetsBindingObserver {
 
   Future<void> syncPlaylist([String? id]) async {
     if (api == null) return;
-    print('RELOAD PLAYLIST');
     try {
       var curPlaylistId = id ?? ref.read(playlistProvider)?.id;
       if (curPlaylistId == null) return;

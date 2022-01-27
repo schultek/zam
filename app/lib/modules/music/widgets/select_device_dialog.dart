@@ -3,6 +3,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'package:spotify/spotify.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../music_providers.dart';
 
 class SelectDeviceDialog extends StatefulWidget {
@@ -24,7 +25,7 @@ class _SelectDeviceDialogState extends State<SelectDeviceDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Mit Gerät verbinden'),
+      title: Text(context.tr.connect_to_device),
       content: SizedBox(
         width: 400,
         child: FutureBuilder<List<Device>>(

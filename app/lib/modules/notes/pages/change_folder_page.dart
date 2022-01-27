@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../notes_provider.dart';
 
 class ChangeFolderPage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Change Folder'),
+        title: Text(context.tr.change_folder),
       ),
       body: Consumer(
         builder: (context, ref, _) {
@@ -49,7 +50,7 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
               if (index < folders.length) {
                 return ListTile(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  title: Text(folders[index] ?? 'No Folder'),
+                  title: Text(folders[index] ?? context.tr.no_folder),
                   tileColor: folders[index] == folder ? context.onSurfaceColor.withOpacity(0.1) : null,
                   onTap: () {
                     folder = folders[index];
@@ -60,8 +61,8 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
                 if (createFolder) {
                   return ListTile(
                       title: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'Folder',
+                    decoration: InputDecoration(
+                      labelText: context.tr.folder,
                     ),
                     autofocus: true,
                     onSubmitted: (text) {
@@ -72,7 +73,7 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
                 } else {
                   return ListTile(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    title: const Text('Create new folder'),
+                    title: Text(context.tr.create_new_folder),
                     onTap: () {
                       setState(() => createFolder = true);
                     },

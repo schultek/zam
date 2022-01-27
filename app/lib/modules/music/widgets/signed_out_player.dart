@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../helpers/extensions.dart';
 import '../../../widgets/simple_card.dart';
 import '../music_providers.dart';
 
@@ -16,7 +17,7 @@ class SignedOutPlayer extends StatelessWidget {
             .read(musicLogicProvider)
             .signInToSpotify((authUri, redirectUri) => openSignIn(context, authUri, redirectUri));
       },
-      child: const SimpleCard(title: 'Play Spotify\n(Tap to login)', icon: Icons.music_note),
+      child: SimpleCard(title: context.tr.play_spotify, icon: Icons.music_note),
     );
   }
 

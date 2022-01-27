@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
+import '../../helpers/extensions.dart';
 import 'cards/new_poll_card.dart';
 import 'cards/poll_card.dart';
 import 'cards/polls_card.dart';
@@ -33,7 +34,7 @@ class PollsModule extends ModuleBuilder<ContentSegment> {
     return QuickAction(
       context: context,
       icon: Icons.add,
-      text: 'New Poll',
+      text: context.context.tr.new_poll,
       onNavigate: (context) => const CreatePollPage(),
     );
   }

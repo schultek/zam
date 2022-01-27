@@ -5,6 +5,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
 import '../../../core/widgets/widget_selector.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 
 class LabelWidget extends StatefulWidget {
@@ -41,9 +42,9 @@ class _LabelWidgetState extends State<LabelWidget> {
         autofocus: true,
         focusNode: focusNode,
         initialValue: widget.label,
-        decoration: const InputDecoration(
-          hintText: 'Add Label',
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          hintText: context.tr.add_label,
+          border: const OutlineInputBorder(),
           filled: true,
         ),
         onFieldSubmitted: (text) {
@@ -57,7 +58,7 @@ class _LabelWidgetState extends State<LabelWidget> {
       child = Padding(
         padding: widget.padding,
         child: Text(
-          widget.label ?? 'Add Label',
+          widget.label ?? context.tr.add_label,
           style: context.theme.textTheme.headline6!.apply(color: context.onSurfaceColor),
         ),
       );

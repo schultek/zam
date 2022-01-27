@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' show Document;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../helpers/extensions.dart';
 import '../notes_provider.dart';
 
 class SelectNotePage extends StatefulWidget {
@@ -18,7 +19,7 @@ class _SelectNotePageState extends State<SelectNotePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select a Note or Folder'),
+        title: Text(context.tr.select_note_or_folder),
       ),
       body: Consumer(
         builder: (context, ref, _) {
@@ -33,7 +34,7 @@ class _SelectNotePageState extends State<SelectNotePage> {
                     for (var note in data)
                       ListTile(
                         contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                        title: Text(note.title ?? 'Untitled'),
+                        title: Text(note.title ?? context.tr.untitled),
                         subtitle: Text(
                           Document.fromJson(note.content).toPlainText().replaceAll('\n', '  '),
                           overflow: TextOverflow.ellipsis,
@@ -62,8 +63,8 @@ class _SelectNotePageState extends State<SelectNotePage> {
                   ],
                 );
               },
-              loading: () => const Text('Loading...'),
-              error: (e, st) => Text('Error $e'));
+              loading: () => Text('${context.tr.loading}...'),
+              error: (e, st) => Text('${context.tr.error} $e'));
         },
       ),
     );

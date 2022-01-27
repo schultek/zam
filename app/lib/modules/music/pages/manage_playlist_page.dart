@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../music_providers.dart';
 import '../widgets/track_tile.dart';
@@ -40,7 +41,7 @@ class ManagePlaylistPage extends StatelessWidget {
                 ],
                 Expanded(
                   child: Text(
-                    playlist?.name ?? 'Playlist',
+                    playlist?.name ?? context.tr.playlist,
                     overflow: TextOverflow.fade,
                   ),
                 ),
@@ -90,7 +91,7 @@ class ManagePlaylistPage extends StatelessWidget {
                     onPressed: () {
                       ref.read(musicLogicProvider).createSharedPlaylist();
                     },
-                    child: const Text('Create Shared Playlist'),
+                    child: Text(context.tr.create_shared_playlist),
                   ),
                 )
               : ListView(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/logic_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 
@@ -16,14 +17,14 @@ class UserOptionsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('User Options'),
+      title: Text(context.tr.user_options),
       content: SizedBox(
         width: 400,
         child: ListView(
           shrinkWrap: true,
           children: [
             ListTile(
-              title: const Text('Delete'),
+              title: Text(context.tr.delete),
               onTap: () {
                 context.read(tripsLogicProvider).deleteUser(id);
                 Navigator.of(context).pop();
@@ -39,7 +40,7 @@ class UserOptionsDialog extends StatelessWidget {
   Widget roleOption(BuildContext context, String role) {
     if (role == UserRoles.organizer) {
       return ListTile(
-        title: const Text('Remove Organizer Status'),
+        title: Text(context.tr.remove_organizer),
         onTap: () {
           context.read(tripsLogicProvider).updateUserRole(id, UserRoles.participant);
           Navigator.of(context).pop();
@@ -47,7 +48,7 @@ class UserOptionsDialog extends StatelessWidget {
       );
     } else {
       return ListTile(
-        title: const Text('Make Organizer'),
+        title: Text(context.tr.make_organizer),
         onTap: () {
           context.read(tripsLogicProvider).updateUserRole(id, UserRoles.organizer);
           Navigator.of(context).pop();

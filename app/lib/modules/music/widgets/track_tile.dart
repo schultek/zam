@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../helpers/extensions.dart';
 import '../music_models.dart';
 
 enum TrackAction { play, queue, addPlaylist, deletePlaylist }
@@ -20,16 +21,16 @@ extension ActionUi on TrackAction {
     }
   }
 
-  String get label {
+  String label(BuildContext context) {
     switch (this) {
       case TrackAction.play:
-        return 'Play';
+        return context.tr.play;
       case TrackAction.queue:
-        return 'Add to queue';
+        return context.tr.add_to_queue;
       case TrackAction.addPlaylist:
-        return 'Add to playlist';
+        return context.tr.add_to_playlist;
       case TrackAction.deletePlaylist:
-        return 'Remove from playlist';
+        return context.tr.remove_from_playlist;
     }
   }
 }
@@ -39,8 +40,13 @@ class TrackTile extends StatelessWidget {
   final VoidCallback? onTap;
   final Function(TrackAction)? onAction;
   final Set<TrackAction> actions;
-  const TrackTile({required this.track, this.onTap, this.onAction, this.actions = defaultActions, Key? key})
-      : super(key: key);
+  const TrackTile({
+    required this.track,
+    this.onTap,
+    this.onAction,
+    this.actions = defaultActions,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +74,7 @@ class TrackTile extends StatelessWidget {
                       children: [
                         Icon(action.icon, size: 20),
                         const SizedBox(width: 10),
-                        Text(action.label),
+                        Text(action.label(context)),
                       ],
                     ),
                   ),

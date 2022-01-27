@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/widgets/settings_section.dart';
+import '../../../helpers/extensions.dart';
 import '../polls_provider.dart';
 
 class CreatePollPage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _CreatePollPageState extends State<CreatePollPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Poll'),
+        title: Text(context.tr.create_poll),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
@@ -45,7 +46,7 @@ class _CreatePollPageState extends State<CreatePollPage> {
             padding: const EdgeInsets.all(14),
             children: [
               TextField(
-                decoration: const InputDecoration(labelText: 'Name'),
+                decoration: InputDecoration(labelText: context.tr.name),
                 onChanged: (text) => setState(() => _name = text),
               ),
             ],

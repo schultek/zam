@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../../widgets/simple_card.dart';
 import '../pages/select_photos_album_page.dart';
@@ -34,8 +35,8 @@ class _SelectPhotosAlbumCardState extends State<SelectPhotosAlbumCard> {
   Future<bool> showSignInWithGooglePrompt(BuildContext context) async {
     var didSignIn = await showPrompt<bool>(
       context,
-      title: 'SignIn with Google',
-      body: 'In order to use the shared photos album, you have to sign in with your google account.',
+      title: context.tr.sign_in_google,
+      body: context.tr.sign_in_google_desc,
       onContinue: () => context.read(googleAccountProvider.notifier).signIn(),
     );
     return didSignIn ?? false;
@@ -54,7 +55,7 @@ class _SelectPhotosAlbumCardState extends State<SelectPhotosAlbumCard> {
               var result = await onContinue();
               Navigator.of(context).pop(result);
             },
-            child: const Text('Continue'),
+            child: Text(context.tr.continuee),
           ),
         ],
       ),
@@ -85,7 +86,7 @@ class _SelectPhotosAlbumCardState extends State<SelectPhotosAlbumCard> {
       onTap: () {
         selectAlbum(context);
       },
-      child: const SimpleCard(title: 'Select Album', icon: Icons.image),
+      child: SimpleCard(title: context.tr.select_album, icon: Icons.image),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
+import '../../../helpers/extensions.dart';
 import '../../../providers/auth/user_provider.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../notes_provider.dart';
@@ -113,8 +114,8 @@ class _EditNotePageState extends State<EditNotePage> {
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: TextFormField(
-                          decoration: const InputDecoration(
-                            hintText: 'Title',
+                          decoration: InputDecoration(
+                            hintText: context.tr.title,
                             filled: false,
                             border: InputBorder.none,
                           ),

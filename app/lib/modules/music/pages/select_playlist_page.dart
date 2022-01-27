@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:spotify/spotify.dart' show PlaylistSimple;
 
+import '../../../helpers/extensions.dart';
 import '../../../widgets/loading_shimmer.dart';
 import '../music_models.dart';
 import '../music_providers.dart';
@@ -24,7 +25,7 @@ class _SelectPlaylistPageState extends State<SelectPlaylistPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select Playlist'),
+        title: Text(context.tr.select_playlist),
       ),
       body: FutureBuilder<Iterable<PlaylistSimple>>(
         future: context.read(musicLogicProvider).myPlaylists(),
