@@ -1,0 +1,14 @@
+{
+  "name": "jufa",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node ./test/firestore_rules.test.js",
+    "emulator": "firebase emulators:start --only firestore"
+  },
+  "author": "Kilian Schulte",
+  "dependencies": {
+    "@firebase/rules-unit-testing": "^2.0.2",
+    "mocha": "^9.2.0"
+  }
+}

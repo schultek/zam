@@ -52,5 +52,6 @@ class PollsModule extends ModuleBuilder<ContentSegment> {
         spacing: 10,
       );
     }
+    return null;
   }
 }

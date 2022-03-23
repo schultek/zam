@@ -122,5 +122,6 @@ class NotesModule extends ModuleBuilder<ContentSegment> {
         spacing: 20,
       );
     }
+    return null;
   }
 }

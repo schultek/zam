@@ -1,14 +1,14 @@
 {
   "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
+    "rules": "config/firestore.rules",
+    "indexes": "config/firestore.indexes.json"
   },
   "functions": {
     "runtime": "nodejs10",
     "source": "functions"
   },
   "storage": {
-    "rules": "storage.rules"
+    "rules": "config/storage.rules"
   },
   "hosting": {
     "public": "hosting",

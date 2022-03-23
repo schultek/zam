@@ -1,9 +1,155 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if
-          request.time < timestamp.date(2020, 11, 17);
+  
+    match /trips/{tripId} {
+
+      function isSignedIn() {
+        return request.auth != null;
+      }
+      
+      function getTrip() {
+        return get(/databases/$(database)/documents/trips/$(tripId));
+      }
+
+      function userIsInTrip(trip) {
+        return isSignedIn() && request.auth.uid in trip.data.users;
+      }
+
+      function userIsOrganizer(trip) {
+        return userIsInTrip(trip) && trip.data.users[request.auth.uid].role == 'organizer';
+      }
+
+      function userIsAdmin() {
+        return isSignedIn() && "isAdmin" in request.auth.token && request.auth.token.isAdmin == true;
+      }
+
+      function userIsTripCreator() {
+        return isSignedIn() && (userIsAdmin() || ("isOrganizer" in request.auth.token && request.auth.token.isOrganizer == true));
+      }
+      
+      function checkTripFormat(trip) {
+        return trip.data.name != null && trip.data.template != null && trip.data.users != null && trip.data.modules != null;
+      }
+
+      function checkOrganizerUpdates() {
+        return userIsOrganizer(request.resource);
+      }
+
+      function checkTripUpdates() {
+        return request.resource.data.diff(resource.data).affectedKeys == ['users'].toSet()
+          && request.resource.data.users.diff(resource.data.users).affectedKeys == [request.auth.uid].toSet()
+          && request.resource.data.users[request.auth.uid].role == resource.data.users[request.auth.uid].role;
+      }
+      
+      allow read: if userIsAdmin() 
+        || userIsInTrip(resource);
+      
+      allow update: if (userIsOrganizer(resource) && checkOrganizerUpdates()) 
+        || (userIsInTrip(resource) && checkTripUpdates());
+      
+      allow create: if userIsTripCreator() 
+        && checkTripFormat(request.resource) 
+        && userIsOrganizer(request.resource);
+      
+      allow delete: if false;
+      
+      match /modules/announcements/announcements/{announcementId} {
+        allow read: if userIsInTrip(getTrip());
+        
+        allow create: if userIsOrganizer(getTrip());
+        
+        allow update, delete: if false;
+      }
+      
+      match /modules/thebutton {
+      
+        function checkTheButtonFormat(thebutton) {
+          return thebutton.aliveHours != null && thebutton.aliveHours is number 
+            && thebutton.lastReset == request.time 
+            && thebutton.leaderboard is map;
+        }
+        
+        function checkTheButtonUpdateAllowed() {
+          return userIsOrganizer(getTrip()) || 
+            request.resource.data.diff(resource.data).affectedKeys() == ['lastReset', 'leaderboard'].toSet();
+        }
+      
+        allow read: if userIsInTrip(getTrip());
+        
+        allow delete: if false;
+        
+        allow create: if userIsInTrip(getTrip()) && checkTheButtonFormat(request.resource);
+        
+        allow update: if userIsInTrip(getTrip()) && checkTheButtonUpdateAllowed();
+      }
+
+      match /modules/photos/albums/{albumId} {
+
+        allow read: if userIsInTrip(getTrip());
+
+        allow write: if userIsOrganizer(getTrip());
+      }
+
+      match /modules/elimination/games/{gameId} {
+
+        allow read: if userIsInTrip(getTrip());
+
+        allow create, delete: if userIsOrganizer(getTrip());
+
+        allow update: if userIsInTrip(getTrip()) 
+          && request.resource.data.diff(resource).affectedKeys.hasOnly(['eliminations']);
+      }
+
+      match /modules/music {
+
+        allow read, write: if userIsInTrip(getTrip());
+      }
+
+      match /modules/notes/notes/{noteId} {
+
+        allow read: if userIsInTrip(getTrip());
+
+        allow create: if userIsInTrip(getTrip()) 
+          && request.resource.data.author == request.auth.uid;
+
+        allow delete: if userIsInTrip(getTrip()) 
+          && (userIsOrganizer(getTrip()) || resource.data.author == request.auth.uid);
+
+        allow update: if userIsInTrip(getTrip()) 
+          && (userIsOrganizer(getTrip()) || request.auth.uid in resource.data.editors);
+      }
+
+      match /modules/chat/channels/{channelId} {
+
+        allow read: if userIsInTrip(getTrip()) 
+          && (resource.data.isOpen || request.auth.uid in resource.data.members);
+
+        allow create: if userIsInTrip(getTrip()) 
+          && request.resource.data.name != null
+          && request.resource.data.isOpen is bool
+          && request.auth.uid in request.resource.data.members;
+
+        allow update, delete: if userIsInTrip(getTrip()) 
+          && request.auth.uid in resource.data.members;
+      
+        match /messages/{messageId} {
+
+          function getChannel() {
+            return get(/databases/$(database)/documents/trips/$(tripId)/modules/chat/channels/$(channelId));
+          }
+
+          allow read: if userIsInTrip(getTrip()) 
+            && request.auth.uid in getChannel().data.members;
+
+          allow create: if userIsInTrip(getTrip())
+            && request.auth.uid in getChannel().data.members
+            && request.resource.data.sender == request.auth.uid
+            && request.resource.data.sentAt == request.time;
+
+          allow update, delete: if false;
+        }
+      }
     }
   }
 }

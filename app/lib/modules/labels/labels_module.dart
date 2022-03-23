@@ -35,6 +35,7 @@ class LabelModule extends ModuleBuilder<ContentSegment> {
             builder: (context) => LabelWidget(idProvider: idProvider),
           );
         }
+        return null;
       },
     );
   }

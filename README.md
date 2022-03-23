@@ -13,6 +13,7 @@ Jugend-Freizeit-App
 
 - Offline capability
 - [x] Themes
+- [x] Localization
 
 ## Modules
 
@@ -135,5 +136,42 @@ Jugend-Freizeit-App
 
 ### Klassenfahrt
 
+- Agenda / Zeitpläne erstellen und einsehen
+- Kommunikation, Absprachen machen
+- Mitteilungen / Ankündigungen schreiben
+
+### Jugend Freizeit
+
+- Essen Planen
+- Abstimmungen, Feedback geben
+- Packliste, Planungen
+- Bildungs-Material verwalten und ansehen
+
+### Ski-Gruppenurlaub
+
+- Ausgaben managen
+- Fotos / Videos teilen
+- Chatten
+- Karte vom Skigebiet hochladen
+- Website vom Skigebiet verlinken
+
+### Company Teamevent
+
+- Planung
+- Chatten
+- Spiele
+
+### Klausur-Tagung
+
+- Notizen
+- Material hochladen und bearbeiten
+- Workshops erstellen, Slides hochladen & teilen
+- Chatten
+
+### Abifahrt
+
+### Wallfahrt
+
+### Gruppen-Trip auf Festival
 
 ### 
