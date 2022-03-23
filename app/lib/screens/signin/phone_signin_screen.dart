@@ -117,6 +117,7 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
           },
           onCompleted: _onSignedIn,
           onFailed: (err) {
+            if (!mounted) return;
             print(err);
 
             var msg = '';

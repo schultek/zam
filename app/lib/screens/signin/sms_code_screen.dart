@@ -111,7 +111,9 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                         content: Text(msg),
                       ));
                     }
-                    setState(() => isLoading = false);
+                    if (mounted) {
+                      setState(() => isLoading = false);
+                    }
                   },
                   child: Center(
                     child: Padding(

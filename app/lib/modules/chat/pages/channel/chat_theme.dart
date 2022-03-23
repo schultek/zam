@@ -44,6 +44,7 @@ class CustomChatTheme extends ChatTheme {
             fontWeight: FontWeight.w500,
             height: 1.5,
           ),
+          inputMargin: EdgeInsets.zero,
           messageBorderRadius: 20,
           messageInsetsHorizontal: 20,
           messageInsetsVertical: 16,

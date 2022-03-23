@@ -30,29 +30,57 @@ class TripSelectorPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(context.tr.trips),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          if (selectedTrip != null) ...[
-            Text(context.tr.selected_trip, style: TextStyle(color: context.onSurfaceColor)),
-            const SizedBox(height: 20),
-            tripTile(context, selectedTrip, true),
-            const SizedBox(height: 20),
-          ],
-          if (trips.where((t) => t.id != selectedTrip?.id).isNotEmpty) ...[
-            const SizedBox(height: 20),
-            Text(context.tr.available_trips, style: TextStyle(color: context.onSurfaceColor)),
-            const SizedBox(height: 20),
-            for (var trip in trips.where((t) => t.id != selectedTrip?.id)) ...[
-              tripTile(context, trip, false),
-              const SizedBox(height: 20),
-            ],
-          ],
-          if (context.watch(claimsProvider).isOrganizer) ...createTripSection(context),
-          const SizedBox(height: 40),
-          ...accountSection(context),
-          const SizedBox(height: 20),
-          ...aboutSection(context),
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.all(20),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                if (selectedTrip != null) ...[
+                  Text(context.tr.selected_trip, style: TextStyle(color: context.onSurfaceColor)),
+                  const SizedBox(height: 20),
+                  tripTile(context, selectedTrip, true),
+                  const SizedBox(height: 20),
+                ],
+                if (trips.where((t) => t.id != selectedTrip?.id).isNotEmpty) ...[
+                  const SizedBox(height: 20),
+                  Text(context.tr.available_trips, style: TextStyle(color: context.onSurfaceColor)),
+                  const SizedBox(height: 20),
+                  for (var trip in trips.where((t) => t.id != selectedTrip?.id)) ...[
+                    tripTile(context, trip, false),
+                    const SizedBox(height: 20),
+                  ],
+                ],
+              ]),
+            ),
+          ),
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: Column(
+              children: [
+                Expanded(
+                  child: trips.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(40),
+                            child: Text(
+                              context.tr.no_trips,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
+                            ),
+                          ),
+                        )
+                      : Container(),
+                ),
+                if (context.watch(claimsProvider).isOrganizer) ...createTripSection(context),
+                const SizedBox(height: 40),
+                ...accountSection(context),
+                const SizedBox(height: 20),
+                ...aboutSection(context),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
         ],
       ),
     );
