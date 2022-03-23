@@ -66,11 +66,14 @@ class _JufaAppState extends State<JufaApp> {
       return const SignInScreen();
     }
 
-    var selectedTrip = context.watch(selectedTripProvider);
-    if (selectedTrip != null) {
-      return TripScreen(selectedTrip, key: ValueKey(selectedTrip.id));
+    var selectedTripId = context.watch(selectedTripIdProvider);
+    if (selectedTripId != null) {
+      return const TripScreen();
     }
 
-    return TripTheme(theme: TripThemeData(FlexScheme.material, true), child: const TripSelectorPage());
+    return TripTheme(
+      theme: TripThemeData(FlexScheme.material, true),
+      child: const TripSelectorPage(),
+    );
   }
 }

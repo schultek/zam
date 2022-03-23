@@ -37,9 +37,9 @@ service cloud.firestore {
       }
 
       function checkTripUpdates() {
-        return request.resource.data.diff(resource.data).affectedKeys == ['users'].toSet()
-          && request.resource.data.users.diff(resource.data.users).affectedKeys == [request.auth.uid].toSet()
-          && request.resource.data.users[request.auth.uid].role == resource.data.users[request.auth.uid].role;
+        return request.resource.data.diff(resource.data).affectedKeys() == ['users'].toSet()
+          && request.resource.data.users.diff(resource.data.users).affectedKeys() == [request.auth.uid].toSet()
+          && !('role' in request.resource.data.users[request.auth.uid].diff(resource.data.users[request.auth.uid]).affectedKeys());
       }
       
       allow read: if userIsAdmin() 
@@ -65,9 +65,9 @@ service cloud.firestore {
       match /modules/thebutton {
       
         function checkTheButtonFormat(thebutton) {
-          return thebutton.aliveHours != null && thebutton.aliveHours is number 
-            && thebutton.lastReset == request.time 
-            && thebutton.leaderboard is map;
+          return thebutton.data.aliveHours != null && thebutton.data.aliveHours is number
+            && thebutton.data.lastReset == request.time
+            && thebutton.data.leaderboard is map;
         }
         
         function checkTheButtonUpdateAllowed() {
@@ -98,7 +98,7 @@ service cloud.firestore {
         allow create, delete: if userIsOrganizer(getTrip());
 
         allow update: if userIsInTrip(getTrip()) 
-          && request.resource.data.diff(resource).affectedKeys.hasOnly(['eliminations']);
+          && request.resource.data.diff(resource).affectedKeys().hasOnly(['eliminations']);
       }
 
       match /modules/music {

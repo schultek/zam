@@ -4,11 +4,14 @@
   "type": "module",
   "scripts": {
     "test": "node ./test/firestore_rules.test.js",
-    "emulator": "firebase emulators:start --only firestore"
+    "emulator": "firebase emulators:start --only firestore",
+    "deploy": "firebase deploy --only firestore"
   },
   "author": "Kilian Schulte",
   "dependencies": {
+    "@firebase/firestore-compat": "^0.1.15",
     "@firebase/rules-unit-testing": "^2.0.2",
+    "firebase": "^9.0.0",
     "mocha": "^9.2.0"
   }
 }

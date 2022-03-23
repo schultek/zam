@@ -33,7 +33,7 @@ class TripSelectorPage extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 if (selectedTrip != null) ...[
@@ -54,31 +54,34 @@ class TripSelectorPage extends StatelessWidget {
               ]),
             ),
           ),
-          SliverFillRemaining(
-            hasScrollBody: false,
-            child: Column(
-              children: [
-                Expanded(
-                  child: trips.isEmpty
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(40),
-                            child: Text(
-                              context.tr.no_trips,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
+          SliverPadding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            sliver: SliverFillRemaining(
+              hasScrollBody: false,
+              child: Column(
+                children: [
+                  if (context.watch(claimsProvider).isOrganizer) ...createTripSection(context),
+                  Expanded(
+                    child: trips.isEmpty
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(40),
+                              child: Text(
+                                context.tr.no_trips,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
+                              ),
                             ),
-                          ),
-                        )
-                      : Container(),
-                ),
-                if (context.watch(claimsProvider).isOrganizer) ...createTripSection(context),
-                const SizedBox(height: 40),
-                ...accountSection(context),
-                const SizedBox(height: 20),
-                ...aboutSection(context),
-                const SizedBox(height: 20),
-              ],
+                          )
+                        : Container(),
+                  ),
+                  const SizedBox(height: 40),
+                  ...accountSection(context),
+                  const SizedBox(height: 20),
+                  ...aboutSection(context),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ],
@@ -98,7 +101,7 @@ class TripSelectorPage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: context.surfaceColor.withOpacity(0.2),
               ),
-              height: 80,
+              height: 100,
               child: Material(
                 color: context.surfaceColor.withOpacity(0.3),
                 child: InkWell(

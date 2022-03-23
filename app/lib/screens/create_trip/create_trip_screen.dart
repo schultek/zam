@@ -27,7 +27,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
       users: {userId: TripUser(role: UserRoles.organizer)},
       template: SwipeTemplateModel(),
       theme: ThemeModel(schemeIndex: FlexScheme.blue.index),
-      moduleBlacklist: ['music', 'photos'],
+      moduleBlacklist: ['music', 'photos', 'polls'],
     );
     return FirebaseFirestore.instance.collection('trips').add(trip.toMap());
   }

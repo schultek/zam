@@ -10,7 +10,12 @@ import '../helpers.dart';
 final tripsProvider = StreamProvider<List<Trip>>((ref) async* {
   var user = await ref.watch(userProvider.future);
 
-  var userId = user?.uid;
+  if (user == null) {
+    yield [];
+    return;
+  }
+
+  var userId = user.uid;
   var claims = ref.watch(claimsProvider);
 
   var query = claims.isAdmin

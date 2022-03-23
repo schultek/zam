@@ -34,11 +34,22 @@ class ModuleRegistry {
         if (!moduleBlacklist.contains(m.key))
           for (var e in m.value.elements.entries)
             if (e.value is ElementBuilder<T>)
-              (e.value as ElementBuilder<T>)(
+              _callOrCatch(
+                e.value as ElementBuilder<T>,
                 ModuleContext(context, '${m.key}/${e.key}'),
               ),
-    ].map((f) async => await f));
+    ]);
     return widgets.whereNotNull().toList();
+  }
+
+  Future<T?> _callOrCatch<T extends ModuleElement>(ElementBuilder<T> builder, ModuleContext context) async {
+    var future = builder(context);
+    try {
+      return await future;
+    } catch (e) {
+      print('Error when getting widget ${context.id}: $e');
+      return null;
+    }
   }
 
   void preloadModules(BuildContext context) {

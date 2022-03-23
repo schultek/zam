@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../core/core.dart';
+import '../../providers/trips/selected_trip_provider.dart';
 
 class TripScreen extends StatelessWidget {
-  final Trip trip;
-  const TripScreen(this.trip, {Key? key}) : super(key: key);
+  const TripScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => trip.template.builder();
+  Widget build(BuildContext context) {
+    var trip = context.watch(selectedTripProvider)!;
+    return trip.template.builder();
+  }
 }

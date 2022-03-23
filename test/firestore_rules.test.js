@@ -4,6 +4,9 @@ import {
   initializeTestEnvironment
 } from "@firebase/rules-unit-testing";
 
+import firebase from 'firebase/compat/app';
+import "firebase/compat/firestore";
+
 let testEnv = await initializeTestEnvironment({
   projectId: "jufa20",
   firestore: {
@@ -14,12 +17,12 @@ let testEnv = await initializeTestEnvironment({
 
 async function testRules() {
 
-  const admin1 = testEnv.authenticatedContext("admin", {isOrganizer: true, isAdmin: true});
-  const org1 = testEnv.authenticatedContext("org1", {isOrganizer: true});
+  const admin1 = testEnv.authenticatedContext("admin", {isOrganizer: true, isAdmin: true}).firestore();
+  const org1 = testEnv.authenticatedContext("org1", {isOrganizer: true}).firestore();
 
-  const bob = testEnv.authenticatedContext("bob");
-  const tom = testEnv.authenticatedContext("tom");
-  const alice = testEnv.authenticatedContext("alice");
+  const bob = testEnv.authenticatedContext("bob").firestore();
+  const tom = testEnv.authenticatedContext("tom").firestore();
+  const alice = testEnv.authenticatedContext("alice").firestore();
 
   var tripData = {
     name: 'Test Trip', 
@@ -31,40 +34,34 @@ async function testRules() {
     modules: {},
   };
 
+  // TRIP & USERS
 
-  console.log(1);
   // no creation claim
-  await assertFails(bob.firestore().doc('trips/1234').set(tripData));
+  await assertFails(bob.doc('trips/1234').set(tripData));
 
-  console.log(2);
   // not organizer in trip
-  await assertFails(admin1.firestore().doc('trips/1234').set(tripData));
+  await assertFails(admin1.doc('trips/1234').set(tripData));
   
-  console.log(3);
-  await assertSucceeds(org1.firestore().doc('trips/1234').set(tripData));
+  await assertSucceeds(org1.doc('trips/1234').set(tripData));
 
-  console.log(4);
   // not in trip
-  await assertFails(tom.firestore().doc('trips/1234').get());
+  await assertFails(tom.doc('trips/1234').get());
 
-  console.log(5);
   // admin read everything
-  await assertSucceeds(admin1.firestore().doc('trips/1234').get());
+  await assertSucceeds(admin1.doc('trips/1234').get());
   
-
-  console.log(6);
   // set nickname
-  await assertSucceeds(alice.firestore().doc('trips/1234').update({users: {alice: {nickname: 'Alice'}}}));
+  await assertSucceeds(alice.doc('trips/1234').update('users.alice.nickname', 'Alice'));
 
-  console.log(7);
   // add tom to trip
-  await assertSucceeds(org1.firestore().doc('trips/1234').update({users: {tom: {role: 'participant'}}}));
+  await assertSucceeds(org1.doc('trips/1234').update('users.tom', {role: 'participant'}));
 
-  console.log(8);
   // cannot update other user
-  await assertFails(alice.firestore().doc('trips/1234').update({users: {tom: {nickname: 'Dumby'}}}));
+  await assertFails(alice.doc('trips/1234').update('users.tom.nickname', 'Dumby'));
 
-
+  // THE BUTTON
+  
+  await assertSucceeds(alice.doc('trips/1234/modules/thebutton').set({aliveHours: 1, lastReset: firebase.firestore.FieldValue.serverTimestamp(), leaderboard: {}}));
 }
 
 try {
