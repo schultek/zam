@@ -66,6 +66,7 @@
 
   "@ANNOUNCEMENTS": {},
 
+  "announcements": "Mitteilungen",
   "create_announcement": "Mitteilung erstellen",
   "dismissible": "Verwerfbar",
   "text_color": "Textfarbe",
@@ -85,7 +86,7 @@
 
   "@ELIMINATION": {},
 
-  "elimination_games": "Eliminierungs Spiele",
+  "elimination": "Eliminierung",
   "new_game": "Neues Spiel",
   "eliminate": "Eliminiere",
   "hold_to_reveal": "Halte zum Aufdecken",
@@ -107,10 +108,12 @@
 
   "@LABEL": {},
 
+  "labels": "Beschriftung",
   "add_label": "Label hinzufügen",
 
   "@MUSIC": {},
 
+  "music": "Musik",
   "play": "Abspielen",
   "add_to_queue": "Zur Warteschlange hinzufügen",
   "add_to_playlist": "Zur Playlist hinzufügen",
@@ -141,6 +144,7 @@
 
   "@PHOTOS": {},
 
+  "photos": "Fotos",
   "select_album": "Album auswählen",
   "elements": "Elemente",
   "sign_in_google": "Mit Google einloggen",

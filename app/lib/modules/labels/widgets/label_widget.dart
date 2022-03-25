@@ -10,9 +10,10 @@ import '../../../providers/trips/selected_trip_provider.dart';
 
 class LabelWidget extends StatefulWidget {
   final String? label;
-  final IdProvider idProvider;
+  final IdProvider? idProvider;
+  final void Function(String value)? onChanged;
   final EdgeInsets padding;
-  const LabelWidget({this.label, this.padding = const EdgeInsets.all(8), required this.idProvider, Key? key})
+  const LabelWidget({this.label, this.padding = const EdgeInsets.all(8), this.idProvider, this.onChanged, Key? key})
       : super(key: key);
 
   @override
@@ -49,7 +50,8 @@ class _LabelWidgetState extends State<LabelWidget> {
         ),
         onFieldSubmitted: (text) {
           if (text.isNotEmpty) {
-            widget.idProvider.provide(context, base64.encode(utf8.encode(text)));
+            widget.idProvider?.provide(context, base64.encode(utf8.encode(text)));
+            widget.onChanged?.call(text);
             setState(() => isEditing = false);
           }
         },

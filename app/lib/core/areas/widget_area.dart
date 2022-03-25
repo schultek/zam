@@ -95,7 +95,8 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   void initArea(List<T> widgets);
 
   void updateAreaRenderBox(_) {
-    _areaRenderBox = _areaKey.currentContext!.findRenderObject()! as RenderBox;
+    var renderBox = _areaKey.currentContext?.findRenderObject();
+    if (renderBox != null) _areaRenderBox = renderBox as RenderBox;
   }
 
   bool get isSelected => template.selectedArea == id;

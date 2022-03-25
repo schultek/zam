@@ -33,8 +33,10 @@ dependencies:
   discoveryapis_generator: ^1.0.0
   dotted_border: ^2.0.0+2
   file_picker: ^4.5.1
+  firebase_analytics: ^9.1.2
   firebase_auth: ^3.3.11
   firebase_core: ^1.13.1
+  firebase_crashlytics: ^2.5.3
   firebase_dynamic_links: ^4.1.1
   firebase_messaging: ^11.2.11
   firebase_storage: ^10.2.9
@@ -48,6 +50,7 @@ dependencies:
   flutter_native_splash: ^2.1.1
   flutter_quill: ^4.0.10
   flutter_riverpod: ^1.0.3
+  flutter_sticky_header: ^0.6.1
   flutter_typeahead: ^3.2.4
   flutter_udid: ^2.0.0
   google_sign_in: ^5.2.4
@@ -65,6 +68,7 @@ dependencies:
   share_plus: ^4.0.2
   shared_preferences: ^2.0.13
   shimmer: ^2.0.0
+  skeletons: ^0.0.3
   spotify:
     git:
       url: https://github.com/schultek/spotify-dart

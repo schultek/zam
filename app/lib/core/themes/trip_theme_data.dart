@@ -5,8 +5,9 @@ import 'theme_model.dart';
 
 class ColorPreference {
   final bool useHighlightColor;
+  final int deltaElevation;
 
-  const ColorPreference({this.useHighlightColor = false});
+  const ColorPreference({this.useHighlightColor = false, this.deltaElevation = 1});
 }
 
 enum HighlightColor { primary, secondary, none }
@@ -52,7 +53,7 @@ class TripThemeData {
       return TripThemeData(scheme, dark, 1);
     }
 
-    return TripThemeData(scheme, dark, elevation + 1);
+    return TripThemeData(scheme, dark, elevation + (preference?.deltaElevation ?? 1));
   }
 
   Color get onSurfaceColor {

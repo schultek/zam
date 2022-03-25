@@ -10,8 +10,11 @@ import 'music_providers.dart';
 import 'widgets/signed_out_player.dart';
 import 'widgets/spotify_player.dart';
 
-class MusicModule extends ModuleBuilder<ContentSegment> {
+class MusicModule extends ModuleBuilder {
   MusicModule() : super('music');
+
+  @override
+  String getName(BuildContext context) => context.tr.music;
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {

@@ -153,6 +153,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				27CEB6C9062EBDBF704978A9 /* [CP] Embed Pods Frameworks */,
 				EB205E62F1FEB3EBAAD861F2 /* [CP] Copy Pods Resources */,
+				39F21DE827EBD3990028EAC3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -228,6 +229,23 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		39F21DE827EBD3990028EAC3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n$PODS_ROOT/FirebaseCrashlytics/upload-symbols --build-phase --validate -ai 1:815326157809:ios:6a9a69d1f92f1c64d3c250\n$PODS_ROOT/FirebaseCrashlytics/upload-symbols --build-phase -ai 1:815326157809:ios:6a9a69d1f92f1c64d3c250\n\n";
 		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;

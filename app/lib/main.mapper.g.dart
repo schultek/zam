@@ -2,12 +2,13 @@ import 'dart:ui';
 
 import 'package:dart_mappable/internals.dart';
 
-import 'core/elements/content_segment.dart';
+import 'core/layouts/drops_layout.dart';
+import 'core/layouts/focus_layout.dart';
+import 'core/layouts/full_page_layout.dart';
+import 'core/layouts/grid_layout.dart';
+import 'core/layouts/layout_model.dart';
 import 'core/models/trip.dart';
-import 'core/templates/drops_template.dart';
-import 'core/templates/focus_template.dart';
-import 'core/templates/grid_template.dart';
-import 'core/templates/swipe_template.dart';
+import 'core/templates/swipe/swipe_template.dart';
 import 'core/templates/template_model.dart';
 import 'core/themes/theme_model.dart';
 import 'modules/announcement/announcement_provider.dart';
@@ -25,14 +26,17 @@ var _mappers = <BaseMapper>{
   // class mappers
   TripMapper._(),
   TripUserMapper._(),
-  DropModelMapper._(),
-  IdProviderMapper._(),
-  DropsTemplateModelMapper._(),
-  TemplateModelMapper._(),
-  FocusTemplateModelMapper._(),
-  GridTemplateModelMapper._(),
   SwipeTemplateModelMapper._(),
+  TemplateModelMapper._(),
+  SwipeTemplatePageMapper._(),
+  TemplatePageMapper._(),
   ThemeModelMapper._(),
+  FullPageLayoutModelMapper._(),
+  LayoutModelMapper._(),
+  GridLayoutModelMapper._(),
+  DropModelMapper._(),
+  DropsLayoutModelMapper._(),
+  FocusLayoutModelMapper._(),
   AnnouncementMapper._(),
   EliminationGameMapper._(),
   EliminationEntryMapper._(),
@@ -228,6 +232,421 @@ class _TripUserCopyWithImpl<$R> extends BaseCopyWith<TripUser, $R> implements Tr
       profileUrl: or(profileUrl, $value.profileUrl)));
 }
 
+class SwipeTemplateModelMapper extends BaseMapper<SwipeTemplateModel> {
+  SwipeTemplateModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  SwipeTemplateModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SwipeTemplateModel fromMap(Map<String, dynamic> map) => SwipeTemplateModel(
+      type: map.getOpt('type'),
+      mainPage: map.getOpt('mainPage') ?? const SwipeTemplatePage(layout: GridLayoutModel()),
+      leftPage: map.getOpt('leftPage'),
+      rightPage: map.getOpt('rightPage'));
+
+  @override
+  Function get encoder => (SwipeTemplateModel v) => encode(v);
+  dynamic encode(SwipeTemplateModel v) => toMap(v);
+  Map<String, dynamic> toMap(SwipeTemplateModel s) => {
+        'mainPage': Mapper.toValue(s.mainPage),
+        'leftPage': Mapper.toValue(s.leftPage),
+        'rightPage': Mapper.toValue(s.rightPage),
+        'type': 'swipe'
+      };
+
+  @override
+  String? stringify(SwipeTemplateModel self) =>
+      'SwipeTemplateModel(mainPage: ${Mapper.asString(self.mainPage)}, leftPage: ${Mapper.asString(self.leftPage)}, rightPage: ${Mapper.asString(self.rightPage)})';
+  @override
+  int? hash(SwipeTemplateModel self) =>
+      Mapper.hash(self.mainPage) ^ Mapper.hash(self.leftPage) ^ Mapper.hash(self.rightPage);
+  @override
+  bool? equals(SwipeTemplateModel self, SwipeTemplateModel other) =>
+      Mapper.isEqual(self.mainPage, other.mainPage) &&
+      Mapper.isEqual(self.leftPage, other.leftPage) &&
+      Mapper.isEqual(self.rightPage, other.rightPage);
+
+  @override
+  Function get typeFactory => (f) => f<SwipeTemplateModel>();
+}
+
+extension SwipeTemplateModelMapperExtension on SwipeTemplateModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SwipeTemplateModelCopyWith<SwipeTemplateModel> get copyWith => SwipeTemplateModelCopyWith(this, $identity);
+}
+
+abstract class SwipeTemplateModelCopyWith<$R> {
+  factory SwipeTemplateModelCopyWith(SwipeTemplateModel value, Then<SwipeTemplateModel, $R> then) =
+      _SwipeTemplateModelCopyWithImpl<$R>;
+  SwipeTemplatePageCopyWith<$R> get mainPage;
+  SwipeTemplatePageCopyWith<$R>? get leftPage;
+  SwipeTemplatePageCopyWith<$R>? get rightPage;
+  $R call({String? type, SwipeTemplatePage? mainPage, SwipeTemplatePage? leftPage, SwipeTemplatePage? rightPage});
+  $R apply(SwipeTemplateModel Function(SwipeTemplateModel) transform);
+}
+
+class _SwipeTemplateModelCopyWithImpl<$R> extends BaseCopyWith<SwipeTemplateModel, $R>
+    implements SwipeTemplateModelCopyWith<$R> {
+  _SwipeTemplateModelCopyWithImpl(SwipeTemplateModel value, Then<SwipeTemplateModel, $R> then) : super(value, then);
+
+  @override
+  SwipeTemplatePageCopyWith<$R> get mainPage => SwipeTemplatePageCopyWith($value.mainPage, (v) => call(mainPage: v));
+  @override
+  SwipeTemplatePageCopyWith<$R>? get leftPage =>
+      $value.leftPage != null ? SwipeTemplatePageCopyWith($value.leftPage!, (v) => call(leftPage: v)) : null;
+  @override
+  SwipeTemplatePageCopyWith<$R>? get rightPage =>
+      $value.rightPage != null ? SwipeTemplatePageCopyWith($value.rightPage!, (v) => call(rightPage: v)) : null;
+  @override
+  $R call({String? type, SwipeTemplatePage? mainPage, Object? leftPage = $none, Object? rightPage = $none}) =>
+      $then(SwipeTemplateModel(
+          type: type,
+          mainPage: mainPage ?? $value.mainPage,
+          leftPage: or(leftPage, $value.leftPage),
+          rightPage: or(rightPage, $value.rightPage)));
+}
+
+class TemplateModelMapper extends BaseMapper<TemplateModel> {
+  TemplateModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  TemplateModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) {
+        switch (map['type']) {
+          case 'swipe':
+            return SwipeTemplateModelMapper._().decode(map);
+          default:
+            return fromMap(map);
+        }
+      });
+  TemplateModel fromMap(Map<String, dynamic> map) => throw MapperException(
+      "Cannot instantiate class TemplateModel, did you forgot to specify a subclass for [ type: '${map['type']}' ] or a default subclass?");
+
+  @override
+  Function get encoder => (TemplateModel v) => encode(v);
+  dynamic encode(TemplateModel v) {
+    if (v is SwipeTemplateModel) {
+      return SwipeTemplateModelMapper._().encode(v);
+    } else {
+      return toMap(v);
+    }
+  }
+
+  Map<String, dynamic> toMap(TemplateModel t) => {};
+
+  @override
+  String? stringify(TemplateModel self) => 'TemplateModel()';
+  @override
+  int? hash(TemplateModel self) => self.hashCode;
+  @override
+  bool? equals(TemplateModel self, TemplateModel other) => true;
+
+  @override
+  Function get typeFactory => (f) => f<TemplateModel>();
+}
+
+extension TemplateModelMapperExtension on TemplateModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+}
+
+class SwipeTemplatePageMapper extends BaseMapper<SwipeTemplatePage> {
+  SwipeTemplatePageMapper._();
+
+  @override
+  Function get decoder => decode;
+  SwipeTemplatePage decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SwipeTemplatePage fromMap(Map<String, dynamic> map) => SwipeTemplatePage(layout: map.get('layout'));
+
+  @override
+  Function get encoder => (SwipeTemplatePage v) => encode(v);
+  dynamic encode(SwipeTemplatePage v) => toMap(v);
+  Map<String, dynamic> toMap(SwipeTemplatePage s) => {'layout': Mapper.toValue(s.layout), 'type': 'swipe'};
+
+  @override
+  String? stringify(SwipeTemplatePage self) => 'SwipeTemplatePage(layout: ${Mapper.asString(self.layout)})';
+  @override
+  int? hash(SwipeTemplatePage self) => Mapper.hash(self.layout);
+  @override
+  bool? equals(SwipeTemplatePage self, SwipeTemplatePage other) => Mapper.isEqual(self.layout, other.layout);
+
+  @override
+  Function get typeFactory => (f) => f<SwipeTemplatePage>();
+}
+
+extension SwipeTemplatePageMapperExtension on SwipeTemplatePage {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SwipeTemplatePageCopyWith<SwipeTemplatePage> get copyWith => SwipeTemplatePageCopyWith(this, $identity);
+}
+
+abstract class SwipeTemplatePageCopyWith<$R> {
+  factory SwipeTemplatePageCopyWith(SwipeTemplatePage value, Then<SwipeTemplatePage, $R> then) =
+      _SwipeTemplatePageCopyWithImpl<$R>;
+  $R call({LayoutModel? layout});
+  $R apply(SwipeTemplatePage Function(SwipeTemplatePage) transform);
+}
+
+class _SwipeTemplatePageCopyWithImpl<$R> extends BaseCopyWith<SwipeTemplatePage, $R>
+    implements SwipeTemplatePageCopyWith<$R> {
+  _SwipeTemplatePageCopyWithImpl(SwipeTemplatePage value, Then<SwipeTemplatePage, $R> then) : super(value, then);
+
+  @override
+  $R call({LayoutModel? layout}) => $then(SwipeTemplatePage(layout: layout ?? $value.layout));
+}
+
+class TemplatePageMapper extends BaseMapper<TemplatePage> {
+  TemplatePageMapper._();
+
+  @override
+  Function get decoder => decode;
+  TemplatePage decode(dynamic v) => checked(v, (Map<String, dynamic> map) {
+        switch (map['type']) {
+          case 'swipe':
+            return SwipeTemplatePageMapper._().decode(map);
+          default:
+            return fromMap(map);
+        }
+      });
+  TemplatePage fromMap(Map<String, dynamic> map) => TemplatePage();
+
+  @override
+  Function get encoder => (TemplatePage v) => encode(v);
+  dynamic encode(TemplatePage v) {
+    if (v is SwipeTemplatePage) {
+      return SwipeTemplatePageMapper._().encode(v);
+    } else {
+      return toMap(v);
+    }
+  }
+
+  Map<String, dynamic> toMap(TemplatePage t) => {};
+
+  @override
+  String? stringify(TemplatePage self) => 'TemplatePage()';
+  @override
+  int? hash(TemplatePage self) => self.hashCode;
+  @override
+  bool? equals(TemplatePage self, TemplatePage other) => true;
+
+  @override
+  Function get typeFactory => (f) => f<TemplatePage>();
+}
+
+extension TemplatePageMapperExtension on TemplatePage {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  TemplatePageCopyWith<TemplatePage> get copyWith => TemplatePageCopyWith(this, $identity);
+}
+
+abstract class TemplatePageCopyWith<$R> {
+  factory TemplatePageCopyWith(TemplatePage value, Then<TemplatePage, $R> then) = _TemplatePageCopyWithImpl<$R>;
+  $R call();
+  $R apply(TemplatePage Function(TemplatePage) transform);
+}
+
+class _TemplatePageCopyWithImpl<$R> extends BaseCopyWith<TemplatePage, $R> implements TemplatePageCopyWith<$R> {
+  _TemplatePageCopyWithImpl(TemplatePage value, Then<TemplatePage, $R> then) : super(value, then);
+
+  @override
+  $R call() => $then(TemplatePage());
+}
+
+class ThemeModelMapper extends BaseMapper<ThemeModel> {
+  ThemeModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  ThemeModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ThemeModel fromMap(Map<String, dynamic> map) =>
+      ThemeModel(schemeIndex: map.get('schemeIndex'), dark: map.getOpt('dark') ?? false);
+
+  @override
+  Function get encoder => (ThemeModel v) => encode(v);
+  dynamic encode(ThemeModel v) => toMap(v);
+  Map<String, dynamic> toMap(ThemeModel t) =>
+      {'schemeIndex': Mapper.toValue(t.schemeIndex), 'dark': Mapper.toValue(t.dark)};
+
+  @override
+  String? stringify(ThemeModel self) =>
+      'ThemeModel(schemeIndex: ${Mapper.asString(self.schemeIndex)}, dark: ${Mapper.asString(self.dark)})';
+  @override
+  int? hash(ThemeModel self) => Mapper.hash(self.schemeIndex) ^ Mapper.hash(self.dark);
+  @override
+  bool? equals(ThemeModel self, ThemeModel other) =>
+      Mapper.isEqual(self.schemeIndex, other.schemeIndex) && Mapper.isEqual(self.dark, other.dark);
+
+  @override
+  Function get typeFactory => (f) => f<ThemeModel>();
+}
+
+extension ThemeModelMapperExtension on ThemeModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  ThemeModelCopyWith<ThemeModel> get copyWith => ThemeModelCopyWith(this, $identity);
+}
+
+abstract class ThemeModelCopyWith<$R> {
+  factory ThemeModelCopyWith(ThemeModel value, Then<ThemeModel, $R> then) = _ThemeModelCopyWithImpl<$R>;
+  $R call({int? schemeIndex, bool? dark});
+  $R apply(ThemeModel Function(ThemeModel) transform);
+}
+
+class _ThemeModelCopyWithImpl<$R> extends BaseCopyWith<ThemeModel, $R> implements ThemeModelCopyWith<$R> {
+  _ThemeModelCopyWithImpl(ThemeModel value, Then<ThemeModel, $R> then) : super(value, then);
+
+  @override
+  $R call({int? schemeIndex, bool? dark}) =>
+      $then(ThemeModel(schemeIndex: schemeIndex ?? $value.schemeIndex, dark: dark ?? $value.dark));
+}
+
+class FullPageLayoutModelMapper extends BaseMapper<FullPageLayoutModel> {
+  FullPageLayoutModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  FullPageLayoutModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  FullPageLayoutModel fromMap(Map<String, dynamic> map) => FullPageLayoutModel(type: map.getOpt('type'));
+
+  @override
+  Function get encoder => (FullPageLayoutModel v) => encode(v);
+  dynamic encode(FullPageLayoutModel v) => toMap(v);
+  Map<String, dynamic> toMap(FullPageLayoutModel f) => {'type': Mapper.toValue(f.type)};
+
+  @override
+  String? stringify(FullPageLayoutModel self) => 'FullPageLayoutModel(type: ${Mapper.asString(self.type)})';
+  @override
+  int? hash(FullPageLayoutModel self) => Mapper.hash(self.type);
+  @override
+  bool? equals(FullPageLayoutModel self, FullPageLayoutModel other) => Mapper.isEqual(self.type, other.type);
+
+  @override
+  Function get typeFactory => (f) => f<FullPageLayoutModel>();
+}
+
+extension FullPageLayoutModelMapperExtension on FullPageLayoutModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  FullPageLayoutModelCopyWith<FullPageLayoutModel> get copyWith => FullPageLayoutModelCopyWith(this, $identity);
+}
+
+abstract class FullPageLayoutModelCopyWith<$R> {
+  factory FullPageLayoutModelCopyWith(FullPageLayoutModel value, Then<FullPageLayoutModel, $R> then) =
+      _FullPageLayoutModelCopyWithImpl<$R>;
+  $R call({String? type});
+  $R apply(FullPageLayoutModel Function(FullPageLayoutModel) transform);
+}
+
+class _FullPageLayoutModelCopyWithImpl<$R> extends BaseCopyWith<FullPageLayoutModel, $R>
+    implements FullPageLayoutModelCopyWith<$R> {
+  _FullPageLayoutModelCopyWithImpl(FullPageLayoutModel value, Then<FullPageLayoutModel, $R> then) : super(value, then);
+
+  @override
+  $R call({Object? type = $none}) => $then(FullPageLayoutModel(type: or(type, $value.type)));
+}
+
+class LayoutModelMapper extends BaseMapper<LayoutModel> {
+  LayoutModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  LayoutModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) {
+        switch (map['type']) {
+          case 'drops':
+            return DropsLayoutModelMapper._().decode(map);
+          case 'focus':
+            return FocusLayoutModelMapper._().decode(map);
+          case 'grid':
+            return GridLayoutModelMapper._().decode(map);
+          case 'page':
+            return FullPageLayoutModelMapper._().decode(map);
+          default:
+            return fromMap(map);
+        }
+      });
+  LayoutModel fromMap(Map<String, dynamic> map) => throw MapperException(
+      "Cannot instantiate class LayoutModel, did you forgot to specify a subclass for [ type: '${map['type']}' ] or a default subclass?");
+
+  @override
+  Function get encoder => (LayoutModel v) => encode(v);
+  dynamic encode(LayoutModel v) {
+    if (v is FullPageLayoutModel) {
+      return FullPageLayoutModelMapper._().encode(v);
+    } else if (v is GridLayoutModel) {
+      return GridLayoutModelMapper._().encode(v);
+    } else if (v is DropsLayoutModel) {
+      return DropsLayoutModelMapper._().encode(v);
+    } else if (v is FocusLayoutModel) {
+      return FocusLayoutModelMapper._().encode(v);
+    } else {
+      return toMap(v);
+    }
+  }
+
+  Map<String, dynamic> toMap(LayoutModel l) => {'type': Mapper.toValue(l.type)};
+
+  @override
+  String? stringify(LayoutModel self) => 'LayoutModel(type: ${Mapper.asString(self.type)})';
+  @override
+  int? hash(LayoutModel self) => Mapper.hash(self.type);
+  @override
+  bool? equals(LayoutModel self, LayoutModel other) => Mapper.isEqual(self.type, other.type);
+
+  @override
+  Function get typeFactory => (f) => f<LayoutModel>();
+}
+
+extension LayoutModelMapperExtension on LayoutModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+}
+
+class GridLayoutModelMapper extends BaseMapper<GridLayoutModel> {
+  GridLayoutModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  GridLayoutModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  GridLayoutModel fromMap(Map<String, dynamic> map) => GridLayoutModel(type: map.getOpt('type'));
+
+  @override
+  Function get encoder => (GridLayoutModel v) => encode(v);
+  dynamic encode(GridLayoutModel v) => toMap(v);
+  Map<String, dynamic> toMap(GridLayoutModel g) => {'type': Mapper.toValue(g.type)};
+
+  @override
+  String? stringify(GridLayoutModel self) => 'GridLayoutModel(type: ${Mapper.asString(self.type)})';
+  @override
+  int? hash(GridLayoutModel self) => Mapper.hash(self.type);
+  @override
+  bool? equals(GridLayoutModel self, GridLayoutModel other) => Mapper.isEqual(self.type, other.type);
+
+  @override
+  Function get typeFactory => (f) => f<GridLayoutModel>();
+}
+
+extension GridLayoutModelMapperExtension on GridLayoutModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  GridLayoutModelCopyWith<GridLayoutModel> get copyWith => GridLayoutModelCopyWith(this, $identity);
+}
+
+abstract class GridLayoutModelCopyWith<$R> {
+  factory GridLayoutModelCopyWith(GridLayoutModel value, Then<GridLayoutModel, $R> then) =
+      _GridLayoutModelCopyWithImpl<$R>;
+  $R call({String? type});
+  $R apply(GridLayoutModel Function(GridLayoutModel) transform);
+}
+
+class _GridLayoutModelCopyWithImpl<$R> extends BaseCopyWith<GridLayoutModel, $R>
+    implements GridLayoutModelCopyWith<$R> {
+  _GridLayoutModelCopyWithImpl(GridLayoutModel value, Then<GridLayoutModel, $R> then) : super(value, then);
+
+  @override
+  $R call({Object? type = $none}) => $then(GridLayoutModel(type: or(type, $value.type)));
+}
+
 class DropModelMapper extends BaseMapper<DropModel> {
   DropModelMapper._();
 
@@ -278,362 +697,102 @@ class _DropModelCopyWithImpl<$R> extends BaseCopyWith<DropModel, $R> implements 
       $then(DropModel(id: id ?? $value.id, label: or(label, $value.label), isHidden: isHidden ?? $value.isHidden));
 }
 
-class IdProviderMapper extends BaseMapper<IdProvider> {
-  IdProviderMapper._();
+class DropsLayoutModelMapper extends BaseMapper<DropsLayoutModel> {
+  DropsLayoutModelMapper._();
 
   @override
   Function get decoder => decode;
-  IdProvider decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  IdProvider fromMap(Map<String, dynamic> map) => IdProvider();
+  DropsLayoutModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  DropsLayoutModel fromMap(Map<String, dynamic> map) =>
+      DropsLayoutModel(type: map.getOpt('type'), drops: map.getOpt('drops') ?? const []);
 
   @override
-  Function get encoder => (IdProvider v) => encode(v);
-  dynamic encode(IdProvider v) {
-    if (v is DropModel) {
-      return DropModelMapper._().encode(v);
-    } else {
-      return toMap(v);
-    }
-  }
-
-  Map<String, dynamic> toMap(IdProvider i) => {};
+  Function get encoder => (DropsLayoutModel v) => encode(v);
+  dynamic encode(DropsLayoutModel v) => toMap(v);
+  Map<String, dynamic> toMap(DropsLayoutModel d) => {'type': Mapper.toValue(d.type), 'drops': Mapper.toValue(d.drops)};
 
   @override
-  String? stringify(IdProvider self) => 'IdProvider()';
+  String? stringify(DropsLayoutModel self) =>
+      'DropsLayoutModel(type: ${Mapper.asString(self.type)}, drops: ${Mapper.asString(self.drops)})';
   @override
-  int? hash(IdProvider self) => self.hashCode;
+  int? hash(DropsLayoutModel self) => Mapper.hash(self.type) ^ Mapper.hash(self.drops);
   @override
-  bool? equals(IdProvider self, IdProvider other) => true;
-
-  @override
-  Function get typeFactory => (f) => f<IdProvider>();
-}
-
-extension IdProviderMapperExtension on IdProvider {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  IdProviderCopyWith<IdProvider> get copyWith => IdProviderCopyWith(this, $identity);
-}
-
-abstract class IdProviderCopyWith<$R> {
-  factory IdProviderCopyWith(IdProvider value, Then<IdProvider, $R> then) = _IdProviderCopyWithImpl<$R>;
-  $R call();
-  $R apply(IdProvider Function(IdProvider) transform);
-}
-
-class _IdProviderCopyWithImpl<$R> extends BaseCopyWith<IdProvider, $R> implements IdProviderCopyWith<$R> {
-  _IdProviderCopyWithImpl(IdProvider value, Then<IdProvider, $R> then) : super(value, then);
-
-  @override
-  $R call() => $then(IdProvider());
-}
-
-class DropsTemplateModelMapper extends BaseMapper<DropsTemplateModel> {
-  DropsTemplateModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  DropsTemplateModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  DropsTemplateModel fromMap(Map<String, dynamic> map) =>
-      DropsTemplateModel(type: map.getOpt('type'), drops: map.getOpt('drops') ?? const []);
-
-  @override
-  Function get encoder => (DropsTemplateModel v) => encode(v);
-  dynamic encode(DropsTemplateModel v) => toMap(v);
-  Map<String, dynamic> toMap(DropsTemplateModel d) =>
-      {'type': Mapper.toValue(d.type), 'drops': Mapper.toValue(d.drops)};
-
-  @override
-  String? stringify(DropsTemplateModel self) =>
-      'DropsTemplateModel(type: ${Mapper.asString(self.type)}, drops: ${Mapper.asString(self.drops)})';
-  @override
-  int? hash(DropsTemplateModel self) => Mapper.hash(self.type) ^ Mapper.hash(self.drops);
-  @override
-  bool? equals(DropsTemplateModel self, DropsTemplateModel other) =>
+  bool? equals(DropsLayoutModel self, DropsLayoutModel other) =>
       Mapper.isEqual(self.type, other.type) && Mapper.isEqual(self.drops, other.drops);
 
   @override
-  Function get typeFactory => (f) => f<DropsTemplateModel>();
+  Function get typeFactory => (f) => f<DropsLayoutModel>();
 }
 
-extension DropsTemplateModelMapperExtension on DropsTemplateModel {
+extension DropsLayoutModelMapperExtension on DropsLayoutModel {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-  DropsTemplateModelCopyWith<DropsTemplateModel> get copyWith => DropsTemplateModelCopyWith(this, $identity);
+  DropsLayoutModelCopyWith<DropsLayoutModel> get copyWith => DropsLayoutModelCopyWith(this, $identity);
 }
 
-abstract class DropsTemplateModelCopyWith<$R> {
-  factory DropsTemplateModelCopyWith(DropsTemplateModel value, Then<DropsTemplateModel, $R> then) =
-      _DropsTemplateModelCopyWithImpl<$R>;
+abstract class DropsLayoutModelCopyWith<$R> {
+  factory DropsLayoutModelCopyWith(DropsLayoutModel value, Then<DropsLayoutModel, $R> then) =
+      _DropsLayoutModelCopyWithImpl<$R>;
   ListCopyWith<$R, DropModel, DropModelCopyWith<$R>> get drops;
   $R call({String? type, List<DropModel>? drops});
-  $R apply(DropsTemplateModel Function(DropsTemplateModel) transform);
+  $R apply(DropsLayoutModel Function(DropsLayoutModel) transform);
 }
 
-class _DropsTemplateModelCopyWithImpl<$R> extends BaseCopyWith<DropsTemplateModel, $R>
-    implements DropsTemplateModelCopyWith<$R> {
-  _DropsTemplateModelCopyWithImpl(DropsTemplateModel value, Then<DropsTemplateModel, $R> then) : super(value, then);
+class _DropsLayoutModelCopyWithImpl<$R> extends BaseCopyWith<DropsLayoutModel, $R>
+    implements DropsLayoutModelCopyWith<$R> {
+  _DropsLayoutModelCopyWithImpl(DropsLayoutModel value, Then<DropsLayoutModel, $R> then) : super(value, then);
 
   @override
   ListCopyWith<$R, DropModel, DropModelCopyWith<$R>> get drops =>
       ListCopyWith($value.drops, (v, t) => DropModelCopyWith(v, t), (v) => call(drops: v));
   @override
   $R call({Object? type = $none, List<DropModel>? drops}) =>
-      $then(DropsTemplateModel(type: or(type, $value.type), drops: drops ?? $value.drops));
+      $then(DropsLayoutModel(type: or(type, $value.type), drops: drops ?? $value.drops));
 }
 
-class TemplateModelMapper extends BaseMapper<TemplateModel> {
-  TemplateModelMapper._();
+class FocusLayoutModelMapper extends BaseMapper<FocusLayoutModel> {
+  FocusLayoutModelMapper._();
 
   @override
   Function get decoder => decode;
-  TemplateModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) {
-        switch (map['type']) {
-          case 'drops':
-            return DropsTemplateModelMapper._().decode(map);
-          case 'focus':
-            return FocusTemplateModelMapper._().decode(map);
-          case 'grid':
-            return GridTemplateModelMapper._().decode(map);
-          case 'swipe':
-            return SwipeTemplateModelMapper._().decode(map);
-          default:
-            return fromMap(map);
-        }
-      });
-  TemplateModel fromMap(Map<String, dynamic> map) => throw MapperException(
-      "Cannot instantiate class TemplateModel, did you forgot to specify a subclass for [ type: '${map['type']}' ] or a default subclass?");
+  FocusLayoutModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  FocusLayoutModel fromMap(Map<String, dynamic> map) => FocusLayoutModel(type: map.getOpt('type'));
 
   @override
-  Function get encoder => (TemplateModel v) => encode(v);
-  dynamic encode(TemplateModel v) {
-    if (v is DropsTemplateModel) {
-      return DropsTemplateModelMapper._().encode(v);
-    } else if (v is FocusTemplateModel) {
-      return FocusTemplateModelMapper._().encode(v);
-    } else if (v is GridTemplateModel) {
-      return GridTemplateModelMapper._().encode(v);
-    } else if (v is SwipeTemplateModel) {
-      return SwipeTemplateModelMapper._().encode(v);
-    } else {
-      return toMap(v);
-    }
-  }
-
-  Map<String, dynamic> toMap(TemplateModel t) => {'type': Mapper.toValue(t.type)};
+  Function get encoder => (FocusLayoutModel v) => encode(v);
+  dynamic encode(FocusLayoutModel v) => toMap(v);
+  Map<String, dynamic> toMap(FocusLayoutModel f) => {'type': Mapper.toValue(f.type)};
 
   @override
-  String? stringify(TemplateModel self) => 'TemplateModel(type: ${Mapper.asString(self.type)})';
+  String? stringify(FocusLayoutModel self) => 'FocusLayoutModel(type: ${Mapper.asString(self.type)})';
   @override
-  int? hash(TemplateModel self) => Mapper.hash(self.type);
+  int? hash(FocusLayoutModel self) => Mapper.hash(self.type);
   @override
-  bool? equals(TemplateModel self, TemplateModel other) => Mapper.isEqual(self.type, other.type);
+  bool? equals(FocusLayoutModel self, FocusLayoutModel other) => Mapper.isEqual(self.type, other.type);
 
   @override
-  Function get typeFactory => (f) => f<TemplateModel>();
+  Function get typeFactory => (f) => f<FocusLayoutModel>();
 }
 
-extension TemplateModelMapperExtension on TemplateModel {
+extension FocusLayoutModelMapperExtension on FocusLayoutModel {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
+  FocusLayoutModelCopyWith<FocusLayoutModel> get copyWith => FocusLayoutModelCopyWith(this, $identity);
 }
 
-class FocusTemplateModelMapper extends BaseMapper<FocusTemplateModel> {
-  FocusTemplateModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  FocusTemplateModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  FocusTemplateModel fromMap(Map<String, dynamic> map) => FocusTemplateModel(type: map.getOpt('type'));
-
-  @override
-  Function get encoder => (FocusTemplateModel v) => encode(v);
-  dynamic encode(FocusTemplateModel v) => toMap(v);
-  Map<String, dynamic> toMap(FocusTemplateModel f) => {'type': Mapper.toValue(f.type)};
-
-  @override
-  String? stringify(FocusTemplateModel self) => 'FocusTemplateModel(type: ${Mapper.asString(self.type)})';
-  @override
-  int? hash(FocusTemplateModel self) => Mapper.hash(self.type);
-  @override
-  bool? equals(FocusTemplateModel self, FocusTemplateModel other) => Mapper.isEqual(self.type, other.type);
-
-  @override
-  Function get typeFactory => (f) => f<FocusTemplateModel>();
-}
-
-extension FocusTemplateModelMapperExtension on FocusTemplateModel {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  FocusTemplateModelCopyWith<FocusTemplateModel> get copyWith => FocusTemplateModelCopyWith(this, $identity);
-}
-
-abstract class FocusTemplateModelCopyWith<$R> {
-  factory FocusTemplateModelCopyWith(FocusTemplateModel value, Then<FocusTemplateModel, $R> then) =
-      _FocusTemplateModelCopyWithImpl<$R>;
+abstract class FocusLayoutModelCopyWith<$R> {
+  factory FocusLayoutModelCopyWith(FocusLayoutModel value, Then<FocusLayoutModel, $R> then) =
+      _FocusLayoutModelCopyWithImpl<$R>;
   $R call({String? type});
-  $R apply(FocusTemplateModel Function(FocusTemplateModel) transform);
+  $R apply(FocusLayoutModel Function(FocusLayoutModel) transform);
 }
 
-class _FocusTemplateModelCopyWithImpl<$R> extends BaseCopyWith<FocusTemplateModel, $R>
-    implements FocusTemplateModelCopyWith<$R> {
-  _FocusTemplateModelCopyWithImpl(FocusTemplateModel value, Then<FocusTemplateModel, $R> then) : super(value, then);
+class _FocusLayoutModelCopyWithImpl<$R> extends BaseCopyWith<FocusLayoutModel, $R>
+    implements FocusLayoutModelCopyWith<$R> {
+  _FocusLayoutModelCopyWithImpl(FocusLayoutModel value, Then<FocusLayoutModel, $R> then) : super(value, then);
 
   @override
-  $R call({Object? type = $none}) => $then(FocusTemplateModel(type: or(type, $value.type)));
-}
-
-class GridTemplateModelMapper extends BaseMapper<GridTemplateModel> {
-  GridTemplateModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  GridTemplateModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  GridTemplateModel fromMap(Map<String, dynamic> map) => GridTemplateModel(type: map.getOpt('type'));
-
-  @override
-  Function get encoder => (GridTemplateModel v) => encode(v);
-  dynamic encode(GridTemplateModel v) => toMap(v);
-  Map<String, dynamic> toMap(GridTemplateModel g) => {'type': Mapper.toValue(g.type)};
-
-  @override
-  String? stringify(GridTemplateModel self) => 'GridTemplateModel(type: ${Mapper.asString(self.type)})';
-  @override
-  int? hash(GridTemplateModel self) => Mapper.hash(self.type);
-  @override
-  bool? equals(GridTemplateModel self, GridTemplateModel other) => Mapper.isEqual(self.type, other.type);
-
-  @override
-  Function get typeFactory => (f) => f<GridTemplateModel>();
-}
-
-extension GridTemplateModelMapperExtension on GridTemplateModel {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  GridTemplateModelCopyWith<GridTemplateModel> get copyWith => GridTemplateModelCopyWith(this, $identity);
-}
-
-abstract class GridTemplateModelCopyWith<$R> {
-  factory GridTemplateModelCopyWith(GridTemplateModel value, Then<GridTemplateModel, $R> then) =
-      _GridTemplateModelCopyWithImpl<$R>;
-  $R call({String? type});
-  $R apply(GridTemplateModel Function(GridTemplateModel) transform);
-}
-
-class _GridTemplateModelCopyWithImpl<$R> extends BaseCopyWith<GridTemplateModel, $R>
-    implements GridTemplateModelCopyWith<$R> {
-  _GridTemplateModelCopyWithImpl(GridTemplateModel value, Then<GridTemplateModel, $R> then) : super(value, then);
-
-  @override
-  $R call({Object? type = $none}) => $then(GridTemplateModel(type: or(type, $value.type)));
-}
-
-class SwipeTemplateModelMapper extends BaseMapper<SwipeTemplateModel> {
-  SwipeTemplateModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  SwipeTemplateModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SwipeTemplateModel fromMap(Map<String, dynamic> map) => SwipeTemplateModel(
-      type: map.getOpt('type'),
-      showLeftPage: map.getOpt('showLeftPage') ?? true,
-      showRightPage: map.getOpt('showRightPage') ?? true);
-
-  @override
-  Function get encoder => (SwipeTemplateModel v) => encode(v);
-  dynamic encode(SwipeTemplateModel v) => toMap(v);
-  Map<String, dynamic> toMap(SwipeTemplateModel s) => {
-        'type': Mapper.toValue(s.type),
-        'showLeftPage': Mapper.toValue(s.showLeftPage),
-        'showRightPage': Mapper.toValue(s.showRightPage)
-      };
-
-  @override
-  String? stringify(SwipeTemplateModel self) =>
-      'SwipeTemplateModel(type: ${Mapper.asString(self.type)}, showLeftPage: ${Mapper.asString(self.showLeftPage)}, showRightPage: ${Mapper.asString(self.showRightPage)})';
-  @override
-  int? hash(SwipeTemplateModel self) =>
-      Mapper.hash(self.type) ^ Mapper.hash(self.showLeftPage) ^ Mapper.hash(self.showRightPage);
-  @override
-  bool? equals(SwipeTemplateModel self, SwipeTemplateModel other) =>
-      Mapper.isEqual(self.type, other.type) &&
-      Mapper.isEqual(self.showLeftPage, other.showLeftPage) &&
-      Mapper.isEqual(self.showRightPage, other.showRightPage);
-
-  @override
-  Function get typeFactory => (f) => f<SwipeTemplateModel>();
-}
-
-extension SwipeTemplateModelMapperExtension on SwipeTemplateModel {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  SwipeTemplateModelCopyWith<SwipeTemplateModel> get copyWith => SwipeTemplateModelCopyWith(this, $identity);
-}
-
-abstract class SwipeTemplateModelCopyWith<$R> {
-  factory SwipeTemplateModelCopyWith(SwipeTemplateModel value, Then<SwipeTemplateModel, $R> then) =
-      _SwipeTemplateModelCopyWithImpl<$R>;
-  $R call({String? type, bool? showLeftPage, bool? showRightPage});
-  $R apply(SwipeTemplateModel Function(SwipeTemplateModel) transform);
-}
-
-class _SwipeTemplateModelCopyWithImpl<$R> extends BaseCopyWith<SwipeTemplateModel, $R>
-    implements SwipeTemplateModelCopyWith<$R> {
-  _SwipeTemplateModelCopyWithImpl(SwipeTemplateModel value, Then<SwipeTemplateModel, $R> then) : super(value, then);
-
-  @override
-  $R call({Object? type = $none, bool? showLeftPage, bool? showRightPage}) => $then(SwipeTemplateModel(
-      type: or(type, $value.type),
-      showLeftPage: showLeftPage ?? $value.showLeftPage,
-      showRightPage: showRightPage ?? $value.showRightPage));
-}
-
-class ThemeModelMapper extends BaseMapper<ThemeModel> {
-  ThemeModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  ThemeModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  ThemeModel fromMap(Map<String, dynamic> map) =>
-      ThemeModel(schemeIndex: map.get('schemeIndex'), dark: map.getOpt('dark') ?? false);
-
-  @override
-  Function get encoder => (ThemeModel v) => encode(v);
-  dynamic encode(ThemeModel v) => toMap(v);
-  Map<String, dynamic> toMap(ThemeModel t) =>
-      {'schemeIndex': Mapper.toValue(t.schemeIndex), 'dark': Mapper.toValue(t.dark)};
-
-  @override
-  String? stringify(ThemeModel self) =>
-      'ThemeModel(schemeIndex: ${Mapper.asString(self.schemeIndex)}, dark: ${Mapper.asString(self.dark)})';
-  @override
-  int? hash(ThemeModel self) => Mapper.hash(self.schemeIndex) ^ Mapper.hash(self.dark);
-  @override
-  bool? equals(ThemeModel self, ThemeModel other) =>
-      Mapper.isEqual(self.schemeIndex, other.schemeIndex) && Mapper.isEqual(self.dark, other.dark);
-
-  @override
-  Function get typeFactory => (f) => f<ThemeModel>();
-}
-
-extension ThemeModelMapperExtension on ThemeModel {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  ThemeModelCopyWith<ThemeModel> get copyWith => ThemeModelCopyWith(this, $identity);
-}
-
-abstract class ThemeModelCopyWith<$R> {
-  factory ThemeModelCopyWith(ThemeModel value, Then<ThemeModel, $R> then) = _ThemeModelCopyWithImpl<$R>;
-  $R call({int? schemeIndex, bool? dark});
-  $R apply(ThemeModel Function(ThemeModel) transform);
-}
-
-class _ThemeModelCopyWithImpl<$R> extends BaseCopyWith<ThemeModel, $R> implements ThemeModelCopyWith<$R> {
-  _ThemeModelCopyWithImpl(ThemeModel value, Then<ThemeModel, $R> then) : super(value, then);
-
-  @override
-  $R call({int? schemeIndex, bool? dark}) =>
-      $then(ThemeModel(schemeIndex: schemeIndex ?? $value.schemeIndex, dark: dark ?? $value.dark));
+  $R call({Object? type = $none}) => $then(FocusLayoutModel(type: or(type, $value.type)));
 }
 
 class AnnouncementMapper extends BaseMapper<Announcement> {

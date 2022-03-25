@@ -19,6 +19,7 @@
   "cancel": "Cancel",
   "continuee": "Continue",
   "hello": "Hello",
+  "ok": "OK",
 
   "@LOGIN": {},
 
@@ -64,8 +65,27 @@
   "add_phone_number_hint": "You can add your phone number\nto access your groups on another device",
   "logout": "Log out",
 
+  "@LAYOUT": {},
+
+  "main_page": "Main Page",
+  "left_page": "Left Page",
+  "right_page": "Right Page",
+  "add_page": "Add Page",
+  "tap_to_change": "Tap to change",
+  "choose_layout": "Choose Layout",
+  "choose_template": "Choose Template",
+  "template": "Template",
+  "settings": "Settings",
+  "theme": "Theme",
+  "dark_mode": "Dark Mode",
+  "danger_zone": "Danger Zone",
+  "do_want_to_leave": "Do you want to leave",
+  "do_want_to_delete": "Do you want to delete",
+  "cant_be_undone": "This can't be undone.",
+
   "@ANNOUNCEMENTS": {},
 
+  "announcements": "Announcements",
   "create_announcement": "Create Announcement",
   "dismissible": "Dismissible",
   "text_color": "Text Color",
@@ -85,7 +105,7 @@
 
   "@ELIMINATION": {},
 
-  "elimination_games": "Elimination Games",
+  "elimination": "Elimination",
   "new_game": "New Game",
   "eliminate": "Eliminate",
   "hold_to_reveal": "Hold to reveal",
@@ -107,10 +127,12 @@
 
   "@LABEL": {},
 
+  "labels": "Labels",
   "add_label": "Add Label",
 
   "@MUSIC": {},
 
+  "music": "Music",
   "play": "Play",
   "add_to_queue": "Add to queue",
   "add_to_playlist": "Add to playlist",
@@ -141,6 +163,7 @@
 
   "@PHOTOS": {},
 
+  "photos": "Photos",
   "select_album": "Select Album",
   "elements": "Elements",
   "sign_in_google": "SignIn with Google",

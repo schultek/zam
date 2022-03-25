@@ -13,7 +13,7 @@ class GamesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.tr.elimination_games),
+        title: Text(context.tr.elimination),
         actions: [
           if (context.read(isOrganizerProvider))
             IconButton(

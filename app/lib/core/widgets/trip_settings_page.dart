@@ -2,15 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
 import '../../modules/modules.dart';
 import '../../modules/profile/widgets/image_selector.dart';
 import '../../providers/auth/claims_provider.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
-import '../templates/templates.dart';
 import '../themes/themes.dart';
+import 'layout_preview.dart';
 import 'settings_section.dart';
+import 'template_preview_switcher.dart';
 
 class TripSettingsPage extends StatefulWidget {
   const TripSettingsPage({Key? key}) : super(key: key);
@@ -33,7 +35,7 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(context.tr.settings),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -70,9 +72,7 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
           SettingsSection(padding: const EdgeInsets.all(14), children: [
             TextFormField(
               initialValue: trip.name,
-              decoration: const InputDecoration(
-                labelText: 'Name',
-              ),
+              decoration: InputDecoration(labelText: context.tr.name),
               style: TextStyle(color: context.onSurfaceColor),
               onFieldSubmitted: (text) {
                 context.read(tripsLogicProvider).updateTrip({'name': text});
@@ -80,41 +80,32 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
             ),
           ]),
           SettingsSection(
-            title: 'Template',
+            title: context.tr.template,
             children: [
               Builder(builder: (context) {
-                return ListTile(
-                  title: Text(trip.template.name),
-                  subtitle: const Text('Tap to change'),
-                  onTap: () async {
-                    final RenderBox button = context.findRenderObject()! as RenderBox;
-                    final RenderBox overlay = Navigator.of(context).overlay!.context.findRenderObject()! as RenderBox;
-                    final RelativeRect position = RelativeRect.fromRect(
-                      Rect.fromPoints(
-                        button.localToGlobal(Offset.zero, ancestor: overlay),
-                        button.localToGlobal(button.size.bottomRight(Offset.zero) + Offset.zero, ancestor: overlay),
-                      ),
-                      Offset.zero & overlay.size,
-                    );
+                return Row(
+                  children: [
+                    Expanded(
+                      child: ListTile(
+                        title: Text(trip.template.name),
+                        subtitle: Text(context.tr.tap_to_change),
+                        onTap: () async {
+                          var newTemplate = await TemplatePreviewSwitcher.show(context, trip.template);
 
-                    var newTemplate = await showMenu<TemplateModel>(
-                      context: context,
-                      position: position,
-                      items: [
-                        for (var template in TemplateModel.all)
-                          PopupMenuItem(value: template, child: Text(template.name)),
-                      ],
-                    );
-                    if (newTemplate != null) {
-                      context.read(tripsLogicProvider).updateTemplateModel(newTemplate);
-                    }
-                  },
+                          if (newTemplate != null) {
+                            context.read(tripsLogicProvider).updateTemplateModel(newTemplate);
+                          }
+                        },
+                      ),
+                    ),
+                    PreviewBox(preview: trip.template.preview())
+                  ],
                 );
               }),
-              ...templateSettings ?? []
+              ...templateSettings
             ],
           ),
-          SettingsSection(title: 'Theme', children: [
+          SettingsSection(title: context.tr.theme, children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: ThemeSelector(
@@ -127,7 +118,7 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
               ),
             ),
             SwitchListTile(
-              title: const Text('Dark Mode'),
+              title: Text(context.tr.dark_mode),
               value: trip.theme.dark,
               onChanged: (value) {
                 context.read(tripsLogicProvider).updateTrip({'theme': trip.theme.copyWith(dark: value).toMap()});
@@ -136,20 +127,20 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
           ]),
           for (var settings in moduleSettings)
             SettingsSection(
-              title: settings.title,
-              children: settings.settings,
+              title: settings.key,
+              children: settings.value.settings,
             ),
-          SettingsSection(title: 'Danger Zone', children: [
+          SettingsSection(title: context.tr.danger_zone, children: [
             ListTile(
               title: Text(
-                'Leave',
+                context.tr.leave,
                 style: TextStyle(color: context.theme.colorScheme.error, fontWeight: FontWeight.bold),
               ),
               onTap: () {
                 showConfirmDialog(
                   context,
-                  'Do you want to leave ${trip.name}?',
-                  'Leave',
+                  '${context.tr.do_want_to_leave} ${trip.name}?',
+                  context.tr.leave,
                   () => context.read(tripsLogicProvider).leaveSelectedTrip(),
                 );
               },
@@ -157,14 +148,14 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
             if (context.read(claimsProvider).isOrganizer)
               ListTile(
                 title: Text(
-                  'Delete',
+                  context.tr.delete,
                   style: TextStyle(color: context.theme.colorScheme.error, fontWeight: FontWeight.bold),
                 ),
                 onTap: () {
                   showConfirmDialog(
                     context,
-                    'Do you want to delete ${trip.name}? This can\'t be undone.',
-                    'Delete',
+                    '${context.tr.do_want_to_delete} ${trip.name}? ${context.tr.cant_be_undone}',
+                    context.tr.delete,
                     () => context.read(tripsLogicProvider).deleteSelectedTrip(),
                   );
                 },
@@ -182,7 +173,7 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
         title: Text(title),
         actions: [
           TextButton(
-            child: const Text('Cancel'),
+            child: Text(context.tr.cancel),
             onPressed: () => Navigator.pop(context),
           ),
           TextButton(

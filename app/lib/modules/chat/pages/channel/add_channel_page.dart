@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/core.dart';
+import '../../../../helpers/extensions.dart';
 import '../../chat_provider.dart';
 import '../channel_page.dart';
 import 'create_channel_page.dart';
@@ -22,7 +23,7 @@ class _AddChannelPageState extends State<AddChannelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Channels'),
+        title: Text(context.tr.channels),
       ),
       body: Consumer(
         builder: (context, ref, _) {

@@ -12,7 +12,7 @@ class GamesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SimpleCard(title: context.tr.elimination_games.replaceFirst(' ', '\n'), icon: Icons.list);
+    return SimpleCard(title: context.tr.elimination, icon: Icons.list);
   }
 
   static FutureOr<ContentSegment?> segment(ModuleContext context) {

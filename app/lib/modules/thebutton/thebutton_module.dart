@@ -13,13 +13,33 @@ import 'pages/thebutton_settings.dart';
 import 'thebutton_provider.dart';
 import 'widgets/thebutton_widget.dart';
 
-class TheButtonModule extends ModuleBuilder<ContentSegment> {
+class TheButtonModule extends ModuleBuilder {
   TheButtonModule() : super('thebutton');
+
+  @override
+  String getName(BuildContext context) => context.tr.the_button;
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
         'thebutton': buildTheButton,
       };
+
+  @override
+  ModuleSettings? getSettings(BuildContext context) {
+    var state = context.watch(theButtonProvider);
+
+    return state.whenOrNull<ModuleSettings?>(
+      data: (state) => state != null
+          ? ModuleSettings([
+              SwitchListTile(
+                title: Text(context.tr.show_level_in_avatars),
+                value: state.showInAvatars,
+                onChanged: (v) => context.read(theButtonLogicProvider).setShowInAvatars(v),
+              ),
+            ])
+          : null,
+    );
+  }
 
   FutureOr<ContentSegment?> buildTheButton(ModuleContext context) {
     var buttonHelpKey = GlobalKey();
@@ -54,23 +74,6 @@ class TheButtonModule extends ModuleBuilder<ContentSegment> {
           );
         });
       },
-    );
-  }
-
-  @override
-  ModuleSettings? getSettings(BuildContext context) {
-    var state = context.watch(theButtonProvider);
-
-    return state.whenOrNull<ModuleSettings?>(
-      data: (state) => state != null
-          ? ModuleSettings(context.tr.the_button, [
-              SwitchListTile(
-                title: Text(context.tr.show_level_in_avatars),
-                value: state.showInAvatars,
-                onChanged: (v) => context.read(theButtonLogicProvider).setShowInAvatars(v),
-              ),
-            ])
-          : null,
     );
   }
 }

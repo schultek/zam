@@ -20,7 +20,7 @@ class ChannelList extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 40, left: 16.0, bottom: 20),
+              padding: const EdgeInsets.only(top: 0, left: 16.0, bottom: 20),
               child: Text(context.tr.channels, style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
             for (var channel in data)

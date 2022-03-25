@@ -3,15 +3,18 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+import 'module_builder.dart';
+
 class ModuleContext {
   final BuildContext context;
+  final ModuleBuilder parent;
 
   final String id;
   final String moduleId;
   final String elementId;
   final String? dataId;
 
-  ModuleContext(this.context, this.id)
+  ModuleContext(this.context, this.parent, this.id)
       : moduleId = id.split('/').first,
         elementId = id.split('/').skip(1).firstOrNull ?? '',
         dataId = id.split('/').skip(2).firstOrNull;

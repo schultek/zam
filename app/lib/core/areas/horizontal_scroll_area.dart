@@ -38,7 +38,7 @@ class HorizontalScrollAreaState extends WidgetAreaState<HorizontalScrollArea, Co
   @override
   Widget buildArea(BuildContext context) {
     return SizedBox(
-      height: 160,
+      height: 180,
       child: ListView.separated(
         cacheExtent: template.isEditing ? 10000 : 200,
         controller: scrollController,
@@ -53,7 +53,7 @@ class HorizontalScrollAreaState extends WidgetAreaState<HorizontalScrollArea, Co
   }
 
   @override
-  BoxConstraints constrainWidget(ContentSegment widget) => const BoxConstraints(maxHeight: 140);
+  BoxConstraints constrainWidget(ContentSegment widget) => const BoxConstraints(maxHeight: 160);
 
   @override
   bool canInsertItem(item) => true;

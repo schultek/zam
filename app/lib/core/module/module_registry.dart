@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -10,21 +11,26 @@ import 'module_builder.dart';
 import 'module_context.dart';
 
 class ModuleSettings {
-  String title;
   List<Widget> settings;
 
-  ModuleSettings(this.title, this.settings);
+  ModuleSettings(this.settings);
 }
 
 class ModuleRegistry {
   final Map<String, ModuleBuilder> modules;
   ModuleRegistry(List<ModuleBuilder> modules) : modules = Map.fromEntries(modules.map((m) => MapEntry(m.id, m)));
 
-  FutureOr<T?> getWidget<T extends ModuleElement>(ModuleContext context) async {
-    var builder = modules[context.moduleId]?.elements[context.elementId];
+  FutureOr<T?> getWidget<T extends ModuleElement>(BuildContext context, String id) async {
+    var moduleId = id.split('/').first;
+    var module = modules[moduleId];
+    if (module == null) return null;
+
+    var moduleContext = ModuleContext(context, module, id);
+
+    var builder = modules[moduleId]?.elements[moduleContext.elementId];
     assert(builder is ElementBuilder<T>?,
-        'Expected ElementBuilder<$T> for module ${context.moduleId}/${context.elementId}.');
-    return (builder as ElementBuilder<T>?)?.call(context);
+        'Expected ElementBuilder<$T> for module ${moduleContext.moduleId}/${moduleContext.elementId}.');
+    return (builder as ElementBuilder<T>?)?.call(moduleContext);
   }
 
   Future<List<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) async {
@@ -36,7 +42,7 @@ class ModuleRegistry {
             if (e.value is ElementBuilder<T>)
               _callOrCatch(
                 e.value as ElementBuilder<T>,
-                ModuleContext(context, '${m.key}/${e.key}'),
+                ModuleContext(context, m.value, '${m.key}/${e.key}'),
               ),
     ]);
     return widgets.whereNotNull().toList();
@@ -46,8 +52,8 @@ class ModuleRegistry {
     var future = builder(context);
     try {
       return await future;
-    } catch (e) {
-      print('Error when getting widget ${context.id}: $e');
+    } catch (e, st) {
+      FirebaseCrashlytics.instance.recordError(e, st, reason: 'Getting widget for module ${context.id}');
       return null;
     }
   }
@@ -70,10 +76,10 @@ class ModuleRegistry {
     }
   }
 
-  Iterable<ModuleSettings> getSettings(BuildContext context) sync* {
+  Iterable<MapEntry<String, ModuleSettings>> getSettings(BuildContext context) sync* {
     for (var module in modules.values) {
       var settings = module.getSettings(context);
-      if (settings != null) yield settings;
+      if (settings != null) yield MapEntry(module.getName(context), settings);
     }
   }
 }

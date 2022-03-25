@@ -11,8 +11,11 @@ import 'announcement_create_page.dart';
 import 'announcement_provider.dart';
 import 'widgets/announcement_card.dart';
 
-class AnnouncementModule extends ModuleBuilder<ContentSegment> {
+class AnnouncementModule extends ModuleBuilder {
   AnnouncementModule() : super('announcements');
+
+  @override
+  String getName(BuildContext context) => context.tr.announcements;
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {

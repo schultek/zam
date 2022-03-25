@@ -25,7 +25,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
       id: '',
       name: tripName,
       users: {userId: TripUser(role: UserRoles.organizer)},
-      template: SwipeTemplateModel(),
+      template: const SwipeTemplateModel(),
       theme: ThemeModel(schemeIndex: FlexScheme.blue.index),
       moduleBlacklist: ['music', 'photos', 'polls'],
     );

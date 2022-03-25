@@ -12,8 +12,11 @@ import 'pages/create_poll_page.dart';
 import 'polls_provider.dart';
 import 'widgets/polls_list.dart';
 
-class PollsModule extends ModuleBuilder<ContentSegment> {
+class PollsModule extends ModuleBuilder {
   PollsModule() : super('polls');
+
+  @override
+  String getName(BuildContext context) => context.tr.polls;
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {

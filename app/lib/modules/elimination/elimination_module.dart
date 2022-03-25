@@ -13,8 +13,11 @@ import 'pages/create_game_page.dart';
 import 'pages/games_page.dart';
 import 'widgets/games_list.dart';
 
-class EliminationGameModule extends ModuleBuilder<ContentSegment> {
+class EliminationGameModule extends ModuleBuilder {
   EliminationGameModule() : super('elimination');
+
+  @override
+  String getName(BuildContext context) => context.tr.elimination;
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
@@ -46,7 +49,7 @@ class EliminationGameModule extends ModuleBuilder<ContentSegment> {
     return QuickAction(
       context: context,
       icon: Icons.list,
-      text: context.context.tr.elimination_games,
+      text: context.context.tr.elimination,
       onNavigate: (context) => const GamesPage(),
     );
   }

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,7 +21,9 @@ import 'screens/signin/signin_screen.dart';
 import 'screens/trip/trip_screen.dart';
 
 void main() {
-  runApp(const ProviderScope(child: InheritedConsumer(child: JufaApp())));
+  runZonedGuarded<Future<void>>(() async {
+    runApp(const ProviderScope(child: InheritedConsumer(child: JufaApp())));
+  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
 }
 
 class JufaApp extends StatefulWidget {
@@ -29,8 +34,21 @@ class JufaApp extends StatefulWidget {
 }
 
 class _JufaAppState extends State<JufaApp> {
+  var navigatorKey = GlobalKey<NavigatorState>();
+  bool updateNavigatorKey = false;
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    updateNavigatorKey = false;
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (updateNavigatorKey) {
+      navigatorKey = GlobalKey();
+    }
+    updateNavigatorKey = true;
     return MaterialApp(
       title: 'Jufa',
       theme: ThemeData(
@@ -45,7 +63,7 @@ class _JufaAppState extends State<JufaApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      navigatorKey: GlobalKey(),
+      navigatorKey: navigatorKey,
       home: buildHome(context),
     );
   }
@@ -68,7 +86,7 @@ class _JufaAppState extends State<JufaApp> {
 
     var selectedTripId = context.watch(selectedTripIdProvider);
     if (selectedTripId != null) {
-      return const TripScreen();
+      return TripScreen(key: ValueKey(selectedTripId));
     }
 
     return TripTheme(

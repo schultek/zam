@@ -5,6 +5,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core/core.dart';
 import '../../helpers/extensions.dart';
+import 'announcement_module.dart';
 import 'announcement_provider.dart';
 import 'widgets/announcement_card.dart';
 
@@ -31,7 +32,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   void initState() {
     super.initState();
     fakeElement = ContentSegment(
-      context: ModuleContext(context, ''),
+      context: ModuleContext(context, AnnouncementModule(), ''),
       builder: (_) => Container(),
       size: SegmentSize.wide,
     );

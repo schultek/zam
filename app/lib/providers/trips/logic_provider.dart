@@ -88,7 +88,7 @@ class TripsLogic {
     });
   }
 
-  Future<void> updateTemplateModel<T extends TemplateModel>(T model) async {
+  Future<void> updateTemplateModel(TemplateModel model) async {
     await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
       'template': model.toMap(),
     });

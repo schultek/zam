@@ -6,9 +6,11 @@ import '../elements/module_element.dart';
 import 'module_context.dart';
 import 'module_registry.dart';
 
-abstract class ModuleBuilder<T extends ModuleElement> {
+abstract class ModuleBuilder {
   final String id;
   ModuleBuilder(this.id);
+
+  String getName(BuildContext context);
 
   Map<String, ElementBuilder> get elements;
 

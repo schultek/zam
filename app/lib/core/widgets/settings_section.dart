@@ -6,13 +6,14 @@ class SettingsSection extends StatelessWidget {
   final String? title;
   final List<Widget> children;
   final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
 
-  const SettingsSection({Key? key, this.title, required this.children, this.padding}) : super(key: key);
+  const SettingsSection({Key? key, this.title, required this.children, this.padding, this.margin}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: margin ?? const EdgeInsets.symmetric(vertical: 8),
       child: ThemedSurface(
         builder: (context, color) => Material(
           color: color,

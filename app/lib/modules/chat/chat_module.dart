@@ -12,8 +12,11 @@ import 'pages/channel_page.dart';
 import 'pages/chat_page.dart';
 import 'widgets/channel_list.dart';
 
-class ChatModule extends ModuleBuilder<PageSegment> {
+class ChatModule extends ModuleBuilder {
   ChatModule() : super('chat');
+
+  @override
+  String getName(BuildContext context) => context.tr.chat;
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
@@ -26,13 +29,15 @@ class ChatModule extends ModuleBuilder<PageSegment> {
       context: context,
       builder: (context) {
         if (WidgetSelector.existsIn(context)) {
-          return Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              color: context.onSurfaceColor,
+          return ThemedSurface(
+            builder: (context, color) => Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: color,
+              ),
+              alignment: Alignment.center,
+              child: Icon(Icons.chat, size: MediaQuery.of(context).size.width / 2),
             ),
-            alignment: Alignment.center,
-            child: Icon(Icons.chat, size: MediaQuery.of(context).size.width / 2),
           );
         }
         return const ChannelList();

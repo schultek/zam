@@ -26,7 +26,7 @@ class DefaultQuickActionDecorator implements ElementDecorator<QuickAction> {
 
   Widget actionLayout(BuildContext context, QuickAction element, {bool isPlaceholder = false, double opacity = 0}) {
     var textColor = context.onSurfaceColor;
-    var textStyle = context.theme.textTheme.bodyText1!;
+    var textStyle = context.theme.textTheme.bodyText1!.apply(fontSizeDelta: -2);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ThemedSurface(

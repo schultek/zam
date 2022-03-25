@@ -24,7 +24,7 @@ class FullPageAreaState extends WidgetAreaState<FullPageArea, PageSegment>
 
   @override
   EdgeInsets getMargin() =>
-      template.isEditing ? const EdgeInsets.symmetric(horizontal: 10, vertical: 40) : super.getMargin();
+      template.isEditing ? const EdgeInsets.symmetric(horizontal: 10, vertical: 10) : super.getMargin();
 
   @override
   EdgeInsets getPadding() => template.isEditing ? super.getPadding() : EdgeInsets.zero;

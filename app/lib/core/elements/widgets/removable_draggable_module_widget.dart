@@ -18,6 +18,9 @@ class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessW
     var templateState = WidgetTemplate.of(context);
 
     if (templateState.isEditing) {
+      if (templateState.isLayoutMode) {
+        return AbsorbPointer(child: child);
+      }
       return LayoutBuilder(
         builder: (context, constraints) {
           return Stack(clipBehavior: Clip.none, children: [

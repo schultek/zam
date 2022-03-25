@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_udid/flutter_udid.dart';
@@ -50,6 +51,9 @@ class AuthLogic {
     } else {
       userCredential = await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
     }
+
+    FirebaseAnalytics.instance.logLogin(loginMethod: 'phone');
+
     return userCredential.user!;
   }
 
@@ -64,6 +68,8 @@ class AuthLogic {
     } else {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: udid);
     }
+
+    FirebaseAnalytics.instance.logLogin(loginMethod: 'anonymous');
   }
 
   Future<void> signOut() async {

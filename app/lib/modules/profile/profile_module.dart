@@ -8,8 +8,11 @@ import '../../widgets/simple_card.dart';
 import 'pages/profile_page.dart';
 import 'widgets/profile_image_widget.dart';
 
-class ProfileModule extends ModuleBuilder<ContentSegment> {
+class ProfileModule extends ModuleBuilder {
   ProfileModule() : super('profile');
+
+  @override
+  String getName(BuildContext context) => context.tr.profile;
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {

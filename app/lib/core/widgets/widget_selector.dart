@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../modules/modules.dart';
@@ -147,7 +148,8 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
 
   double get outerPadding => 10;
   double get innerPadding => 10;
-  double get sheetHeight => widgets.isNotEmpty ? maxItemHeight + outerPadding * 2 + innerPadding * 2 : 0;
+  double get headerHeight => 14;
+  double get sheetHeight => widgets.isNotEmpty ? maxItemHeight + outerPadding * 2 + innerPadding * 2 + headerHeight : 0;
   double get maxItemHeight => 90;
   double get maxItemWidth => 100;
   double get topEdge => (context.findRenderObject()! as RenderBox).localToGlobal(Offset.zero).dy - 10;
@@ -165,6 +167,26 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
 
   @override
   Widget build(BuildContext context) {
+    var groups = widgets.fold<List<List<T>>>([], (groups, widget) {
+      if (groups.isEmpty) {
+        return [
+          [widget]
+        ];
+      }
+      var lastGroup = groups.last;
+      if (lastGroup.isEmpty) {
+        lastGroup.add(widget);
+      } else {
+        var lastWidget = lastGroup.last;
+        if (lastWidget.context.parent == widget.context.parent) {
+          lastGroup.add(widget);
+        } else {
+          groups.add([widget]);
+        }
+      }
+      return groups;
+    });
+
     return InheritedWidgetArea(
       state: widget.widgetArea,
       child: TripTheme(
@@ -176,25 +198,50 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
             height: sheetHeight,
             child: Padding(
               padding: EdgeInsets.all(outerPadding),
-              child: ListView.builder(
+              child: CustomScrollView(
                 scrollDirection: Axis.horizontal,
                 controller: _scrollController,
-                itemCount: widgets.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.all(innerPadding),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: maxItemWidth),
-                      child: FittedBox(
-                        fit: BoxFit.contain,
-                        child: ConstrainedBox(
-                          constraints: widget.widgetArea.constrainWidget(widgets[index]),
-                          child: widgets[index],
+                slivers: [
+                  for (var group in groups)
+                    SliverStickyHeader(
+                      overlapsContent: true,
+                      header: Builder(builder: (context) {
+                        return Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: EdgeInsets.only(left: innerPadding, right: innerPadding),
+                            child: Text(
+                              group.first.context.parent.getName(context),
+                              style: context.theme.textTheme.caption,
+                            ),
+                          ),
+                        );
+                      }),
+                      sliver: SliverPadding(
+                        padding: EdgeInsets.only(top: headerHeight),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              return Padding(
+                                padding: EdgeInsets.all(innerPadding),
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(maxWidth: maxItemWidth),
+                                  child: FittedBox(
+                                    fit: BoxFit.contain,
+                                    child: ConstrainedBox(
+                                      constraints: widget.widgetArea.constrainWidget(group[index]),
+                                      child: group[index],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            childCount: group.length,
+                          ),
                         ),
                       ),
                     ),
-                  );
-                },
+                ],
               ),
             ),
           ),

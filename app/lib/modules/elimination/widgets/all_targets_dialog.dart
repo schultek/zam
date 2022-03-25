@@ -80,7 +80,7 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
             if (player == playerId) {
               return Text(context.tr.immortal);
             }
-            return Text('${context.tr.target_player}: ${ref.watch(nicknameProvider(player)) ?? 'Anonym'}');
+            return Text('${context.tr.target_player}: ${ref.watch(nicknameProvider(player)) ?? context.tr.anonymous}');
           },
         ),
       );
