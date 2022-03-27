@@ -1,14 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../providers/editing_providers.dart';
 import '../../themes/themes.dart';
-import '../widget_template.dart';
+import 'reorder_toggle.dart';
+
+class EditToggles extends StatelessWidget {
+  const EditToggles({this.isEditing = true, this.notifyVisibility = true, Key? key}) : super(key: key);
+
+  final bool notifyVisibility;
+  final bool isEditing;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child = Row(
+      children: [
+        if (isEditing) const LayoutToggle(),
+        const ReorderToggle(),
+      ],
+    );
+
+    if (notifyVisibility) {
+      VisibilityDetectorController.instance.updateInterval = Duration.zero;
+      child = VisibilityDetector(
+        key: const ValueKey('edit-toggles'),
+        onVisibilityChanged: (visibilityInfo) {
+          if (visibilityInfo.visibleFraction < 0.1) {
+            context.read(toggleVisibilityProvider.notifier).state = false;
+          } else {
+            context.read(toggleVisibilityProvider.notifier).state = true;
+          }
+        },
+        child: child,
+      );
+    }
+
+    return child;
+  }
+}
 
 class LayoutToggle extends StatelessWidget {
   const LayoutToggle({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var isLayoutMode = WidgetTemplate.of(context).isLayoutMode;
+    var isLayoutMode = context.watch(editProvider.select((state) => state == EditState.layoutMode));
 
     return SizedBox(
       width: 50,
@@ -17,10 +54,10 @@ class LayoutToggle extends StatelessWidget {
           icon: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(4),
-              color: isLayoutMode ? context.onSurfaceColor : context.surfaceColor,
+              color: isLayoutMode ? context.onSurfaceColor : null,
               border: Border.all(color: context.onSurfaceColor),
             ),
-            padding: const EdgeInsets.all(2),
+            padding: const EdgeInsets.all(1),
             child: Icon(
               Icons.tune,
               color: isLayoutMode ? context.surfaceColor : context.onSurfaceColor,
@@ -28,7 +65,7 @@ class LayoutToggle extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            WidgetTemplate.of(context, listen: false).toggleLayoutMode();
+            context.read(editProvider.notifier).toggleLayoutMode();
           },
         ),
       ),

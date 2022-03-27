@@ -7,7 +7,7 @@ import 'layout_model.dart';
 
 @MappableClass(discriminatorValue: 'grid')
 class GridLayoutModel extends LayoutModel {
-  const GridLayoutModel({String? type}) : super(type ?? 'grid');
+  const GridLayoutModel() : super();
 
   @override
   String get name => 'Grid Layout';

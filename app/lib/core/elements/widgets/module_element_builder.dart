@@ -1,11 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../areas/widget_area.dart';
+import '../../providers/editing_providers.dart';
 import '../../reorderable/reorderable_item.dart';
 import '../../reorderable/reorderable_listener.dart';
-import '../../templates/widget_template.dart';
 import '../../widgets/widget_selector.dart';
 import '../decorators/element_decorator.dart';
 import '../module_element.dart';
@@ -87,7 +88,8 @@ class PhasedAnimation extends CompoundAnimation<double> {
   }
 
   factory PhasedAnimation.of(BuildContext context) {
-    var state = WidgetTemplate.of(context, listen: false);
-    return PhasedAnimation(phase: state.wiggle, intensity: state.transition, shift: Random().nextDouble());
+    var transition = context.read(transitionControllerProvider)!.view;
+    var wiggle = context.read(wiggleControllerProvider)!.view;
+    return PhasedAnimation(phase: wiggle, intensity: transition, shift: Random().nextDouble());
   }
 }

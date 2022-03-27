@@ -9,6 +9,8 @@ import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../elements/decorators/element_decorator.dart';
 import '../elements/module_element.dart';
+import '../providers/editing_providers.dart';
+import '../providers/selected_area_provider.dart';
 import '../reorderable/logic_provider.dart';
 import '../templates/widget_template.dart';
 import '../themes/theme_context.dart';
@@ -67,6 +69,9 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
+  bool get isEditing => context.watch(isEditingProvider);
+  bool get isSelected => context.watch(isAreaSelectedProvider(id));
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -79,8 +84,8 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
   @override
   void deactivate() {
-    if (template.selectedArea == id) {
-      template.selectWidgetAreaById(null);
+    if (context.read(isAreaSelectedProvider(id))) {
+      context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
     }
     super.deactivate();
   }
@@ -99,16 +104,13 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     if (renderBox != null) _areaRenderBox = renderBox as RenderBox;
   }
 
-  bool get isSelected => template.selectedArea == id;
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var templateState = WidgetTemplate.of(context);
+
+    var templateState = WidgetTemplate.of(context, listen: false);
     templateState.registerArea(this);
 
-    var isSelected = templateState.selectedArea == id;
-    var isEditing = templateState.isEditing;
     var highlightColor = context.onSurfaceHighlightColor;
 
     var backgroundColor = highlightColor.withOpacity(0.05);
@@ -121,7 +123,7 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
       child: Listener(
         behavior: HitTestBehavior.opaque,
         onPointerDown: (_) {
-          templateState.selectWidgetArea<T>(this);
+          context.read(selectedAreaProvider.notifier).selectWidgetAreaById(id);
         },
         child: Container(
           margin: getMargin(),
@@ -194,6 +196,10 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     setState(() {
       removeItem(key);
     });
+  }
+
+  void callTyped(void Function<E extends ModuleElement>() fn) {
+    return fn<T>();
   }
 
   ReorderableLogic get logic => context.read(reorderableLogicProvider);

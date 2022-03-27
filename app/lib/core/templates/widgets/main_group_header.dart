@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/trips/selected_trip_provider.dart';
 import '../../core.dart';
+import '../../providers/editing_providers.dart';
+import '../../widgets/layout_preview.dart';
 import 'layout_toggle.dart';
-import 'reorder_toggle.dart';
 import 'trip_selector.dart';
 
 class MainGroupHeader extends StatelessWidget {
@@ -19,7 +20,7 @@ class MainGroupHeader extends StatelessWidget {
           var trip = ref.watch(selectedTripProvider)!;
           var user = ref.watch(tripUserProvider)!;
 
-          var isEditing = WidgetTemplate.of(context).isEditing;
+          var isEditing = ref.watch(isEditingProvider);
 
           var leading = [
             if (!isEditing) const TripSelectorButton(),
@@ -29,8 +30,7 @@ class MainGroupHeader extends StatelessWidget {
 
           var trailing = [
             if (!isEditing && !user.isOrganizer) const SizedBox(width: 50),
-            if (isEditing) const LayoutToggle(),
-            if (user.isOrganizer) const ReorderToggle(),
+            if (user.isOrganizer) EditToggles(isEditing: isEditing),
           ];
 
           return Row(
@@ -49,6 +49,13 @@ class MainGroupHeader extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+
+  static Widget preview() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      child: Center(child: PreviewCard(width: 40, height: 10)),
     );
   }
 }

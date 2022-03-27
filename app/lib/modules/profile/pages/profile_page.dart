@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cropperx/cropperx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -45,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: GestureDetector(
                       onTap: () async {
                         var logic = ref.read(tripsLogicProvider);
-                        var pngBytes = await ImageSelector.fromGallery(context);
+                        var pngBytes = await ImageSelector.fromGallery(context, cropOverlayType: OverlayType.circle);
                         if (pngBytes != null) {
                           logic.uploadProfileImage(pngBytes);
                         }

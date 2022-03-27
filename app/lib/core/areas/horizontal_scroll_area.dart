@@ -22,10 +22,10 @@ class HorizontalScrollAreaState extends WidgetAreaState<HorizontalScrollArea, Co
   ElementDecorator<ContentSegment> get elementDecorator => widget.decorator;
 
   @override
-  EdgeInsets getPadding() => template.isEditing ? const EdgeInsets.symmetric(horizontal: 2) : EdgeInsets.zero;
+  EdgeInsets getPadding() => isEditing ? const EdgeInsets.symmetric(horizontal: 2) : EdgeInsets.zero;
 
   @override
-  EdgeInsets getMargin() => template.isEditing ? const EdgeInsets.symmetric(horizontal: 5) : EdgeInsets.zero;
+  EdgeInsets getMargin() => isEditing ? const EdgeInsets.symmetric(horizontal: 5) : EdgeInsets.zero;
 
   @override
   Radius getRadius() => const Radius.circular(10);
@@ -40,7 +40,7 @@ class HorizontalScrollAreaState extends WidgetAreaState<HorizontalScrollArea, Co
     return SizedBox(
       height: 180,
       child: ListView.separated(
-        cacheExtent: template.isEditing ? 10000 : 200,
+        cacheExtent: isEditing ? 10000 : 200,
         controller: scrollController,
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

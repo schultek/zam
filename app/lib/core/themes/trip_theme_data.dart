@@ -5,7 +5,7 @@ import 'theme_model.dart';
 
 class ColorPreference {
   final bool useHighlightColor;
-  final int deltaElevation;
+  final double deltaElevation;
 
   const ColorPreference({this.useHighlightColor = false, this.deltaElevation = 1});
 }
@@ -27,7 +27,7 @@ class TripThemeData {
 
   final FlexScheme scheme;
   final bool dark;
-  final int elevation;
+  final double elevation;
   final HighlightColor useHighlightColor;
 
   factory TripThemeData.fromModel(ThemeModel model) {
@@ -50,7 +50,7 @@ class TripThemeData {
     }
 
     if (elevation == -1) {
-      return TripThemeData(scheme, dark, 1);
+      return TripThemeData(scheme, dark, 0 + (preference?.deltaElevation ?? 1));
     }
 
     return TripThemeData(scheme, dark, elevation + (preference?.deltaElevation ?? 1));
@@ -94,10 +94,11 @@ class TripThemeData {
       case HighlightColor.none:
         if (elevation == -1) {
           return themeData.scaffoldBackgroundColor;
-        } else if (elevation == 0) {
+        } else if (elevation < 1) {
           return themeData.backgroundColor;
         } else {
-          return Color.alphaBlend(themeData.colorScheme.primary.withAlpha((elevation - 1) * 8), themeData.cardColor);
+          return Color.alphaBlend(
+              themeData.colorScheme.primary.withAlpha(((elevation - 1) * 8).round()), themeData.cardColor);
         }
     }
   }

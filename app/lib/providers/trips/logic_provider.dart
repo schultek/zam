@@ -33,18 +33,14 @@ class TripsLogic {
   }
 
   Future<void> uploadProfileImage(Uint8List bytes) async {
-    var ref = FirebaseStorage.instance.ref('images/$_userId/profile.png');
-    await ref.putData(bytes);
-    var link = await ref.getDownloadURL();
+    var link = await uploadImage('users/$_userId/profile.png', bytes);
     return FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
       'users.$_userId.profileUrl': link,
     });
   }
 
   Future<void> setTripPicture(Uint8List bytes) async {
-    var ref = FirebaseStorage.instance.ref('images/$_tripId/picture.png');
-    await ref.putData(bytes);
-    var link = await ref.getDownloadURL();
+    var link = await uploadImage('picture.png', bytes);
     return FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
       'pictureUrl': link,
     });
@@ -92,5 +88,12 @@ class TripsLogic {
     await FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
       'template': model.toMap(),
     });
+  }
+
+  Future<String> uploadImage(String path, Uint8List bytes) async {
+    var ref = FirebaseStorage.instance.ref('images/$_tripId/$path');
+    await ref.putData(bytes);
+    var link = await ref.getDownloadURL();
+    return link;
   }
 }

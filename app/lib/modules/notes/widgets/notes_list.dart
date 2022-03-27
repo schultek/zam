@@ -4,6 +4,7 @@ import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../core/themes/themes.dart';
 import '../../../helpers/extensions.dart';
 import '../notes_provider.dart';
 import '../pages/edit_note_page.dart';
@@ -46,7 +47,7 @@ class NotesList extends StatelessWidget {
                       )
                     : null;
               })(),
-              leading: const Icon(Icons.sticky_note_2_outlined),
+              leading: Icon(Icons.sticky_note_2_outlined, color: context.onSurfaceHighlightColor),
               minLeadingWidth: 20,
               onTap: () {
                 Navigator.of(context).push(EditNotePage.route(note));
@@ -56,7 +57,7 @@ class NotesList extends StatelessWidget {
             if (folder != null)
               ListTile(
                 title: Text(folder),
-                leading: const Icon(Icons.folder_outlined),
+                leading: Icon(Icons.folder_outlined, color: context.onSurfaceHighlightColor),
                 minLeadingWidth: 20,
                 onTap: () {
                   FolderDialog.show(context, folder);
@@ -64,7 +65,7 @@ class NotesList extends StatelessWidget {
               ),
           ListTile(
             title: Text(context.tr.add),
-            leading: const Icon(Icons.add),
+            leading: Icon(Icons.add, color: context.onSurfaceHighlightColor),
             minLeadingWidth: 20,
             onTap: () {
               var note = context.read(notesLogicProvider).createEmptyNote();

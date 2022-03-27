@@ -75,6 +75,7 @@ dependencies:
       ref: player
   tuple: ^2.0.0
   url_launcher: ^6.0.20
+  visibility_detector: ^0.2.2
   webview_flutter: ^3.0.1
 
 dev_dependencies:

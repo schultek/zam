@@ -33,11 +33,9 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
   @override
   WidgetSelectorState createState() => WidgetSelectorState<T>();
 
-  static Future<WidgetSelectorController> show<T extends ModuleElement>(WidgetTemplateState template) async {
+  static Future<WidgetSelectorController> show<T extends ModuleElement>(
+      WidgetTemplateState template, WidgetAreaState<WidgetArea<T>, T> widgetArea) async {
     var selectorKey = GlobalKey<WidgetSelectorState<T>>();
-
-    WidgetAreaState<WidgetArea<T>, T> widgetArea =
-        template.widgetAreas[template.selectedArea]! as WidgetAreaState<WidgetArea<T>, T>;
 
     List<T> widgets = await registry.getWidgetsOf<T>(template.context);
     widgets = widgets.where((w) => !widgetArea.getWidgets().any((ww) => ww.id == w.id)).toList();
@@ -47,14 +45,7 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
     var entry = OverlayEntry(
       builder: (context) => Align(
         alignment: Alignment.bottomCenter,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-            color: widgetArea.context.surfaceColor,
-            boxShadow: const [BoxShadow(blurRadius: 8, spreadRadius: -4)],
-          ),
-          child: InheritedWidgetTemplate(state: template, child: widgetSelector),
-        ),
+        child: InheritedWidgetTemplate(state: template, child: widgetSelector),
       ),
     );
 
@@ -85,6 +76,12 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
         curve: Curves.linear,
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   double shrinkFactor(Size size) {
@@ -196,52 +193,59 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
           curve: Curves.easeInOut,
           child: SizedBox(
             height: sheetHeight,
-            child: Padding(
-              padding: EdgeInsets.all(outerPadding),
-              child: CustomScrollView(
-                scrollDirection: Axis.horizontal,
-                controller: _scrollController,
-                slivers: [
-                  for (var group in groups)
-                    SliverStickyHeader(
-                      overlapsContent: true,
-                      header: Builder(builder: (context) {
-                        return Align(
-                          alignment: Alignment.topLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(left: innerPadding, right: innerPadding),
-                            child: Text(
-                              group.first.context.parent.getName(context),
-                              style: context.theme.textTheme.caption,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                color: widget.widgetArea.context.surfaceColor,
+                boxShadow: const [BoxShadow(blurRadius: 8, spreadRadius: -4)],
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(outerPadding),
+                child: CustomScrollView(
+                  scrollDirection: Axis.horizontal,
+                  controller: _scrollController,
+                  slivers: [
+                    for (var group in groups)
+                      SliverStickyHeader(
+                        overlapsContent: true,
+                        header: Builder(builder: (context) {
+                          return Align(
+                            alignment: Alignment.topLeft,
+                            child: Padding(
+                              padding: EdgeInsets.only(left: innerPadding, right: innerPadding),
+                              child: Text(
+                                group.first.context.parent.getName(context),
+                                style: context.theme.textTheme.caption,
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                      sliver: SliverPadding(
-                        padding: EdgeInsets.only(top: headerHeight),
-                        sliver: SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              return Padding(
-                                padding: EdgeInsets.all(innerPadding),
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(maxWidth: maxItemWidth),
-                                  child: FittedBox(
-                                    fit: BoxFit.contain,
-                                    child: ConstrainedBox(
-                                      constraints: widget.widgetArea.constrainWidget(group[index]),
-                                      child: group[index],
+                          );
+                        }),
+                        sliver: SliverPadding(
+                          padding: EdgeInsets.only(top: headerHeight),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                return Padding(
+                                  padding: EdgeInsets.all(innerPadding),
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(maxWidth: maxItemWidth),
+                                    child: FittedBox(
+                                      fit: BoxFit.contain,
+                                      child: ConstrainedBox(
+                                        constraints: widget.widgetArea.constrainWidget(group[index]),
+                                        child: group[index],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                            childCount: group.length,
+                                );
+                              },
+                              childCount: group.length,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

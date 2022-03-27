@@ -1,19 +1,32 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
-import '../areas/full_page_area.dart';
+import '../core.dart';
 import '../widgets/layout_preview.dart';
 import 'layout_model.dart';
 
 @MappableClass(discriminatorValue: 'page')
 class FullPageLayoutModel extends LayoutModel {
-  const FullPageLayoutModel({String? type}) : super(type ?? 'page');
+  const FullPageLayoutModel({this.backgroundPrimary = false}) : super();
+
+  final bool backgroundPrimary;
 
   @override
   String get name => 'Full Page Layout';
 
   @override
-  Widget builder(LayoutContext context) => FullPageLayout(context);
+  Widget builder(LayoutContext context) => FullPageLayout(context, this);
+
+  @override
+  List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
+    return [
+      SwitchListTile(
+        title: const Text('Primary Background'),
+        value: backgroundPrimary,
+        onChanged: (value) => update(copyWith(backgroundPrimary: value)),
+      ),
+    ];
+  }
 
   @override
   PreviewPage preview({Widget? header}) => PreviewPage(segments: [
@@ -41,13 +54,15 @@ class FullPageLayoutModel extends LayoutModel {
 
 class FullPageLayout extends StatelessWidget {
   final LayoutContext layoutContext;
+  final FullPageLayoutModel model;
 
-  const FullPageLayout(this.layoutContext, {Key? key}) : super(key: key);
+  const FullPageLayout(this.layoutContext, this.model, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    Widget child;
     if (layoutContext.header != null) {
-      return Column(
+      child = Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           layoutContext.header!,
@@ -57,9 +72,19 @@ class FullPageLayout extends StatelessWidget {
         ],
       );
     } else {
-      return SafeArea(
+      child = SafeArea(
         child: FullPageArea(id: layoutContext.id + '_page'),
       );
     }
+
+    if (model.backgroundPrimary) {
+      var inner = child;
+      child = ThemedSurface(
+        preference: const ColorPreference(useHighlightColor: true),
+        builder: (context, color) => Container(color: color, child: inner),
+      );
+    }
+
+    return child;
   }
 }

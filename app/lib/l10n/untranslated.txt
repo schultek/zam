@@ -8,6 +8,7 @@
     "tap_to_change",
     "choose_layout",
     "choose_template",
+    "layout",
     "template",
     "settings",
     "theme",

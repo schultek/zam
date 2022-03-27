@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
@@ -5,11 +6,14 @@ import 'package:riverpod_context/riverpod_context.dart';
 import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
 import '../../modules/labels/widgets/label_widget.dart';
+import '../../modules/profile/widgets/image_selector.dart';
+import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../areas/horizontal_scroll_area.dart';
 import '../areas/single_widget_area.dart';
 import '../elements/decorators/clipped_content_segment_decorator.dart';
-import '../templates/widget_template.dart';
+import '../elements/decorators/glass_content_segment_decorator.dart';
+import '../providers/editing_providers.dart';
 import '../themes/themes.dart';
 import '../widgets/layout_preview.dart';
 import 'layout_model.dart';
@@ -26,15 +30,63 @@ class DropModel {
 
 @MappableClass(discriminatorValue: 'drops')
 class DropsLayoutModel extends LayoutModel {
-  const DropsLayoutModel({String? type, this.drops = const []}) : super(type ?? 'drops');
+  const DropsLayoutModel({this.drops = const [], this.wideFocus = true, this.coverUrl}) : super();
 
   final List<DropModel> drops;
+  final bool wideFocus;
+  final String? coverUrl;
 
   @override
   String get name => 'Drops Layout';
 
   @override
   Widget builder(LayoutContext context) => DropsLayout(context, this);
+
+  @override
+  List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
+    bool isLoadingImage = false;
+
+    return [
+      SwitchListTile(
+        title: const Text('Wide Focus'),
+        value: wideFocus,
+        onChanged: (value) => update(copyWith(wideFocus: value)),
+      ),
+      StatefulBuilder(
+        builder: (context, setState) => ListTile(
+          title: const Text('Custom Cover Image'),
+          subtitle: Text(coverUrl != null ? 'Tap to change' : 'Tap to add'),
+          trailing: isLoadingImage
+              ? const Padding(
+                  padding: EdgeInsets.all(20),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
+              : coverUrl != null
+                  ? IconButton(
+                      icon: Icon(Icons.delete, color: context.theme.colorScheme.error),
+                      onPressed: () {
+                        update(copyWith(coverUrl: null));
+                      },
+                    )
+                  : null,
+          onTap: () async {
+            setState(() => isLoadingImage = true);
+            var pngBytes = await ImageSelector.fromGallery(context, crop: false);
+            if (pngBytes != null) {
+              var link = await context
+                  .read(tripsLogicProvider)
+                  .uploadImage('layouts/${generateRandomId(8)}/cover.png', pngBytes);
+              update(copyWith(coverUrl: link));
+            }
+            setState(() => isLoadingImage = false);
+          },
+        ),
+      ),
+    ];
+  }
 
   @override
   PreviewPage preview({Widget? header}) => PreviewPage(
@@ -111,27 +163,49 @@ class _DropsLayoutState extends State<DropsLayout> {
         slivers: [
           SliverToBoxAdapter(
             child: ThemedSurface(
-              preference: const ColorPreference(useHighlightColor: true),
-              builder: (context, color) => Material(
-                color: color,
-                child: Column(
-                  children: [
-                    if (widget.layoutContext.header != null) //
-                      widget.layoutContext.header!
-                    else
-                      SizedBox(height: MediaQuery.of(context).padding.top + 10),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                      child: SizedBox(
-                        height: 200,
-                        child: SingleWidgetArea(
-                          id: widget.layoutContext.id + '_focus',
-                          decorator: const ClippedContentSegmentDecorator(),
+              preference: ColorPreference(useHighlightColor: widget.model.coverUrl == null),
+              builder: (context, color) => Container(
+                decoration: BoxDecoration(
+                  image: widget.model.coverUrl != null
+                      ? DecorationImage(
+                          image: CachedNetworkImageProvider(widget.model.coverUrl!),
+                          fit: BoxFit.cover,
+                        )
+                      : null,
+                ),
+                child: Material(
+                  color: color.withOpacity(widget.model.coverUrl != null ? 0.4 : 1),
+                  child: Column(
+                    children: [
+                      if (widget.layoutContext.header != null) //
+                        widget.layoutContext.header!
+                      else
+                        SizedBox(height: MediaQuery.of(context).padding.top + 10),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                        child: SizedBox(
+                          height: 200,
+                          child: widget.model.wideFocus
+                              ? SingleWidgetArea(
+                                  id: widget.layoutContext.id + '_focus',
+                                  decorator: widget.model.coverUrl != null
+                                      ? const GlassContentSegmentDecorator()
+                                      : const ClippedContentSegmentDecorator(),
+                                )
+                              : AspectRatio(
+                                  aspectRatio: 1,
+                                  child: SingleWidgetArea(
+                                    id: widget.layoutContext.id + '_focus',
+                                    decorator: widget.model.coverUrl != null
+                                        ? const GlassContentSegmentDecorator()
+                                        : const ClippedContentSegmentDecorator(),
+                                  ),
+                                ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -143,41 +217,43 @@ class _DropsLayoutState extends State<DropsLayout> {
                 sliver: SliverToBoxAdapter(
                   child: Opacity(
                     opacity: drop.isHidden ? 0.7 : 1,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: LabelWidget(
-                            label: drop.label,
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            onChanged: (value) {
-                              widget.layoutContext.update(widget.model.copyWith.drops //
-                                  .at(widget.model.drops.indexOf(drop))
-                                  .call(label: value));
-                            },
-                          ),
-                        ),
-                        if (context.read(isOrganizerProvider)) ...[
-                          const SizedBox(width: 10),
-                          IconButton(
-                            icon: Icon(drop.isHidden ? Icons.visibility_off : Icons.visibility,
-                                color: context.onSurfaceHighlightColor),
-                            onPressed: () {
-                              widget.layoutContext.update(widget.model.copyWith.drops //
-                                  .at(widget.model.drops.indexOf(drop))
-                                  .call(isHidden: !drop.isHidden));
-                            },
-                          ),
-                          if (WidgetTemplate.of(context).isEditing)
-                            IconButton(
-                              icon: Icon(Icons.delete, color: context.theme.errorColor),
-                              onPressed: () {
+                    child: Builder(builder: (context) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: LabelWidget(
+                              label: drop.label,
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              onChanged: (value) {
                                 widget.layoutContext.update(widget.model.copyWith.drops //
-                                    .where((d) => d.id != drop.id));
+                                    .at(widget.model.drops.indexOf(drop))
+                                    .call(label: value));
                               },
                             ),
+                          ),
+                          if (context.read(isOrganizerProvider)) ...[
+                            const SizedBox(width: 10),
+                            IconButton(
+                              icon: Icon(drop.isHidden ? Icons.visibility_off : Icons.visibility,
+                                  color: context.onSurfaceHighlightColor),
+                              onPressed: () {
+                                widget.layoutContext.update(widget.model.copyWith.drops //
+                                    .at(widget.model.drops.indexOf(drop))
+                                    .call(isHidden: !drop.isHidden));
+                              },
+                            ),
+                            if (context.watch(isEditingProvider))
+                              IconButton(
+                                icon: Icon(Icons.delete, color: context.theme.errorColor),
+                                onPressed: () {
+                                  widget.layoutContext.update(widget.model.copyWith.drops //
+                                      .where((d) => d.id != drop.id));
+                                },
+                              ),
+                          ],
                         ],
-                      ],
-                    ),
+                      );
+                    }),
                   ),
                 ),
               ),
@@ -191,25 +267,32 @@ class _DropsLayoutState extends State<DropsLayout> {
                 ),
               ),
             ],
-          if (WidgetTemplate.of(context).isEditing)
-            SliverPadding(
-              padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
-              sliver: SliverToBoxAdapter(
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.all(20),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+          Builder(builder: (context) {
+            if (context.watch(isEditingProvider)) {
+              return SliverPadding(
+                padding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 20),
+                sliver: SliverToBoxAdapter(
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.all(20),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
+                    child: const Text('Add Section'),
+                    onPressed: () {
+                      widget.layoutContext.update(widget.model.copyWith.drops //
+                          .add(DropModel(id: generateRandomId())));
+                    },
                   ),
-                  child: const Text('Add Section'),
-                  onPressed: () {
-                    widget.layoutContext.update(widget.model.copyWith.drops //
-                        .add(DropModel(id: generateRandomId())));
-                  },
                 ),
-              ),
-            ),
+              );
+            } else {
+              return SliverToBoxAdapter(
+                child: Container(),
+              );
+            }
+          }),
           SliverPadding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom)),
         ],
       ),

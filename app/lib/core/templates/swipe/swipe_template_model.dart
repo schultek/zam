@@ -22,14 +22,11 @@ class SwipeTemplateModel extends TemplateModel {
   @override
   Widget preview() => Row(
         children: [
-          if (leftPage != null) leftPage!.layout.preview().apply(scale: 0.8),
-          mainPage.layout.preview(
-            header: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: Center(child: PreviewCard(width: 40, height: 10)),
-            ),
+          const FullPageLayoutModel().preview().apply(scale: 0.8),
+          const GridLayoutModel().preview(
+            header: MainGroupHeader.preview(),
           ),
-          if (rightPage != null) rightPage!.layout.preview().apply(scale: 0.8),
+          const FullPageLayoutModel().preview().apply(scale: 0.8),
         ],
       );
 }

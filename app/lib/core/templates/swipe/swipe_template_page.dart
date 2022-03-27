@@ -17,35 +17,42 @@ class SwipeTemplatePage extends TemplatePage {
     var isMain = this == model.mainPage;
     return [
       PageSettingsHeader(page: page, changePage: changePage),
-      SettingsSection(margin: EdgeInsets.zero, children: [
-        Builder(builder: (context) {
-          return ListTile(
-            title: Text(layout.name),
-            subtitle: Text(context.tr.tap_to_change),
-            trailing: isMain
-                ? null
-                : IconButton(
-                    icon: Icon(Icons.delete, color: context.theme.colorScheme.error),
-                    onPressed: () {
-                      update(null);
-                    },
-                  ),
-            onTap: () async {
-              var newLayout = await LayoutPreviewSwitcher.show(
-                context,
-                layout,
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Center(child: PreviewCard(width: 40, height: 10)),
-                ),
+      Builder(builder: (context) {
+        return SettingsSection(
+          title: context.tr.layout,
+          margin: EdgeInsets.zero,
+          children: [
+            Builder(builder: (context) {
+              return ListTile(
+                title: Text(layout.name),
+                subtitle: Text(context.tr.tap_to_change),
+                trailing: isMain
+                    ? null
+                    : IconButton(
+                        icon: Icon(Icons.delete, color: context.theme.colorScheme.error),
+                        onPressed: () {
+                          update(null);
+                        },
+                      ),
+                onTap: () async {
+                  var newLayout = await LayoutPreviewSwitcher.show(
+                    context,
+                    layout,
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Center(child: PreviewCard(width: 40, height: 10)),
+                    ),
+                  );
+                  if (newLayout != null) {
+                    update(copyWith(layout: newLayout));
+                  }
+                },
               );
-              if (newLayout != null) {
-                update(copyWith(layout: newLayout));
-              }
-            },
-          );
-        }),
-      ]),
+            }),
+            ...layout.settings(context, (newLayout) => update(copyWith(layout: newLayout))),
+          ],
+        );
+      }),
     ];
   }
 

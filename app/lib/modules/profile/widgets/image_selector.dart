@@ -10,24 +10,50 @@ import 'package:image_picker/image_picker.dart';
 import '../../../helpers/extensions.dart';
 
 class ImageSelector {
-  static Future<Uint8List?> fromGallery(BuildContext context) async {
+  static Future<Uint8List?> fromGallery(
+    BuildContext context, {
+    bool crop = true,
+    double cropAspectRatio = 1,
+    OverlayType cropOverlayType = OverlayType.none,
+  }) async {
     XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (image == null) return null;
 
-    return CropDialog.show(context, image);
+    if (crop) {
+      return CropDialog.show(context, image, aspectRatio: cropAspectRatio, overlayType: cropOverlayType);
+    } else {
+      return image.readAsBytes();
+    }
   }
 }
 
 class CropDialog extends StatefulWidget {
   final XFile image;
+  final double aspectRatio;
+  final OverlayType overlayType;
 
-  const CropDialog({required this.image, Key? key}) : super(key: key);
+  const CropDialog({
+    required this.image,
+    this.aspectRatio = 1,
+    this.overlayType = OverlayType.none,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _CropDialogState createState() => _CropDialogState();
 
-  static Future<Uint8List?> show(BuildContext context, XFile image) {
-    return Navigator.of(context).push(MaterialPageRoute(builder: (context) => CropDialog(image: image)));
+  static Future<Uint8List?> show(
+    BuildContext context,
+    XFile image, {
+    double aspectRatio = 1,
+    OverlayType overlayType = OverlayType.none,
+  }) {
+    return Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => CropDialog(
+              image: image,
+              aspectRatio: aspectRatio,
+              overlayType: overlayType,
+            )));
   }
 }
 
@@ -57,13 +83,11 @@ class _CropDialogState extends State<CropDialog> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(6),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Cropper(
-                  cropperKey: _cropperKey, // Use your key here
-                  image: Image.file(File(widget.image.path)),
-                  overlayType: OverlayType.circle,
-                ),
+              child: Cropper(
+                cropperKey: _cropperKey, // Use your key here
+                image: Image.file(File(widget.image.path)),
+                aspectRatio: widget.aspectRatio,
+                overlayType: widget.overlayType,
               ),
             ),
           ],

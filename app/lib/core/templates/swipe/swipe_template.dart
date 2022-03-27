@@ -1,5 +1,6 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../helpers/extensions.dart';
 import '../../../widgets/nested_will_pop_scope.dart';
@@ -7,6 +8,8 @@ import '../../core.dart';
 import '../../layouts/full_page_layout.dart';
 import '../../layouts/grid_layout.dart';
 import '../../layouts/layout_model.dart';
+import '../../providers/editing_providers.dart';
+import '../../providers/selected_area_provider.dart';
 import '../../widgets/layout_preview.dart';
 import '../../widgets/layout_preview_switcher.dart';
 import '../../widgets/settings_section.dart';
@@ -80,40 +83,6 @@ class SwipeTemplateState extends WidgetTemplateState<SwipeTemplate, SwipeTemplat
 
   @override
   Widget buildPages(BuildContext context) {
-    var pages = [
-      if (model.leftPage != null) //
-        KeepAlive(
-          key: leftKey,
-          child: model.leftPage!.layout.builder(LayoutContext(
-            id: 'left',
-            context: context,
-            onUpdate: (m) => model.copyWith.leftPage!(layout: m),
-          )),
-        )
-      else if (isEditing) //
-        EmptyPage(key: leftKey),
-      KeepAlive(
-        key: mainKey,
-        child: model.mainPage.layout.builder(LayoutContext(
-          id: 'main',
-          header: const MainGroupHeader(),
-          context: context,
-          onUpdate: (m) => model.copyWith.mainPage(layout: m),
-        )),
-      ),
-      if (model.rightPage != null) //
-        KeepAlive(
-          key: rightKey,
-          child: model.rightPage!.layout.builder(LayoutContext(
-            id: 'right',
-            context: context,
-            onUpdate: (m) => model.copyWith.rightPage!(layout: m),
-          )),
-        )
-      else if (isEditing) //
-        EmptyPage(key: rightKey),
-    ];
-
     return Scaffold(
       body: Builder(
         builder: (context) => NestedWillPopScope(
@@ -124,18 +93,52 @@ class SwipeTemplateState extends WidgetTemplateState<SwipeTemplate, SwipeTemplat
             }
             return true;
           },
-          child: CustomPageView(
-            controller: pageController,
-            onPageChanged: (index) {
-              if (isEditing) {
-                selectWidgetAreaById(null);
-                if (isLayoutMode) {
-                  setState(() {});
+          child: Builder(builder: (context) {
+            var isEditing = context.watch(isEditingProvider);
+            return CustomPageView(
+              controller: pageController,
+              onPageChanged: (index) {
+                if (isEditing) {
+                  context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
+                  if (context.read(editProvider) == EditState.layoutMode) {}
                 }
-              }
-            },
-            children: pages,
-          ),
+                context.read(currentPageProvider.notifier).state = index;
+              },
+              children: [
+                if (model.leftPage != null) //
+                  KeepAlive(
+                    key: leftKey,
+                    child: model.leftPage!.layout.builder(LayoutContext(
+                      id: 'left',
+                      context: context,
+                      onUpdate: (m) => model.copyWith.leftPage!(layout: m),
+                    )),
+                  )
+                else if (isEditing) //
+                  EmptyPage(key: leftKey),
+                KeepAlive(
+                  key: mainKey,
+                  child: model.mainPage.layout.builder(LayoutContext(
+                    id: 'main',
+                    header: const MainGroupHeader(),
+                    context: context,
+                    onUpdate: (m) => model.copyWith.mainPage(layout: m),
+                  )),
+                ),
+                if (model.rightPage != null) //
+                  KeepAlive(
+                    key: rightKey,
+                    child: model.rightPage!.layout.builder(LayoutContext(
+                      id: 'right',
+                      context: context,
+                      onUpdate: (m) => model.copyWith.rightPage!(layout: m),
+                    )),
+                  )
+                else if (isEditing) //
+                  EmptyPage(key: rightKey),
+              ],
+            );
+          }),
         ),
       ),
     );

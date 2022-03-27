@@ -12,19 +12,20 @@ import 'grid_layout.dart';
 
 @MappableClass(discriminatorKey: 'type')
 abstract class LayoutModel {
-  final String type;
-  const LayoutModel(this.type);
+  const LayoutModel();
 
   String get name;
   Widget builder(LayoutContext context);
 
   PreviewPage preview({Widget? header});
 
+  List<Widget> settings(BuildContext context, void Function(LayoutModel) update) => [];
+
   static List<LayoutModel> get all => const [
         GridLayoutModel(),
-        FullPageLayoutModel(),
         FocusLayoutModel(),
         DropsLayoutModel(),
+        FullPageLayoutModel(),
       ];
 }
 

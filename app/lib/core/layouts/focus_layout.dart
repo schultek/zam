@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
+import '../../main.mapper.g.dart';
 import '../areas/areas.dart';
 import '../areas/single_widget_area.dart';
 import '../elements/decorators/card_quick_action_decorator.dart';
@@ -13,13 +14,32 @@ import 'widgets/fill_overscroll.dart';
 
 @MappableClass(discriminatorValue: 'focus')
 class FocusLayoutModel extends LayoutModel {
-  const FocusLayoutModel({String? type}) : super(type ?? 'focus');
+  const FocusLayoutModel({this.showActions = true, this.showInfo = true}) : super();
+
+  final bool showActions;
+  final bool showInfo;
 
   @override
   String get name => 'Focus Layout';
 
   @override
-  Widget builder(LayoutContext context) => FocusLayout(context);
+  Widget builder(LayoutContext context) => FocusLayout(context, this);
+
+  @override
+  List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
+    return [
+      SwitchListTile(
+        title: const Text('Show Quick Actions'),
+        value: showActions,
+        onChanged: (value) => update(copyWith(showActions: value)),
+      ),
+      SwitchListTile(
+        title: const Text('Show Info Cards'),
+        value: showInfo,
+        onChanged: (value) => update(copyWith(showInfo: value)),
+      ),
+    ];
+  }
 
   @override
   PreviewPage preview({Widget? header}) => PreviewPage(segments: [
@@ -50,8 +70,9 @@ class FocusLayoutModel extends LayoutModel {
 
 class FocusLayout extends StatefulWidget {
   final LayoutContext layoutContext;
+  final FocusLayoutModel model;
 
-  const FocusLayout(this.layoutContext, {Key? key}) : super(key: key);
+  const FocusLayout(this.layoutContext, this.model, {Key? key}) : super(key: key);
 
   @override
   State<FocusLayout> createState() => _FocusLayoutState();
@@ -95,29 +116,31 @@ class _FocusLayoutState extends State<FocusLayout> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, left: 40, right: 40),
-                      child: ThemedSurface(
-                        builder: (context, color) => Container(
-                          decoration: BoxDecoration(
-                              color: color,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: const [BoxShadow(blurRadius: 10, spreadRadius: -4)]),
-                          padding: const EdgeInsets.all(5),
-                          child: QuickActionRowArea(
-                            widget.layoutContext.id + '_actions',
-                            decorator: const DefaultQuickActionDecorator(ColorPreference(useHighlightColor: true)),
+                    if (widget.model.showActions)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, left: 40, right: 40),
+                        child: ThemedSurface(
+                          builder: (context, color) => Container(
+                            decoration: BoxDecoration(
+                                color: color,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: const [BoxShadow(blurRadius: 10, spreadRadius: -4)]),
+                            padding: const EdgeInsets.all(5),
+                            child: QuickActionRowArea(
+                              widget.layoutContext.id + '_actions',
+                              decorator: const DefaultQuickActionDecorator(ColorPreference(useHighlightColor: true)),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                      child: QuickActionRowArea(
-                        widget.layoutContext.id + '_infos',
-                        decorator: const CardQuickActionDecorator(),
-                      ),
-                    )
+                    if (widget.model.showInfo)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+                        child: QuickActionRowArea(
+                          widget.layoutContext.id + '_infos',
+                          decorator: const CardQuickActionDecorator(),
+                        ),
+                      )
                   ],
                 ),
               ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../areas/widget_area.dart';
+import '../../providers/editing_providers.dart';
 import '../../reorderable/reorderable_listener.dart';
 import '../../route/route.dart';
-import '../../templates/widget_template.dart';
 import '../../themes/theme_context.dart';
 import '../module_element.dart';
 
@@ -15,12 +16,11 @@ class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessW
 
   @override
   Widget build(BuildContext context) {
-    var templateState = WidgetTemplate.of(context);
+    var editState = context.watch(editProvider);
 
-    if (templateState.isEditing) {
-      if (templateState.isLayoutMode) {
-        return AbsorbPointer(child: child);
-      }
+    if (editState == EditState.layoutMode) {
+      return AbsorbPointer(child: child);
+    } else if (editState == EditState.widgetMode) {
       return LayoutBuilder(
         builder: (context, constraints) {
           return Stack(clipBehavior: Clip.none, children: [
@@ -35,10 +35,10 @@ class RemovableDraggableModuleWidget<T extends ModuleElement> extends StatelessW
               top: -5,
               left: -5,
               child: AnimatedBuilder(
-                animation: templateState.transition,
+                animation: context.read(transitionControllerProvider)!,
                 builder: (context, child) {
                   return Transform.scale(
-                    scale: templateState.transition.value,
+                    scale: context.read(transitionControllerProvider)!.value,
                     child: FittedBox(
                       child: child,
                     ),

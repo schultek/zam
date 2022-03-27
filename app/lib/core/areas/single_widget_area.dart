@@ -26,13 +26,13 @@ class SingleWidgetAreaState extends WidgetAreaState<SingleWidgetArea, ContentSeg
   ElementDecorator<ContentSegment> get elementDecorator => widget.decorator;
 
   @override
-  EdgeInsets getPadding() => !template.isEditing && element == null ? EdgeInsets.zero : super.getPadding();
+  EdgeInsets getPadding() => !isEditing && element == null ? EdgeInsets.zero : super.getPadding();
 
   @override
   Widget buildArea(BuildContext context) {
     if (element != null) return Center(child: element!);
 
-    if (template.isEditing) return Container();
+    if (isEditing) return Container();
 
     return DottedBorder(
       borderType: BorderType.RRect,

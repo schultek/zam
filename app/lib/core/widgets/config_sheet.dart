@@ -3,6 +3,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/trips/selected_trip_provider.dart';
 import '../core.dart';
+import '../providers/editing_providers.dart';
 
 class ConfigSheetController {
   final BuildContext _context;
@@ -73,8 +74,9 @@ class ConfigSheetRoute<T extends TemplateModel> extends TransitionRoute {
 class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
   @override
   Widget build(BuildContext context) {
-    var state = WidgetTemplate.of(context);
+    context.watch(currentPageProvider);
 
+    var state = WidgetTemplate.of(context, listen: false);
     var settings = state.getPageSettings();
 
     if (settings.isEmpty) {
@@ -86,21 +88,24 @@ class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
       minChildSize: 0.08,
       maxChildSize: 0.5,
       snap: true,
-      snapSizes: const [0.2],
-      builder: (context, scrollController) => Container(
-        decoration: const BoxDecoration(
-          boxShadow: [BoxShadow(blurRadius: 8, spreadRadius: -4)],
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          child: Material(
-            color: context.surfaceColor,
-            child: ListView(
-              controller: scrollController,
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.zero,
-              children: settings,
+      snapSizes: const [0.2, 0.3],
+      builder: (context, scrollController) => ThemedSurface(
+        preference: const ColorPreference(deltaElevation: 0),
+        builder: (context, color) => Container(
+          decoration: const BoxDecoration(
+            boxShadow: [BoxShadow(blurRadius: 8, spreadRadius: -4)],
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            child: Material(
+              color: color,
+              child: ListView(
+                controller: scrollController,
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.zero,
+                children: settings,
+              ),
             ),
           ),
         ),

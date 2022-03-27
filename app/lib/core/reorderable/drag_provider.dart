@@ -4,9 +4,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../areas/widget_area.dart';
 import '../elements/module_element.dart';
+import '../providers/selected_area_provider.dart';
 import '../widgets/widget_selector.dart';
 import 'drag_item.dart';
 import 'logic_provider.dart';
@@ -63,7 +65,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
   Drag onStart(Offset position) {
     if (widgetSelector == null) {
-      area.template.selectWidgetArea<T>(area);
+      area.context.read(selectedAreaProvider.notifier).selectWidgetAreaById(area.id);
       WidgetsBinding.instance!.addPostFrameCallback((timestamp) => onStart(position));
 
       return this;

@@ -20,10 +20,10 @@ class PollsModule extends ModuleBuilder {
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
-        'poll': buildPoll,
-        'new_poll_action': buildNewPollAction,
-        'polls': buildPolls,
-        'polls_list': buildPollsList,
+        // 'poll': buildPoll,
+        // 'new_poll_action': buildNewPollAction,
+        // 'polls': buildPolls,
+        // 'polls_list': buildPollsList,
       };
 
   FutureOr<ContentSegment?> buildPoll(ModuleContext context) {

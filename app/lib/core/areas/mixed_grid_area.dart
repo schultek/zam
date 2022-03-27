@@ -67,7 +67,7 @@ class BodyWidgetAreaState extends WidgetAreaState<MixedGridArea, ContentSegment>
     }
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: 100),
+      constraints: const BoxConstraints(minHeight: 400),
       child: child,
     );
   }

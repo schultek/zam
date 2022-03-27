@@ -6,13 +6,16 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../providers/editing_providers.dart';
 import '../../themes/theme_context.dart';
-import '../widget_template.dart';
 
 class ReorderToggle extends StatefulWidget {
-  final void Function()? onPressed;
   const ReorderToggle({this.onPressed, Key? key}) : super(key: key);
+
+  final void Function()? onPressed;
+
   @override
   _ReorderToggleState createState() => _ReorderToggleState();
 }
@@ -41,25 +44,26 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController, Tic
   void initState() {
     super.initState();
     controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 300))
-      ..value = WidgetTemplate.of(context, listen: false).transition.value;
+      ..value = context.read(isEditingProvider) ? 1 : 0;
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    var state = WidgetTemplate.of(context);
-
-    if (state.isEditing && controller.value != 1) {
-      controller.forward();
-    } else if (!state.isEditing && controller.value != 0) {
-      controller.reverse();
-    }
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    var state = WidgetTemplate.of(context, listen: false);
-    return SizedBox(
+    context.listen<bool>(isEditingProvider, (_, isEditing) {
+      if (isEditing && controller.value != 1 && controller.status != AnimationStatus.forward) {
+        controller.forward();
+      } else if (!isEditing && controller.value != 0 && controller.status != AnimationStatus.reverse) {
+        controller.reverse();
+      }
+    });
+
+    Widget child = SizedBox(
       width: 50,
       child: IconButton(
         icon: ShaderMask(
@@ -87,10 +91,12 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController, Tic
         ),
         onPressed: () {
           widget.onPressed?.call();
-          state.toggleEdit();
+          context.read(editProvider.notifier).toggleEdit();
         },
       ),
     );
+
+    return child;
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cropperx/cropperx.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -44,7 +45,7 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
             padding: const EdgeInsets.symmetric(horizontal: 80),
             child: GestureDetector(
               onTap: () async {
-                var pngBytes = await ImageSelector.fromGallery(context);
+                var pngBytes = await ImageSelector.fromGallery(context, cropOverlayType: OverlayType.rectangle);
                 if (pngBytes != null) {
                   context.read(tripsLogicProvider).setTripPicture(pngBytes);
                 }
