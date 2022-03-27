@@ -26,11 +26,7 @@ class EditToggles extends StatelessWidget {
       child = VisibilityDetector(
         key: const ValueKey('edit-toggles'),
         onVisibilityChanged: (visibilityInfo) {
-          if (visibilityInfo.visibleFraction < 0.1) {
-            context.read(toggleVisibilityProvider.notifier).state = false;
-          } else {
-            context.read(toggleVisibilityProvider.notifier).state = true;
-          }
+          context.read(toggleVisibilityProvider.notifier).state = visibilityInfo.visibleFraction > 0.1;
         },
         child: child,
       );

@@ -24,9 +24,9 @@ class ChatModule extends ModuleBuilder {
         'action': buildAction,
       };
 
-  FutureOr<PageSegment?> buildPageSegment(ModuleContext context) {
+  FutureOr<PageSegment?> buildPageSegment(ModuleContext module) {
     return PageSegment(
-      context: context,
+      module: module,
       builder: (context) {
         if (WidgetSelector.existsIn(context)) {
           return ThemedSurface(
@@ -45,11 +45,11 @@ class ChatModule extends ModuleBuilder {
     );
   }
 
-  FutureOr<QuickAction?> buildAction(ModuleContext context) {
+  FutureOr<QuickAction?> buildAction(ModuleContext module) {
     return QuickAction(
-      context: context,
+      module: module,
       icon: Icons.chat,
-      text: context.context.tr.chat,
+      text: module.context.tr.chat,
       onNavigate: (context) => const ChatPage(),
     );
   }

@@ -24,7 +24,6 @@ class _SelectNotePageState extends State<SelectNotePage> {
       body: Consumer(
         builder: (context, ref, _) {
           var notes = ref.watch(notesProvider);
-          print(notes);
           return notes.when(
               data: (data) {
                 var folders = data.groupListsBy((n) => n.folder);

@@ -20,9 +20,9 @@ class EliminationGameCard extends StatefulWidget {
   @override
   _EliminationGameCardState createState() => _EliminationGameCardState();
 
-  static FutureOr<ContentSegment?> segment(ModuleContext context, String id) {
+  static FutureOr<ContentSegment?> segment(ModuleContext module, String id) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => Stack(
         children: [
           EliminationGameCard(id),

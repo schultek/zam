@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
+import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
 import '../areas/areas.dart';
 import '../areas/single_widget_area.dart';
@@ -29,12 +30,12 @@ class FocusLayoutModel extends LayoutModel {
   List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
     return [
       SwitchListTile(
-        title: const Text('Show Quick Actions'),
+        title: Text(context.tr.show_quick_actions),
         value: showActions,
         onChanged: (value) => update(copyWith(showActions: value)),
       ),
       SwitchListTile(
-        title: const Text('Show Info Cards'),
+        title: Text(context.tr.show_info_cards),
         value: showInfo,
         onChanged: (value) => update(copyWith(showInfo: value)),
       ),

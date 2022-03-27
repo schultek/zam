@@ -5,12 +5,13 @@ mixin NotesFullPagesModule on ModuleBuilder {
         'notes_list_page': buildNotesListPage,
       };
 
-  FutureOr<PageSegment?> buildNotesListPage(ModuleContext context) async {
-    var notes = await context.context.read(notesProvider.future);
+  FutureOr<PageSegment?> buildNotesListPage(ModuleContext module) async {
+    var notes = await module.context.read(notesProvider.future);
+    var params = module.hasParams ? module.getParams<NotesListParams>() : NotesListParams();
 
     if (notes.isNotEmpty) {
       return PageSegment(
-        context: context,
+        module: module,
         builder: (context) {
           if (WidgetSelector.existsIn(context)) {
             return ThemedSurface(
@@ -24,8 +25,9 @@ mixin NotesFullPagesModule on ModuleBuilder {
               ),
             );
           }
-          return const NotesList(showTitle: true);
+          return NotesList(showTitle: true, params: params);
         },
+        settings: (context) => NotesPage.settingsBuilder(context, module, params),
       );
     }
     return null;

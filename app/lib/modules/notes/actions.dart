@@ -6,20 +6,20 @@ mixin NotesActionsModule on ModuleBuilder {
         'add_note_action': buildAddNoteAction,
       };
 
-  FutureOr<QuickAction?> buildNotesAction(ModuleContext context) {
+  FutureOr<QuickAction?> buildNotesAction(ModuleContext module) {
     return QuickAction(
-      context: context,
+      module: module,
       icon: Icons.sticky_note_2,
-      text: context.context.tr.notes,
+      text: module.context.tr.notes,
       onNavigate: (context) => const NotesPage(),
     );
   }
 
-  FutureOr<QuickAction?> buildAddNoteAction(ModuleContext context) {
+  FutureOr<QuickAction?> buildAddNoteAction(ModuleContext module) {
     return QuickAction(
-      context: context,
+      module: module,
       icon: Icons.sticky_note_2,
-      text: context.context.tr.new_note,
+      text: module.context.tr.new_note,
       onNavigate: (BuildContext context) {
         var note = context.read(notesLogicProvider).createEmptyNote();
         return EditNotePage(note);

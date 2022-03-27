@@ -48,14 +48,14 @@ class DropsLayoutModel extends LayoutModel {
 
     return [
       SwitchListTile(
-        title: const Text('Wide Focus'),
+        title: Text(context.tr.wide_focus),
         value: wideFocus,
         onChanged: (value) => update(copyWith(wideFocus: value)),
       ),
       StatefulBuilder(
         builder: (context, setState) => ListTile(
-          title: const Text('Custom Cover Image'),
-          subtitle: Text(coverUrl != null ? 'Tap to change' : 'Tap to add'),
+          title: Text(context.tr.custom_cover_image),
+          subtitle: Text(coverUrl != null ? context.tr.tap_to_change : context.tr.tap_to_add),
           trailing: isLoadingImage
               ? const Padding(
                   padding: EdgeInsets.all(20),
@@ -78,7 +78,7 @@ class DropsLayoutModel extends LayoutModel {
             if (pngBytes != null) {
               var link = await context
                   .read(tripsLogicProvider)
-                  .uploadImage('layouts/${generateRandomId(8)}/cover.png', pngBytes);
+                  .uploadImage('layouts/${generateRandomId(4)}/cover.png', pngBytes);
               update(copyWith(coverUrl: link));
             }
             setState(() => isLoadingImage = false);
@@ -279,10 +279,10 @@ class _DropsLayoutState extends State<DropsLayout> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    child: const Text('Add Section'),
+                    child: Text(context.tr.add_section),
                     onPressed: () {
                       widget.layoutContext.update(widget.model.copyWith.drops //
-                          .add(DropModel(id: generateRandomId())));
+                          .add(DropModel(id: generateRandomId(4))));
                     },
                   ),
                 ),

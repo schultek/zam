@@ -65,7 +65,7 @@
   "add_phone_number_hint": "You can add your phone number\nto access your groups on another device",
   "logout": "Log out",
 
-  "@LAYOUT": {},
+  "@CONFIGURATION": {},
 
   "main_page": "Main Page",
   "left_page": "Left Page",
@@ -83,6 +83,13 @@
   "do_want_to_leave": "Do you want to leave",
   "do_want_to_delete": "Do you want to delete",
   "cant_be_undone": "This can't be undone.",
+  "wide_focus": "Wide Focus",
+  "custom_cover_image": "Custom Cover Image",
+  "tap_to_add": "Tap to add",
+  "add_section": "Add Section",
+  "show_quick_actions": "Show Quick Actions",
+  "show_info_cards": "Show Info Cards",
+  "primary_background": "Primary Background",
 
   "@ANNOUNCEMENTS": {},
 
@@ -150,7 +157,7 @@
 
   "notes": "Notes",
   "new_note": "New Note",
-  "add_note": "Add Note/n(Tap to select)",
+  "single_note_tap_settings": "Single Note\n(Tap Settings)",
   "select_note_or_folder": "Select a Note or Folder",
   "untitled": "Untitled",
   "untitled_note": "Untitled Note",
@@ -161,6 +168,8 @@
   "change_folder": "Change Folder",
   "create_new_folder": "Create new folder",
   "add_editors": "Add Editors",
+  "show_folders": "Show Folders",
+  "show_add_tile": "Show Add Tile",
 
   "@PHOTOS": {},
 

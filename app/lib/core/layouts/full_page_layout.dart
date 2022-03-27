@@ -1,6 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
+import '../../helpers/extensions.dart';
 import '../core.dart';
 import '../widgets/layout_preview.dart';
 import 'layout_model.dart';
@@ -21,7 +22,7 @@ class FullPageLayoutModel extends LayoutModel {
   List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
     return [
       SwitchListTile(
-        title: const Text('Primary Background'),
+        title: Text(context.tr.primary_background),
         value: backgroundPrimary,
         onChanged: (value) => update(copyWith(backgroundPrimary: value)),
       ),

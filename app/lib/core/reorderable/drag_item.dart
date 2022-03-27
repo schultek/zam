@@ -12,10 +12,16 @@ import 'reorderable_item.dart';
 
 class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
   final WidgetAreaState<WidgetArea<T>, T> area;
+  final BoxConstraints elementConstraints;
   final Animation<double> scaleAnimation;
   final DecorationBuilder decorationBuilder;
 
-  const DragItemWidget({Key? key, required this.area, required this.scaleAnimation, required this.decorationBuilder})
+  const DragItemWidget(
+      {Key? key,
+      required this.area,
+      required this.elementConstraints,
+      required this.scaleAnimation,
+      required this.decorationBuilder})
       : super(key: key);
 
   double scaledHeight(Size size) => lerpDouble(
@@ -49,8 +55,8 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
                   );
                 },
                 child: FittedBox(
-                  child: SizedBox.fromSize(
-                    size: size,
+                  child: ConstrainedBox(
+                    constraints: elementConstraints,
                     child: child,
                   ),
                 ),

@@ -24,4 +24,4 @@ abstract class ModuleBuilder {
   ModuleSettings? getSettings(BuildContext context) => null;
 }
 
-typedef ElementBuilder<T extends ModuleElement> = FutureOr<T?> Function(ModuleContext);
+typedef ElementBuilder<T extends ModuleElement> = FutureOr<T?> Function(ModuleContext module);

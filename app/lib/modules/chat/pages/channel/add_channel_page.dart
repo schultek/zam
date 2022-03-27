@@ -45,7 +45,7 @@ class _AddChannelPageState extends State<AddChannelPage> {
               separatorBuilder: (context, _) => const Divider(),
             ),
             loading: () => const CircularProgressIndicator(),
-            error: (e, st) => Text('Error $e'),
+            error: (e, st) => Text('${context.tr.error}: $e'),
           );
         },
       ),

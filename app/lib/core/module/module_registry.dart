@@ -21,11 +21,11 @@ class ModuleRegistry {
   ModuleRegistry(List<ModuleBuilder> modules) : modules = Map.fromEntries(modules.map((m) => MapEntry(m.id, m)));
 
   FutureOr<T?> getWidget<T extends ModuleElement>(BuildContext context, String id) async {
-    var moduleId = id.split('/').first;
+    var moduleId = ModuleContext.getModuleId(id);
     var module = modules[moduleId];
     if (module == null) return null;
 
-    var moduleContext = ModuleContext(context, module, id);
+    var moduleContext = ModuleContext<T>(context, module, id);
 
     var builder = modules[moduleId]?.elements[moduleContext.elementId];
     assert(builder is ElementBuilder<T>?,
@@ -42,18 +42,18 @@ class ModuleRegistry {
             if (e.value is ElementBuilder<T>)
               _callOrCatch(
                 e.value as ElementBuilder<T>,
-                ModuleContext(context, m.value, '${m.key}/${e.key}'),
+                ModuleContext<T>(context, m.value, '${m.key}/${e.key}'),
               ),
     ]);
     return widgets.whereNotNull().toList();
   }
 
-  Future<T?> _callOrCatch<T extends ModuleElement>(ElementBuilder<T> builder, ModuleContext context) async {
-    var future = builder(context);
+  Future<T?> _callOrCatch<T extends ModuleElement>(ElementBuilder<T> builder, ModuleContext module) async {
+    var future = builder(module);
     try {
       return await future;
     } catch (e, st) {
-      FirebaseCrashlytics.instance.recordError(e, st, reason: 'Getting widget for module ${context.id}');
+      FirebaseCrashlytics.instance.recordError(e, st, reason: 'Getting widget for module ${module.id}');
       return null;
     }
   }

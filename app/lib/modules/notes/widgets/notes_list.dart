@@ -6,19 +6,25 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/themes/themes.dart';
 import '../../../helpers/extensions.dart';
+import '../notes_module.dart';
 import '../notes_provider.dart';
 import '../pages/edit_note_page.dart';
 import 'folder_dialog.dart';
 
 class NotesList extends StatelessWidget {
-  const NotesList({this.showTitle = false, Key? key}) : super(key: key);
+  const NotesList({this.showTitle = false, this.params, Key? key}) : super(key: key);
 
   final bool showTitle;
+  final NotesListParams? params;
 
   @override
   Widget build(BuildContext context) {
     var notes = context.watch(notesProvider).value ?? [];
     var folders = notes.groupListsBy((n) => n.folder);
+
+    if (params?.folder != null) {
+      folders = {null: folders[params!.folder!] ?? []};
+    }
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 20),
@@ -34,7 +40,7 @@ class NotesList extends StatelessWidget {
             ),
           for (var note in folders[null] ?? <Note>[])
             ListTile(
-              title: Text(note.title ?? 'Untitled'),
+              title: Text(note.title ?? context.tr.untitled),
               subtitle: (() {
                 var text = (note.content.isEmpty ? Document() : Document.fromJson(note.content))
                     .toPlainText()
@@ -53,25 +59,27 @@ class NotesList extends StatelessWidget {
                 Navigator.of(context).push(EditNotePage.route(note));
               },
             ),
-          for (var folder in folders.keys)
-            if (folder != null)
-              ListTile(
-                title: Text(folder),
-                leading: Icon(Icons.folder_outlined, color: context.onSurfaceHighlightColor),
-                minLeadingWidth: 20,
-                onTap: () {
-                  FolderDialog.show(context, folder);
-                },
-              ),
-          ListTile(
-            title: Text(context.tr.add),
-            leading: Icon(Icons.add, color: context.onSurfaceHighlightColor),
-            minLeadingWidth: 20,
-            onTap: () {
-              var note = context.read(notesLogicProvider).createEmptyNote();
-              Navigator.of(context).push(EditNotePage.route(note));
-            },
-          ),
+          if (params?.showFolders ?? true)
+            for (var folder in folders.keys)
+              if (folder != null)
+                ListTile(
+                  title: Text(folder),
+                  leading: Icon(Icons.folder_outlined, color: context.onSurfaceHighlightColor),
+                  minLeadingWidth: 20,
+                  onTap: () {
+                    FolderDialog.show(context, folder);
+                  },
+                ),
+          if (params?.showAdd ?? true)
+            ListTile(
+              title: Text(context.tr.add),
+              leading: Icon(Icons.add, color: context.onSurfaceHighlightColor),
+              minLeadingWidth: 20,
+              onTap: () {
+                var note = context.read(notesLogicProvider).createEmptyNote(folder: params?.folder);
+                Navigator.of(context).push(EditNotePage.route(note));
+              },
+            ),
         ]
             .intersperse(const Divider(
               height: 0,

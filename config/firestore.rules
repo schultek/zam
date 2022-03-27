@@ -57,9 +57,9 @@ service cloud.firestore {
       match /modules/announcements/announcements/{announcementId} {
         allow read: if userIsInTrip(getTrip());
         
-        allow create: if userIsOrganizer(getTrip());
+        allow create, delete: if userIsOrganizer(getTrip());
         
-        allow update, delete: if false;
+        allow update: if false;
       }
       
       match /modules/thebutton {

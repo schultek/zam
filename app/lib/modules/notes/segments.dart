@@ -8,28 +8,29 @@ mixin NotesSegmentsModule on ModuleBuilder {
         'notes_list': buildNotesList,
       };
 
-  FutureOr<ContentSegment?> buildNotes(ModuleContext context) {
+  FutureOr<ContentSegment?> buildNotes(ModuleContext module) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => SimpleCard(title: context.tr.notes, icon: Icons.sticky_note_2),
       onNavigate: (context) => const NotesPage(),
     );
   }
 
-  FutureOr<ContentSegment?> buildNote(ModuleContext context) {
-    return context.when(withId: (id) {
+  FutureOr<ContentSegment?> buildNote(ModuleContext module) {
+    if (module.hasParams) {
+      var noteOrFolder = module.getParams<String>();
       return ContentSegment(
-        context: context,
+        module: module,
         builder: (context) => Consumer(
           builder: (context, ref, _) {
-            if (id.startsWith('%')) {
+            if (noteOrFolder.startsWith('%')) {
               return FolderCard(
-                folder: id.substring(1),
+                folder: noteOrFolder.substring(1),
                 needsSurface: true,
               );
             }
 
-            var note = ref.watch(noteProvider(id));
+            var note = ref.watch(noteProvider(noteOrFolder));
             return note.when(
               data: (data) {
                 if (data == null) {
@@ -52,49 +53,88 @@ mixin NotesSegmentsModule on ModuleBuilder {
             );
           },
         ),
+        settings: (context) => [
+          ListTile(
+            title: Text(context.tr.select_note_or_folder),
+            subtitle: Text(noteOrFolder),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SelectNotePage(
+                    onSelect: (id) {
+                      module.updateParams(id);
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       );
-    }, withoutId: () {
-      if (context.context.read(isOrganizerProvider)) {
-        var idProvider = IdProvider();
+    } else {
+      if (module.context.read(isOrganizerProvider)) {
         return ContentSegment(
-          context: context,
-          idProvider: idProvider,
-          builder: (context) => SimpleCard(title: context.tr.add_note, icon: Icons.add),
-          onNavigate: (context) {
-            return SelectNotePage(
-              onSelect: (id) => idProvider.provide(context, id),
-            );
-          },
+          module: module,
+          builder: (context) => SimpleCard(title: context.tr.single_note_tap_settings, icon: Icons.add),
+          settings: (context) => [
+            ListTile(
+              title: Text(context.tr.select_note_or_folder),
+              onTap: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SelectNotePage(
+                      onSelect: (id) {
+                        module.updateParams(id);
+                      },
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         );
       } else {
         return null;
       }
-    });
+    }
   }
 
-  FutureOr<ContentSegment?> buildNotesGrid(ModuleContext context) async {
-    var notes = await context.context.read(notesProvider.future);
+  FutureOr<ContentSegment?> buildNotesGrid(ModuleContext module) async {
+    var notes = await module.context.read(notesProvider.future);
+    var params = module.hasParams ? module.getParams<NotesListParams>() : NotesListParams();
 
     if (notes.isNotEmpty) {
       return ContentSegment.grid(
-        context: context,
-        builder: NotesPage.cardsBuilder,
+        module: module,
         spacing: 20,
+        builder: (context) => NotesPage.cardsBuilder(context, false, params),
+        settings: (context) => NotesPage.settingsBuilder(context, module, params),
       );
     }
     return null;
   }
 
-  FutureOr<ContentSegment?> buildNotesList(ModuleContext context) async {
-    var notes = await context.context.read(notesProvider.future);
+  FutureOr<ContentSegment?> buildNotesList(ModuleContext module) async {
+    var notes = await module.context.read(notesProvider.future);
+    var params = module.hasParams ? module.getParams<NotesListParams>() : NotesListParams();
 
     if (notes.isNotEmpty) {
       return ContentSegment(
-        context: context,
+        module: module,
         size: SegmentSize.wide,
-        builder: (context) => const NotesList(),
+        builder: (context) => NotesList(params: params),
+        settings: (context) => NotesPage.settingsBuilder(context, module, params),
       );
     }
     return null;
   }
+}
+
+@MappableClass()
+class NotesListParams {
+  final bool showAdd;
+  final String? folder;
+  final bool showFolders;
+
+  NotesListParams({this.showAdd = true, this.folder, this.showFolders = true});
 }

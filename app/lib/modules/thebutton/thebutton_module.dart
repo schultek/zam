@@ -41,11 +41,11 @@ class TheButtonModule extends ModuleBuilder {
     );
   }
 
-  FutureOr<ContentSegment?> buildTheButton(ModuleContext context) {
+  FutureOr<ContentSegment?> buildTheButton(ModuleContext module) {
     var buttonHelpKey = GlobalKey();
     var buttonSettingsKey = GlobalKey();
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) {
         return Consumer(builder: (context, ref, _) {
           var state = ref.watch(theButtonProvider);

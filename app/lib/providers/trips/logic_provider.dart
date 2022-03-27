@@ -26,7 +26,7 @@ class TripsLogic {
   }
 
   Future<void> addUser(String name) {
-    var userId = generateRandomId();
+    var userId = generateRandomId(10);
     return FirebaseFirestore.instance.collection('trips').doc(_tripId).update({
       'users.$userId': {'nickname': name, 'role': UserRoles.participant},
     });

@@ -29,19 +29,19 @@ class UsersModule extends ModuleBuilder {
     ]);
   }
 
-  FutureOr<ContentSegment?> buildUsers(ModuleContext context) {
+  FutureOr<ContentSegment?> buildUsers(ModuleContext module) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => SimpleCard(title: context.tr.users, icon: Icons.supervised_user_circle),
       onNavigate: (context) => const UsersPage(),
     );
   }
 
-  FutureOr<QuickAction?> buildUsersAction(ModuleContext context) {
+  FutureOr<QuickAction?> buildUsersAction(ModuleContext module) {
     return QuickAction(
-      context: context,
+      module: module,
       icon: Icons.supervised_user_circle,
-      text: context.context.tr.users,
+      text: module.context.tr.users,
       onNavigate: (context) => const UsersPage(),
     );
   }

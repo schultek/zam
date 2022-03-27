@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
 import '../../../helpers/extensions.dart';
+import '../../../helpers/optional.dart';
 import '../notes_provider.dart';
 
 class ChangeFolderPage extends StatefulWidget {
-  final Note note;
-  const ChangeFolderPage(this.note, {Key? key}) : super(key: key);
+  final String? folder;
+  final bool allowCreate;
+  const ChangeFolderPage(this.folder, {this.allowCreate = false, Key? key}) : super(key: key);
 
   @override
   _ChangeFolderPageState createState() => _ChangeFolderPageState();
 
-  static Route route(Note note) {
-    return MaterialPageRoute(builder: (context) => ChangeFolderPage(note));
+  static Route<Optional<String?>?> route(String? folder, {bool allowCreate = false}) {
+    return MaterialPageRoute(builder: (context) => ChangeFolderPage(folder, allowCreate: allowCreate));
   }
 }
 
@@ -25,12 +26,11 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
   @override
   void initState() {
     super.initState();
-    folder = widget.note.folder;
+    folder = widget.folder;
   }
 
   Future<void> changeFolder() async {
-    await context.read(notesLogicProvider).changeFolder(widget.note.id, folder);
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(Optional(folder));
   }
 
   @override
@@ -45,7 +45,7 @@ class _ChangeFolderPageState extends State<ChangeFolderPage> {
 
           return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            itemCount: folders.length + 1,
+            itemCount: folders.length + (widget.allowCreate ? 1 : 0),
             itemBuilder: (context, index) {
               if (index < folders.length) {
                 return ListTile(

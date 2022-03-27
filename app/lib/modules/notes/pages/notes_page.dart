@@ -5,9 +5,11 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
 import '../../../helpers/extensions.dart';
+import '../notes_module.dart';
 import '../notes_provider.dart';
 import '../widgets/folder_dialog.dart';
 import '../widgets/note_preview.dart';
+import 'change_folder_page.dart';
 import 'edit_note_page.dart';
 
 class NotesPage extends StatefulWidget {
@@ -20,9 +22,13 @@ class NotesPage extends StatefulWidget {
     return MaterialPageRoute(builder: (context) => const NotesPage());
   }
 
-  static List<Widget> cardsBuilder(BuildContext context, [bool needsSurface = false]) {
+  static List<Widget> cardsBuilder(BuildContext context, [bool needsSurface = false, NotesListParams? params]) {
     var notes = context.watch(notesProvider).value ?? [];
     var folders = notes.groupListsBy((n) => n.folder);
+
+    if (params?.folder != null) {
+      folders = {null: folders[params!.folder!] ?? []};
+    }
 
     return [
       for (var note in folders[null] ?? <Note>[])
@@ -33,18 +39,52 @@ class NotesPage extends StatefulWidget {
             Navigator.of(context).push(EditNotePage.route(note));
           },
         ),
-      for (var folder in folders.keys)
-        if (folder != null) FolderCard(folder: folder, needsSurface: needsSurface),
-      NoteCard(
-        needsSurface: needsSurface,
-        child: Center(
-          child: Icon(Icons.add, size: 60, color: context.onSurfaceHighlightColor),
+      if (params?.showFolders ?? true)
+        for (var folder in folders.keys)
+          if (folder != null) FolderCard(folder: folder, needsSurface: needsSurface),
+      if (params?.showAdd ?? true)
+        NoteCard(
+          needsSurface: needsSurface,
+          child: Center(
+            child: Icon(Icons.add, size: 60, color: context.onSurfaceHighlightColor),
+          ),
+          onTap: () {
+            var note = context.read(notesLogicProvider).createEmptyNote(folder: params?.folder);
+            Navigator.of(context).push(EditNotePage.route(note));
+          },
         ),
-        onTap: () {
-          var note = context.read(notesLogicProvider).createEmptyNote();
-          Navigator.of(context).push(EditNotePage.route(note));
+    ];
+  }
+
+  static List<Widget> settingsBuilder(BuildContext context, ModuleContext module, NotesListParams params) {
+    return [
+      SwitchListTile(
+        value: params.showAdd,
+        onChanged: (v) {
+          module.updateParams(params.copyWith(showAdd: v));
         },
+        title: Text(context.tr.show_add_tile),
       ),
+      Builder(builder: (context) {
+        return ListTile(
+          title: Text(context.tr.folder),
+          subtitle: Text(params.folder ?? context.tr.no_folder),
+          onTap: () async {
+            var newFolder = await Navigator.of(context).push(ChangeFolderPage.route(params.folder));
+            if (newFolder != null) {
+              module.updateParams(params.copyWith(folder: newFolder.value));
+            }
+          },
+        );
+      }),
+      if (params.folder == null)
+        SwitchListTile(
+          value: params.showFolders,
+          onChanged: (v) {
+            module.updateParams(params.copyWith(showFolders: v));
+          },
+          title: Text(context.tr.show_folders),
+        )
     ];
   }
 }

@@ -7,10 +7,12 @@ import '../../areas/widget_area.dart';
 import '../../providers/editing_providers.dart';
 import '../../reorderable/reorderable_item.dart';
 import '../../reorderable/reorderable_listener.dart';
+import '../../route/route.dart';
+import '../../themes/themes.dart';
 import '../../widgets/widget_selector.dart';
 import '../decorators/element_decorator.dart';
 import '../module_element.dart';
-import 'removable_draggable_module_widget.dart';
+import 'module_element_settings_dialog.dart';
 
 mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
   ElementDecorator<T> decorator(BuildContext context) => WidgetArea.of<T>(context)!.elementDecorator;
@@ -49,27 +51,71 @@ mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
         if (state == ReorderableState.placeholder) {
           return decorator(context).decoratePlaceholder(context, element);
         } else if (state == ReorderableState.normal) {
-          var animation = CurvedAnimation(parent: PhasedAnimation.of(context), curve: Curves.easeInOut);
-          return AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Transform.rotate(
-                angle: (animation.value - 0.5) * 0.015,
-                child: child,
+          return Builder(builder: (context) {
+            var editState = context.watch(editProvider);
+
+            if (editState == EditState.inactive) {
+              return ModuleRouteTransition<T>(child: child, element: element);
+            } else {
+              var isLayoutMode = editState == EditState.layoutMode;
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  return Stack(clipBehavior: Clip.none, children: [
+                    ConstrainedBox(
+                      constraints: constraints,
+                      child: Builder(builder: (context) {
+                        var animation = CurvedAnimation(parent: PhasedAnimation.of(context), curve: Curves.easeInOut);
+                        return AnimatedBuilder(
+                          animation: animation,
+                          builder: (context, child) {
+                            return Transform.rotate(
+                              angle: (animation.value - 0.5) * 0.015,
+                              child: child,
+                            );
+                          },
+                          child: isLayoutMode
+                              ? AbsorbPointer(child: child)
+                              : ReorderableListener<T>(
+                                  delay: const Duration(milliseconds: 300),
+                                  child: AbsorbPointer(child: child),
+                                ),
+                        );
+                      }),
+                    ),
+                    if (!isLayoutMode)
+                      Positioned(
+                        top: -8,
+                        left: -8,
+                        child: ModuleIconButton(
+                          icon: Icons.close,
+                          onPressed: () {
+                            var areaState = WidgetArea.of<T>(context)!;
+                            areaState.removeWidget(key);
+                          },
+                          color: context.theme.errorColor,
+                          iconColor: Colors.white,
+                        ),
+                      ),
+                    if (settings != null)
+                      Positioned(
+                        top: -8,
+                        left: isLayoutMode ? -8 : 25,
+                        child: ModuleSettingsButton(
+                          module: element.module,
+                          settings: settings!,
+                        ),
+                      ),
+                  ]);
+                },
               );
-            },
-            child: child,
-          );
+            }
+          });
         } else {
-          return AbsorbPointer(child: Builder(builder: buildElement));
+          return AbsorbPointer(child: child);
         }
       },
       decorationBuilder: _decorationBuilder,
-      child: RemovableDraggableModuleWidget<T>(
-        key: key,
-        element: element,
-        child: Builder(builder: buildElement),
-      ),
+      child: Builder(builder: buildElement),
     );
   }
 }
@@ -88,8 +134,52 @@ class PhasedAnimation extends CompoundAnimation<double> {
   }
 
   factory PhasedAnimation.of(BuildContext context) {
-    var transition = context.read(transitionControllerProvider)!.view;
     var wiggle = context.read(wiggleControllerProvider)!.view;
-    return PhasedAnimation(phase: wiggle, intensity: transition, shift: Random().nextDouble());
+    return PhasedAnimation(phase: wiggle, intensity: const AlwaysStoppedAnimation(1), shift: Random().nextDouble());
+  }
+}
+
+class ModuleIconButton extends StatelessWidget {
+  const ModuleIconButton({
+    required this.icon,
+    required this.onPressed,
+    required this.color,
+    required this.iconColor,
+    Key? key,
+  }) : super(key: key);
+
+  final IconData icon;
+  final VoidCallback onPressed;
+
+  final Color color;
+  final Color iconColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        Feedback.forTap(context);
+        onPressed();
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: color,
+          ),
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: Icon(
+              icon,
+              size: 15,
+              color: iconColor,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

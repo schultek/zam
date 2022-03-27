@@ -69,7 +69,6 @@ class _CropDialogState extends State<CropDialog> {
           IconButton(
             onPressed: () async {
               var bytes = await Cropper.crop(cropperKey: _cropperKey, pixelRatio: 1);
-              print(bytes?.length);
               Navigator.of(context).pop(bytes);
             },
             icon: const Icon(Icons.check),

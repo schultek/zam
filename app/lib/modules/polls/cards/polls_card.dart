@@ -15,9 +15,9 @@ class PollsCard extends StatelessWidget {
     return SimpleCard(title: context.tr.polls, icon: Icons.list);
   }
 
-  static FutureOr<ContentSegment?> segment(ModuleContext context) {
+  static FutureOr<ContentSegment?> segment(ModuleContext module) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => const PollsCard(),
       onNavigate: (context) => const PollsPage(),
     );

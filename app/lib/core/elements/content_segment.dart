@@ -1,78 +1,63 @@
 import 'package:flutter/material.dart';
 
 import '../../helpers/extensions.dart';
-import '../../widgets/cached_layout_builder.dart';
-import '../areas/widget_area.dart';
 import '../module/module_context.dart';
 import '../route/route.dart';
 import 'module_element.dart';
 import 'widgets/module_element_builder.dart';
-
-class IdProvider {
-  String? _id;
-
-  void provide(BuildContext context, String id) {
-    _id = id;
-    WidgetArea.of<ContentSegment>(context)!.updateWidgetsInTrip();
-  }
-
-  String? _getId(String id) => ModuleContext.setDataId(id, _id);
-}
 
 class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegment> {
   final WidgetBuilder builder;
   final WidgetBuilder? onNavigate;
   final void Function(BuildContext context)? onTap;
   final SegmentSize size;
-  final IdProvider? idProvider;
   final void Function(BuildContext context)? whenRemoved;
 
   ContentSegment({
-    required ModuleContext context,
+    required ModuleContext module,
     required this.builder,
     this.onNavigate,
     this.onTap,
     this.size = SegmentSize.square,
-    this.idProvider,
     this.whenRemoved,
-  }) : super(key: UniqueKey(), context: context);
+    SettingsBuilder? settings,
+  }) : super(module: module, settings: settings);
 
   factory ContentSegment.text({
-    required ModuleContext context,
+    required ModuleContext module,
     required WidgetBuilder builder,
-    IdProvider? idProvider,
   }) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => ContentSegmentText(builder),
       size: SegmentSize.wide,
-      idProvider: idProvider,
     );
   }
 
   factory ContentSegment.items({
-    required ModuleContext context,
+    required ModuleContext module,
     required ItemsBuilder itemsBuilder,
     required ItemsLayoutBuilder builder,
+    SettingsBuilder? settings,
   }) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => ContentSegmentItems(builder, itemsBuilder),
       size: SegmentSize.wide,
+      settings: settings,
     );
   }
 
   factory ContentSegment.list({
-    required ModuleContext context,
+    required ModuleContext module,
     required List<Widget> Function(BuildContext context) builder,
     required double spacing,
+    SettingsBuilder? settings,
   }) {
-    var layoutKey = GlobalKey();
     return ContentSegment.items(
-      context: context,
+      module: module,
       itemsBuilder: builder,
-      builder: (context, items) => CachedLayoutBuilder(
-        key: layoutKey,
+      builder: (context, items) => LayoutBuilder(
         builder: (context, constraints) => ListView(
           scrollDirection: constraints.hasBoundedWidth ? Axis.vertical : Axis.horizontal,
           padding: EdgeInsets.zero,
@@ -86,20 +71,20 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
               .toList(),
         ),
       ),
+      settings: settings,
     );
   }
 
   factory ContentSegment.grid({
-    required ModuleContext context,
+    required ModuleContext module,
     required List<Widget> Function(BuildContext context) builder,
     required double spacing,
+    SettingsBuilder? settings,
   }) {
-    var layoutKey = GlobalKey();
     return ContentSegment.items(
-      context: context,
+      module: module,
       itemsBuilder: builder,
-      builder: (context, items) => CachedLayoutBuilder(
-        key: layoutKey,
+      builder: (context, items) => LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.hasBoundedWidth) {
             var compSpacing = constraints.maxWidth > 300 ? spacing : spacing / 2;
@@ -124,11 +109,9 @@ class ContentSegment extends ModuleElement with ModuleElementBuilder<ContentSegm
           }
         },
       ),
+      settings: settings,
     );
   }
-
-  @override
-  String get id => idProvider?._getId(super.id) ?? super.id;
 
   @override
   void onRemoved(BuildContext context) => whenRemoved?.call(context);

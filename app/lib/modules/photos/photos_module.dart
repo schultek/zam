@@ -18,10 +18,11 @@ class PhotosModule extends ModuleBuilder {
         'album': buildAlbum,
       };
 
-  FutureOr<ContentSegment?> buildAlbum(ModuleContext context) {
-    return context.when(
-      withId: (id) => PhotosAlbumShortcutCard.segment(context),
-      withoutId: () => SelectPhotosAlbumCard.segment(context),
-    );
+  FutureOr<ContentSegment?> buildAlbum(ModuleContext module) {
+    if (module.hasParams) {
+      return PhotosAlbumShortcutCard.segment(module);
+    } else {
+      return SelectPhotosAlbumCard.segment(module);
+    }
   }
 }

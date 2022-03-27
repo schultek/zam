@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../elements/module_element.dart';
+import '../../providers/editing_providers.dart';
 import '../widget_area.dart';
 
 mixin ScrollMixin<T extends WidgetArea<E>, E extends ModuleElement> on WidgetAreaState<T, E> {
@@ -13,6 +15,11 @@ mixin ScrollMixin<T extends WidgetArea<E>, E extends ModuleElement> on WidgetAre
   bool get scrollDownEnabled => true;
 
   Future<void> maybeScroll(Offset dragOffset, Key itemKey, Size itemSize) async {
+    if (!context.read(isEditingProvider)) {
+      _activeScrollCb = null;
+      return;
+    }
+
     scrollCb() {
       _activeScrollCb = null;
       if (hasKey(itemKey)) {

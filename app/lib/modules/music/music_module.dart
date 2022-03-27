@@ -21,9 +21,9 @@ class MusicModule extends ModuleBuilder {
         'player': buildPlayer,
       };
 
-  FutureOr<ContentSegment?> buildPlayer(ModuleContext context) {
+  FutureOr<ContentSegment?> buildPlayer(ModuleContext module) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => Consumer(
         builder: (context, ref, _) {
           var signedInValue = ref.watch(spotifyIsSignedInProvider);

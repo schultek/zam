@@ -43,7 +43,7 @@ class HorizontalScrollAreaState extends WidgetAreaState<HorizontalScrollArea, Co
         cacheExtent: isEditing ? 10000 : 200,
         controller: scrollController,
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: isEditing ? 13 : 20, vertical: 10),
         scrollDirection: Axis.horizontal,
         itemCount: elements.length,
         itemBuilder: (context, index) => elements[index],

@@ -8,6 +8,7 @@ import 'core/layouts/full_page_layout.dart';
 import 'core/layouts/grid_layout.dart';
 import 'core/layouts/layout_model.dart';
 import 'core/models/trip.dart';
+import 'core/module/module_context.dart';
 import 'core/templates/swipe/swipe_template.dart';
 import 'core/templates/template_model.dart';
 import 'core/themes/theme_model.dart';
@@ -15,6 +16,7 @@ import 'modules/announcement/announcement_provider.dart';
 import 'modules/chat/chat_provider.dart';
 import 'modules/elimination/game_provider.dart';
 import 'modules/music/music_models.dart';
+import 'modules/notes/notes_module.dart';
 import 'modules/notes/notes_provider.dart';
 import 'modules/photos/providers/photos_provider.dart';
 import 'modules/polls/polls_provider.dart';
@@ -24,6 +26,7 @@ import 'modules/thebutton/thebutton_provider.dart';
 
 var _mappers = <BaseMapper>{
   // class mappers
+  ModuleIdMapper._(),
   TripMapper._(),
   TripUserMapper._(),
   SwipeTemplateModelMapper._(),
@@ -34,6 +37,7 @@ var _mappers = <BaseMapper>{
   FullPageLayoutModelMapper._(),
   LayoutModelMapper._(),
   GridLayoutModelMapper._(),
+  NotesListParamsMapper._(),
   DropModelMapper._(),
   DropsLayoutModelMapper._(),
   FocusLayoutModelMapper._(),
@@ -65,6 +69,65 @@ var _mappers = <BaseMapper>{
 };
 
 // === GENERATED CLASS MAPPERS AND EXTENSIONS ===
+
+class ModuleIdMapper extends BaseMapper<ModuleId> {
+  ModuleIdMapper._();
+
+  @override
+  Function get decoder => decode;
+  ModuleId decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ModuleId fromMap(Map<String, dynamic> map) =>
+      ModuleId(map.get('moduleId'), map.get('elementId'), map.get('uniqueId'), map.getOpt('params'));
+
+  @override
+  Function get encoder => (ModuleId v) => encode(v);
+  dynamic encode(ModuleId v) => toMap(v);
+  Map<String, dynamic> toMap(ModuleId m) => {
+        'moduleId': Mapper.toValue(m.moduleId),
+        'elementId': Mapper.toValue(m.elementId),
+        'uniqueId': Mapper.toValue(m.uniqueId),
+        'params': Mapper.toValue(m.params)
+      };
+
+  @override
+  String? stringify(ModuleId self) =>
+      'ModuleId(moduleId: ${Mapper.asString(self.moduleId)}, elementId: ${Mapper.asString(self.elementId)}, uniqueId: ${Mapper.asString(self.uniqueId)}, params: ${Mapper.asString(self.params)})';
+  @override
+  int? hash(ModuleId self) =>
+      Mapper.hash(self.moduleId) ^ Mapper.hash(self.elementId) ^ Mapper.hash(self.uniqueId) ^ Mapper.hash(self.params);
+  @override
+  bool? equals(ModuleId self, ModuleId other) =>
+      Mapper.isEqual(self.moduleId, other.moduleId) &&
+      Mapper.isEqual(self.elementId, other.elementId) &&
+      Mapper.isEqual(self.uniqueId, other.uniqueId) &&
+      Mapper.isEqual(self.params, other.params);
+
+  @override
+  Function get typeFactory => (f) => f<ModuleId>();
+}
+
+extension ModuleIdMapperExtension on ModuleId {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  ModuleIdCopyWith<ModuleId> get copyWith => ModuleIdCopyWith(this, $identity);
+}
+
+abstract class ModuleIdCopyWith<$R> {
+  factory ModuleIdCopyWith(ModuleId value, Then<ModuleId, $R> then) = _ModuleIdCopyWithImpl<$R>;
+  $R call({String? moduleId, String? elementId, String? uniqueId, dynamic params});
+  $R apply(ModuleId Function(ModuleId) transform);
+}
+
+class _ModuleIdCopyWithImpl<$R> extends BaseCopyWith<ModuleId, $R> implements ModuleIdCopyWith<$R> {
+  _ModuleIdCopyWithImpl(ModuleId value, Then<ModuleId, $R> then) : super(value, then);
+
+  @override
+  $R call({String? moduleId, String? elementId, String? uniqueId, Object? params = $none}) => $then(ModuleId(
+      moduleId ?? $value.moduleId,
+      elementId ?? $value.elementId,
+      uniqueId ?? $value.uniqueId,
+      or(params, $value.params)));
+}
 
 class TripMapper extends BaseMapper<Trip> {
   TripMapper._();
@@ -650,6 +713,66 @@ class _GridLayoutModelCopyWithImpl<$R> extends BaseCopyWith<GridLayoutModel, $R>
 
   @override
   $R call() => $then(GridLayoutModel());
+}
+
+class NotesListParamsMapper extends BaseMapper<NotesListParams> {
+  NotesListParamsMapper._();
+
+  @override
+  Function get decoder => decode;
+  NotesListParams decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  NotesListParams fromMap(Map<String, dynamic> map) => NotesListParams(
+      showAdd: map.getOpt('showAdd') ?? true,
+      folder: map.getOpt('folder'),
+      showFolders: map.getOpt('showFolders') ?? true);
+
+  @override
+  Function get encoder => (NotesListParams v) => encode(v);
+  dynamic encode(NotesListParams v) => toMap(v);
+  Map<String, dynamic> toMap(NotesListParams n) => {
+        'showAdd': Mapper.toValue(n.showAdd),
+        'folder': Mapper.toValue(n.folder),
+        'showFolders': Mapper.toValue(n.showFolders)
+      };
+
+  @override
+  String? stringify(NotesListParams self) =>
+      'NotesListParams(showAdd: ${Mapper.asString(self.showAdd)}, folder: ${Mapper.asString(self.folder)}, showFolders: ${Mapper.asString(self.showFolders)})';
+  @override
+  int? hash(NotesListParams self) =>
+      Mapper.hash(self.showAdd) ^ Mapper.hash(self.folder) ^ Mapper.hash(self.showFolders);
+  @override
+  bool? equals(NotesListParams self, NotesListParams other) =>
+      Mapper.isEqual(self.showAdd, other.showAdd) &&
+      Mapper.isEqual(self.folder, other.folder) &&
+      Mapper.isEqual(self.showFolders, other.showFolders);
+
+  @override
+  Function get typeFactory => (f) => f<NotesListParams>();
+}
+
+extension NotesListParamsMapperExtension on NotesListParams {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  NotesListParamsCopyWith<NotesListParams> get copyWith => NotesListParamsCopyWith(this, $identity);
+}
+
+abstract class NotesListParamsCopyWith<$R> {
+  factory NotesListParamsCopyWith(NotesListParams value, Then<NotesListParams, $R> then) =
+      _NotesListParamsCopyWithImpl<$R>;
+  $R call({bool? showAdd, String? folder, bool? showFolders});
+  $R apply(NotesListParams Function(NotesListParams) transform);
+}
+
+class _NotesListParamsCopyWithImpl<$R> extends BaseCopyWith<NotesListParams, $R>
+    implements NotesListParamsCopyWith<$R> {
+  _NotesListParamsCopyWithImpl(NotesListParams value, Then<NotesListParams, $R> then) : super(value, then);
+
+  @override
+  $R call({bool? showAdd, Object? folder = $none, bool? showFolders}) => $then(NotesListParams(
+      showAdd: showAdd ?? $value.showAdd,
+      folder: or(folder, $value.folder),
+      showFolders: showFolders ?? $value.showFolders));
 }
 
 class DropModelMapper extends BaseMapper<DropModel> {

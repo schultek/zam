@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
@@ -20,28 +19,21 @@ class LabelModule extends ModuleBuilder {
         'text': buildTextLabel,
       };
 
-  FutureOr<ContentSegment?> buildTextLabel(ModuleContext context) {
-    var idProvider = IdProvider();
-    return context.when(
-      withId: (id) {
-        var label = utf8.decode(base64.decode(id));
+  FutureOr<ContentSegment?> buildTextLabel(ModuleContext module) {
+    if (module.hasParams) {
+      var label = module.getParams<String>();
+      return ContentSegment.text(
+        module: module,
+        builder: (_) => LabelWidget(label: label, module: module),
+      );
+    } else {
+      if (module.context.read(isOrganizerProvider)) {
         return ContentSegment.text(
-          context: context,
-          idProvider: idProvider,
-          builder: (context) => LabelWidget(label: label, idProvider: idProvider),
+          module: module,
+          builder: (_) => LabelWidget(module: module),
         );
-      },
-      withoutId: () {
-        if (context.context.read(isOrganizerProvider)) {
-          var idProvider = IdProvider();
-          return ContentSegment.text(
-            context: context,
-            idProvider: idProvider,
-            builder: (context) => LabelWidget(idProvider: idProvider),
-          );
-        }
-        return null;
-      },
-    );
+      }
+      return null;
+    }
   }
 }

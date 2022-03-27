@@ -10,9 +10,9 @@ class PollCard extends StatelessWidget {
   final String id;
   const PollCard(this.id, {Key? key}) : super(key: key);
 
-  static FutureOr<ContentSegment?> segment(ModuleContext context, String id) {
+  static FutureOr<ContentSegment?> segment(ModuleContext module, String id) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => PollCard(id),
     );
   }

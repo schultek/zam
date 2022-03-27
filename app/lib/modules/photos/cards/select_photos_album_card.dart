@@ -11,28 +11,29 @@ import '../pages/select_photos_album_page.dart';
 import '../providers/google_account_provider.dart';
 import '../providers/photos_provider.dart';
 
-class SelectPhotosAlbumCard extends StatefulWidget {
-  final IdProvider idProvider;
-  const SelectPhotosAlbumCard(this.idProvider, {Key? key}) : super(key: key);
+class SelectPhotosAlbumCard extends StatelessWidget {
+  const SelectPhotosAlbumCard({Key? key}) : super(key: key);
 
-  static FutureOr<ContentSegment?> segment(ModuleContext context) {
-    if (!context.context.read(isOrganizerProvider)) {
+  static FutureOr<ContentSegment?> segment(ModuleContext module) {
+    if (!module.context.read(isOrganizerProvider)) {
       return null;
     }
-    var idProvider = IdProvider();
+
     return ContentSegment(
-      context: context,
-      idProvider: idProvider,
-      builder: (context) => SelectPhotosAlbumCard(idProvider),
+      module: module,
+      builder: (_) => const SelectPhotosAlbumCard(),
+      settings: (context) => [
+        ListTile(
+          title: Text(context.tr.select_album),
+          onTap: () {
+            selectAlbum(context, module);
+          },
+        ),
+      ],
     );
   }
 
-  @override
-  State<SelectPhotosAlbumCard> createState() => _SelectPhotosAlbumCardState();
-}
-
-class _SelectPhotosAlbumCardState extends State<SelectPhotosAlbumCard> {
-  Future<bool> showSignInWithGooglePrompt(BuildContext context) async {
+  static Future<bool> showSignInWithGooglePrompt(BuildContext context) async {
     var didSignIn = await showPrompt<bool>(
       context,
       title: context.tr.sign_in_google,
@@ -42,7 +43,7 @@ class _SelectPhotosAlbumCardState extends State<SelectPhotosAlbumCard> {
     return didSignIn ?? false;
   }
 
-  Future<T?> showPrompt<T>(BuildContext context,
+  static Future<T?> showPrompt<T>(BuildContext context,
       {required String title, String? body, required FutureOr<T> Function() onContinue}) async {
     var result = await showDialog<T>(
       context: context,
@@ -63,7 +64,7 @@ class _SelectPhotosAlbumCardState extends State<SelectPhotosAlbumCard> {
     return result;
   }
 
-  void selectAlbum(BuildContext context) async {
+  static void selectAlbum(BuildContext context, ModuleContext module) async {
     var isSignedIn = await context.read(isSignedInWithGoogleProvider.future);
     if (!isSignedIn) {
       isSignedIn = await showSignInWithGooglePrompt(context);
@@ -76,17 +77,12 @@ class _SelectPhotosAlbumCardState extends State<SelectPhotosAlbumCard> {
 
     if (selectedAlbum != null) {
       var docId = await context.read(photosLogicProvider).createAlbumShortcut(selectedAlbum);
-      widget.idProvider.provide(context, docId);
+      module.updateParams(docId);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        selectAlbum(context);
-      },
-      child: SimpleCard(title: context.tr.select_album, icon: Icons.image),
-    );
+    return SimpleCard(title: context.tr.select_album, icon: Icons.image);
   }
 }

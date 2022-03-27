@@ -15,9 +15,9 @@ class GamesCard extends StatelessWidget {
     return SimpleCard(title: context.tr.elimination, icon: Icons.list);
   }
 
-  static FutureOr<ContentSegment?> segment(ModuleContext context) {
+  static FutureOr<ContentSegment?> segment(ModuleContext module) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => const GamesCard(),
       onNavigate: (context) => const GamesPage(),
     );

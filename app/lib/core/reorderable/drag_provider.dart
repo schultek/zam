@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
+import 'package:vibration/vibration.dart';
 
 import '../areas/widget_area.dart';
 import '../elements/module_element.dart';
@@ -52,7 +53,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
   bool isOverWidgetSelector = false;
   bool isDropAccepted = false;
 
-  WidgetSelectorState? get widgetSelector => area.template.widgetSelector?.state;
+  WidgetSelectorState? get widgetSelector => area.mounted ? area.template.widgetSelector?.state : null;
 
   Offset? get dragOffset => read(dragOffsetProvider);
   set dragOffset(Offset? offset) => read(dragOffsetProvider.state).state = offset;
@@ -71,7 +72,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
       return this;
     }
 
-    HapticFeedback.lightImpact();
+    Vibration.vibrate(amplitude: 1, duration: 2);
 
     var draggedItem = read(reorderableLogicProvider).items[key]!;
 
@@ -103,6 +104,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
     entry = OverlayEntry(
       builder: (ctx) => DragItemWidget<T>(
         area: area,
+        elementConstraints: area.constrainWidget(moduleElement!),
         scaleAnimation: dragScaleAnimation!,
         decorationBuilder: draggedItem.widget.decorationBuilder,
       ),
@@ -130,9 +132,9 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
       var accepted = area.didInsertItem(globalDragOffset, moduleElement!);
       if (accepted != isDropAccepted) {
         if (accepted) {
-          widgetSelector!.removeWidget(moduleElement!);
+          widgetSelector!.takeWidget(moduleElement!);
         } else {
-          widgetSelector!.addWidget(dragOffset, moduleElement!);
+          widgetSelector!.placeWidget(moduleElement!);
         }
       }
       isDropAccepted = accepted;
@@ -144,7 +146,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
       if (isDropAccepted) {
         isDropAccepted = false;
         area.cancelDrop(key);
-        widgetSelector!.addWidget(dragOffset, moduleElement!);
+        widgetSelector!.placeWidget(moduleElement!);
       }
     }
   }
@@ -204,6 +206,10 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
     entry?.remove();
     entry = null;
+
+    if (widgetSelector?.toDeleteElement == moduleElement) {
+      widgetSelector?.endDeletion();
+    }
 
     if (read(dragProvider) == this) {
       read(dragProvider.state).state = null;

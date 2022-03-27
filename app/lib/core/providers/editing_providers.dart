@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final toggleVisibilityProvider = StateProvider((ref) => true);
+final templateVisibilityProvider = StateProvider((ref) => true);
 
-final transitionControllerProvider = StateProvider<AnimationController?>((ref) => null);
 final wiggleControllerProvider = StateProvider<AnimationController?>((ref) => null);
 
 final editProvider = StateNotifierProvider<EditNotifier, EditState>((ref) => EditNotifier(ref));
@@ -27,14 +27,10 @@ class EditNotifier extends StateNotifier<EditState> {
 
   void _startWiggle() {
     ref.read(wiggleControllerProvider)!.repeat();
-    ref.read(transitionControllerProvider)!.forward();
   }
 
-  void _stopWiggle(Function() onComplete) {
-    ref.read(transitionControllerProvider)!.reverse().whenComplete(() {
-      ref.read(wiggleControllerProvider)!.stop();
-      onComplete();
-    });
+  void _stopWiggle() {
+    ref.read(wiggleControllerProvider)!.stop();
   }
 
   void _beginEdit() {
@@ -48,15 +44,14 @@ class EditNotifier extends StateNotifier<EditState> {
       _startWiggle();
       super.state = EditState.widgetMode;
     } else {
-      _stopWiggle(() {
-        super.state = EditState.layoutMode;
-      });
+      _stopWiggle();
+      super.state = EditState.layoutMode;
     }
   }
 
   void _finishEdit() {
     if (state == EditState.widgetMode) {
-      _stopWiggle(() {});
+      _stopWiggle();
     }
 
     super.state = EditState.inactive;

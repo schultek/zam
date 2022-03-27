@@ -2,12 +2,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../modules/modules.dart';
 import '../areas/widget_area.dart';
 import '../elements/module_element.dart';
-import '../reorderable/logic_provider.dart';
 import '../templates/widget_template.dart';
 import '../themes/theme_context.dart';
 import '../themes/widgets/trip_theme.dart';
@@ -37,9 +35,7 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
       WidgetTemplateState template, WidgetAreaState<WidgetArea<T>, T> widgetArea) async {
     var selectorKey = GlobalKey<WidgetSelectorState<T>>();
 
-    List<T> widgets = await registry.getWidgetsOf<T>(template.context);
-    widgets = widgets.where((w) => !widgetArea.getWidgets().any((ww) => ww.id == w.id)).toList();
-
+    List<T> widgets = await registry.getWidgetsOf<T>(widgetArea.context);
     var widgetSelector = WidgetSelector<T>(selectorKey, widgets, widgetArea);
 
     var entry = OverlayEntry(
@@ -62,6 +58,8 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
 class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<T>> {
   late List<T> widgets;
   late ScrollController _scrollController;
+
+  T? toDeleteElement;
 
   @override
   void initState() {
@@ -91,55 +89,31 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
     return min(heightShrink, widthShrink);
   }
 
-  void addWidget(Offset? offset, T toAdd) {
-    var logic = context.read(reorderableLogicProvider);
-    int beforeIndex;
-    if (offset == null) {
-      beforeIndex = 0;
-    } else {
-      beforeIndex = widgets.indexWhere((w) {
-        if (!logic.hasItem(w.key)) return false;
-        var size = logic.itemSize(w.key);
-        return logic.itemOffset(w.key).dx + maxItemHeight / size.height * size.width > offset.dx;
-      });
-      if (beforeIndex == -1) beforeIndex = widgets.length;
-    }
-
-    var itemSize = logic.itemSize(toAdd.key);
-    double itemWidth = shrinkFactor(itemSize) * itemSize.width + 20;
-
-    for (int i = beforeIndex; i < widgets.length; i++) {
-      if (!logic.hasItem(widgets[i].key)) continue;
-
-      var item2Size = logic.itemSize(widgets[i].key);
-      double translate = itemWidth / shrinkFactor(item2Size);
-
-      logic.translateItemX(widget.widgetArea, widgets[i].key, -translate);
-    }
-
+  void placeWidget(T toDelete) {
     setState(() {
-      widgets.insert(beforeIndex, toAdd);
+      toDeleteElement = toDelete;
     });
   }
 
-  void removeWidget(T toRemove) {
-    var logic = context.read(reorderableLogicProvider);
-
-    var index = widgets.indexOf(toRemove);
-    var itemSize = logic.itemSize(toRemove.key);
-    double itemWidth = shrinkFactor(itemSize) * itemSize.width + 20;
-
-    for (int i = index + 1; i < widgets.length; i++) {
-      if (!logic.hasItem(widgets[i].key)) continue;
-
-      var item2Size = logic.itemSize(widgets[i].key);
-      double translate = itemWidth / shrinkFactor(item2Size);
-
-      logic.translateItemX(widget.widgetArea, widgets[i].key, translate);
+  void takeWidget(T toRemove) async {
+    if (toRemove == toDeleteElement) {
+      setState(() {
+        toDeleteElement = null;
+      });
+      return;
     }
 
+    var index = widgets.indexOf(toRemove);
+    var newWidget = await registry.getWidget<T>(widget.widgetArea.context, toRemove.module.copyId());
+
     setState(() {
-      widgets.remove(toRemove);
+      widgets = [...widgets.take(index), newWidget!, ...widgets.skip(index + 1)];
+    });
+  }
+
+  void endDeletion() {
+    setState(() {
+      toDeleteElement = null;
     });
   }
 
@@ -175,7 +149,7 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
         lastGroup.add(widget);
       } else {
         var lastWidget = lastGroup.last;
-        if (lastWidget.context.parent == widget.context.parent) {
+        if (lastWidget.module.parent == widget.module.parent) {
           lastGroup.add(widget);
         } else {
           groups.add([widget]);
@@ -199,53 +173,79 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
                 color: widget.widgetArea.context.surfaceColor,
                 boxShadow: const [BoxShadow(blurRadius: 8, spreadRadius: -4)],
               ),
-              child: Padding(
-                padding: EdgeInsets.all(outerPadding),
-                child: CustomScrollView(
-                  scrollDirection: Axis.horizontal,
-                  controller: _scrollController,
-                  slivers: [
-                    for (var group in groups)
-                      SliverStickyHeader(
-                        overlapsContent: true,
-                        header: Builder(builder: (context) {
-                          return Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: innerPadding, right: innerPadding),
-                              child: Text(
-                                group.first.context.parent.getName(context),
-                                style: context.theme.textTheme.caption,
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(outerPadding),
+                    child: CustomScrollView(
+                      scrollDirection: Axis.horizontal,
+                      controller: _scrollController,
+                      slivers: [
+                        for (var group in groups)
+                          SliverStickyHeader(
+                            overlapsContent: true,
+                            header: Builder(builder: (context) {
+                              return Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: innerPadding, right: innerPadding),
+                                  child: Text(
+                                    group.first.module.parent.getName(context),
+                                    style: context.theme.textTheme.caption,
+                                  ),
+                                ),
+                              );
+                            }),
+                            sliver: SliverPadding(
+                              padding: EdgeInsets.only(top: headerHeight),
+                              sliver: SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) {
+                                    return Padding(
+                                      padding: EdgeInsets.all(innerPadding),
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(maxWidth: maxItemWidth),
+                                        child: FittedBox(
+                                          fit: BoxFit.contain,
+                                          child: ConstrainedBox(
+                                            constraints: widget.widgetArea.constrainWidget(group[index]),
+                                            child: group[index],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  childCount: group.length,
+                                ),
                               ),
                             ),
-                          );
-                        }),
-                        sliver: SliverPadding(
-                          padding: EdgeInsets.only(top: headerHeight),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.all(innerPadding),
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(maxWidth: maxItemWidth),
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: ConstrainedBox(
-                                        constraints: widget.widgetArea.constrainWidget(group[index]),
-                                        child: group[index],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                              childCount: group.length,
+                          ),
+                      ],
+                    ),
+                  ),
+                  if (toDeleteElement != null)
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                        color: context.theme.colorScheme.error.withOpacity(0.2),
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(outerPadding + innerPadding) + EdgeInsets.only(top: headerHeight),
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: maxItemWidth),
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: ConstrainedBox(
+                                constraints: widget.widgetArea.constrainWidget(toDeleteElement!),
+                                child: toDeleteElement!,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
             ),
           ),

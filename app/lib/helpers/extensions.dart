@@ -56,7 +56,7 @@ extension ListHelper<T> on Iterable<T> {
   }
 }
 
-String generateRandomId([int length = 20]) {
+String generateRandomId(int length) {
   var random = Random();
   var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   return List.generate(length, (index) => chars[random.nextInt(chars.length)]).join();

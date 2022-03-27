@@ -12,12 +12,12 @@ class QuickAction extends ModuleElement with ModuleElementBuilder<QuickAction> {
   final Widget Function(BuildContext)? onNavigate;
 
   QuickAction({
-    required ModuleContext context,
+    required ModuleContext module,
     required this.icon,
     required this.text,
     this.onTap,
     this.onNavigate,
-  }) : super(key: UniqueKey(), context: context);
+  }) : super(module: module);
 
   @override
   QuickAction get element => this;

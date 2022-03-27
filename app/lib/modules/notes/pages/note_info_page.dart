@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/widgets/settings_section.dart';
 import '../../../helpers/extensions.dart';
@@ -39,8 +40,12 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
               ListTile(
                 title: Text(context.tr.folder),
                 subtitle: Text(note.folder ?? context.tr.no_folder),
-                onTap: () {
-                  Navigator.of(context).push(ChangeFolderPage.route(note));
+                onTap: () async {
+                  var newFolder =
+                      await Navigator.of(context).push(ChangeFolderPage.route(note.folder, allowCreate: true));
+                  if (newFolder != null) {
+                    await context.read(notesLogicProvider).changeFolder(widget.note.id, newFolder.value);
+                  }
                 },
               ),
               ListTile(

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -10,10 +8,10 @@ import '../../../providers/trips/selected_trip_provider.dart';
 
 class LabelWidget extends StatefulWidget {
   final String? label;
-  final IdProvider? idProvider;
+  final ModuleContext? module;
   final void Function(String value)? onChanged;
   final EdgeInsets padding;
-  const LabelWidget({this.label, this.padding = const EdgeInsets.all(8), this.idProvider, this.onChanged, Key? key})
+  const LabelWidget({this.label, this.padding = const EdgeInsets.all(8), this.module, this.onChanged, Key? key})
       : super(key: key);
 
   @override
@@ -50,7 +48,7 @@ class _LabelWidgetState extends State<LabelWidget> {
         ),
         onFieldSubmitted: (text) {
           if (text.isNotEmpty) {
-            widget.idProvider?.provide(context, base64.encode(utf8.encode(text)));
+            widget.module?.updateParams(text);
             widget.onChanged?.call(text);
             setState(() => isEditing = false);
           }

@@ -23,13 +23,14 @@ environment:
 dependencies:
   _discoveryapis_commons: ^1.0.2
   auto_size_text: ^3.0.0
+  binary_codec: ^2.0.3
   cached_network_image: ^3.2.0
   camera: ^0.9.4+16
   cloud_firestore: ^3.1.10
   cloud_functions: ^3.2.10
   cropperx: ^1.0.0
   cupertino_rounded_corners: ^2.0.1
-  dart_mappable: ^1.0.0-dev.5
+  dart_mappable: ^1.0.0-dev.6
   discoveryapis_generator: ^1.0.0
   dotted_border: ^2.0.0+2
   file_picker: ^4.5.1
@@ -75,6 +76,7 @@ dependencies:
       ref: player
   tuple: ^2.0.0
   url_launcher: ^6.0.20
+  vibration: ^1.7.4-nullsafety.0
   visibility_detector: ^0.2.2
   webview_flutter: ^3.0.1
 

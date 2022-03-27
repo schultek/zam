@@ -15,12 +15,12 @@ class PhotosAlbumShortcutCard extends StatelessWidget {
   final AlbumShortcut album;
   const PhotosAlbumShortcutCard(this.album, {Key? key}) : super(key: key);
 
-  static Future<ContentSegment> segment(ModuleContext context) async {
-    var album = await context.context.read(albumShortcutProvider(context.dataId!).future);
+  static Future<ContentSegment> segment(ModuleContext module) async {
+    var albumId = module.getParams<String>();
+    var album = await module.context.read(albumShortcutProvider(albumId).future);
 
-    print('${album.albumUrl} ${album.id}');
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => PhotosAlbumShortcutCard(album),
       onTap: (context) {
         launch(album.albumUrl);

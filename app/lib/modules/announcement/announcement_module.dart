@@ -22,27 +22,29 @@ class AnnouncementModule extends ModuleBuilder {
         'announcement': buildAnnouncement,
       };
 
-  FutureOr<ContentSegment?> buildAnnouncement(ModuleContext context) {
-    return context.when(withId: (id) async {
-      if (await context.context.read(isDismissedProvider(id).future)) {
+  FutureOr<ContentSegment?> buildAnnouncement(ModuleContext module) async {
+    if (module.hasParams) {
+      var announcementId = module.getParams<String>();
+
+      if (await module.context.read(isDismissedProvider(announcementId).future)) {
         return null;
       }
 
       return ContentSegment(
-        context: context,
+        module: module,
         size: SegmentSize.wide,
         whenRemoved: (context) {
-          context.read(announcementLogicProvider).removeAnnouncement(id);
+          context.read(announcementLogicProvider).removeAnnouncement(announcementId);
         },
         builder: (context) => Consumer(
           builder: (context, ref, _) {
-            var announcement = ref.watch(announcementProvider(id));
+            var announcement = ref.watch(announcementProvider(announcementId));
 
             return AnnouncementCard(
               announcement: announcement,
               onDismissed: !context.read(isOrganizerProvider)
                   ? () {
-                      context.read(announcementLogicProvider).dismiss(id);
+                      context.read(announcementLogicProvider).dismiss(announcementId);
                       WidgetArea.of<ContentSegment>(context)?.reload();
                     }
                   : null,
@@ -50,13 +52,11 @@ class AnnouncementModule extends ModuleBuilder {
           },
         ),
       );
-    }, withoutId: () {
-      if (context.context.read(isOrganizerProvider)) {
-        var idProvider = IdProvider();
+    } else {
+      if (module.context.read(isOrganizerProvider)) {
         return ContentSegment(
-          context: context,
+          module: module,
           size: SegmentSize.wide,
-          idProvider: idProvider,
           builder: (context) => AspectRatio(
             aspectRatio: 2.1,
             child: Padding(
@@ -79,16 +79,25 @@ class AnnouncementModule extends ModuleBuilder {
               ),
             ),
           ),
-          onNavigate: (context) {
-            return AnnouncementPage(
-              parentArea: WidgetArea.of<ContentSegment>(context)!,
-              onCreate: (id) => idProvider.provide(context, id),
-            );
-          },
+          settings: (context) => [
+            ListTile(
+              title: Text(context.tr.new_announcement),
+              onTap: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AnnouncementPage(
+                      parentArea: WidgetArea.of<ContentSegment>(module.context)!,
+                      onCreate: (id) => module.updateParams(id),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
         );
       } else {
         return null;
       }
-    });
+    }
   }
 }

@@ -32,7 +32,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   void initState() {
     super.initState();
     fakeElement = ContentSegment(
-      context: ModuleContext(context, AnnouncementModule(), ''),
+      module: ModuleContext<ContentSegment>(context, AnnouncementModule(), 'announcements/announcement'),
       builder: (_) => Container(),
       size: SegmentSize.wide,
     );

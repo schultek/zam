@@ -26,31 +26,33 @@ class PollsModule extends ModuleBuilder {
         // 'polls_list': buildPollsList,
       };
 
-  FutureOr<ContentSegment?> buildPoll(ModuleContext context) {
-    return context.when(
-      withId: (id) => PollCard.segment(context, id),
-      withoutId: () => NewPollCard.segment(context),
-    );
+  FutureOr<ContentSegment?> buildPoll(ModuleContext module) {
+    if (module.hasParams) {
+      var pollId = module.getParams<String>();
+      return PollCard.segment(module, pollId);
+    } else {
+      return NewPollCard.segment(module);
+    }
   }
 
-  FutureOr<QuickAction?> buildNewPollAction(ModuleContext context) {
+  FutureOr<QuickAction?> buildNewPollAction(ModuleContext module) {
     return QuickAction(
-      context: context,
+      module: module,
       icon: Icons.add,
-      text: context.context.tr.new_poll,
+      text: module.context.tr.new_poll,
       onNavigate: (context) => const CreatePollPage(),
     );
   }
 
-  FutureOr<ContentSegment?> buildPolls(ModuleContext context) {
-    return PollsCard.segment(context);
+  FutureOr<ContentSegment?> buildPolls(ModuleContext module) {
+    return PollsCard.segment(module);
   }
 
-  FutureOr<ContentSegment?> buildPollsList(ModuleContext context) async {
-    var polls = await context.context.read(pollsProvider.future);
+  FutureOr<ContentSegment?> buildPollsList(ModuleContext module) async {
+    var polls = await module.context.read(pollsProvider.future);
     if (polls.isNotEmpty) {
       return ContentSegment.list(
-        context: context,
+        module: module,
         builder: PollsList.listBuilder,
         spacing: 10,
       );

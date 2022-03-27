@@ -3,6 +3,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core.dart';
 import '../../providers/editing_providers.dart';
+import '../../providers/selected_area_provider.dart';
 import '../../widgets/trip_selector_page.dart';
 import '../../widgets/trip_settings_page.dart';
 
@@ -37,7 +38,7 @@ class TripSettingsButton extends StatelessWidget {
         child: Icon(Icons.settings, color: context.onSurfaceColor, size: 20),
         onTap: () {
           if (context.read(isEditingProvider)) {
-            context.read(editProvider.notifier).toggleEdit();
+            context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
           }
           Navigator.push(context, TripSettingsPage.route());
         },

@@ -21,7 +21,7 @@ extension ThemeColorsContext on BuildContext {
   }
 
   TripThemeData get tripTheme {
-    return TripTheme.of(this, listen: false)!.theme;
+    return TripTheme.of(this, listen: true)!.theme;
   }
 
   ThemeData get theme {

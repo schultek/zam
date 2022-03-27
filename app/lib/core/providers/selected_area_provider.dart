@@ -20,11 +20,6 @@ class SelectArea extends StateNotifier<String?> {
 
   void selectWidgetAreaById(String? id) async {
     if (ref.read(editProvider) != EditState.widgetMode) return;
-
-    if (state == id) {
-      return;
-    }
-
     super.state = id;
   }
 

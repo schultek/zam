@@ -1,21 +1,7 @@
 {
   "de": [
-    "ok",
-    "main_page",
-    "left_page",
-    "right_page",
-    "add_page",
-    "tap_to_change",
-    "choose_layout",
-    "choose_template",
-    "layout",
-    "template",
-    "settings",
-    "theme",
-    "dark_mode",
-    "danger_zone",
-    "do_want_to_leave",
-    "do_want_to_delete",
-    "cant_be_undone"
+    "single_note_tap_settings",
+    "show_folders",
+    "show_add_tile"
   ]
 }

@@ -21,27 +21,27 @@ class ProfileModule extends ModuleBuilder {
         'profile_action': buildProfileAction,
       };
 
-  FutureOr<ContentSegment?> buildProfile(ModuleContext context) {
+  FutureOr<ContentSegment?> buildProfile(ModuleContext module) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => SimpleCard(title: context.tr.profile, icon: Icons.account_circle),
       onNavigate: (context) => const ProfilePage(),
     );
   }
 
-  FutureOr<ContentSegment?> buildProfileImage(ModuleContext context) {
+  FutureOr<ContentSegment?> buildProfileImage(ModuleContext module) {
     return ContentSegment(
-      context: context,
+      module: module,
       builder: (context) => const ProfileImageWidget(),
       onNavigate: (context) => const ProfilePage(),
     );
   }
 
-  FutureOr<QuickAction?> buildProfileAction(ModuleContext context) {
+  FutureOr<QuickAction?> buildProfileAction(ModuleContext module) {
     return QuickAction(
-      context: context,
+      module: module,
       icon: Icons.account_circle,
-      text: context.context.tr.profile,
+      text: module.context.tr.profile,
       onNavigate: (context) => const ProfilePage(),
     );
   }

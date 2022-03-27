@@ -9,10 +9,11 @@ class PageSegment extends ModuleElement with ModuleElementBuilder<PageSegment> {
   final Widget Function(BuildContext context) builder;
 
   PageSegment({
-    required ModuleContext context,
+    required ModuleContext module,
     required this.builder,
     this.keepAlive = true,
-  }) : super(key: UniqueKey(), context: context);
+    SettingsBuilder? settings,
+  }) : super(module: module, settings: settings);
 
   @override
   PageSegment get element => this;

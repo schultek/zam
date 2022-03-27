@@ -1,12 +1,11 @@
 import 'dart:ui';
 
-import 'package:collection/collection.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_context/riverpod_context.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../modules/modules.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../areas/widget_area.dart';
@@ -67,8 +66,6 @@ abstract class WidgetTemplateState<T extends WidgetTemplate<M>, M extends Templa
   @override
   void initState() {
     super.initState();
-    context.read(transitionControllerProvider.notifier).state =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
     context.read(wiggleControllerProvider.notifier).state =
         AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
   }
@@ -76,25 +73,26 @@ abstract class WidgetTemplateState<T extends WidgetTemplate<M>, M extends Templa
   @override
   void didChangeDependencies() {
     context.listen<EditState>(editProvider, (_, state) {
+      configSheet?.close();
+      configSheet = null;
+
       if (state == EditState.layoutMode) {
         configSheet = ConfigSheet.show<M>(_navigatorKey.currentContext!);
-      } else {
-        configSheet?.close();
-        configSheet = null;
       }
     });
 
     context.listen<String?>(selectedAreaProvider, (_, area) async {
+      widgetSelector?.close();
+      widgetSelector = null;
+
       if (area != null) {
         if (widgetAreas[area]?.mounted ?? false) {
           var widgetArea = widgetAreas[area]!;
           widgetArea.callTyped(<E extends ModuleElement>() async {
             widgetSelector = await WidgetSelector.show<E>(this, widgetArea as WidgetAreaState<WidgetArea<E>, E>);
+            setState(() {});
           });
         }
-      } else {
-        widgetSelector?.close();
-        widgetSelector = null;
       }
     });
 
@@ -103,10 +101,6 @@ abstract class WidgetTemplateState<T extends WidgetTemplate<M>, M extends Templa
 
   @override
   void dispose() {
-    context.read(transitionControllerProvider.notifier).update((state) {
-      state?.dispose();
-      return null;
-    });
     context.read(wiggleControllerProvider.notifier).update((state) {
       state?.dispose();
       return null;
@@ -122,23 +116,8 @@ abstract class WidgetTemplateState<T extends WidgetTemplate<M>, M extends Templa
     }
   }
 
-  Future<List<E>> getWidgetsForArea<E extends ModuleElement>(String areaId) async {
-    var selectedModules = context.read(areaModulesProvider(areaId));
-    var elements = await Future.wait(selectedModules.map((id) async => await registry.getWidget<E>(context, id)));
-    return elements.whereNotNull().toList();
-  }
-
   void registerArea(WidgetAreaState area) {
     widgetAreas[area.id] = area;
-  }
-
-  void onWidgetRemoved<E extends ModuleElement>(WidgetAreaState<WidgetArea<E>, E> area, E widget) {
-    if (widgetSelector != null && widgetSelector!.isForArea(area)) {
-      if (widget.id.split('/').length < 2) {
-        // Don't add specialized cards
-        widgetSelector!.state!.addWidget(null, widget);
-      }
-    }
   }
 
   Widget buildPages(BuildContext context);
@@ -168,11 +147,19 @@ abstract class WidgetTemplateState<T extends WidgetTemplate<M>, M extends Templa
                 children: [
                   TemplateNavigator(
                     navigatorKey: _navigatorKey,
-                    home: buildPages(context),
+                    home: VisibilityDetector(
+                      key: const ValueKey('template-home'),
+                      onVisibilityChanged: (visibilityInfo) {
+                        context.read(templateVisibilityProvider.notifier).state = visibilityInfo.visibleFraction > 0.5;
+                      },
+                      child: buildPages(context),
+                    ),
                   ),
                   Builder(
                     builder: (context) {
-                      if (context.watch(isEditingProvider) && !context.watch(toggleVisibilityProvider)) {
+                      if (context.watch(isEditingProvider) &&
+                          !context.watch(toggleVisibilityProvider) &&
+                          context.watch(templateVisibilityProvider)) {
                         return Positioned(
                           top: 45,
                           right: 5,

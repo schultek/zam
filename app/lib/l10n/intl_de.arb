@@ -19,6 +19,7 @@
   "cancel": "Abbrechen",
   "continuee": "Weiter",
   "hello": "Hallo",
+  "ok": "OK",
 
   "@LOGIN": {},
 
@@ -63,6 +64,32 @@
   "logged_in_with": "Angemeldet mit",
   "add_phone_number_hint": "Du kannst deine Telefonnummer hinzufügen,\num deine Gruppen auf anderen Geräten zu nutzen",
   "logout": "Abmelden",
+
+  "@CONFIGURATION": {},
+
+  "main_page": "Hauptseite",
+  "left_page": "Linke Seite",
+  "right_page": "Rechte Seite",
+  "add_page": "Seite hinzufügen",
+  "tap_to_change": "Tippe zum ändern",
+  "choose_layout": "Layout wählen",
+  "choose_template": "Template wählen",
+  "layout": "Layout",
+  "settings": "Einstellungen",
+  "template": "Template",
+  "theme": "Farbschema",
+  "dark_mode": "Dunkler Modus",
+  "danger_zone": "Sperrzone",
+  "do_want_to_leave": "Möchtest du die Gruppe verlassen: ",
+  "do_want_to_delete": "Möchtest du die Gruppe löschen: ",
+  "cant_be_undone": "Dies kann nicht rückgängig gemacht werden.",
+  "wide_focus": "Breiter Fokus",
+  "custom_cover_image": "Individuelles Titelbild",
+  "tap_to_add": "Tippe zum hinzufügen",
+  "add_section": "Bereich hinzufügen",
+  "show_quick_actions": "Schnellaktionen anzeigen",
+  "show_info_cards": "Infokarten anzeigen",
+  "primary_background": "Primärer Hintergrund",
 
   "@ANNOUNCEMENTS": {},
 

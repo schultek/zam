@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../modules/modules.dart';
 import '../../providers/trips/logic_provider.dart';
 import '../../providers/trips/selected_trip_provider.dart';
 import '../elements/decorators/element_decorator.dart';
@@ -32,9 +34,19 @@ class InheritedWidgetArea<T extends ModuleElement> extends InheritedWidget {
 final areaModulesProvider = Provider.family<List<String>, String>(
   (ref, String id) {
     var trip = ref.watch(selectedTripProvider);
-    return trip?.modules[id] ?? [];
+    return DeepEqualityList(trip?.modules[id] ?? []);
   },
 );
+
+class DeepEqualityList<T> extends DelegatingList<T> {
+  DeepEqualityList(List<T> base) : super(base);
+
+  @override
+  bool operator ==(Object other) => const DeepCollectionEquality().equals(this, other);
+
+  @override
+  int get hashCode => const DeepCollectionEquality().hash(this);
+}
 
 abstract class WidgetArea<T extends ModuleElement> extends StatefulWidget {
   final String id;
@@ -42,6 +54,11 @@ abstract class WidgetArea<T extends ModuleElement> extends StatefulWidget {
 
   static WidgetAreaState<WidgetArea<T>, T>? of<T extends ModuleElement>(BuildContext context) {
     assert(T != ModuleElement, 'WidgetArea.of was called with default type parameter. This is probably not right.');
+
+    if (context is StatefulElement && context.state is WidgetAreaState<WidgetArea<T>, T>) {
+      return context.state as WidgetAreaState<WidgetArea<T>, T>;
+    }
+
     var element = context.getElementForInheritedWidgetOfExactType<InheritedWidgetArea<T>>();
     return element != null ? (element.widget as InheritedWidgetArea<T>).state : null;
   }
@@ -77,7 +94,6 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
     super.didChangeDependencies();
     if (_isInitialized) return;
     _isInitialized = true;
-
     reload();
     context.listen(areaModulesProvider(id), (_, __) => reload());
   }
@@ -85,16 +101,24 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
   @override
   void deactivate() {
     if (context.read(isAreaSelectedProvider(id))) {
-      context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
+      });
     }
     super.deactivate();
   }
 
   Future<void> reload() async {
-    var widgets = await template.getWidgetsForArea<T>(widget.id);
+    var widgets = await _getWidgetsForArea();
     initArea(widgets);
     _isLoading = false;
     if (mounted) setState(() {});
+  }
+
+  Future<List<T>> _getWidgetsForArea() async {
+    var selectedModules = context.read(areaModulesProvider(widget.id));
+    var elements = await Future.wait(selectedModules.map((id) async => await registry.getWidget<T>(context, id)));
+    return elements.whereNotNull().toList();
   }
 
   void initArea(List<T> widgets);
@@ -120,11 +144,16 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
 
     return InheritedWidgetArea(
       state: this,
-      child: Listener(
-        behavior: HitTestBehavior.opaque,
-        onPointerDown: (_) {
-          context.read(selectedAreaProvider.notifier).selectWidgetAreaById(id);
-        },
+      child: GestureDetector(
+        behavior: HitTestBehavior.deferToChild,
+        onTap: isEditing
+            ? () {
+                context.read(selectedAreaProvider.notifier).selectWidgetAreaById(id);
+              }
+            : null,
+        // onPointerDown: (e) {
+        //   context.read(selectedAreaProvider.notifier).selectWidgetAreaById(id);
+        // },
         child: Container(
           margin: getMargin(),
           decoration: BoxDecoration(
@@ -171,7 +200,6 @@ abstract class WidgetAreaState<U extends WidgetArea<T>, T extends ModuleElement>
       var widget = getWidgetFromKey(key);
       removeItem(key);
       widget.onRemoved(context);
-      template.onWidgetRemoved(this, widget);
     });
     updateWidgetsInTrip();
   }
