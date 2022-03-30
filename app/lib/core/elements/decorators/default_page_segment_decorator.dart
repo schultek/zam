@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../themes/theme_context.dart';
-import '../page_segment.dart';
+import '../../themes/themes.dart';
+import '../page_element.dart';
 import 'element_decorator.dart';
 
-class DefaultPageSegmentDecorator implements ElementDecorator<PageSegment> {
+class DefaultPageElementDecorator implements ElementDecorator<PageElement> {
   @override
-  Widget decorateDragged(BuildContext context, PageSegment element, Widget child, double opacity) {
+  Widget decorateDragged(BuildContext context, PageElement element, Widget child, double opacity) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -17,7 +17,7 @@ class DefaultPageSegmentDecorator implements ElementDecorator<PageSegment> {
   }
 
   @override
-  Widget decorateElement(BuildContext context, PageSegment element, Widget child) {
+  Widget decorateElement(BuildContext context, PageElement element, Widget child) {
     return Material(
       textStyle: TextStyle(color: context.onSurfaceColor),
       color: Colors.transparent,
@@ -26,7 +26,7 @@ class DefaultPageSegmentDecorator implements ElementDecorator<PageSegment> {
   }
 
   @override
-  Widget decoratePlaceholder(BuildContext context, PageSegment element) {
+  Widget decoratePlaceholder(BuildContext context, PageElement element) {
     return Container();
   }
 }

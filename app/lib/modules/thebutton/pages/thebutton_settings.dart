@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../thebutton_provider.dart';
+import '../thebutton.module.dart';
 import '../widgets/clip_layer.dart';
 import '../widgets/expand_clipper.dart';
 

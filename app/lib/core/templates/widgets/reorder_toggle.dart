@@ -9,7 +9,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/editing_providers.dart';
-import '../../themes/theme_context.dart';
+import '../../themes/themes.dart';
 
 class ReorderToggle extends StatefulWidget {
   const ReorderToggle({this.onPressed, Key? key}) : super(key: key);

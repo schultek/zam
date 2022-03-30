@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../music_providers.dart';
+import '../music.module.dart';
 import '../widgets/track_tile.dart';
 import 'search_track_page.dart';
 import 'select_playlist_page.dart';

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' show QuillController, QuillEditor, Document;
 
-import '../../../core/core.dart';
-import '../notes_provider.dart';
+import '../notes.module.dart';
 
 class NotePreview extends StatelessWidget {
   final Note note;

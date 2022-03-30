@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/trips/selected_trip_provider.dart';
-import '../elements/module_element.dart';
+import '../elements/elements.dart';
 import 'module_builder.dart';
 import 'module_context.dart';
 

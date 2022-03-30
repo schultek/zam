@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/trips/selected_trip_provider.dart';
-import '../../core.dart';
 import '../../providers/editing_providers.dart';
+import '../../themes/themes.dart';
 import '../../widgets/layout_preview.dart';
 import 'layout_toggle.dart';
 import 'trip_selector.dart';

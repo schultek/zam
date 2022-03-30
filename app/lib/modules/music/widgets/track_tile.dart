@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../helpers/extensions.dart';
-import '../music_models.dart';
+import '../music.module.dart';
 
 enum TrackAction { play, queue, addPlaylist, deletePlaylist }
 

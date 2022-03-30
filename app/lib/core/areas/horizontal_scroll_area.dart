@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 
-import '../elements/content_segment.dart';
-import '../elements/decorators/default_content_segment_decorator.dart';
-import '../elements/decorators/element_decorator.dart';
+import '../elements/elements.dart';
+import 'area.dart';
 import 'mixins/list_area_mixin.dart';
 import 'mixins/scroll_mixin.dart';
-import 'widget_area.dart';
 
-class HorizontalScrollArea extends WidgetArea<ContentSegment> {
-  final ElementDecorator<ContentSegment> decorator;
-  const HorizontalScrollArea(String id, {Key? key, this.decorator = const DefaultContentSegmentDecorator()})
+class HorizontalScrollArea extends Area<ContentElement> {
+  final ElementDecorator<ContentElement> decorator;
+  const HorizontalScrollArea(String id, {Key? key, this.decorator = const DefaultContentElementDecorator()})
       : super(id, key: key);
 
   @override
   State<StatefulWidget> createState() => HorizontalScrollAreaState();
 }
 
-class HorizontalScrollAreaState extends WidgetAreaState<HorizontalScrollArea, ContentSegment>
-    with ListAreaMixin<HorizontalScrollArea, ContentSegment>, ScrollMixin<HorizontalScrollArea, ContentSegment> {
+class HorizontalScrollAreaState extends AreaState<HorizontalScrollArea, ContentElement>
+    with ListAreaMixin<HorizontalScrollArea, ContentElement>, ScrollMixin<HorizontalScrollArea, ContentElement> {
   @override
-  ElementDecorator<ContentSegment> get elementDecorator => widget.decorator;
+  ElementDecorator<ContentElement> get elementDecorator => widget.decorator;
 
   @override
   EdgeInsets getPadding() => isEditing ? const EdgeInsets.symmetric(horizontal: 2) : EdgeInsets.zero;
@@ -53,7 +51,7 @@ class HorizontalScrollAreaState extends WidgetAreaState<HorizontalScrollArea, Co
   }
 
   @override
-  BoxConstraints constrainWidget(ContentSegment widget) => const BoxConstraints(maxHeight: 160);
+  BoxConstraints constrainWidget(ContentElement widget) => const BoxConstraints(maxHeight: 160);
 
   @override
   bool canInsertItem(item) => true;
@@ -105,7 +103,7 @@ class HorizontalScrollAreaState extends WidgetAreaState<HorizontalScrollArea, Co
   }
 
   @override
-  void insertItem(Offset offset, ContentSegment item) {
+  void insertItem(Offset offset, ContentElement item) {
     var indexAfter = elements.indexWhere((e) {
       if (!logic.hasItem(e.key)) return false;
       var size = logic.itemSize(e.key);

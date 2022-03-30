@@ -9,8 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import 'core/core.dart';
-//ignore: unused_import
-import 'core/widgets/trip_selector_page.dart';
 import 'providers/auth/user_provider.dart';
 import 'providers/general/loading_provider.dart';
 import 'providers/links/links_provider.dart';

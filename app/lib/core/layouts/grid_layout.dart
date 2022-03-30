@@ -1,7 +1,7 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
-import '../areas/mixed_grid_area.dart';
+import '../areas/areas.dart';
 import '../widgets/layout_preview.dart';
 import 'layout_model.dart';
 
@@ -17,7 +17,7 @@ class GridLayoutModel extends LayoutModel {
 
   @override
   PreviewPage preview({Widget? header}) => PreviewPage(segments: [
-        PreviewSegment(
+        PreviewSection(
           fill: false,
           child: Column(
             children: [

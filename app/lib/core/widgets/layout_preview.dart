@@ -41,10 +41,10 @@ class PreviewPage extends StatelessWidget {
   }
 }
 
-class PreviewSegment extends StatelessWidget {
+class PreviewSection extends StatelessWidget {
   final Widget child;
   final bool fill;
-  const PreviewSegment({required this.child, this.fill = true, Key? key}) : super(key: key);
+  const PreviewSection({required this.child, this.fill = true, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

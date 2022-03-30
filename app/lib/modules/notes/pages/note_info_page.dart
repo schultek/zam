@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/widgets/settings_section.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../notes_provider.dart';
+import '../notes.module.dart';
 import 'add_editors_page.dart';
 import 'change_folder_page.dart';
 

@@ -54,7 +54,7 @@ class _ModuleRouteTransitionState<T extends ModuleElement> extends State<ModuleR
     );
   }
 
-  WidgetAreaState<WidgetArea<T>, T> get widgetArea => WidgetArea.of<T>(context)!;
+  AreaState<Area<T>, T> get widgetArea => Area.of<T>(context)!;
 
   ModuleTransition onAnimate(BuildContext context, double value) {
     fullRect ??= Rect.fromLTWH(0, 0, MediaQuery.of(context).size.width, MediaQuery.of(context).size.height);
@@ -86,7 +86,7 @@ class _ModuleRouteTransitionState<T extends ModuleElement> extends State<ModuleR
     if (mounted && value > 0) {
       card = Positioned.fromRect(
         rect: cardRect,
-        child: InheritedWidgetArea<T>(
+        child: InheritedArea<T>(
           state: widgetArea,
           child: TripTheme(
             theme: widgetArea.theme,

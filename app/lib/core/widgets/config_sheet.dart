@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/trips/selected_trip_provider.dart';
-import '../core.dart';
+import '../models/models.dart';
 import '../providers/editing_providers.dart';
+import '../templates/templates.dart';
+import '../themes/themes.dart';
 
 class ConfigSheetController {
   final BuildContext _context;
@@ -76,7 +78,7 @@ class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
   Widget build(BuildContext context) {
     context.watch(currentPageProvider);
 
-    var state = WidgetTemplate.of(context, listen: false);
+    var state = Template.of(context, listen: false);
     var settings = state.getPageSettings();
 
     if (settings.isEmpty) {

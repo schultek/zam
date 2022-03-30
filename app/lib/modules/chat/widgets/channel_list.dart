@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../chat_provider.dart';
+import '../chat.module.dart';
 import '../pages/channel/add_channel_page.dart';
 import '../pages/channel_page.dart';
 

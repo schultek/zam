@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../../../widgets/user_avatar.dart';
-import '../notes_provider.dart';
+import '../notes.module.dart';
 
 class AddEditorsPage extends StatefulWidget {
   final Note note;

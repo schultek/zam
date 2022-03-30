@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 import '../../modules/modules.dart';
-import '../areas/widget_area.dart';
-import '../elements/module_element.dart';
-import '../templates/widget_template.dart';
-import '../themes/theme_context.dart';
-import '../themes/widgets/trip_theme.dart';
+import '../areas/areas.dart';
+import '../elements/elements.dart';
+import '../templates/templates.dart';
+import '../themes/themes.dart';
 
 class WidgetSelectorController<T extends ModuleElement> {
   final GlobalKey<WidgetSelectorState<T>> _selectorKey;
@@ -16,7 +15,7 @@ class WidgetSelectorController<T extends ModuleElement> {
   final OverlayEntry _entry;
 
   void close() => _entry.remove();
-  bool isForArea(WidgetAreaState area) => _widgetSelector.widgetArea == area;
+  bool isForArea(AreaState area) => _widgetSelector.widgetArea == area;
   WidgetSelectorState? get state => _selectorKey.currentState;
 
   const WidgetSelectorController(this._selectorKey, this._widgetSelector, this._entry);
@@ -24,7 +23,7 @@ class WidgetSelectorController<T extends ModuleElement> {
 
 class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
   final List<T> widgets;
-  final WidgetAreaState<WidgetArea<T>, T> widgetArea;
+  final AreaState<Area<T>, T> widgetArea;
 
   const WidgetSelector(Key key, this.widgets, this.widgetArea) : super(key: key);
 
@@ -32,7 +31,7 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
   WidgetSelectorState createState() => WidgetSelectorState<T>();
 
   static Future<WidgetSelectorController> show<T extends ModuleElement>(
-      WidgetTemplateState template, WidgetAreaState<WidgetArea<T>, T> widgetArea) async {
+      TemplateState template, AreaState<Area<T>, T> widgetArea) async {
     var selectorKey = GlobalKey<WidgetSelectorState<T>>();
 
     List<T> widgets = await registry.getWidgetsOf<T>(widgetArea.context);
@@ -41,7 +40,7 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
     var entry = OverlayEntry(
       builder: (context) => Align(
         alignment: Alignment.bottomCenter,
-        child: InheritedWidgetTemplate(state: template, child: widgetSelector),
+        child: InheritedTemplate(state: template, child: widgetSelector),
       ),
     );
 
@@ -158,7 +157,7 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
       return groups;
     });
 
-    return InheritedWidgetArea(
+    return InheritedArea(
       state: widget.widgetArea,
       child: TripTheme(
         theme: widget.widgetArea.theme,

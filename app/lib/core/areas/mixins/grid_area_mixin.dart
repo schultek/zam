@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 
-import '../../elements/module_element.dart';
-import '../widget_area.dart';
+import '../../elements/elements.dart';
+import '../area.dart';
 
 class GridIndex {
   int row;
   int column;
-  SegmentSize size;
+  ElementSize size;
   GridIndex(this.row, this.column, this.size);
 }
 
-mixin GridAreaMixin<U extends WidgetArea<T>, T extends ModuleElement> on WidgetAreaState<U, T> {
+mixin GridAreaMixin<U extends Area<T>, T extends ModuleElement> on AreaState<U, T> {
   List<List<T>> grid = [];
 
-  SegmentSize sizeOf(T element);
+  ElementSize sizeOf(T element);
 
   @override
   void initArea(List<T> widgets) {
     List<T>? row;
     grid = [];
     for (T element in widgets) {
-      if (sizeOf(element) == SegmentSize.square) {
+      if (sizeOf(element) == ElementSize.square) {
         if (row == null) {
           row = [element];
           grid.add(row);
@@ -54,9 +54,9 @@ mixin GridAreaMixin<U extends WidgetArea<T>, T extends ModuleElement> on WidgetA
   @override
   void insertItem(Offset offset, T item) {
     setState(() {
-      if (grid.isEmpty || sizeOf(grid[grid.length - 1][0]) == SegmentSize.wide || grid[grid.length - 1].length == 2) {
+      if (grid.isEmpty || sizeOf(grid[grid.length - 1][0]) == ElementSize.wide || grid[grid.length - 1].length == 2) {
         grid.add([item]);
-      } else if (sizeOf(item) == SegmentSize.wide) {
+      } else if (sizeOf(item) == ElementSize.wide) {
         grid.insert(grid.length - 1, [item]);
       } else {
         grid[grid.length - 1].add(item);

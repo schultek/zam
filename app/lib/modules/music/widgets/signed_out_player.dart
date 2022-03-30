@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../helpers/extensions.dart';
-import '../../../widgets/simple_card.dart';
-import '../music_providers.dart';
+import '../music.module.dart';
 
 class SignedOutPlayer extends StatelessWidget {
   const SignedOutPlayer({Key? key}) : super(key: key);

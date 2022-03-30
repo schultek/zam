@@ -3,13 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/auth/user_provider.dart';
-import '../../../providers/links/links_provider.dart';
-import '../../../providers/trips/logic_provider.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../../../widgets/user_avatar.dart';
+import '../users_module.dart';
 
 class UsersPage extends StatelessWidget {
   const UsersPage({Key? key}) : super(key: key);

@@ -6,11 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/auth/user_provider.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../chat_provider.dart';
+import '../chat.module.dart';
 import '../widgets/attachment_bottom_sheet.dart';
 import 'channel/channel_info_page.dart';
 import 'channel/chat_theme.dart';

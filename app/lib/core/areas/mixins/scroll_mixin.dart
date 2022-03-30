@@ -3,11 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../elements/module_element.dart';
+import '../../elements/elements.dart';
 import '../../providers/editing_providers.dart';
-import '../widget_area.dart';
+import '../area.dart';
 
-mixin ScrollMixin<T extends WidgetArea<E>, E extends ModuleElement> on WidgetAreaState<T, E> {
+mixin ScrollMixin<T extends Area<E>, E extends ModuleElement> on AreaState<T, E> {
   ScrollController get scrollController;
 
   Function? _activeScrollCb;

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 
 import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
-import '../areas/widget_area.dart';
-import '../elements/module_element.dart';
+import '../areas/areas.dart';
+import '../elements/elements.dart';
 import 'module_builder.dart';
 
 class ModuleContext<T extends ModuleElement> {
@@ -34,7 +34,7 @@ class ModuleContext<T extends ModuleElement> {
 
   void updateParams<E>(E params) {
     _parsedId = _parsedId.copyWith(params: Mapper.toValue(params));
-    WidgetArea.of<T>(context)!.updateWidgetsInTrip();
+    Area.of<T>(context)!.updateWidgetsInTrip();
   }
 
   String copyId() {

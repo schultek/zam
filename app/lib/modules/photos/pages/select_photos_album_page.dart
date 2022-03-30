@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../../../helpers/extensions.dart';
+import '../photos.module.dart';
 import '../providers/photos_provider.dart';
 
 class SelectPhotosAlbumPage extends StatefulWidget {

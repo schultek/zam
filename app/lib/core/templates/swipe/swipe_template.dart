@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../helpers/extensions.dart';
+import '../../../main.mapper.g.dart';
 import '../../../widgets/nested_will_pop_scope.dart';
-import '../../core.dart';
-import '../../layouts/full_page_layout.dart';
-import '../../layouts/grid_layout.dart';
-import '../../layouts/layout_model.dart';
+import '../../layouts/layouts.dart';
 import '../../providers/editing_providers.dart';
 import '../../providers/selected_area_provider.dart';
+import '../../templates/templates.dart';
+import '../../themes/themes.dart';
 import '../../widgets/layout_preview.dart';
 import '../../widgets/layout_preview_switcher.dart';
 import '../../widgets/settings_section.dart';
@@ -20,7 +20,7 @@ import '../widgets/main_group_header.dart';
 part 'swipe_template_model.dart';
 part 'swipe_template_page.dart';
 
-class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
+class SwipeTemplate extends Template<SwipeTemplateModel> {
   // ignore: prefer_const_constructors_in_immutables
   SwipeTemplate(SwipeTemplateModel model, {Key? key}) : super(model, key: key);
 
@@ -28,7 +28,7 @@ class SwipeTemplate extends WidgetTemplate<SwipeTemplateModel> {
   State<StatefulWidget> createState() => SwipeTemplateState();
 }
 
-class SwipeTemplateState extends WidgetTemplateState<SwipeTemplate, SwipeTemplateModel> {
+class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel> {
   late final CustomPageController pageController;
 
   final leftKey = const ValueKey('left');

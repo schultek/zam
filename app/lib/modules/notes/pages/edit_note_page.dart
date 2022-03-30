@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/auth/user_provider.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../notes_provider.dart';
+import '../notes.module.dart';
 import 'note_info_page.dart';
 
 class EditNotePage extends StatefulWidget {
@@ -65,7 +61,7 @@ class _EditNotePageState extends State<EditNotePage> {
                 var shouldDelete = await nav.push<bool>(NoteInfoPage.route(widget.note));
                 if (shouldDelete == true) {
                   logic.deleteNote(widget.note.id);
-                  WidgetTemplate.of(context, listen: false).removeWidgetsWithId(widget.note.id);
+                  Template.of(context, listen: false).removeWidgetsWithId(widget.note.id);
                   nav.pop();
                 }
               },

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../widgets/games_list.dart';
+import '../builders/games_list_builder.dart';
+import '../elimination.module.dart';
 import 'create_game_page.dart';
 
 class GamesPage extends StatelessWidget {
@@ -24,7 +23,12 @@ class GamesPage extends StatelessWidget {
             )
         ],
       ),
-      body: const GamesList(),
+      body: ListView(
+        padding: const EdgeInsets.all(10),
+        children: GamesListBuilder(true)(context) //
+            .intersperse(const SizedBox(height: 10))
+            .toList(),
+      ),
     );
   }
 }

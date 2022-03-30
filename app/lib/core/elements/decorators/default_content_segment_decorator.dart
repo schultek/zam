@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../themes/theme_context.dart';
-import '../../themes/widgets/themed_surface.dart';
-import '../content_segment.dart';
+import '../../themes/themes.dart';
+import '../content_element.dart';
 import '../module_element.dart';
 import 'element_decorator.dart';
 
-class DefaultContentSegmentDecorator implements ElementDecorator<ContentSegment> {
-  const DefaultContentSegmentDecorator();
+class DefaultContentElementDecorator implements ElementDecorator<ContentElement> {
+  const DefaultContentElementDecorator();
   @override
-  Widget decorateDragged(BuildContext context, ContentSegment element, Widget child, double opacity) {
+  Widget decorateDragged(BuildContext context, ContentElement element, Widget child, double opacity) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
@@ -20,10 +19,10 @@ class DefaultContentSegmentDecorator implements ElementDecorator<ContentSegment>
   }
 
   @override
-  Widget decorateElement(BuildContext context, ContentSegment element, Widget child) {
-    if (child is ContentSegmentItems) {
+  Widget decorateElement(BuildContext context, ContentElement element, Widget child) {
+    if (child is ContentElementItems) {
       return child.builder(context, child.itemsBuilder(context).map((c) => _defaultDecorator(element, c)).toList());
-    } else if (child is ContentSegmentText) {
+    } else if (child is ContentElementText) {
       return Material(color: Colors.transparent, child: child.builder(context));
     } else {
       return _defaultDecorator(element, child);
@@ -31,11 +30,11 @@ class DefaultContentSegmentDecorator implements ElementDecorator<ContentSegment>
   }
 
   @override
-  Widget decoratePlaceholder(BuildContext context, ContentSegment element) {
+  Widget decoratePlaceholder(BuildContext context, ContentElement element) {
     return _defaultDecorator(element);
   }
 
-  Widget _defaultDecorator(ContentSegment element, [Widget? child]) {
+  Widget _defaultDecorator(ContentElement element, [Widget? child]) {
     var w = ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: ThemedSurface(
@@ -47,7 +46,7 @@ class DefaultContentSegmentDecorator implements ElementDecorator<ContentSegment>
         ),
       ),
     );
-    if (element.size == SegmentSize.wide) {
+    if (element.size == ElementSize.wide) {
       return w;
     } else {
       return AspectRatio(

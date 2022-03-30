@@ -2,9 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
+import '../profile.module.dart';
 
 class ProfileImageWidget extends StatelessWidget {
   const ProfileImageWidget({Key? key}) : super(key: key);

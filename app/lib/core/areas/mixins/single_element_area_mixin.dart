@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../../elements/module_element.dart';
-import '../widget_area.dart';
+import '../../elements/elements.dart';
+import '../area.dart';
 
-mixin SingleElementAreaMixin<U extends WidgetArea<T>, T extends ModuleElement> on WidgetAreaState<U, T> {
+mixin SingleElementAreaMixin<U extends Area<T>, T extends ModuleElement> on AreaState<U, T> {
   T? element;
 
   @override

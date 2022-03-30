@@ -3,8 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/core.dart';
-import '../thebutton_provider.dart';
+import '../thebutton.module.dart';
 import 'thebutton_shape.dart';
 
 class TheButton extends StatefulWidget {

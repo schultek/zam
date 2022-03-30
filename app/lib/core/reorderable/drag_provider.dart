@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:vibration/vibration.dart';
 
-import '../areas/widget_area.dart';
-import '../elements/module_element.dart';
+import '../areas/areas.dart';
+import '../elements/elements.dart';
 import '../providers/selected_area_provider.dart';
 import '../widgets/widget_selector.dart';
 import 'drag_item.dart';
@@ -30,7 +30,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
   final Reader read;
   final Key key;
 
-  final WidgetAreaState<WidgetArea<T>, T> area;
+  final AreaState<Area<T>, T> area;
 
   ReorderableDrag({
     required this.read,

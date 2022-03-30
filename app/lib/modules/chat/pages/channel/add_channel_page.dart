@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/core.dart';
-import '../../../../helpers/extensions.dart';
-import '../../chat_provider.dart';
+import '../../chat.module.dart';
 import '../channel_page.dart';
 import 'create_channel_page.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../helpers/extensions.dart';
-import '../layouts/layout_model.dart';
+import '../layouts/layouts.dart';
 import '../themes/themes.dart';
 import 'layout_preview.dart';
 

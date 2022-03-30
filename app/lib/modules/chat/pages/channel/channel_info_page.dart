@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/widgets/settings_section.dart';
-import '../../../../helpers/extensions.dart';
-import '../../chat_provider.dart';
+import '../../chat.module.dart';
 import 'add_members_page.dart';
 import 'members_page.dart';
 

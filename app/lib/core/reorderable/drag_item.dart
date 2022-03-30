@@ -3,15 +3,15 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../areas/widget_area.dart';
-import '../elements/module_element.dart';
-import '../templates/widget_template.dart';
-import '../themes/widgets/trip_theme.dart';
+import '../areas/areas.dart';
+import '../elements/elements.dart';
+import '../templates/templates.dart';
+import '../themes/themes.dart';
 import 'drag_provider.dart';
 import 'reorderable_item.dart';
 
 class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
-  final WidgetAreaState<WidgetArea<T>, T> area;
+  final AreaState<Area<T>, T> area;
   final BoxConstraints elementConstraints;
   final Animation<double> scaleAnimation;
   final DecorationBuilder decorationBuilder;
@@ -32,9 +32,9 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InheritedWidgetTemplate(
+    return InheritedTemplate(
       state: area.template,
-      child: InheritedWidgetArea<T>(
+      child: InheritedArea<T>(
         state: area,
         child: TripTheme(
           theme: area.theme,

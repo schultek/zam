@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../../helpers/extensions.dart';
-import '../../../../providers/trips/selected_trip_provider.dart';
-import '../../../../widgets/user_avatar.dart';
-import '../../chat_provider.dart';
+import '../../chat.module.dart';
 
 class AddMembersPage extends StatefulWidget {
   final ChannelInfo channel;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../themes/widgets/themed_surface.dart';
+import '../themes/themes.dart';
 
 class SettingsSection extends StatelessWidget {
   final String? title;

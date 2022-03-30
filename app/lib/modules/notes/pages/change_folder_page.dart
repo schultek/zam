@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../helpers/optional.dart';
-import '../notes_provider.dart';
+import '../notes.module.dart';
 
 class ChangeFolderPage extends StatefulWidget {
   final String? folder;

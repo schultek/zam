@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core.dart';
+import '../../themes/themes.dart';
 
 class EmptyPage extends StatelessWidget {
   const EmptyPage({Key? key}) : super(key: key);

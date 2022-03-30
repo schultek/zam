@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../../helpers/extensions.dart';
-import '../../../../providers/auth/user_provider.dart';
-import '../../chat_provider.dart';
+import '../../chat.module.dart';
 import 'add_members_page.dart';
 
 class CreateChannelPage extends StatefulWidget {

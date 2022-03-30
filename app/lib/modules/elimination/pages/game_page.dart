@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../../../widgets/user_avatar.dart';
-import '../game_provider.dart';
+import '../elimination.module.dart';
 import '../widgets/all_targets_dialog.dart';
 import '../widgets/elimination_dialog.dart';
 
@@ -69,7 +65,7 @@ class GamePage extends StatelessWidget {
 
                     if (shouldDelete == true) {
                       Navigator.pop(context);
-                      WidgetTemplate.of(context, listen: false).removeWidgetsWithId(game.id);
+                      Template.of(context, listen: false).removeWidgetsWithId(game.id);
                       context.read(gameLogicProvider).deleteGame(game.id);
                     }
                   },

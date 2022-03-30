@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/widgets/settings_section.dart';
-import '../../../helpers/extensions.dart';
-import '../polls_provider.dart';
+import '../polls.module.dart';
 
 class CreatePollPage extends StatefulWidget {
   const CreatePollPage({Key? key}) : super(key: key);

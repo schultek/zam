@@ -1,11 +1,16 @@
+library users_module;
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../core/core.dart';
-import '../../helpers/extensions.dart';
-import '../../widgets/simple_card.dart';
+import '../module.dart';
 import 'pages/users_page.dart';
+
+export '../module.dart';
+
+part 'elements/users_action_element.dart';
+part 'elements/users_content_element.dart';
 
 class UsersModule extends ModuleBuilder {
   UsersModule() : super('users');
@@ -15,8 +20,8 @@ class UsersModule extends ModuleBuilder {
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
-        'users': buildUsers,
-        'users_action': buildUsersAction,
+        'users': UsersContentElement(),
+        'users_action': UsersActionElement(),
       };
 
   @override
@@ -27,22 +32,5 @@ class UsersModule extends ModuleBuilder {
         onTap: () => Navigator.of(context).push(UsersPage.route()),
       ),
     ]);
-  }
-
-  FutureOr<ContentSegment?> buildUsers(ModuleContext module) {
-    return ContentSegment(
-      module: module,
-      builder: (context) => SimpleCard(title: context.tr.users, icon: Icons.supervised_user_circle),
-      onNavigate: (context) => const UsersPage(),
-    );
-  }
-
-  FutureOr<QuickAction?> buildUsersAction(ModuleContext module) {
-    return QuickAction(
-      module: module,
-      icon: Icons.supervised_user_circle,
-      text: module.context.tr.users,
-      onNavigate: (context) => const UsersPage(),
-    );
   }
 }

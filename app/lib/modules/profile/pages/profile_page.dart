@@ -3,11 +3,7 @@ import 'package:cropperx/cropperx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/core.dart';
-import '../../../core/widgets/settings_section.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/logic_provider.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
+import '../profile.module.dart';
 import '../widgets/image_selector.dart';
 
 class ProfilePage extends StatefulWidget {

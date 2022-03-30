@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../core/core.dart';
-import '../../../core/widgets/widget_selector.dart';
 import '../../../helpers/extensions.dart';
 import '../../../providers/trips/selected_trip_provider.dart';
 

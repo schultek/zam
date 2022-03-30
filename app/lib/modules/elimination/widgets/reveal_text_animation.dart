@@ -3,8 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
+import '../elimination.module.dart';
 
 class RevealTextAnimation extends StatefulWidget {
   final String text;

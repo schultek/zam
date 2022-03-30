@@ -2,7 +2,9 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
 import '../../helpers/extensions.dart';
-import '../core.dart';
+import '../../main.mapper.g.dart';
+import '../areas/areas.dart';
+import '../themes/themes.dart';
 import '../widgets/layout_preview.dart';
 import 'layout_model.dart';
 
@@ -31,7 +33,7 @@ class FullPageLayoutModel extends LayoutModel {
 
   @override
   PreviewPage preview({Widget? header}) => PreviewPage(segments: [
-        PreviewSegment(
+        PreviewSection(
           fill: false,
           child: Column(
             children: [

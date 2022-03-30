@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
 
-import '../../themes/theme_context.dart';
-import '../../themes/trip_theme_data.dart';
-import '../../themes/widgets/themed_surface.dart';
-import '../quick_action.dart';
+import '../../themes/themes.dart';
+import '../action_element.dart';
 import 'element_decorator.dart';
 
-class DefaultQuickActionDecorator implements ElementDecorator<QuickAction> {
+class DefaultActionDecorator implements ElementDecorator<ActionElement> {
   final ColorPreference colorPreference;
-  const DefaultQuickActionDecorator([this.colorPreference = const ColorPreference()]);
+  const DefaultActionDecorator([this.colorPreference = const ColorPreference()]);
   @override
-  Widget decorateDragged(BuildContext context, QuickAction element, Widget child, double opacity) {
+  Widget decorateDragged(BuildContext context, ActionElement element, Widget child, double opacity) {
     return actionLayout(context, element, opacity: opacity);
   }
 
   @override
-  Widget decorateElement(BuildContext context, QuickAction element, Widget child) {
+  Widget decorateElement(BuildContext context, ActionElement element, Widget child) {
     return actionLayout(context, element);
   }
 
   @override
-  Widget decoratePlaceholder(BuildContext context, QuickAction element) {
+  Widget decoratePlaceholder(BuildContext context, ActionElement element) {
     return actionLayout(context, element, isPlaceholder: true);
   }
 
-  Widget actionLayout(BuildContext context, QuickAction element, {bool isPlaceholder = false, double opacity = 0}) {
+  Widget actionLayout(BuildContext context, ActionElement element, {bool isPlaceholder = false, double opacity = 0}) {
     var textColor = context.onSurfaceColor;
     var textStyle = context.theme.textTheme.bodyText1!.apply(fontSizeDelta: -2);
     return Padding(

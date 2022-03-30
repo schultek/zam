@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/logic_provider.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
+import '../users_module.dart';
 
 class UserOptionsDialog extends StatelessWidget {
   final String id;

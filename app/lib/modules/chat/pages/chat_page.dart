@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../helpers/extensions.dart';
+import '../chat.module.dart';
 import '../widgets/channel_list.dart';
 
 class ChatPage extends StatelessWidget {

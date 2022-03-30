@@ -2,24 +2,23 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../../themes/theme_context.dart';
-import '../../themes/widgets/themed_surface.dart';
-import '../content_segment.dart';
+import '../../themes/themes.dart';
+import '../content_element.dart';
 import '../module_element.dart';
 import 'element_decorator.dart';
 
-class GlassContentSegmentDecorator implements ElementDecorator<ContentSegment> {
-  const GlassContentSegmentDecorator();
+class GlassContentElementDecorator implements ElementDecorator<ContentElement> {
+  const GlassContentElementDecorator();
   @override
-  Widget decorateDragged(BuildContext context, ContentSegment element, Widget child, double opacity) {
+  Widget decorateDragged(BuildContext context, ContentElement element, Widget child, double opacity) {
     return child;
   }
 
   @override
-  Widget decorateElement(BuildContext context, ContentSegment element, Widget child) {
-    if (child is ContentSegmentItems) {
+  Widget decorateElement(BuildContext context, ContentElement element, Widget child) {
+    if (child is ContentElementItems) {
       return child.builder(context, child.itemsBuilder(context).map((c) => _defaultDecorator(element, c)).toList());
-    } else if (child is ContentSegmentText) {
+    } else if (child is ContentElementText) {
       return Material(color: Colors.transparent, child: child.builder(context));
     } else {
       return _defaultDecorator(element, child);
@@ -27,11 +26,11 @@ class GlassContentSegmentDecorator implements ElementDecorator<ContentSegment> {
   }
 
   @override
-  Widget decoratePlaceholder(BuildContext context, ContentSegment element) {
+  Widget decoratePlaceholder(BuildContext context, ContentElement element) {
     return _defaultDecorator(element);
   }
 
-  Widget _defaultDecorator(ContentSegment element, [Widget? child]) {
+  Widget _defaultDecorator(ContentElement element, [Widget? child]) {
     var w = ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: BackdropFilter(
@@ -46,7 +45,7 @@ class GlassContentSegmentDecorator implements ElementDecorator<ContentSegment> {
         ),
       ),
     );
-    if (element.size == SegmentSize.wide) {
+    if (element.size == ElementSize.wide) {
       return w;
     } else {
       return AspectRatio(

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../areas/widget_area.dart';
+import '../../areas/area.dart';
 import '../../providers/editing_providers.dart';
 import '../../reorderable/reorderable_item.dart';
 import '../../reorderable/reorderable_listener.dart';
@@ -15,7 +15,7 @@ import '../module_element.dart';
 import 'module_element_settings_dialog.dart';
 
 mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
-  ElementDecorator<T> decorator(BuildContext context) => WidgetArea.of<T>(context)!.elementDecorator;
+  ElementDecorator<T> decorator(BuildContext context) => Area.of<T>(context)!.elementDecorator;
 
   T get element;
 
@@ -89,7 +89,7 @@ mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
                         child: ModuleIconButton(
                           icon: Icons.close,
                           onPressed: () {
-                            var areaState = WidgetArea.of<T>(context)!;
+                            var areaState = Area.of<T>(context)!;
                             areaState.removeWidget(key);
                           },
                           color: context.theme.errorColor,

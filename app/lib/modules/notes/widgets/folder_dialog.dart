@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../notes_provider.dart';
+import '../notes.module.dart';
 import '../pages/edit_note_page.dart';
-import '../pages/notes_page.dart';
+import 'note_card.dart';
 import 'note_preview.dart';
 
 class FolderDialog extends StatelessWidget {

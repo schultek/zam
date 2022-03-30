@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../helpers/extensions.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../widgets/polls_list.dart';
+import '../builders/polls_list_builder.dart';
+import '../polls.module.dart';
 import 'create_poll_page.dart';
 
 class PollsPage extends StatelessWidget {
@@ -24,7 +23,12 @@ class PollsPage extends StatelessWidget {
             )
         ],
       ),
-      body: const PollsList(),
+      body: ListView(
+        padding: const EdgeInsets.all(10),
+        children: PollsListBuilder(true)(context) //
+            .intersperse(const SizedBox(height: 10))
+            .toList(),
+      ),
     );
   }
 }

@@ -13,8 +13,8 @@ import 'supply_repository.dart';
 @Module()
 class SupplyModule {
   @ModuleItem(id: "cooking")
-  ContentSegment getCookingCard() {
-    return ContentSegment(
+  ContentElement getCookingCard() {
+    return ContentElement(
       builder: (context) => Container(
         padding: const EdgeInsets.all(10),
         child: Stack(
@@ -34,8 +34,8 @@ class SupplyModule {
   }
 
   @ModuleItem(id: "shopping")
-  ContentSegment getShoppingCard() {
-    return ContentSegment(
+  ContentElement getShoppingCard() {
+    return ContentElement(
       builder: (context) => Container(
         padding: const EdgeInsets.all(10),
         child: const Center(child: Text("Einkaufen")),

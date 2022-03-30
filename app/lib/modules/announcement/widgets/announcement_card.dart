@@ -2,10 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../widgets/loading_shimmer.dart';
-import '../announcement_provider.dart';
+import '../announcement.module.dart';
 
 class AnnouncementCard extends StatelessWidget {
   final AsyncValue<Announcement> announcement;

@@ -2,13 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/core.dart';
-import '../music_providers.dart';
+import '../music.module.dart';
 import '../pages/manage_playlist_page.dart';
 import 'select_device_dialog.dart';
 
-class SpotifyPlayer extends StatelessWidget {
-  const SpotifyPlayer({Key? key}) : super(key: key);
+class SpotifyPlayerCard extends StatelessWidget {
+  const SpotifyPlayerCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

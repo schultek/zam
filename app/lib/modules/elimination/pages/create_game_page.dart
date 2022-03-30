@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/widgets/settings_section.dart';
-import '../../../helpers/extensions.dart';
-import '../game_provider.dart';
+import '../elimination.module.dart';
 
 class CreateGamePage extends StatefulWidget {
   const CreateGamePage({Key? key}) : super(key: key);

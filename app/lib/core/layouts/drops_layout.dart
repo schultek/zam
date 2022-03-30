@@ -7,12 +7,9 @@ import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
 import '../../modules/labels/widgets/label_widget.dart';
 import '../../modules/profile/widgets/image_selector.dart';
-import '../../providers/trips/logic_provider.dart';
-import '../../providers/trips/selected_trip_provider.dart';
-import '../areas/horizontal_scroll_area.dart';
-import '../areas/single_widget_area.dart';
-import '../elements/decorators/clipped_content_segment_decorator.dart';
-import '../elements/decorators/glass_content_segment_decorator.dart';
+import '../../providers/providers.dart';
+import '../areas/areas.dart';
+import '../elements/elements.dart';
 import '../providers/editing_providers.dart';
 import '../themes/themes.dart';
 import '../widgets/layout_preview.dart';
@@ -91,7 +88,7 @@ class DropsLayoutModel extends LayoutModel {
   @override
   PreviewPage preview({Widget? header}) => PreviewPage(
         segments: [
-          PreviewSegment(
+          PreviewSection(
             child: Column(
               children: [
                 if (header != null) header else const SizedBox(height: 10),
@@ -102,7 +99,7 @@ class DropsLayoutModel extends LayoutModel {
               ],
             ),
           ),
-          PreviewSegment(
+          PreviewSection(
             fill: false,
             child: Padding(
               padding: const EdgeInsets.only(left: 8, top: 3),
@@ -187,19 +184,19 @@ class _DropsLayoutState extends State<DropsLayout> {
                         child: SizedBox(
                           height: 200,
                           child: widget.model.wideFocus
-                              ? SingleWidgetArea(
+                              ? SingleElementArea(
                                   id: widget.layoutContext.id + '_focus',
                                   decorator: widget.model.coverUrl != null
-                                      ? const GlassContentSegmentDecorator()
-                                      : const ClippedContentSegmentDecorator(),
+                                      ? const GlassContentElementDecorator()
+                                      : const ClippedContentElementDecorator(),
                                 )
                               : AspectRatio(
                                   aspectRatio: 1,
-                                  child: SingleWidgetArea(
+                                  child: SingleElementArea(
                                     id: widget.layoutContext.id + '_focus',
                                     decorator: widget.model.coverUrl != null
-                                        ? const GlassContentSegmentDecorator()
-                                        : const ClippedContentSegmentDecorator(),
+                                        ? const GlassContentElementDecorator()
+                                        : const ClippedContentElementDecorator(),
                                   ),
                                 ),
                         ),

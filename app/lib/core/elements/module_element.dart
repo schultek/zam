@@ -18,4 +18,4 @@ abstract class ModuleElement extends StatelessWidget {
 
 typedef SettingsBuilder = List<Widget> Function(BuildContext context);
 
-enum SegmentSize { square, wide }
+enum ElementSize { square, wide }

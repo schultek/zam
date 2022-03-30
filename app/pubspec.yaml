@@ -30,7 +30,7 @@ dependencies:
   cloud_functions: ^3.2.10
   cropperx: ^1.0.0
   cupertino_rounded_corners: ^2.0.1
-  dart_mappable: ^1.0.0-dev.6
+  dart_mappable: ^1.0.0
   discoveryapis_generator: ^1.0.0
   dotted_border: ^2.0.0+2
   file_picker: ^4.5.1
@@ -82,16 +82,11 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.1.8
+  dart_mappable_builder: ^1.0.0
   dependency_validator: ^3.1.2
   flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
-  test: ^1.17.12
-
-dependency_overrides:
-  path: 1.8.1
-  collection: 1.16.0
-  analyzer: 3.3.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

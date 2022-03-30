@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../areas/widget_area.dart';
-import '../elements/module_element.dart';
+import '../areas/areas.dart';
+import '../elements/elements.dart';
 import 'logic_provider.dart';
 import 'reorderable_item.dart';
 
@@ -29,7 +29,7 @@ class ReorderableListener<T extends ModuleElement> extends StatelessWidget {
 
   void _startDragging({required BuildContext context, required PointerDownEvent event}) {
     ReorderableItemState state = context.findAncestorStateOfType<ReorderableItemState>()!;
-    var widgetArea = WidgetArea.of<T>(context)!;
+    var widgetArea = Area.of<T>(context)!;
 
     context.read(reorderableLogicProvider).startDragging(
           key: state.key,

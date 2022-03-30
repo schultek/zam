@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../core.dart';
 import '../../providers/editing_providers.dart';
 import '../../providers/selected_area_provider.dart';
+import '../../themes/themes.dart';
 import '../../widgets/trip_selector_page.dart';
 import '../../widgets/trip_settings_page.dart';
 

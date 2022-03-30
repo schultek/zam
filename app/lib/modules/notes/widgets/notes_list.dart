@@ -4,10 +4,7 @@ import 'package:flutter_quill/flutter_quill.dart' hide Text;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../../core/themes/themes.dart';
-import '../../../helpers/extensions.dart';
-import '../notes_module.dart';
-import '../notes_provider.dart';
+import '../notes.module.dart';
 import '../pages/edit_note_page.dart';
 import 'folder_dialog.dart';
 

@@ -1,10 +1,9 @@
-import 'package:dart_mappable/dart_mappable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../api_client/photoslibrary.dart';
-import '../../../providers/firebase/doc_provider.dart';
+import '../photos.module.dart';
 import 'photos_api_provider.dart';
 import 'photos_provider.dart';
 
@@ -59,14 +58,3 @@ final albumShortcutProvider = StreamProvider.family<AlbumShortcut, String>((ref,
     .snapshotsMapped<AlbumShortcut?>()
     .where((a) => a != null)
     .cast());
-
-@MappableClass()
-class AlbumShortcut {
-  String id;
-  String? title;
-  String albumUrl;
-  String coverUrl;
-  String? itemsCount;
-
-  AlbumShortcut(this.id, this.title, this.albumUrl, this.coverUrl, this.itemsCount);
-}

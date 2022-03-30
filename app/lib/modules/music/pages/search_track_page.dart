@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:spotify/spotify.dart' show Track;
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../music_models.dart';
-import '../music_providers.dart';
+import '../music.module.dart';
 import '../widgets/track_tile.dart';
 
 class SearchTrackPage extends StatefulWidget {

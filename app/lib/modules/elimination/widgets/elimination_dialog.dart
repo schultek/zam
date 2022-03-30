@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../../../widgets/user_avatar.dart';
-import '../game_provider.dart';
+import '../elimination.module.dart';
 
 class EliminationDialog extends StatefulWidget {
   final String gameId;

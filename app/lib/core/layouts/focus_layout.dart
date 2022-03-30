@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
 import '../areas/areas.dart';
-import '../areas/single_widget_area.dart';
-import '../elements/decorators/card_quick_action_decorator.dart';
-import '../elements/decorators/clipped_content_segment_decorator.dart';
-import '../elements/decorators/default_quick_action_decorator.dart';
+import '../elements/elements.dart';
 import '../themes/themes.dart';
 import '../widgets/layout_preview.dart';
 import 'layout_model.dart';
@@ -44,7 +41,7 @@ class FocusLayoutModel extends LayoutModel {
 
   @override
   PreviewPage preview({Widget? header}) => PreviewPage(segments: [
-        PreviewSegment(
+        PreviewSection(
           fill: false,
           child: Column(
             children: [
@@ -110,9 +107,9 @@ class _FocusLayoutState extends State<FocusLayout> {
                       child: Center(
                         child: AspectRatio(
                           aspectRatio: 1,
-                          child: SingleWidgetArea(
+                          child: SingleElementArea(
                             id: widget.layoutContext.id + '_focus',
-                            decorator: const ClippedContentSegmentDecorator(),
+                            decorator: const ClippedContentElementDecorator(),
                           ),
                         ),
                       ),
@@ -127,9 +124,9 @@ class _FocusLayoutState extends State<FocusLayout> {
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: const [BoxShadow(blurRadius: 10, spreadRadius: -4)]),
                             padding: const EdgeInsets.all(5),
-                            child: QuickActionRowArea(
+                            child: ActionRowArea(
                               widget.layoutContext.id + '_actions',
-                              decorator: const DefaultQuickActionDecorator(ColorPreference(useHighlightColor: true)),
+                              decorator: const DefaultActionDecorator(ColorPreference(useHighlightColor: true)),
                             ),
                           ),
                         ),
@@ -137,9 +134,9 @@ class _FocusLayoutState extends State<FocusLayout> {
                     if (widget.model.showInfo)
                       Padding(
                         padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-                        child: QuickActionRowArea(
+                        child: ActionRowArea(
                           widget.layoutContext.id + '_infos',
-                          decorator: const CardQuickActionDecorator(),
+                          decorator: const CardActionDecorator(),
                         ),
                       )
                   ],

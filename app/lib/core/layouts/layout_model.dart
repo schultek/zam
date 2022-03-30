@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/trips/logic_provider.dart';
-import '../templates/template_model.dart';
+import '../templates/templates.dart';
 import '../widgets/layout_preview.dart';
 import 'drops_layout.dart';
 import 'focus_layout.dart';

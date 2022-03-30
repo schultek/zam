@@ -13,9 +13,8 @@ import '../../providers/trips/trips_provider.dart';
 import '../../screens/create_trip/create_trip_screen.dart';
 import '../../screens/signin/phone_signin_screen.dart';
 import '../../widgets/ju_background.dart';
-import '../models/trip.dart';
-import '../themes/theme_context.dart';
-import '../themes/widgets/themed_surface.dart';
+import '../models/models.dart';
+import '../themes/themes.dart';
 import 'trip_settings_page.dart';
 
 class TripSelectorPage extends StatelessWidget {

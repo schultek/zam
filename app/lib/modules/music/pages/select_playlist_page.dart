@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:spotify/spotify.dart' show PlaylistSimple;
 
-import '../../../helpers/extensions.dart';
-import '../../../widgets/loading_shimmer.dart';
-import '../music_models.dart';
-import '../music_providers.dart';
+import '../music.module.dart';
 import '../widgets/track_tile.dart';
 
 class SelectPlaylistPage extends StatefulWidget {

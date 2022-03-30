@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../elements/module_element.dart';
+import '../elements/elements.dart';
 import 'module_context.dart';
 import 'module_registry.dart';
 
@@ -25,3 +25,9 @@ abstract class ModuleBuilder {
 }
 
 typedef ElementBuilder<T extends ModuleElement> = FutureOr<T?> Function(ModuleContext module);
+
+mixin ElementBuilderMixin<T extends ModuleElement> {
+  FutureOr<T?> build(ModuleContext module);
+
+  FutureOr<T?> call(ModuleContext module) => build(module);
+}

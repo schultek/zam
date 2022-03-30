@@ -2,8 +2,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../areas/widget_area.dart';
-import '../elements/module_element.dart';
+import '../areas/areas.dart';
+import '../elements/elements.dart';
 import 'drag_provider.dart';
 import 'item_animation.dart';
 import 'items_provider.dart';
@@ -31,7 +31,7 @@ class ReorderableLogic {
     required Key key,
     required PointerDownEvent event,
     required MultiDragGestureRecognizer recognizer,
-    required WidgetAreaState<WidgetArea<T>, T> widgetArea,
+    required AreaState<Area<T>, T> widgetArea,
   }) {
     var dragState = read(dragProvider.state);
     dragState.state?.dispose();
@@ -56,16 +56,16 @@ class ReorderableLogic {
     return items[key]!.context.size!;
   }
 
-  void translateItemY(WidgetAreaState area, Key key, double delta) {
+  void translateItemY(AreaState area, Key key, double delta) {
     translateItem(area, key, delta, (t) => t.item2, (t, v) => t.withItem2(v));
   }
 
-  void translateItemX(WidgetAreaState area, Key key, double delta) {
+  void translateItemX(AreaState area, Key key, double delta) {
     translateItem(area, key, delta, (t) => t.item1, (t, v) => t.withItem1(v));
   }
 
   void translateItem(
-    WidgetAreaState area,
+    AreaState area,
     Key key,
     double delta,
     AnimationController? Function(ItemAxisAnimation t) getItem,

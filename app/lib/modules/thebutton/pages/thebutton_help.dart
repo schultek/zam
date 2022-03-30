@@ -2,10 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/core.dart';
-import '../../../helpers/extensions.dart';
-import '../../../providers/trips/selected_trip_provider.dart';
-import '../thebutton_provider.dart';
+import '../thebutton.module.dart';
 import '../widgets/clip_layer.dart';
 
 class LeaderboardEntry {
