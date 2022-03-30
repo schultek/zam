@@ -7,7 +7,7 @@ import '../auth/user_provider.dart';
 import '../firebase/firestore_extensions.dart';
 import '../helpers.dart';
 
-final tripsProvider = StreamProvider<List<Trip>>((ref) async* {
+final groupsProvider = StreamProvider<List<Group>>((ref) async* {
   var user = await ref.watch(userProvider.future);
 
   if (user == null) {
@@ -19,8 +19,8 @@ final tripsProvider = StreamProvider<List<Trip>>((ref) async* {
   var claims = ref.watch(claimsProvider);
 
   var query = claims.isAdmin
-      ? FirebaseFirestore.instance.collection('trips')
-      : FirebaseFirestore.instance.collection('trips').where(
+      ? FirebaseFirestore.instance.collection('groups')
+      : FirebaseFirestore.instance.collection('groups').where(
           'users.$userId.role',
           whereIn: [
             UserRoles.participant,
@@ -29,5 +29,5 @@ final tripsProvider = StreamProvider<List<Trip>>((ref) async* {
           ],
         );
 
-  yield* query.snapshotsMapped<Trip>();
+  yield* query.snapshotsMapped<Group>();
 }).cached;

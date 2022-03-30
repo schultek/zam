@@ -8,7 +8,7 @@ import '../../models/models.dart';
 import 'supply_models.dart';
 
 class SupplyRepository with ChangeNotifier {
-  String tripId;
+  String groupId;
 
   late StreamSubscription<QuerySnapshot> _articleSubscription;
   List<Article> articles = [];
@@ -16,10 +16,10 @@ class SupplyRepository with ChangeNotifier {
   late StreamSubscription<QuerySnapshot> _articleListSubscription;
   List<ArticleList> articleLists = [];
 
-  SupplyRepository(this.tripId, {this.articles = const [], this.articleLists = const []}) {
+  SupplyRepository(this.groupId, {this.articles = const [], this.articleLists = const []}) {
     _articleSubscription = FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articles")
@@ -31,8 +31,8 @@ class SupplyRepository with ChangeNotifier {
     });
 
     _articleListSubscription = FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articleLists")
@@ -61,8 +61,8 @@ class SupplyRepository with ChangeNotifier {
 
   Future<String> saveArticle(String articleName, String articleCategory, String articleHint) async {
     var docRef = await FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articles")
@@ -76,8 +76,8 @@ class SupplyRepository with ChangeNotifier {
 
   Future<void> saveShoppingList(String listName, List<ArticleEntry> listEntries) async {
     await FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articleLists")
@@ -91,8 +91,8 @@ class SupplyRepository with ChangeNotifier {
 
   Future<void> updateShoppingList(ArticleList list) async {
     await FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articleLists")
@@ -106,8 +106,8 @@ class SupplyRepository with ChangeNotifier {
 
   Future<void> removeShoppingList(String listId) async {
     await FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articleLists")
@@ -117,8 +117,8 @@ class SupplyRepository with ChangeNotifier {
 
   Future<void> addArticleEntryToRecipe(String recipeId, ArticleEntry articleEntry) async {
     await FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articleLists")
@@ -130,8 +130,8 @@ class SupplyRepository with ChangeNotifier {
 
   Future<void> saveRecipe(String recipeName, List<ArticleEntry> recipeEntries, String preparation, String note) async {
     await FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articleLists")
@@ -146,8 +146,8 @@ class SupplyRepository with ChangeNotifier {
 
   Future<void> removeRecipe(String recipeId) async {
     await FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articleLists")
@@ -157,8 +157,8 @@ class SupplyRepository with ChangeNotifier {
 
   Future<void> savePreparation(String preparation, String recipeId) async {
     await FirebaseFirestore.instance
-        .collection("trips")
-        .doc(tripId)
+        .collection("groups")
+        .doc(groupId)
         .collection("modules")
         .doc("supply")
         .collection("articleLists")
@@ -170,15 +170,15 @@ class SupplyRepository with ChangeNotifier {
 }
 
 class SupplyProvider extends StatelessWidget {
-  final String tripId;
+  final String groupId;
   final Widget child;
 
-  const SupplyProvider({required this.tripId, required this.child});
+  const SupplyProvider({required this.groupId, required this.child});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SupplyRepository>(
-      create: (context) => SupplyRepository(tripId),
+      create: (context) => SupplyRepository(groupId),
       child: child,
     );
   }
@@ -187,7 +187,7 @@ class SupplyProvider extends StatelessWidget {
     var parent = Provider.of<SupplyRepository>(context, listen: false);
     return ChangeNotifierProvider<SupplyRepository>(
       create: (context) => SupplyRepository(
-        parent.tripId,
+        parent.groupId,
         articles: parent.articles,
         articleLists: parent.articleLists,
       ),

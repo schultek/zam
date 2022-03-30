@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../modules/modules.dart';
-import '../../providers/trips/logic_provider.dart';
-import '../../providers/trips/selected_trip_provider.dart';
+import '../../providers/groups/logic_provider.dart';
+import '../../providers/groups/selected_group_provider.dart';
 import '../elements/elements.dart';
 import '../providers/editing_providers.dart';
 import '../providers/selected_area_provider.dart';
@@ -31,8 +31,8 @@ class InheritedArea<T extends ModuleElement> extends InheritedWidget {
 
 final areaModulesProvider = Provider.family<List<String>, String>(
   (ref, String id) {
-    var trip = ref.watch(selectedTripProvider);
-    return DeepEqualityList(trip?.modules[id] ?? []);
+    var group = ref.watch(selectedGroupProvider);
+    return DeepEqualityList(group?.modules[id] ?? []);
   },
 );
 
@@ -75,7 +75,7 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   Size get areaSize => _areaRenderBox.size;
   Offset get areaOffset => _areaRenderBox.localToGlobal(Offset.zero);
 
-  TripThemeData get theme => context.tripTheme;
+  GroupThemeData get theme => context.groupTheme;
   TemplateState get template => Template.of(context, listen: false);
 
   @override
@@ -199,7 +199,7 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
       removeItem(key);
       widget.onRemoved(context);
     });
-    updateWidgetsInTrip();
+    updateWidgetsInGroup();
   }
 
   void removeWidgetWithId(String id) {
@@ -208,14 +208,14 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
     }
   }
 
-  Future<void> updateWidgetsInTrip() async {
-    context.read(tripsLogicProvider).updateTrip({
+  Future<void> updateWidgetsInGroup() async {
+    context.read(groupsLogicProvider).updateGroup({
       'modules.$id': getWidgets().map((w) => w.id).toList(),
     });
   }
 
   void onDrop() {
-    updateWidgetsInTrip();
+    updateWidgetsInGroup();
   }
 
   void cancelDrop(Key key) {

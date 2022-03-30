@@ -74,8 +74,8 @@ class DropsLayoutModel extends LayoutModel {
             var pngBytes = await ImageSelector.fromGallery(context, crop: false);
             if (pngBytes != null) {
               var link = await context
-                  .read(tripsLogicProvider)
-                  .uploadImage('layouts/${generateRandomId(4)}/cover.png', pngBytes);
+                  .read(groupsLogicProvider)
+                  .uploadFile('layouts/${generateRandomId(4)}/cover.png', pngBytes);
               update(copyWith(coverUrl: link));
             }
             setState(() => isLoadingImage = false);
@@ -150,7 +150,7 @@ class _DropsLayoutState extends State<DropsLayout> {
   Widget build(BuildContext context) {
     return FillOverscroll(
       fill: Container(
-        color: context.tripTheme
+        color: context.groupTheme
             .computeSurfaceTheme(context: context, preference: const ColorPreference(useHighlightColor: true))
             .surfaceColor,
       ),

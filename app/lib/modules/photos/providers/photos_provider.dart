@@ -1,4 +1,3 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -29,9 +28,9 @@ class PhotosLogic {
   Future<String> createAlbumShortcut(Album album) async {
     var response = await http.get(Uri.parse(album.coverPhotoBaseUrl! + '=w256-h256-c'));
 
-    var coverRef = FirebaseStorage.instance.ref('albums/${album.id}/coverPhoto.png');
-    await coverRef.putData(response.bodyBytes);
-    var coverLink = await coverRef.getDownloadURL();
+    var coverLink = await ref
+        .read(groupsLogicProvider) //
+        .uploadFile('albums/${album.id}/coverPhoto.png', response.bodyBytes);
 
     await ref
         .read(moduleDocProvider('photos'))
@@ -45,7 +44,7 @@ class PhotosLogic {
 
   Future<void> removeAlbumShortcut(String id) async {
     await Future.wait([
-      FirebaseStorage.instance.ref('albums/$id/coverPhoto.png').delete(),
+      ref.read(groupsLogicProvider).deleteFile('albums/$id/coverPhoto.png'),
       ref.read(moduleDocProvider('photos')).collection('albums').doc(id).delete(),
     ]);
   }

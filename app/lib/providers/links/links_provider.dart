@@ -78,7 +78,7 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
     if (uri.path.startsWith('/invitation')) {
       if (uri.path.endsWith('/organizer') || uri.path.endsWith('/admin')) {
         state = LinkState(uri);
-      } else if (uri.path.endsWith('/trip')) {
+      } else if (uri.path.endsWith('/group')) {
         state = LinkState.processing();
         (() async {
           var user = ref.read(userProvider);
@@ -134,18 +134,18 @@ class LinkLogic {
     );
   }
 
-  Future<String> createTripInvitationLink({required Trip trip, String role = UserRoles.participant}) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createTripInvitationLink');
-    var res = await callable.call({'tripId': trip.id, 'role': role});
+  Future<String> createGroupInvitationLink({required Group group, String role = UserRoles.participant}) async {
+    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createGroupInvitationLink');
+    var res = await callable.call({'groupId': group.id, 'role': role});
     return _buildDynamicLink(
       link: res.data as String,
       meta: SocialMetaTagParameters(
         title: role == UserRoles.participant
-            ? trip.name
-            : "Werde ${role == UserRoles.organizer ? 'Organisator' : 'Teilnehmer'} bei ${trip.name}",
+            ? group.name
+            : "Werde ${role == UserRoles.organizer ? 'Organisator' : 'Teilnehmer'} bei ${group.name}",
         description: 'Trete dem Ausflug bei.',
         imageUrl: Uri.parse(
-            trip.pictureUrl ?? 'https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
+            group.pictureUrl ?? 'https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
       ),
     );
   }

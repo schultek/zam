@@ -6,7 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 
-import '../trips/selected_trip_provider.dart';
+import '../groups/selected_group_provider.dart';
 
 final authLogicProvider = Provider((ref) => AuthLogic(ref));
 
@@ -73,7 +73,7 @@ class AuthLogic {
   }
 
   Future<void> signOut() async {
-    ref.read(selectedTripIdProvider.notifier).state = null;
+    ref.read(selectedGroupIdProvider.notifier).state = null;
     await FirebaseAuth.instance.signOut();
   }
 }

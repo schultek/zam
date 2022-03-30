@@ -13,10 +13,10 @@ class LeaderboardEntry {
 
 final theButtonLeaderboardProvider = Provider.autoDispose((ref) {
   var state = ref.watch(theButtonProvider).value;
-  var trip = ref.watch(selectedTripProvider);
+  var group = ref.watch(selectedGroupProvider);
   return (state?.leaderboard ?? {})
       .entries
-      .map((e) => LeaderboardEntry(trip?.users[e.key]?.nickname, e.value.round()))
+      .map((e) => LeaderboardEntry(group?.users[e.key]?.nickname, e.value.round()))
       .toList()
     ..sort((a, b) => b.level.compareTo(a.level));
 });

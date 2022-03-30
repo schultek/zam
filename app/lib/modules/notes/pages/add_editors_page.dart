@@ -48,7 +48,7 @@ class _AddEditorsPageState extends State<AddEditorsPage> {
       ),
       body: Consumer(
         builder: (context, ref, _) {
-          var users = ref.watch(selectedTripProvider)!.users.entries.toList();
+          var users = ref.watch(selectedGroupProvider)!.users.entries.toList();
 
           return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

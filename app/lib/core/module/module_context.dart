@@ -34,7 +34,7 @@ class ModuleContext<T extends ModuleElement> {
 
   void updateParams<E>(E params) {
     _parsedId = _parsedId.copyWith(params: Mapper.toValue(params));
-    Area.of<T>(context)!.updateWidgetsInTrip();
+    Area.of<T>(context)!.updateWidgetsInGroup();
   }
 
   String copyId() {

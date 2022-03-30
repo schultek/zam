@@ -24,8 +24,8 @@ async function testRules() {
   const tom = testEnv.authenticatedContext("tom").firestore();
   const alice = testEnv.authenticatedContext("alice").firestore();
 
-  var tripData = {
-    name: 'Test Trip', 
+  var groupData = {
+    name: 'Test Group', 
     template: {}, 
     users: {
       org1: {role: 'organizer'},
@@ -37,31 +37,31 @@ async function testRules() {
   // TRIP & USERS
 
   // no creation claim
-  await assertFails(bob.doc('trips/1234').set(tripData));
+  await assertFails(bob.doc('groups/1234').set(groupData));
 
-  // not organizer in trip
-  await assertFails(admin1.doc('trips/1234').set(tripData));
+  // not organizer in group
+  await assertFails(admin1.doc('groups/1234').set(groupData));
   
-  await assertSucceeds(org1.doc('trips/1234').set(tripData));
+  await assertSucceeds(org1.doc('groups/1234').set(groupData));
 
-  // not in trip
-  await assertFails(tom.doc('trips/1234').get());
+  // not in group
+  await assertFails(tom.doc('groups/1234').get());
 
   // admin read everything
-  await assertSucceeds(admin1.doc('trips/1234').get());
+  await assertSucceeds(admin1.doc('groups/1234').get());
   
   // set nickname
-  await assertSucceeds(alice.doc('trips/1234').update('users.alice.nickname', 'Alice'));
+  await assertSucceeds(alice.doc('groups/1234').update('users.alice.nickname', 'Alice'));
 
-  // add tom to trip
-  await assertSucceeds(org1.doc('trips/1234').update('users.tom', {role: 'participant'}));
+  // add tom to group
+  await assertSucceeds(org1.doc('groups/1234').update('users.tom', {role: 'participant'}));
 
   // cannot update other user
-  await assertFails(alice.doc('trips/1234').update('users.tom.nickname', 'Dumby'));
+  await assertFails(alice.doc('groups/1234').update('users.tom.nickname', 'Dumby'));
 
   // THE BUTTON
   
-  await assertSucceeds(alice.doc('trips/1234/modules/thebutton').set({aliveHours: 1, lastReset: firebase.firestore.FieldValue.serverTimestamp(), leaderboard: {}}));
+  await assertSucceeds(alice.doc('groups/1234/modules/thebutton').set({aliveHours: 1, lastReset: firebase.firestore.FieldValue.serverTimestamp(), leaderboard: {}}));
 }
 
 try {

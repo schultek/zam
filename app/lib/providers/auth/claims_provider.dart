@@ -26,7 +26,7 @@ class ClaimsNotifier extends StateNotifier<UserClaims> {
     } else {
       var result = await user.getIdTokenResult(forceRefresh);
       state = UserClaims(
-        isOrganizer: result.claims?['isOrganizer'] as bool? ?? false,
+        isGroupCreator: result.claims?['isGroupCreator'] as bool? ?? false,
         isAdmin: result.claims?['isAdmin'] as bool? ?? false,
       );
     }
@@ -44,16 +44,16 @@ class ClaimsNotifier extends StateNotifier<UserClaims> {
 }
 
 class UserClaims {
-  final bool isOrganizer;
+  final bool isGroupCreator;
   final bool isAdmin;
 
   const UserClaims({
-    this.isOrganizer = false,
+    this.isGroupCreator = false,
     this.isAdmin = false,
   });
 
   @override
   String toString() {
-    return 'UserClaims{isOrganizer: $isOrganizer, isAdmin: $isAdmin}';
+    return 'UserClaims{isGroupCreator: $isGroupCreator, isAdmin: $isAdmin}';
   }
 }

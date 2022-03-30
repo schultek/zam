@@ -13,8 +13,8 @@ class TemplatePreviewSwitcher extends StatefulWidget {
     return showDialog(
       context: context,
       useRootNavigator: false,
-      builder: (ctx) => TripTheme(
-        theme: context.tripTheme.copy(),
+      builder: (ctx) => GroupTheme(
+        theme: context.groupTheme.copy(),
         child: TemplatePreviewSwitcher(
           currentTemplate: currentTemplate,
         ),

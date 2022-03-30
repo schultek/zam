@@ -2,7 +2,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../providers/trips/logic_provider.dart';
+import '../../providers/groups/logic_provider.dart';
 import '../templates/templates.dart';
 import '../widgets/layout_preview.dart';
 import 'drops_layout.dart';
@@ -43,6 +43,6 @@ class LayoutContext {
   });
 
   Future<void> update(LayoutModel updated) async {
-    await context.read(tripsLogicProvider).updateTemplateModel(onUpdate(updated));
+    await context.read(groupsLogicProvider).updateTemplateModel(onUpdate(updated));
   }
 }

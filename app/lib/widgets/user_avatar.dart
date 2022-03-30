@@ -15,7 +15,7 @@ class UserAvatar extends StatelessWidget {
       preference: const ColorPreference(useHighlightColor: true),
       builder: (context, color) => Consumer(
         builder: (context, ref, _) {
-          var user = ref.watch(tripUserByIdProvider(id));
+          var user = ref.watch(groupUserByIdProvider(id));
           var showButtonLevel = ref.watch(theButtonProvider.select((v) => v.value?.showInAvatars ?? false));
           var userLevel = ref.watch(theButtonUserLevelProvider(id));
           return CircleAvatar(

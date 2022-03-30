@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../trips/logic_provider.dart';
+import '../groups/logic_provider.dart';
 
 final messageProvider = StateProvider<RemoteMessage?>((ref) => null);
 
@@ -29,7 +29,7 @@ class NotificationLogic {
     }
 
     var token = await _firebaseMessaging.getToken();
-    await ref.read(tripsLogicProvider).setPushToken(token);
+    await ref.read(groupsLogicProvider).setPushToken(token);
 
     FirebaseMessaging.onMessage.listen((message) async {
       print('Got foreground notification: ${message.data}');

@@ -49,9 +49,8 @@ class NotesLogic {
 
   Future<String?> uploadFile(String noteId, File file) async {
     var fileName = Uri.parse(file.path).pathSegments.last;
-    var ref = FirebaseStorage.instance.ref('notes/$noteId/$fileName');
-    await ref.putFile(file);
-    var link = await ref.getDownloadURL();
-    return link;
+    return ref
+        .read(groupsLogicProvider) //
+        .uploadFile('notes/$noteId/$fileName', await file.readAsBytes());
   }
 }

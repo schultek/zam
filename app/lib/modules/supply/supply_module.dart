@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:rive/rive.dart';
 
-import '../../bloc/trip_bloc.dart';
+import '../../bloc/group_bloc.dart';
 import '../../core/module/module.dart';
 import 'cooking/cooking_screen.dart';
 import 'shopping/shopping_screen.dart';
@@ -29,7 +29,7 @@ class SupplyModule {
           ],
         ),
       ),
-      onNavigate: (context) => SupplyProvider(tripId: context.trip!.id, child: CookingScreen()),
+      onNavigate: (context) => SupplyProvider(groupId: context.group!.id, child: CookingScreen()),
     );
   }
 
@@ -40,7 +40,7 @@ class SupplyModule {
         padding: const EdgeInsets.all(10),
         child: const Center(child: Text("Einkaufen")),
       ),
-      onNavigate: (context) => SupplyProvider(tripId: context.trip!.id, child: ShoppingPage()),
+      onNavigate: (context) => SupplyProvider(groupId: context.group!.id, child: ShoppingPage()),
     );
   }
 }

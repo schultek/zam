@@ -8,26 +8,36 @@ import '../../helpers/extensions.dart';
 import '../../providers/auth/claims_provider.dart';
 import '../../providers/auth/logic_provider.dart';
 import '../../providers/auth/user_provider.dart';
-import '../../providers/trips/selected_trip_provider.dart';
-import '../../providers/trips/trips_provider.dart';
-import '../../screens/create_trip/create_trip_screen.dart';
+import '../../providers/groups/groups_provider.dart';
+import '../../providers/groups/selected_group_provider.dart';
+import '../../screens/admin/admin_panel_screen.dart';
+import '../../screens/create_group/create_group_screen.dart';
 import '../../screens/signin/phone_signin_screen.dart';
 import '../../widgets/ju_background.dart';
 import '../models/models.dart';
 import '../themes/themes.dart';
-import 'trip_settings_page.dart';
+import 'group_settings_page.dart';
 
-class TripSelectorPage extends StatelessWidget {
-  const TripSelectorPage({Key? key}) : super(key: key);
+class GroupSelectorPage extends StatelessWidget {
+  const GroupSelectorPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var trips = context.watch(tripsProvider).value ?? <Trip>[];
-    var selectedTrip = context.watch(selectedTripProvider);
+    var groups = context.watch(groupsProvider).value ?? <Group>[];
+    var selectedGroup = context.watch(selectedGroupProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.tr.trips),
+        title: Text(context.tr.groups),
+        actions: [
+          if (context.watch(claimsProvider).isAdmin)
+            IconButton(
+              icon: const Icon(Icons.admin_panel_settings),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).push(AdminPanel.route());
+              },
+            ),
+        ],
       ),
       body: CustomScrollView(
         slivers: [
@@ -35,18 +45,18 @@ class TripSelectorPage extends StatelessWidget {
             padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                if (selectedTrip != null) ...[
-                  Text(context.tr.selected_trip, style: TextStyle(color: context.onSurfaceColor)),
+                if (selectedGroup != null) ...[
+                  Text(context.tr.selected_group, style: TextStyle(color: context.onSurfaceColor)),
                   const SizedBox(height: 20),
-                  tripTile(context, selectedTrip, true),
+                  groupTile(context, selectedGroup, true),
                   const SizedBox(height: 20),
                 ],
-                if (trips.where((t) => t.id != selectedTrip?.id).isNotEmpty) ...[
+                if (groups.where((t) => t.id != selectedGroup?.id).isNotEmpty) ...[
                   const SizedBox(height: 20),
-                  Text(context.tr.available_trips, style: TextStyle(color: context.onSurfaceColor)),
+                  Text(context.tr.available_groups, style: TextStyle(color: context.onSurfaceColor)),
                   const SizedBox(height: 20),
-                  for (var trip in trips.where((t) => t.id != selectedTrip?.id)) ...[
-                    tripTile(context, trip, false),
+                  for (var group in groups.where((t) => t.id != selectedGroup?.id)) ...[
+                    groupTile(context, group, false),
                     const SizedBox(height: 20),
                   ],
                 ],
@@ -59,14 +69,15 @@ class TripSelectorPage extends StatelessWidget {
               hasScrollBody: false,
               child: Column(
                 children: [
-                  if (context.watch(claimsProvider).isOrganizer) ...createTripSection(context),
+                  if (context.watch(claimsProvider).isGroupCreator) //
+                    ...createGroupSection(context),
                   Expanded(
-                    child: trips.isEmpty
+                    child: groups.isEmpty
                         ? Center(
                             child: Padding(
                               padding: const EdgeInsets.all(40),
                               child: Text(
-                                context.tr.no_trips,
+                                context.tr.no_groups,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
                               ),
@@ -88,7 +99,7 @@ class TripSelectorPage extends StatelessWidget {
     );
   }
 
-  List<Widget> createTripSection(BuildContext context) {
+  List<Widget> createGroupSection(BuildContext context) {
     return [
       const Divider(),
       const SizedBox(height: 20),
@@ -110,14 +121,14 @@ class TripSelectorPage extends StatelessWidget {
                       const Icon(Icons.add),
                       const SizedBox(width: 10),
                       Text(
-                        context.tr.create_new_trip,
+                        context.tr.create_new_group,
                         style: context.theme.textTheme.headline5!.copyWith(color: context.onSurfaceColor),
                       ),
                     ],
                   ),
                   onTap: () {
                     Navigator.of(context, rootNavigator: true)
-                        .push(MaterialPageRoute(builder: (context) => const CreateTripScreen()));
+                        .push(MaterialPageRoute(builder: (context) => const CreateGroupScreen()));
                   },
                 ),
               ),
@@ -189,15 +200,15 @@ class TripSelectorPage extends StatelessWidget {
     }
   }
 
-  Widget tripTile(BuildContext context, Trip trip, bool isSelected) {
+  Widget groupTile(BuildContext context, Group group, bool isSelected) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: ThemedSurface(
         builder: (context, color) => Container(
           decoration: BoxDecoration(
             color: context.surfaceColor,
-            image: trip.pictureUrl != null
-                ? DecorationImage(image: CachedNetworkImageProvider(trip.pictureUrl!), fit: BoxFit.cover)
+            image: group.pictureUrl != null
+                ? DecorationImage(image: CachedNetworkImageProvider(group.pictureUrl!), fit: BoxFit.cover)
                 : null,
           ),
           height: isSelected ? 200 : 140,
@@ -208,7 +219,7 @@ class TripSelectorPage extends StatelessWidget {
                 children: [
                   Center(
                     child: Text(
-                      trip.name,
+                      group.name,
                       style: context.theme.textTheme.headline4!.copyWith(color: context.onSurfaceColor),
                     ),
                   ),
@@ -219,7 +230,7 @@ class TripSelectorPage extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(Icons.settings, color: context.onSurfaceColor),
                         onPressed: () {
-                          Navigator.push(context, TripSettingsPage.route());
+                          Navigator.push(context, GroupSettingsPage.route());
                         },
                       ),
                     ),
@@ -229,7 +240,7 @@ class TripSelectorPage extends StatelessWidget {
                 if (isSelected) {
                   Navigator.pop(context);
                 } else {
-                  context.read(selectedTripIdProvider.notifier).state = trip.id;
+                  context.read(selectedGroupIdProvider.notifier).state = group.id;
                 }
               },
             ),

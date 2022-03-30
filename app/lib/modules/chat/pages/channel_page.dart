@@ -119,7 +119,7 @@ class _ChannelPageState extends State<ChannelPage> {
                     builder: (context, ref, _) {
                       List<ChatMessage> messages =
                           channel != null ? ref.watch(channel.messages).asData?.value ?? [] : [];
-                      var trip = ref.watch(selectedTripProvider)!;
+                      var group = ref.watch(selectedGroupProvider)!;
 
                       return Chat(
                         theme: CustomChatTheme(context.theme),
@@ -130,8 +130,8 @@ class _ChannelPageState extends State<ChannelPage> {
                             return types.ImageMessage(
                               author: types.User(
                                 id: m.sender,
-                                imageUrl: trip.users[m.sender]?.profileUrl,
-                                firstName: trip.users[m.sender]?.nickname ?? context.tr.anonymous,
+                                imageUrl: group.users[m.sender]?.profileUrl,
+                                firstName: group.users[m.sender]?.nickname ?? context.tr.anonymous,
                               ),
                               id: m.uri,
                               uri: m.uri,
@@ -142,8 +142,8 @@ class _ChannelPageState extends State<ChannelPage> {
                             return types.FileMessage(
                               author: types.User(
                                 id: m.sender,
-                                imageUrl: trip.users[m.sender]?.profileUrl,
-                                firstName: trip.users[m.sender]?.nickname ?? context.tr.anonymous,
+                                imageUrl: group.users[m.sender]?.profileUrl,
+                                firstName: group.users[m.sender]?.nickname ?? context.tr.anonymous,
                               ),
                               id: m.uri,
                               uri: m.uri,
@@ -154,8 +154,8 @@ class _ChannelPageState extends State<ChannelPage> {
                             return types.TextMessage(
                               author: types.User(
                                 id: m.sender,
-                                imageUrl: trip.users[m.sender]?.profileUrl,
-                                firstName: trip.users[m.sender]?.nickname ?? context.tr.anonymous,
+                                imageUrl: group.users[m.sender]?.profileUrl,
+                                firstName: group.users[m.sender]?.nickname ?? context.tr.anonymous,
                               ),
                               id: m.text,
                               text: m.text,

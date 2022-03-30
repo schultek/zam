@@ -7,29 +7,29 @@ import 'package:riverpod_context/riverpod_context.dart';
 import '../../core/core.dart';
 import '../../helpers/extensions.dart';
 import '../../providers/auth/user_provider.dart';
-import '../../providers/trips/selected_trip_provider.dart';
+import '../../providers/groups/selected_group_provider.dart';
 import '../../widgets/ju_background.dart';
 
-class CreateTripScreen extends StatefulWidget {
-  const CreateTripScreen({Key? key}) : super(key: key);
+class CreateGroupScreen extends StatefulWidget {
+  const CreateGroupScreen({Key? key}) : super(key: key);
 
   @override
-  _CreateTripScreenState createState() => _CreateTripScreenState();
+  _CreateGroupScreenState createState() => _CreateGroupScreenState();
 }
 
-class _CreateTripScreenState extends State<CreateTripScreen> {
-  String? tripName;
+class _CreateGroupScreenState extends State<CreateGroupScreen> {
+  String? groupName;
 
-  static Future<DocumentReference> createNewTrip(String tripName, String userId) {
-    var trip = Trip(
+  static Future<DocumentReference> createNewGroup(String groupName, String userId) {
+    var group = Group(
       id: '',
-      name: tripName,
-      users: {userId: TripUser(role: UserRoles.organizer)},
+      name: groupName,
+      users: {userId: GroupUser(role: UserRoles.organizer)},
       template: const SwipeTemplateModel(),
       theme: ThemeModel(schemeIndex: FlexScheme.blue.index),
       moduleBlacklist: ['music', 'photos', 'polls'],
     );
-    return FirebaseFirestore.instance.collection('trips').add(trip.toMap());
+    return FirebaseFirestore.instance.collection('groups').add(group.toMap());
   }
 
   @override
@@ -42,7 +42,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
             children: [
               const Spacer(),
               Text(
-                context.tr.create_new_trip,
+                context.tr.create_new_group,
                 style: const TextStyle(color: Colors.white, fontSize: 45),
               ),
               const Spacer(
@@ -56,14 +56,14 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
                     child: TextField(
                       decoration: InputDecoration(
-                        hintText: context.tr.enter_trip_name,
+                        hintText: context.tr.enter_group_name,
                         border: InputBorder.none,
                         hintStyle: const TextStyle(color: Colors.black45),
                         fillColor: Colors.transparent,
                       ),
                       style: const TextStyle(color: Colors.black),
                       onChanged: (text) {
-                        setState(() => tripName = text);
+                        setState(() => groupName = text);
                       },
                     ),
                   ),
@@ -77,15 +77,15 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                 radius: const BorderRadius.all(Radius.circular(50.0)),
                 child: InkWell(
                   onTap: () async {
-                    if (tripName == null) return;
-                    DocumentReference doc = await createNewTrip(tripName!, context.read(userIdProvider)!);
-                    context.read(selectedTripIdProvider.notifier).state = doc.id;
+                    if (groupName == null) return;
+                    DocumentReference doc = await createNewGroup(groupName!, context.read(userIdProvider)!);
+                    context.read(selectedGroupIdProvider.notifier).state = doc.id;
                   },
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.all(28.0),
                       child: Text(
-                        context.tr.create_trip,
+                        context.tr.create_group,
                         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ),

@@ -159,7 +159,7 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
 
     return InheritedArea(
       state: widget.widgetArea,
-      child: TripTheme(
+      child: GroupTheme(
         theme: widget.widgetArea.theme,
         child: AnimatedSize(
           duration: const Duration(milliseconds: 300),

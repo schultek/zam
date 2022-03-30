@@ -30,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: Consumer(
         builder: (context, ref, _) {
-          var user = ref.watch(tripUserProvider);
+          var user = ref.watch(groupUserProvider);
           return ListView(
             padding: const EdgeInsets.symmetric(vertical: 50),
             children: [
@@ -41,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     aspectRatio: 1,
                     child: GestureDetector(
                       onTap: () async {
-                        var logic = ref.read(tripsLogicProvider);
+                        var logic = ref.read(groupsLogicProvider);
                         var pngBytes = await ImageSelector.fromGallery(context, cropOverlayType: OverlayType.circle);
                         if (pngBytes != null) {
                           logic.uploadProfileImage(pngBytes);
@@ -72,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ? IconButton(
                             icon: const Icon(Icons.check),
                             onPressed: () {
-                              ref.read(tripsLogicProvider).setUserName(_name!);
+                              ref.read(groupsLogicProvider).setUserName(_name!);
                               _focusNode.unfocus();
                               setState(() => _name = null);
                             },
@@ -84,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     setState(() => _name = text);
                   },
                   onFieldSubmitted: (text) {
-                    ref.read(tripsLogicProvider).setUserName(text);
+                    ref.read(groupsLogicProvider).setUserName(text);
                   },
                 ),
               ]),

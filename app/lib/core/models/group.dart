@@ -5,17 +5,17 @@ import '../templates/templates.dart';
 import '../themes/themes.dart';
 
 @MappableClass()
-class Trip with Mappable {
+class Group with Mappable {
   final String name;
   final String id;
   final String? pictureUrl;
   final TemplateModel template;
   final ThemeModel theme;
-  final Map<String, TripUser> users;
+  final Map<String, GroupUser> users;
   final Map<String, List<String>> modules;
   final List<String> moduleBlacklist;
 
-  Trip({
+  Group({
     required this.id,
     required this.name,
     this.pictureUrl,
@@ -28,12 +28,12 @@ class Trip with Mappable {
 }
 
 @MappableClass()
-class TripUser with Mappable {
+class GroupUser with Mappable {
   String role;
   String? nickname;
   String? profileUrl;
 
-  TripUser({this.role = UserRoles.participant, this.nickname, this.profileUrl});
+  GroupUser({this.role = UserRoles.participant, this.nickname, this.profileUrl});
 
   bool get isOrganizer => role == UserRoles.organizer;
 }

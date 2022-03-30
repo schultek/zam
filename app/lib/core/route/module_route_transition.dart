@@ -88,7 +88,7 @@ class _ModuleRouteTransitionState<T extends ModuleElement> extends State<ModuleR
         rect: cardRect,
         child: InheritedArea<T>(
           state: widgetArea,
-          child: TripTheme(
+          child: GroupTheme(
             theme: widgetArea.theme,
             child: widgetArea.elementDecorator.decorateDragged(
               this.context,

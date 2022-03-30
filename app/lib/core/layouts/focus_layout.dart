@@ -83,7 +83,7 @@ class _FocusLayoutState extends State<FocusLayout> {
   Widget build(BuildContext context) {
     return FillOverscroll(
       fill: Container(
-        color: context.tripTheme
+        color: context.groupTheme
             .computeSurfaceTheme(context: context, preference: const ColorPreference(useHighlightColor: true))
             .surfaceColor,
       ),

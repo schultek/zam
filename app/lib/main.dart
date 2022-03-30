@@ -12,11 +12,11 @@ import 'core/core.dart';
 import 'providers/auth/user_provider.dart';
 import 'providers/general/loading_provider.dart';
 import 'providers/links/links_provider.dart';
-import 'providers/trips/selected_trip_provider.dart';
+import 'providers/groups/selected_group_provider.dart';
 import 'screens/loading/loading_link_screen.dart';
 import 'screens/loading/loading_screen.dart';
 import 'screens/signin/signin_screen.dart';
-import 'screens/trip/trip_screen.dart';
+import 'screens/group/group_screen.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(() async {
@@ -82,14 +82,14 @@ class _JufaAppState extends State<JufaApp> {
       return const SignInScreen();
     }
 
-    var selectedTripId = context.watch(selectedTripIdProvider);
-    if (selectedTripId != null) {
-      return TripScreen(key: ValueKey(selectedTripId));
+    var selectedGroupId = context.watch(selectedGroupIdProvider);
+    if (selectedGroupId != null) {
+      return GroupScreen(key: ValueKey(selectedGroupId));
     }
 
-    return TripTheme(
-      theme: TripThemeData(FlexScheme.material, true),
-      child: const TripSelectorPage(),
+    return GroupTheme(
+      theme: GroupThemeData(FlexScheme.material, true),
+      child: const GroupSelectorPage(),
     );
   }
 }

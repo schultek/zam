@@ -2,62 +2,62 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
   
-    match /trips/{tripId} {
+    match /groups/{groupId} {
 
       function isSignedIn() {
         return request.auth != null;
       }
       
-      function getTrip() {
-        return get(/databases/$(database)/documents/trips/$(tripId));
+      function getGroup() {
+        return get(/databases/$(database)/documents/groups/$(groupId));
       }
 
-      function userIsInTrip(trip) {
-        return isSignedIn() && request.auth.uid in trip.data.users;
+      function userIsInGroup(group) {
+        return isSignedIn() && request.auth.uid in group.data.users;
       }
 
-      function userIsOrganizer(trip) {
-        return userIsInTrip(trip) && trip.data.users[request.auth.uid].role == 'organizer';
+      function userIsOrganizer(group) {
+        return userIsInGroup(group) && group.data.users[request.auth.uid].role == 'organizer';
       }
 
       function userIsAdmin() {
         return isSignedIn() && "isAdmin" in request.auth.token && request.auth.token.isAdmin == true;
       }
 
-      function userIsTripCreator() {
+      function userIsGroupCreator() {
         return isSignedIn() && (userIsAdmin() || ("isOrganizer" in request.auth.token && request.auth.token.isOrganizer == true));
       }
       
-      function checkTripFormat(trip) {
-        return trip.data.name != null && trip.data.template != null && trip.data.users != null && trip.data.modules != null;
+      function checkGroupFormat(group) {
+        return group.data.name != null && group.data.template != null && group.data.users != null && group.data.modules != null;
       }
 
       function checkOrganizerUpdates() {
         return userIsOrganizer(request.resource);
       }
 
-      function checkTripUpdates() {
+      function checkGroupUpdates() {
         return request.resource.data.diff(resource.data).affectedKeys() == ['users'].toSet()
           && request.resource.data.users.diff(resource.data.users).affectedKeys() == [request.auth.uid].toSet()
           && !('role' in request.resource.data.users[request.auth.uid].diff(resource.data.users[request.auth.uid]).affectedKeys());
       }
       
       allow read: if userIsAdmin() 
-        || userIsInTrip(resource);
+        || userIsInGroup(resource);
       
       allow update: if (userIsOrganizer(resource) && checkOrganizerUpdates()) 
-        || (userIsInTrip(resource) && checkTripUpdates());
+        || (userIsInGroup(resource) && checkGroupUpdates());
       
-      allow create: if userIsTripCreator() 
-        && checkTripFormat(request.resource) 
+      allow create: if userIsGroupCreator() 
+        && checkGroupFormat(request.resource) 
         && userIsOrganizer(request.resource);
       
       allow delete: if false;
       
       match /modules/announcements/announcements/{announcementId} {
-        allow read: if userIsInTrip(getTrip());
+        allow read: if userIsInGroup(getGroup());
         
-        allow create, delete: if userIsOrganizer(getTrip());
+        allow create, delete: if userIsOrganizer(getGroup());
         
         allow update: if false;
       }
@@ -71,78 +71,78 @@ service cloud.firestore {
         }
         
         function checkTheButtonUpdateAllowed() {
-          return userIsOrganizer(getTrip()) || 
+          return userIsOrganizer(getGroup()) || 
             request.resource.data.diff(resource.data).affectedKeys() == ['lastReset', 'leaderboard'].toSet();
         }
       
-        allow read: if userIsInTrip(getTrip());
+        allow read: if userIsInGroup(getGroup());
         
         allow delete: if false;
         
-        allow create: if userIsInTrip(getTrip()) && checkTheButtonFormat(request.resource);
+        allow create: if userIsInGroup(getGroup()) && checkTheButtonFormat(request.resource);
         
-        allow update: if userIsInTrip(getTrip()) && checkTheButtonUpdateAllowed();
+        allow update: if userIsInGroup(getGroup()) && checkTheButtonUpdateAllowed();
       }
 
       match /modules/photos/albums/{albumId} {
 
-        allow read: if userIsInTrip(getTrip());
+        allow read: if userIsInGroup(getGroup());
 
-        allow write: if userIsOrganizer(getTrip());
+        allow write: if userIsOrganizer(getGroup());
       }
 
       match /modules/elimination/games/{gameId} {
 
-        allow read: if userIsInTrip(getTrip());
+        allow read: if userIsInGroup(getGroup());
 
-        allow create, delete: if userIsOrganizer(getTrip());
+        allow create, delete: if userIsOrganizer(getGroup());
 
-        allow update: if userIsInTrip(getTrip()) 
+        allow update: if userIsInGroup(getGroup()) 
           && request.resource.data.diff(resource).affectedKeys().hasOnly(['eliminations']);
       }
 
       match /modules/music {
 
-        allow read, write: if userIsInTrip(getTrip());
+        allow read, write: if userIsInGroup(getGroup());
       }
 
       match /modules/notes/notes/{noteId} {
 
-        allow read: if userIsInTrip(getTrip());
+        allow read: if userIsInGroup(getGroup());
 
-        allow create: if userIsInTrip(getTrip()) 
+        allow create: if userIsInGroup(getGroup()) 
           && request.resource.data.author == request.auth.uid;
 
-        allow delete: if userIsInTrip(getTrip()) 
-          && (userIsOrganizer(getTrip()) || resource.data.author == request.auth.uid);
+        allow delete: if userIsInGroup(getGroup()) 
+          && (userIsOrganizer(getGroup()) || resource.data.author == request.auth.uid);
 
-        allow update: if userIsInTrip(getTrip()) 
-          && (userIsOrganizer(getTrip()) || request.auth.uid in resource.data.editors);
+        allow update: if userIsInGroup(getGroup()) 
+          && (userIsOrganizer(getGroup()) || request.auth.uid in resource.data.editors);
       }
 
       match /modules/chat/channels/{channelId} {
 
-        allow read: if userIsInTrip(getTrip()) 
+        allow read: if userIsInGroup(getGroup()) 
           && (resource.data.isOpen || request.auth.uid in resource.data.members);
 
-        allow create: if userIsInTrip(getTrip()) 
+        allow create: if userIsInGroup(getGroup()) 
           && request.resource.data.name != null
           && request.resource.data.isOpen is bool
           && request.auth.uid in request.resource.data.members;
 
-        allow update, delete: if userIsInTrip(getTrip()) 
+        allow update, delete: if userIsInGroup(getGroup()) 
           && request.auth.uid in resource.data.members;
       
         match /messages/{messageId} {
 
           function getChannel() {
-            return get(/databases/$(database)/documents/trips/$(tripId)/modules/chat/channels/$(channelId));
+            return get(/databases/$(database)/documents/groups/$(groupId)/modules/chat/channels/$(channelId));
           }
 
-          allow read: if userIsInTrip(getTrip()) 
+          allow read: if userIsInGroup(getGroup()) 
             && request.auth.uid in getChannel().data.members;
 
-          allow create: if userIsInTrip(getTrip())
+          allow create: if userIsInGroup(getGroup())
             && request.auth.uid in getChannel().data.members
             && request.resource.data.sender == request.auth.uid
             && request.resource.data.sentAt == request.time;

@@ -12,7 +12,7 @@ class ColorPreference {
 
 enum HighlightColor { primary, secondary, none }
 
-class TripThemeData {
+class GroupThemeData {
   late final themeData = dark
       ? FlexThemeData.dark(
           scheme: scheme,
@@ -30,30 +30,30 @@ class TripThemeData {
   final double elevation;
   final HighlightColor useHighlightColor;
 
-  factory TripThemeData.fromModel(ThemeModel model) {
-    return TripThemeData(FlexScheme.values[model.schemeIndex], model.dark);
+  factory GroupThemeData.fromModel(ThemeModel model) {
+    return GroupThemeData(FlexScheme.values[model.schemeIndex], model.dark);
   }
 
-  TripThemeData(this.scheme, [this.dark = false, this.elevation = -1, this.useHighlightColor = HighlightColor.none]);
+  GroupThemeData(this.scheme, [this.dark = false, this.elevation = -1, this.useHighlightColor = HighlightColor.none]);
 
-  TripThemeData computeSurfaceTheme({required BuildContext context, ColorPreference? preference}) {
+  GroupThemeData computeSurfaceTheme({required BuildContext context, ColorPreference? preference}) {
     if (preference?.useHighlightColor ?? false) {
       if (useHighlightColor == HighlightColor.primary) {
-        return TripThemeData(scheme, dark, 0, HighlightColor.secondary);
+        return GroupThemeData(scheme, dark, 0, HighlightColor.secondary);
       } else {
-        return TripThemeData(scheme, dark, 0, HighlightColor.primary);
+        return GroupThemeData(scheme, dark, 0, HighlightColor.primary);
       }
     }
 
     if (useHighlightColor != HighlightColor.none) {
-      return TripThemeData(scheme, dark, 0, HighlightColor.none);
+      return GroupThemeData(scheme, dark, 0, HighlightColor.none);
     }
 
     if (elevation == -1) {
-      return TripThemeData(scheme, dark, 0 + (preference?.deltaElevation ?? 1));
+      return GroupThemeData(scheme, dark, 0 + (preference?.deltaElevation ?? 1));
     }
 
-    return TripThemeData(scheme, dark, elevation + (preference?.deltaElevation ?? 1));
+    return GroupThemeData(scheme, dark, elevation + (preference?.deltaElevation ?? 1));
   }
 
   Color get onSurfaceColor {
@@ -103,5 +103,5 @@ class TripThemeData {
     }
   }
 
-  TripThemeData copy() => TripThemeData(scheme, dark, elevation, useHighlightColor);
+  GroupThemeData copy() => GroupThemeData(scheme, dark, elevation, useHighlightColor);
 }

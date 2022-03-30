@@ -76,9 +76,9 @@ class ChatLogic {
     var name = res.name;
 
     try {
-      var reference = FirebaseStorage.instance.ref('chat/images/$name');
-      await reference.putFile(file);
-      var uri = await reference.getDownloadURL();
+      var uri = await ref
+          .read(groupsLogicProvider) //
+          .uploadFile('chat/images/$name', await file.readAsBytes());
 
       chat.collection('channels/$channelId/messages').add(ChatImageMessage(
             sender: ref.read(userIdProvider)!,
@@ -98,9 +98,9 @@ class ChatLogic {
     var file = File(resFile.path!);
 
     try {
-      var reference = FirebaseStorage.instance.ref('chat/files/${resFile.name}');
-      await reference.putFile(file);
-      var uri = await reference.getDownloadURL();
+      var uri = await ref
+          .read(groupsLogicProvider) //
+          .uploadFile('chat/files/${resFile.name}', await file.readAsBytes());
       // lookupMimeType(filePath ?? '')
       chat.collection('channels/$channelId/messages').add(ChatFileMessage(
             sender: ref.read(userIdProvider)!,

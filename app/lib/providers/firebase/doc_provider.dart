@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../trips/selected_trip_provider.dart';
+import '../groups/selected_group_provider.dart';
 
 export 'firestore_extensions.dart';
 
-final tripDocProvider =
-    Provider((ref) => FirebaseFirestore.instance.collection('trips').doc(ref.watch(selectedTripIdProvider)));
+final groupDocProvider =
+    Provider((ref) => FirebaseFirestore.instance.collection('groups').doc(ref.watch(selectedGroupIdProvider)));
 
-final moduleDocProvider = Provider.family((ref, String id) => ref.watch(tripDocProvider).collection('modules').doc(id));
+final moduleDocProvider =
+    Provider.family((ref, String id) => ref.watch(groupDocProvider).collection('modules').doc(id));

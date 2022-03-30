@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../providers/trips/selected_trip_provider.dart';
+import '../../providers/groups/selected_group_provider.dart';
 import '../models/models.dart';
 import '../providers/editing_providers.dart';
 import '../templates/templates.dart';
@@ -28,9 +28,9 @@ class ConfigSheet<T extends TemplateModel> extends StatefulWidget {
   const ConfigSheet({Key? key}) : super(key: key);
 
   static ConfigSheetController show<T extends TemplateModel>(BuildContext context) {
-    var trip = context.read(selectedTripProvider)!;
+    var group = context.read(selectedGroupProvider)!;
 
-    Navigator.of(context).push(ConfigSheetRoute<T>(trip));
+    Navigator.of(context).push(ConfigSheetRoute<T>(group));
 
     return ConfigSheetController(context);
   }
@@ -40,8 +40,8 @@ class ConfigSheet<T extends TemplateModel> extends StatefulWidget {
 }
 
 class ConfigSheetRoute<T extends TemplateModel> extends TransitionRoute {
-  ConfigSheetRoute(this.trip);
-  final Trip trip;
+  ConfigSheetRoute(this.group);
+  final Group group;
 
   @override
   Iterable<OverlayEntry> createOverlayEntries() {
@@ -51,8 +51,8 @@ class ConfigSheetRoute<T extends TemplateModel> extends TransitionRoute {
           alignment: Alignment.bottomCenter,
           child: InheritedTheme.captureAll(
             context,
-            TripTheme(
-              theme: TripThemeData.fromModel(trip.theme),
+            GroupTheme(
+              theme: GroupThemeData.fromModel(group.theme),
               child: ConfigSheet<T>(),
             ),
           ),

@@ -8,30 +8,30 @@ import '../../main.mapper.g.dart';
 import '../../modules/modules.dart';
 import '../../modules/profile/widgets/image_selector.dart';
 import '../../providers/auth/claims_provider.dart';
-import '../../providers/trips/logic_provider.dart';
-import '../../providers/trips/selected_trip_provider.dart';
+import '../../providers/groups/logic_provider.dart';
+import '../../providers/groups/selected_group_provider.dart';
 import '../themes/themes.dart';
 import 'layout_preview.dart';
 import 'settings_section.dart';
 import 'template_preview_switcher.dart';
 
-class TripSettingsPage extends StatefulWidget {
-  const TripSettingsPage({Key? key}) : super(key: key);
+class GroupSettingsPage extends StatefulWidget {
+  const GroupSettingsPage({Key? key}) : super(key: key);
 
   @override
-  _TripSettingsPageState createState() => _TripSettingsPageState();
+  _GroupSettingsPageState createState() => _GroupSettingsPageState();
 
   static Route route() {
-    return MaterialPageRoute(builder: (context) => const TripSettingsPage());
+    return MaterialPageRoute(builder: (context) => const GroupSettingsPage());
   }
 }
 
-class _TripSettingsPageState extends State<TripSettingsPage> {
+class _GroupSettingsPageState extends State<GroupSettingsPage> {
   @override
   Widget build(BuildContext context) {
-    var trip = context.watch(selectedTripProvider)!;
+    var group = context.watch(selectedGroupProvider)!;
 
-    var templateSettings = trip.template.settings(context);
+    var templateSettings = group.template.settings(context);
     var moduleSettings = registry.getSettings(context);
 
     return Scaffold(
@@ -47,7 +47,7 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
               onTap: () async {
                 var pngBytes = await ImageSelector.fromGallery(context, cropOverlayType: OverlayType.rectangle);
                 if (pngBytes != null) {
-                  context.read(tripsLogicProvider).setTripPicture(pngBytes);
+                  context.read(groupsLogicProvider).setGroupPicture(pngBytes);
                 }
               },
               child: AspectRatio(
@@ -57,10 +57,10 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
                   child: ThemedSurface(
                     builder: (context, color) => Container(
                       color: color,
-                      child: trip.pictureUrl == null
+                      child: group.pictureUrl == null
                           ? Center(child: Icon(Icons.add, size: 60, color: context.onSurfaceHighlightColor))
                           : CachedNetworkImage(
-                              imageUrl: trip.pictureUrl!,
+                              imageUrl: group.pictureUrl!,
                               fit: BoxFit.contain,
                             ),
                     ),
@@ -72,11 +72,11 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
           const SizedBox(height: 8),
           SettingsSection(padding: const EdgeInsets.all(14), children: [
             TextFormField(
-              initialValue: trip.name,
+              initialValue: group.name,
               decoration: InputDecoration(labelText: context.tr.name),
               style: TextStyle(color: context.onSurfaceColor),
               onFieldSubmitted: (text) {
-                context.read(tripsLogicProvider).updateTrip({'name': text});
+                context.read(groupsLogicProvider).updateGroup({'name': text});
               },
             ),
           ]),
@@ -88,18 +88,18 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
                   children: [
                     Expanded(
                       child: ListTile(
-                        title: Text(trip.template.name),
+                        title: Text(group.template.name),
                         subtitle: Text(context.tr.tap_to_change),
                         onTap: () async {
-                          var newTemplate = await TemplatePreviewSwitcher.show(context, trip.template);
+                          var newTemplate = await TemplatePreviewSwitcher.show(context, group.template);
 
                           if (newTemplate != null) {
-                            context.read(tripsLogicProvider).updateTemplateModel(newTemplate);
+                            context.read(groupsLogicProvider).updateTemplateModel(newTemplate);
                           }
                         },
                       ),
                     ),
-                    PreviewBox(preview: trip.template.preview())
+                    PreviewBox(preview: group.template.preview())
                   ],
                 );
               }),
@@ -110,19 +110,19 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: ThemeSelector(
-                schemeIndex: trip.theme.schemeIndex,
+                schemeIndex: group.theme.schemeIndex,
                 onChange: (index) {
                   context
-                      .read(tripsLogicProvider)
-                      .updateTrip({'theme': trip.theme.copyWith(schemeIndex: index).toMap()});
+                      .read(groupsLogicProvider)
+                      .updateGroup({'theme': group.theme.copyWith(schemeIndex: index).toMap()});
                 },
               ),
             ),
             SwitchListTile(
               title: Text(context.tr.dark_mode),
-              value: trip.theme.dark,
+              value: group.theme.dark,
               onChanged: (value) {
-                context.read(tripsLogicProvider).updateTrip({'theme': trip.theme.copyWith(dark: value).toMap()});
+                context.read(groupsLogicProvider).updateGroup({'theme': group.theme.copyWith(dark: value).toMap()});
               },
             ),
           ]),
@@ -140,13 +140,13 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
               onTap: () {
                 showConfirmDialog(
                   context,
-                  '${context.tr.do_want_to_leave} ${trip.name}?',
+                  '${context.tr.do_want_to_leave} ${group.name}?',
                   context.tr.leave,
-                  () => context.read(tripsLogicProvider).leaveSelectedTrip(),
+                  () => context.read(groupsLogicProvider).leaveSelectedGroup(),
                 );
               },
             ),
-            if (context.read(claimsProvider).isOrganizer)
+            if (context.read(claimsProvider).isGroupCreator)
               ListTile(
                 title: Text(
                   context.tr.delete,
@@ -155,9 +155,9 @@ class _TripSettingsPageState extends State<TripSettingsPage> {
                 onTap: () {
                   showConfirmDialog(
                     context,
-                    '${context.tr.do_want_to_delete} ${trip.name}? ${context.tr.cant_be_undone}',
+                    '${context.tr.do_want_to_delete} ${group.name}? ${context.tr.cant_be_undone}',
                     context.tr.delete,
-                    () => context.read(tripsLogicProvider).deleteSelectedTrip(),
+                    () => context.read(groupsLogicProvider).deleteSelectedGroup(),
                   );
                 },
               ),

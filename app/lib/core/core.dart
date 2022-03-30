@@ -9,6 +9,6 @@ export 'module/module_registry.dart';
 export 'route/route.dart';
 export 'templates/templates.dart';
 export 'themes/themes.dart';
+export 'widgets/group_selector_page.dart';
 export 'widgets/settings_section.dart';
-export 'widgets/trip_selector_page.dart';
 export 'widgets/widget_selector.dart';

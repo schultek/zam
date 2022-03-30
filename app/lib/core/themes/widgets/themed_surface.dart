@@ -1,15 +1,15 @@
 // ignore: must_be_immutable
 import 'package:flutter/material.dart';
 
-import '../trip_theme_data.dart';
-import 'trip_theme.dart';
+import '../group_theme_data.dart';
+import 'group_theme.dart';
 
 // ignore: must_be_immutable
 class ThemeKey extends Key {
   ThemeKey() : super.empty();
 
-  TripThemeData? _theme;
-  TripThemeData? get theme => _theme;
+  GroupThemeData? _theme;
+  GroupThemeData? get theme => _theme;
 }
 
 class ThemedSurface extends StatefulWidget {
@@ -27,11 +27,11 @@ class ThemedSurface extends StatefulWidget {
 }
 
 class _ThemedSurfaceState extends State<ThemedSurface> {
-  late TripThemeData theme;
+  late GroupThemeData theme;
 
   @override
   void didChangeDependencies() {
-    var inheritedTheme = TripTheme.of(context)!;
+    var inheritedTheme = GroupTheme.of(context)!;
     theme = inheritedTheme.theme.computeSurfaceTheme(context: context, preference: widget.preference);
     widget.key?._theme = theme.copy();
 
@@ -40,7 +40,7 @@ class _ThemedSurfaceState extends State<ThemedSurface> {
 
   @override
   Widget build(BuildContext context) {
-    return TripTheme(
+    return GroupTheme(
       theme: theme.copy(),
       child: DefaultTextStyle(
         style: TextStyle(color: theme.onSurfaceColor),

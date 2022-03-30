@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../providers/trips/logic_provider.dart';
-import '../../providers/trips/selected_trip_provider.dart';
+import '../../providers/groups/logic_provider.dart';
+import '../../providers/groups/selected_group_provider.dart';
 import '../areas/areas.dart';
 import '../elements/elements.dart';
 import '../providers/editing_providers.dart';
@@ -60,7 +60,7 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
   List<Widget> getPageSettings();
 
   Future<void> updateModel(M model) async {
-    await context.read(tripsLogicProvider).updateTemplateModel(model);
+    await context.read(groupsLogicProvider).updateTemplateModel(model);
   }
 
   @override
@@ -124,7 +124,7 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
 
   @override
   Widget build(BuildContext context) {
-    var trip = context.read(selectedTripProvider)!;
+    var group = context.read(selectedGroupProvider)!;
     var editState = context.watch(editProvider);
     return InheritedTemplate(
       state: this,
@@ -135,8 +135,8 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
                 : editState == EditState.widgetMode
                     ? widgetSelector?.state?.sheetHeight ?? 0
                     : 0),
-        child: TripTheme(
-          theme: TripThemeData.fromModel(trip.theme),
+        child: GroupTheme(
+          theme: GroupThemeData.fromModel(group.theme),
           child: Builder(builder: (context) {
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: FlexColorScheme.themedSystemNavigationBar(

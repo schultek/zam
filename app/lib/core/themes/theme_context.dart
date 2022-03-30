@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 
-import 'trip_theme_data.dart';
-import 'widgets/trip_theme.dart';
+import 'group_theme_data.dart';
+import 'widgets/group_theme.dart';
 
 extension ThemeColorsContext on BuildContext {
   Color get surfaceColor {
-    return tripTheme.surfaceColor;
+    return groupTheme.surfaceColor;
   }
 
   Color get onSurfaceColor {
-    return tripTheme.onSurfaceColor;
+    return groupTheme.onSurfaceColor;
   }
 
   Color onSurfaceColorWith(ColorPreference preference) {
-    return tripTheme.onSurfaceColorWith(preference);
+    return groupTheme.onSurfaceColorWith(preference);
   }
 
   Color get onSurfaceHighlightColor {
     return onSurfaceColorWith(const ColorPreference(useHighlightColor: true));
   }
 
-  TripThemeData get tripTheme {
-    return TripTheme.of(this, listen: true)!.theme;
+  GroupThemeData get groupTheme {
+    return GroupTheme.of(this, listen: true)!.theme;
   }
 
   ThemeData get theme {

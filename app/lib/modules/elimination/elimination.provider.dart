@@ -21,7 +21,7 @@ class GameLogic {
   }
 
   Map<String, String> _generateTargetMap(bool allowLoops) {
-    var userIds = [...ref.read(selectedTripProvider)!.users.keys];
+    var userIds = [...ref.read(selectedGroupProvider)!.users.keys];
 
     if (userIds.length == 1) {
       return {userIds.first: userIds.first};

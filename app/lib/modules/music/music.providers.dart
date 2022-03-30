@@ -270,7 +270,7 @@ class MusicLogic {
     if (spotify == null) return null;
     var user = await spotify!.me.get();
     var playlist = await spotify!.playlists
-        .createPlaylist(user.id!, ref.read(selectedTripProvider)!.name, public: false, collaborative: true);
+        .createPlaylist(user.id!, ref.read(selectedGroupProvider)!.name, public: false, collaborative: true);
     await ref
         .read(moduleDocProvider('music'))
         .set({'playlist': playlist.toSpotifyPlaylist([]).toMap()}, SetOptions(merge: true));

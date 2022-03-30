@@ -60,7 +60,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
       ),
       body: Column(
         children: [
-          TripTheme(
+          GroupTheme(
             theme: widget.parentArea.theme,
             child: Builder(builder: (context) {
               return Container(

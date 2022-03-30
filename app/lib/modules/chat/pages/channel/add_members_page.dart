@@ -40,8 +40,8 @@ class _AddMembersPageState extends State<AddMembersPage> {
       ),
       body: Consumer(
         builder: (context, ref, _) {
-          var trip = ref.watch(selectedTripProvider);
-          var users = trip!.users.entries.where((e) => !widget.channel.members.contains(e.key)).toList();
+          var group = ref.watch(selectedGroupProvider);
+          var users = group!.users.entries.where((e) => !widget.channel.members.contains(e.key)).toList();
           return ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             itemCount: users.length,

@@ -39,7 +39,7 @@ class UsersPage extends StatelessWidget {
                   ),
                 );
                 if (userName != null) {
-                  await context.read(tripsLogicProvider).addUser(userName);
+                  await context.read(groupsLogicProvider).addUser(userName);
                 }
               },
             ),
@@ -57,12 +57,12 @@ class UsersPage extends StatelessWidget {
               ],
               icon: const Icon(Icons.add_link),
               onSelected: (role) async {
-                var trip = context.read(selectedTripProvider)!;
-                String link = await context.read(linkLogicProvider).createTripInvitationLink(trip: trip, role: role);
+                var group = context.read(selectedGroupProvider)!;
+                String link = await context.read(linkLogicProvider).createGroupInvitationLink(group: group, role: role);
                 if (role == UserRoles.participant) {
-                  Share.share('${context.tr.click_link_to_join(trip.name)}: $link');
+                  Share.share('${context.tr.click_link_to_join(group.name)}: $link');
                 } else if (role == UserRoles.organizer) {
-                  Share.share('${context.tr.click_link_to_organize(trip.name)}: $link');
+                  Share.share('${context.tr.click_link_to_organize(group.name)}: $link');
                 }
               },
             ),
@@ -72,9 +72,9 @@ class UsersPage extends StatelessWidget {
       body: SafeArea(
         child: Consumer(
           builder: (context, ref, _) {
-            var trip = ref.watch(selectedTripProvider)!;
-            var organizers = trip.users.entries.where((e) => e.value.role == UserRoles.organizer);
-            var participants = trip.users.entries.where((e) => e.value.role != UserRoles.organizer);
+            var group = ref.watch(selectedGroupProvider)!;
+            var organizers = group.users.entries.where((e) => e.value.role == UserRoles.organizer);
+            var participants = group.users.entries.where((e) => e.value.role != UserRoles.organizer);
             return ListView(
               padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
               children: [
@@ -89,7 +89,7 @@ class UsersPage extends StatelessWidget {
     );
   }
 
-  Widget userTile(BuildContext context, MapEntry<String, TripUser> e) {
+  Widget userTile(BuildContext context, MapEntry<String, GroupUser> e) {
     return ListTile(
       leading: UserAvatar(id: e.key),
       title: Text(e.value.nickname ?? context.tr.anonymous, style: TextStyle(color: context.onSurfaceColor)),
@@ -116,12 +116,12 @@ class UsersPage extends StatelessWidget {
               icon: const Icon(Icons.more_vert),
               onSelected: (option) async {
                 if (option == 'delete') {
-                  context.read(tripsLogicProvider).deleteUser(e.key);
+                  context.read(groupsLogicProvider).deleteUser(e.key);
                 } else if (option == UserRoles.organizer) {
                   if (e.value.role == UserRoles.organizer) {
-                    context.read(tripsLogicProvider).updateUserRole(e.key, UserRoles.participant);
+                    context.read(groupsLogicProvider).updateUserRole(e.key, UserRoles.participant);
                   } else {
-                    context.read(tripsLogicProvider).updateUserRole(e.key, UserRoles.organizer);
+                    context.read(groupsLogicProvider).updateUserRole(e.key, UserRoles.organizer);
                   }
                 }
               },

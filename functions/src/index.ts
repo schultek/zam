@@ -43,11 +43,11 @@ export const createAdminLink = functions.https.onCall(async (data, context) => {
 });
 
 
-export const createTripInvitationLink = functions.https.onCall(async (data, context) => {
+export const createGroupInvitationLink = functions.https.onCall(async (data, context) => {
 
 
-  if (!("tripId" in data)) {
-    throw new functions.https.HttpsError('failed-precondition', 'Missing tripId argument.');
+  if (!("groupId" in data)) {
+    throw new functions.https.HttpsError('failed-precondition', 'Missing groupId argument.');
   }
 
   if (!("role" in data)) {
@@ -58,19 +58,19 @@ export const createTripInvitationLink = functions.https.onCall(async (data, cont
     throw new functions.https.HttpsError('failed-precondition', `Invalid role ${data.role}.`);
   }
 
-  let trip = await db.collection("trips").doc(data.tripId).get();
+  let group = await db.collection("groups").doc(data.groupId).get();
 
-  if (!trip.exists) {
-    throw new functions.https.HttpsError('failed-precondition', `The trip with id ${data.tripId} does not exist.`);
+  if (!group.exists) {
+    throw new functions.https.HttpsError('failed-precondition', `The group with id ${data.groupId} does not exist.`);
   }
 
   let isAdmin = context.auth.token.isAdmin || false;
 
-  if (!isAdmin && trip.get(`users.${context.auth.uid}.role`) !== "organizer") {
+  if (!isAdmin && group.get(`users.${context.auth.uid}.role`) !== "organizer") {
     throw new functions.https.HttpsError('failed-precondition', `You are not authorized to create this invitation link.`);
   }
 
-  return hashLink(`https://jufa20.web.app/invitation/trip?tripId=${data.tripId}&role=${data.role}`);
+  return hashLink(`https://jufa20.web.app/invitation/group?groupId=${data.groupId}&role=${data.role}`);
 });
 
 export const onLinkReceived = functions.https.onCall(async (data, context) => {
@@ -112,22 +112,22 @@ export const onLinkReceived = functions.https.onCall(async (data, context) => {
 
     return true;
 
-  } else if (url.pathname === '/invitation/trip') {
+  } else if (url.pathname === '/invitation/group') {
 
-    var tripId = url.searchParams.get('tripId');
+    var groupId = url.searchParams.get('groupId');
     var role = url.searchParams.get('role');
 
-    let trip = await db.collection("trips").doc(tripId).get();
+    let group = await db.collection("groups").doc(groupId).get();
 
-    if (!trip.exists) {
-      throw new functions.https.HttpsError('failed-precondition', `The trip with id ${tripId} does not exist.`);
+    if (!group.exists) {
+      throw new functions.https.HttpsError('failed-precondition', `The group with id ${groupId} does not exist.`);
     }
 
     const uid = context.auth.uid;
   
-    console.log(`Adding user ${uid} to trip ${tripId} with role ${role}.`);
+    console.log(`Adding user ${uid} to group ${groupId} with role ${role}.`);
   
-    await trip.ref.update('users.'+uid+'.role', role || "participant");
+    await group.ref.update('users.'+uid+'.role', role || "participant");
 
   }
 
@@ -135,13 +135,13 @@ export const onLinkReceived = functions.https.onCall(async (data, context) => {
 
 });
 
-export const sendAnnouncementNotification = functions.firestore.document("trips/{tripId}/modules/announcements/announcements/{announcementId}").onCreate(async (snapshot, context) => {
+export const sendAnnouncementNotification = functions.firestore.document("groups/{groupId}/modules/announcements/announcements/{announcementId}").onCreate(async (snapshot, context) => {
 
-  var tripId = context.params.tripId;
+  var groupId = context.params.groupId;
 
   var data = snapshot.data();
 
-  await admin.messaging().sendToTopic(`/topics/trip.${tripId}.announcements`, {
+  await admin.messaging().sendToTopic(`/topics/group.${groupId}.announcements`, {
     notification: {
       title: data.title ?? "New announcement",
       body: data.message
@@ -150,26 +150,26 @@ export const sendAnnouncementNotification = functions.firestore.document("trips/
 
 });
 
-export const sendChannelNotification = functions.firestore.document("trips/{tripId}/modules/chat/channels/{channelId}/messages/{messageId}").onCreate(async (snapshot, context) => {
+export const sendChannelNotification = functions.firestore.document("groups/{groupId}/modules/chat/channels/{channelId}/messages/{messageId}").onCreate(async (snapshot, context) => {
 
-  var tripId = context.params.tripId;
+  var groupId = context.params.groupId;
   var channelId = context.params.channelId;
 
-  var trip = (await admin.firestore().doc(`trips/${tripId}`).get()).data();
-  var channel = (await admin.firestore().doc(`trips/${tripId}/modules/chat/channels/${channelId}`).get()).data();
+  var group = (await admin.firestore().doc(`groups/${groupId}`).get()).data();
+  var channel = (await admin.firestore().doc(`groups/${groupId}/modules/chat/channels/${channelId}`).get()).data();
 
   var data = snapshot.data();
 
-  var tokens = channel.members.filter((id) => id != data.sender).map((id) => trip.users[id]?.token).filter((t) => t != null);
+  var tokens = channel.members.filter((id) => id != data.sender).map((id) => group.users[id]?.token).filter((t) => t != null);
 
   await admin.messaging().sendToDevice(tokens, {
     notification: {
-      title: `${channel.name} - ${trip.users[data.sender]?.nickname ?? 'Anonym'}`,
+      title: `${channel.name} - ${group.users[data.sender]?.nickname ?? 'Anonym'}`,
       body: data.text,
-      tag: `${tripId}_${channelId}`,
+      tag: `${groupId}_${channelId}`,
     },
     data: {
-      tripId: tripId,
+      groupId: groupId,
       channelId: channelId,
     }
   });

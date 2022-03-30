@@ -9,7 +9,7 @@ class ProfileImageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var user = context.watch(tripUserProvider);
+    var user = context.watch(groupUserProvider);
 
     var date = DateTime.now();
     String greeting;

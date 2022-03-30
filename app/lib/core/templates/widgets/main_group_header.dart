@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../providers/trips/selected_trip_provider.dart';
+import '../../../providers/groups/selected_group_provider.dart';
 import '../../providers/editing_providers.dart';
 import '../../themes/themes.dart';
 import '../../widgets/layout_preview.dart';
 import 'layout_toggle.dart';
-import 'trip_selector.dart';
+import 'group_selector.dart';
 
 class MainGroupHeader extends StatelessWidget {
   const MainGroupHeader({Key? key}) : super(key: key);
@@ -17,14 +17,14 @@ class MainGroupHeader extends StatelessWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 10, right: 10, bottom: 10),
       child: Consumer(
         builder: (context, ref, _) {
-          var trip = ref.watch(selectedTripProvider)!;
-          var user = ref.watch(tripUserProvider)!;
+          var group = ref.watch(selectedGroupProvider)!;
+          var user = ref.watch(groupUserProvider)!;
 
           var isEditing = ref.watch(isEditingProvider);
 
           var leading = [
-            if (!isEditing) const TripSelectorButton(),
-            if (isEditing && user.isOrganizer) const TripSettingsButton(),
+            if (!isEditing) const GroupSelectorButton(),
+            if (isEditing && user.isOrganizer) const GroupSettingsButton(),
             if (isEditing) const SizedBox(width: 50),
           ];
 
@@ -39,7 +39,7 @@ class MainGroupHeader extends StatelessWidget {
               ...leading,
               Expanded(
                 child: Text(
-                  trip.name,
+                  group.name,
                   textAlign: TextAlign.center,
                   style: context.theme.textTheme.headline5!.apply(color: context.onSurfaceColor),
                 ),

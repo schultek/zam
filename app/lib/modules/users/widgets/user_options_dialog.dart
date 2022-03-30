@@ -23,11 +23,11 @@ class UserOptionsDialog extends StatelessWidget {
             ListTile(
               title: Text(context.tr.delete),
               onTap: () {
-                context.read(tripsLogicProvider).deleteUser(id);
+                context.read(groupsLogicProvider).deleteUser(id);
                 Navigator.of(context).pop();
               },
             ),
-            roleOption(context, context.read(tripUserByIdProvider(id))?.role ?? UserRoles.participant),
+            roleOption(context, context.read(groupUserByIdProvider(id))?.role ?? UserRoles.participant),
           ],
         ),
       ),
@@ -39,7 +39,7 @@ class UserOptionsDialog extends StatelessWidget {
       return ListTile(
         title: Text(context.tr.remove_organizer),
         onTap: () {
-          context.read(tripsLogicProvider).updateUserRole(id, UserRoles.participant);
+          context.read(groupsLogicProvider).updateUserRole(id, UserRoles.participant);
           Navigator.of(context).pop();
         },
       );
@@ -47,7 +47,7 @@ class UserOptionsDialog extends StatelessWidget {
       return ListTile(
         title: Text(context.tr.make_organizer),
         onTap: () {
-          context.read(tripsLogicProvider).updateUserRole(id, UserRoles.organizer);
+          context.read(groupsLogicProvider).updateUserRole(id, UserRoles.organizer);
           Navigator.of(context).pop();
         },
       );

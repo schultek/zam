@@ -36,7 +36,7 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
       state: area.template,
       child: InheritedArea<T>(
         state: area,
-        child: TripTheme(
+        child: GroupTheme(
           theme: area.theme,
           child: Consumer(
             builder: (context, ref, child) {

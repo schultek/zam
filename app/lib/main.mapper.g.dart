@@ -8,7 +8,7 @@ import 'core/layouts/focus_layout.dart';
 import 'core/layouts/full_page_layout.dart';
 import 'core/layouts/grid_layout.dart';
 import 'core/layouts/layout_model.dart';
-import 'core/models/trip.dart';
+import 'core/models/group.dart';
 import 'core/module/module_context.dart';
 import 'core/templates/swipe/swipe_template.dart';
 import 'core/templates/template_model.dart';
@@ -27,8 +27,8 @@ import 'modules/thebutton/thebutton.module.dart';
 var _mappers = <BaseMapper>{
   // class mappers
   ModuleIdMapper._(),
-  TripMapper._(),
-  TripUserMapper._(),
+  GroupMapper._(),
+  GroupUserMapper._(),
   SwipeTemplateModelMapper._(),
   TemplateModelMapper._(),
   SwipeTemplatePageMapper._(),
@@ -129,13 +129,13 @@ class _ModuleIdCopyWithImpl<$R> extends BaseCopyWith<ModuleId, $R> implements Mo
       or(params, $value.params)));
 }
 
-class TripMapper extends BaseMapper<Trip> {
-  TripMapper._();
+class GroupMapper extends BaseMapper<Group> {
+  GroupMapper._();
 
   @override
   Function get decoder => decode;
-  Trip decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  Trip fromMap(Map<String, dynamic> map) => Trip(
+  Group decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  Group fromMap(Map<String, dynamic> map) => Group(
       id: Mapper.i.$get(map, 'id'),
       name: Mapper.i.$get(map, 'name'),
       pictureUrl: Mapper.i.$getOpt(map, 'pictureUrl'),
@@ -146,24 +146,24 @@ class TripMapper extends BaseMapper<Trip> {
       moduleBlacklist: Mapper.i.$getOpt(map, 'moduleBlacklist') ?? const []);
 
   @override
-  Function get encoder => (Trip v) => encode(v);
-  dynamic encode(Trip v) => toMap(v);
-  Map<String, dynamic> toMap(Trip t) => {
-        'id': Mapper.i.$enc(t.id, 'id'),
-        'name': Mapper.i.$enc(t.name, 'name'),
-        'pictureUrl': Mapper.i.$enc(t.pictureUrl, 'pictureUrl'),
-        'template': Mapper.i.$enc(t.template, 'template'),
-        'theme': Mapper.i.$enc(t.theme, 'theme'),
-        'users': Mapper.i.$enc(t.users, 'users'),
-        'modules': Mapper.i.$enc(t.modules, 'modules'),
-        'moduleBlacklist': Mapper.i.$enc(t.moduleBlacklist, 'moduleBlacklist')
+  Function get encoder => (Group v) => encode(v);
+  dynamic encode(Group v) => toMap(v);
+  Map<String, dynamic> toMap(Group g) => {
+        'id': Mapper.i.$enc(g.id, 'id'),
+        'name': Mapper.i.$enc(g.name, 'name'),
+        'pictureUrl': Mapper.i.$enc(g.pictureUrl, 'pictureUrl'),
+        'template': Mapper.i.$enc(g.template, 'template'),
+        'theme': Mapper.i.$enc(g.theme, 'theme'),
+        'users': Mapper.i.$enc(g.users, 'users'),
+        'modules': Mapper.i.$enc(g.modules, 'modules'),
+        'moduleBlacklist': Mapper.i.$enc(g.moduleBlacklist, 'moduleBlacklist')
       };
 
   @override
-  String stringify(Trip self) =>
-      'Trip(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, template: ${Mapper.asString(self.template)}, theme: ${Mapper.asString(self.theme)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)}, moduleBlacklist: ${Mapper.asString(self.moduleBlacklist)})';
+  String stringify(Group self) =>
+      'Group(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, template: ${Mapper.asString(self.template)}, theme: ${Mapper.asString(self.theme)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)}, moduleBlacklist: ${Mapper.asString(self.moduleBlacklist)})';
   @override
-  int hash(Trip self) =>
+  int hash(Group self) =>
       Mapper.hash(self.name) ^
       Mapper.hash(self.id) ^
       Mapper.hash(self.pictureUrl) ^
@@ -173,7 +173,7 @@ class TripMapper extends BaseMapper<Trip> {
       Mapper.hash(self.modules) ^
       Mapper.hash(self.moduleBlacklist);
   @override
-  bool equals(Trip self, Trip other) =>
+  bool equals(Group self, Group other) =>
       Mapper.isEqual(self.name, other.name) &&
       Mapper.isEqual(self.id, other.id) &&
       Mapper.isEqual(self.pictureUrl, other.pictureUrl) &&
@@ -184,39 +184,39 @@ class TripMapper extends BaseMapper<Trip> {
       Mapper.isEqual(self.moduleBlacklist, other.moduleBlacklist);
 
   @override
-  Function get typeFactory => (f) => f<Trip>();
+  Function get typeFactory => (f) => f<Group>();
 }
 
-extension TripMapperExtension on Trip {
+extension GroupMapperExtension on Group {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-  TripCopyWith<Trip> get copyWith => TripCopyWith(this, $identity);
+  GroupCopyWith<Group> get copyWith => GroupCopyWith(this, $identity);
 }
 
-abstract class TripCopyWith<$R> {
-  factory TripCopyWith(Trip value, Then<Trip, $R> then) = _TripCopyWithImpl<$R>;
+abstract class GroupCopyWith<$R> {
+  factory GroupCopyWith(Group value, Then<Group, $R> then) = _GroupCopyWithImpl<$R>;
   ThemeModelCopyWith<$R> get theme;
-  MapCopyWith<$R, String, TripUser, TripUserCopyWith<$R>> get users;
+  MapCopyWith<$R, String, GroupUser, GroupUserCopyWith<$R>> get users;
   $R call(
       {String? id,
       String? name,
       String? pictureUrl,
       TemplateModel? template,
       ThemeModel? theme,
-      Map<String, TripUser>? users,
+      Map<String, GroupUser>? users,
       Map<String, List<String>>? modules,
       List<String>? moduleBlacklist});
-  $R apply(Trip Function(Trip) transform);
+  $R apply(Group Function(Group) transform);
 }
 
-class _TripCopyWithImpl<$R> extends BaseCopyWith<Trip, $R> implements TripCopyWith<$R> {
-  _TripCopyWithImpl(Trip value, Then<Trip, $R> then) : super(value, then);
+class _GroupCopyWithImpl<$R> extends BaseCopyWith<Group, $R> implements GroupCopyWith<$R> {
+  _GroupCopyWithImpl(Group value, Then<Group, $R> then) : super(value, then);
 
   @override
   ThemeModelCopyWith<$R> get theme => ThemeModelCopyWith($value.theme, (v) => call(theme: v));
   @override
-  MapCopyWith<$R, String, TripUser, TripUserCopyWith<$R>> get users =>
-      MapCopyWith($value.users, (v, t) => TripUserCopyWith(v, t), (v) => call(users: v));
+  MapCopyWith<$R, String, GroupUser, GroupUserCopyWith<$R>> get users =>
+      MapCopyWith($value.users, (v, t) => GroupUserCopyWith(v, t), (v) => call(users: v));
   @override
   $R call(
           {String? id,
@@ -224,10 +224,10 @@ class _TripCopyWithImpl<$R> extends BaseCopyWith<Trip, $R> implements TripCopyWi
           Object? pictureUrl = $none,
           TemplateModel? template,
           ThemeModel? theme,
-          Map<String, TripUser>? users,
+          Map<String, GroupUser>? users,
           Map<String, List<String>>? modules,
           List<String>? moduleBlacklist}) =>
-      $then(Trip(
+      $then(Group(
           id: id ?? $value.id,
           name: name ?? $value.name,
           pictureUrl: or(pictureUrl, $value.pictureUrl),
@@ -238,58 +238,58 @@ class _TripCopyWithImpl<$R> extends BaseCopyWith<Trip, $R> implements TripCopyWi
           moduleBlacklist: moduleBlacklist ?? $value.moduleBlacklist));
 }
 
-class TripUserMapper extends BaseMapper<TripUser> {
-  TripUserMapper._();
+class GroupUserMapper extends BaseMapper<GroupUser> {
+  GroupUserMapper._();
 
   @override
   Function get decoder => decode;
-  TripUser decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  TripUser fromMap(Map<String, dynamic> map) => TripUser(
+  GroupUser decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  GroupUser fromMap(Map<String, dynamic> map) => GroupUser(
       role: Mapper.i.$getOpt(map, 'role') ?? UserRoles.participant,
       nickname: Mapper.i.$getOpt(map, 'nickname'),
       profileUrl: Mapper.i.$getOpt(map, 'profileUrl'));
 
   @override
-  Function get encoder => (TripUser v) => encode(v);
-  dynamic encode(TripUser v) => toMap(v);
-  Map<String, dynamic> toMap(TripUser t) => {
-        'role': Mapper.i.$enc(t.role, 'role'),
-        'nickname': Mapper.i.$enc(t.nickname, 'nickname'),
-        'profileUrl': Mapper.i.$enc(t.profileUrl, 'profileUrl')
+  Function get encoder => (GroupUser v) => encode(v);
+  dynamic encode(GroupUser v) => toMap(v);
+  Map<String, dynamic> toMap(GroupUser g) => {
+        'role': Mapper.i.$enc(g.role, 'role'),
+        'nickname': Mapper.i.$enc(g.nickname, 'nickname'),
+        'profileUrl': Mapper.i.$enc(g.profileUrl, 'profileUrl')
       };
 
   @override
-  String stringify(TripUser self) =>
-      'TripUser(role: ${Mapper.asString(self.role)}, nickname: ${Mapper.asString(self.nickname)}, profileUrl: ${Mapper.asString(self.profileUrl)})';
+  String stringify(GroupUser self) =>
+      'GroupUser(role: ${Mapper.asString(self.role)}, nickname: ${Mapper.asString(self.nickname)}, profileUrl: ${Mapper.asString(self.profileUrl)})';
   @override
-  int hash(TripUser self) => Mapper.hash(self.role) ^ Mapper.hash(self.nickname) ^ Mapper.hash(self.profileUrl);
+  int hash(GroupUser self) => Mapper.hash(self.role) ^ Mapper.hash(self.nickname) ^ Mapper.hash(self.profileUrl);
   @override
-  bool equals(TripUser self, TripUser other) =>
+  bool equals(GroupUser self, GroupUser other) =>
       Mapper.isEqual(self.role, other.role) &&
       Mapper.isEqual(self.nickname, other.nickname) &&
       Mapper.isEqual(self.profileUrl, other.profileUrl);
 
   @override
-  Function get typeFactory => (f) => f<TripUser>();
+  Function get typeFactory => (f) => f<GroupUser>();
 }
 
-extension TripUserMapperExtension on TripUser {
+extension GroupUserMapperExtension on GroupUser {
   String toJson() => Mapper.toJson(this);
   Map<String, dynamic> toMap() => Mapper.toMap(this);
-  TripUserCopyWith<TripUser> get copyWith => TripUserCopyWith(this, $identity);
+  GroupUserCopyWith<GroupUser> get copyWith => GroupUserCopyWith(this, $identity);
 }
 
-abstract class TripUserCopyWith<$R> {
-  factory TripUserCopyWith(TripUser value, Then<TripUser, $R> then) = _TripUserCopyWithImpl<$R>;
+abstract class GroupUserCopyWith<$R> {
+  factory GroupUserCopyWith(GroupUser value, Then<GroupUser, $R> then) = _GroupUserCopyWithImpl<$R>;
   $R call({String? role, String? nickname, String? profileUrl});
-  $R apply(TripUser Function(TripUser) transform);
+  $R apply(GroupUser Function(GroupUser) transform);
 }
 
-class _TripUserCopyWithImpl<$R> extends BaseCopyWith<TripUser, $R> implements TripUserCopyWith<$R> {
-  _TripUserCopyWithImpl(TripUser value, Then<TripUser, $R> then) : super(value, then);
+class _GroupUserCopyWithImpl<$R> extends BaseCopyWith<GroupUser, $R> implements GroupUserCopyWith<$R> {
+  _GroupUserCopyWithImpl(GroupUser value, Then<GroupUser, $R> then) : super(value, then);
 
   @override
-  $R call({String? role, Object? nickname = $none, Object? profileUrl = $none}) => $then(TripUser(
+  $R call({String? role, Object? nickname = $none, Object? profileUrl = $none}) => $then(GroupUser(
       role: role ?? $value.role,
       nickname: or(nickname, $value.nickname),
       profileUrl: or(profileUrl, $value.profileUrl)));

@@ -5,7 +5,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../providers/trips/selected_trip_provider.dart';
+import '../../providers/groups/selected_group_provider.dart';
 import '../elements/elements.dart';
 import 'module_builder.dart';
 import 'module_context.dart';
@@ -34,7 +34,7 @@ class ModuleRegistry {
   }
 
   Future<List<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) async {
-    var moduleBlacklist = context.read(selectedTripProvider)!.moduleBlacklist;
+    var moduleBlacklist = context.read(selectedGroupProvider)!.moduleBlacklist;
     var widgets = await Future.wait([
       for (var m in modules.entries)
         if (!moduleBlacklist.contains(m.key))
