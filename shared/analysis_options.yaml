@@ -1,10 +1,10 @@
-include: package:flutter_lints/flutter.yaml
+include: package:lints/recommended.yaml
 
 analyzer:
   exclude:
     - lib/**.g.dart
-    - lib/modules/supply**
-    - lib/api_client/**
+    - lib/**.client.dart
+    - lib/**.server.dart
   strong-mode:
     implicit-casts: false
     implicit-dynamic: true
