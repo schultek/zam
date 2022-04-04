@@ -1,6 +1,9 @@
-targets:
-  $default:
-    builders:
-      dart_mappable_builder:
-        generate_for:
-          - lib/models/models.dart
+builders:
+  cloud_run_builder:
+    import: package:backend/builder.dart
+    builder_factories: [cloudRunBuilder]
+    build_extensions:
+      'lib/functions.dart':
+        - lib/functions.json
+    auto_apply: root_package
+    build_to: cache

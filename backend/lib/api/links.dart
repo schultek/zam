@@ -56,9 +56,9 @@ class CreateGroupInvitationLink extends CreateGroupInvitationLinkEndpoint {
   FutureOr<String> createGroupInvitationLink(String groupId, String role, ApiRequest request) async {
     var group = await request.app.firestore().doc('groups/$groupId').get();
 
-    // if (!group.exists) {
-    //   throw ApiException(400, 'The group with id $groupId does not exist.');
-    // }
+    if (!group.exists) {
+      throw ApiException(400, 'The group with id $groupId does not exist.');
+    }
 
     var isAdmin = request.user.isAdmin;
 
@@ -72,8 +72,58 @@ class CreateGroupInvitationLink extends CreateGroupInvitationLinkEndpoint {
 
 class OnLinkReceived extends OnLinkReceivedEndpoint {
   @override
-  FutureOr<bool> onLinkReceived(String link, ApiRequest request) {
-    // TODO: implement onLinkReceived
-    throw UnimplementedError();
+  FutureOr<bool> onLinkReceived(String link, ApiRequest request) async {
+    var uri = Uri.parse(link);
+
+    var sentHmac = uri.queryParameters['hmac'];
+    var sourceLink = uri.replace(queryParameters: {...uri.queryParameters}..remove('hmac')).toString();
+
+    var calculatedHmac = hmac.convert(utf8.encode(sourceLink)).toString();
+
+    if (sentHmac != calculatedHmac) {
+      throw ApiException(400, 'Invalid link hash');
+    }
+
+    if (uri.path == '/invitation/organizer' || uri.path == '/invitation/admin') {
+      var user = await request.app.auth().getUser(request.user.uid);
+
+      var sentPhoneNumber = Uri.decodeQueryComponent(uri.queryParameters['phoneNumber'] ?? '');
+
+      if (sentPhoneNumber.isNotEmpty && sentPhoneNumber != request.user.phoneNumber) {
+        throw ApiException(
+            400,
+            'Users phone number (${user.phoneNumber}) does not match required number '
+            'from invitation ($sentPhoneNumber)');
+      }
+
+      if (uri.path.endsWith('organizer')) {
+        await request.app.auth().setCustomUserClaims(
+          request.user.uid,
+          {...user.customClaims ?? {}, 'isOrganizer': true},
+        );
+      } else if (uri.path.endsWith('admin')) {
+        await request.app.auth().setCustomUserClaims(
+          request.user.uid,
+          {...user.customClaims ?? {}, 'isAdmin': true},
+        );
+      }
+
+      return true;
+    } else if (uri.path == '/invitation/group') {
+      var groupId = uri.queryParameters['groupId'];
+      var role = uri.queryParameters['role'];
+
+      var groupRef = request.app.firestore().doc('groups/$groupId');
+      var group = await groupRef.get();
+
+      if (!group.exists) {
+        throw ApiException(400, 'The group with id $groupId does not exist.');
+      }
+
+      print('Adding user ${request.user.uid} to group $groupId with role $role.');
+      await groupRef.update({'users.${request.user.uid}.role': role ?? 'participant'});
+    }
+
+    return false;
   }
 }

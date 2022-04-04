@@ -27,6 +27,9 @@ class AuthMiddleware extends ApiMiddleware {
 
   @override
   FutureOr<dynamic> apply(ShelfApiRequest request, FutureOr<dynamic> Function(ApiRequest) next) async {
+    if (request.context['claims'] is OpenIdClaims) {
+      return checkClaims(request, next);
+    }
     if (request.headers[Headers.auth]?.startsWith('Bearer ') ?? false) {
       var time = DateTime.now();
       var token = request.headers[Headers.auth]!.split('Bearer ')[1];
@@ -37,13 +40,17 @@ class AuthMiddleware extends ApiMiddleware {
       } catch (e) {
         throw ApiException(401, 'Forbidden: $e');
       }
-      if (validateClaims == null || validateClaims!(idToken.claims)) {
-        return next(request.change(context: {'claims': idToken.claims}));
-      } else {
-        throw ApiException(401, 'User is not allowed to call ${request.url}');
-      }
+      return checkClaims(request.change(context: {'claims': idToken.claims}), next);
     } else {
       throw ApiException(401, 'User authentication header is missing.');
+    }
+  }
+
+  FutureOr<dynamic> checkClaims(ShelfApiRequest request, FutureOr<dynamic> Function(ApiRequest) next) {
+    if (validateClaims == null || validateClaims!(request.user)) {
+      return next(request);
+    } else {
+      throw ApiException(401, 'User is not allowed to call ${request.url}');
     }
   }
 }

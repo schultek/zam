@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:yaml/yaml.dart';
@@ -5,8 +6,7 @@ import 'package:yaml_writer/yaml_writer.dart';
 
 void main() async {
   await buildPackage();
-
-  /*
+  await run('dart pub get');
   await run('dart run build_runner build');
 
   var functionsJsonPath = '.dart_tool/build/generated/backend/lib/functions.json';
@@ -41,14 +41,17 @@ void main() async {
           '--event-filters-path-pattern="resourceName=${trigger['resourceName']}"');
     }
   }
-
- */
 }
 
-Future<int> run(String command, {bool output = true}) async {
-  print('RUNNING $command');
+Future<int> run(String command, {bool shell = false, bool output = true}) async {
+  print('RUNNING $command IN $_workingDir');
   var args = command.split(' ');
-  var process = await Process.start(args[0], args.skip(1).toList(), workingDirectory: _workingDir);
+  var process = await Process.start(
+    args[0],
+    args.skip(1).toList(),
+    workingDirectory: _workingDir,
+    runInShell: shell,
+  );
 
   if (output) {
     process.stdout.listen((event) => stdout.add(event));
@@ -83,7 +86,7 @@ Future<void> buildPackage() async {
     await buildDir.delete(recursive: true);
   }
 
-  await copy('.', 'build/', ['build/', 'tool/', 'test/']);
+  await copy('.', 'build/', exclude: ['./build', './.packages', './tool', './bin']);
 
   bool hasChangedDependencies = false;
 
@@ -94,7 +97,7 @@ Future<void> buildPackage() async {
       print('Found path dependency: $dep');
 
       var path = dep['path'] as String;
-      await copy(path + '/', 'build/packages/$key/', []);
+      await copy(path, 'build/packages/');
 
       dependencies[key] = {'path': 'packages/$key'};
       hasChangedDependencies = true;
@@ -109,10 +112,20 @@ Future<void> buildPackage() async {
   changeWorkingDir('build/');
 }
 
-Future<void> copy(String from, String to, List<String> exclude) async {
-  var dir = Directory(to);
-  if (!(await dir.exists())) {
-    await dir.create(recursive: true);
+Future<void> copy(String from, String to, {List<String>? exclude}) async {
+  var fromDir = Directory(from);
+  var toDir = Directory(to);
+
+  if (!(await toDir.exists())) {
+    await toDir.create(recursive: true);
   }
-  await run('rsync -av --progress $from $to ${exclude.map((e) => '--exclude $e').join(' ')}', output: false);
+
+  if (exclude != null) {
+    var files = await fromDir.list().toList();
+    var filesList = files.map((f) => f.path).where((p) => !exclude.contains(p)).join(' ');
+
+    await run('cp -r $filesList ${toDir.path}');
+  } else {
+    await run('cp -r ${fromDir.path} ${toDir.path}');
+  }
 }

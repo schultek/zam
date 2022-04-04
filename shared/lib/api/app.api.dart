@@ -1,10 +1,16 @@
 import 'package:api_agent/api_agent.dart';
 
 import 'mapper_codec.dart';
+import 'modules/announcement.dart';
+import 'modules/chat.dart';
 
 @ApiDefinition(codec: MapperCodec())
 abstract class AppApi {
   LinksApi get links;
+
+  AnnouncementApi get announcement;
+
+  ChatApi get chat;
 }
 
 @ApiDefinition()

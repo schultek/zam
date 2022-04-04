@@ -4,6 +4,8 @@ import 'package:api_agent/server.dart';
 
 import 'app.api.dart';
 import 'mapper_codec.dart';
+import 'modules/announcement.dart';
+import 'modules/chat.dart';
 
 export 'app.api.dart';
 
@@ -19,21 +21,33 @@ mixin _AppApiEndpointMixin implements ApiEndpoint<AppApiEndpoint> {
 abstract class AppApiEndpoint with _AppApiEndpointMixin {
   static ApiEndpoint<AppApiEndpoint> from({
     required ApiEndpoint<LinksApiEndpoint> links,
+    required ApiEndpoint<AnnouncementApiEndpoint> announcement,
+    required ApiEndpoint<ChatApiEndpoint> chat,
   }) =>
-      _AppApiEndpoint(links);
+      _AppApiEndpoint(links, announcement, chat);
 
   LinksApiEndpoint get links;
+
+  AnnouncementApiEndpoint get announcement;
+
+  ChatApiEndpoint get chat;
   @override
   List<ApiEndpoint> get endpoints => [
         links,
+        announcement,
+        chat,
       ];
 }
 
 class _AppApiEndpoint with _AppApiEndpointMixin {
-  _AppApiEndpoint(this.linksEndpoint);
+  _AppApiEndpoint(
+      this.linksEndpoint, this.announcementEndpoint, this.chatEndpoint);
   final ApiEndpoint<LinksApiEndpoint> linksEndpoint;
+  final ApiEndpoint<AnnouncementApiEndpoint> announcementEndpoint;
+  final ApiEndpoint<ChatApiEndpoint> chatEndpoint;
   @override
-  List<ApiEndpoint> get endpoints => [linksEndpoint];
+  List<ApiEndpoint> get endpoints =>
+      [linksEndpoint, announcementEndpoint, chatEndpoint];
 }
 
 mixin _LinksApiEndpointMixin implements ApiEndpoint<LinksApiEndpoint> {
@@ -201,5 +215,123 @@ class _OnLinkReceivedEndpoint extends OnLinkReceivedEndpoint {
   @override
   FutureOr<bool> onLinkReceived(String link, covariant ApiRequest request) {
     return handler(link, request);
+  }
+}
+
+mixin _AnnouncementApiEndpointMixin
+    implements ApiEndpoint<AnnouncementApiEndpoint> {
+  List<ApiEndpoint> get endpoints;
+
+  @override
+  void build(ApiBuilder builder) {
+    builder.mount('AnnouncementApi', endpoints);
+  }
+}
+
+abstract class AnnouncementApiEndpoint with _AnnouncementApiEndpointMixin {
+  static ApiEndpoint<AnnouncementApiEndpoint> from({
+    required ApiEndpoint<SendNotificationEndpoint> sendNotification,
+  }) =>
+      _AnnouncementApiEndpoint(sendNotification);
+
+  FutureOr<void> sendNotification(
+      AnnouncementNotification announcement, covariant ApiRequest request);
+  @override
+  List<ApiEndpoint> get endpoints => [
+        SendNotificationEndpoint.from(sendNotification),
+      ];
+}
+
+class _AnnouncementApiEndpoint with _AnnouncementApiEndpointMixin {
+  _AnnouncementApiEndpoint(this.sendNotificationEndpoint);
+  final ApiEndpoint<SendNotificationEndpoint> sendNotificationEndpoint;
+  @override
+  List<ApiEndpoint> get endpoints => [sendNotificationEndpoint];
+}
+
+abstract class SendNotificationEndpoint
+    implements ApiEndpoint<SendNotificationEndpoint> {
+  SendNotificationEndpoint();
+  factory SendNotificationEndpoint.from(
+      FutureOr<void> Function(
+              AnnouncementNotification announcement, ApiRequest request)
+          handler) = _SendNotificationEndpoint;
+  FutureOr<void> sendNotification(
+      AnnouncementNotification announcement, covariant ApiRequest request);
+  @override
+  void build(ApiBuilder builder) {
+    builder.handle(
+        'sendNotification', (r) => sendNotification(r.get('announcement'), r));
+  }
+}
+
+class _SendNotificationEndpoint extends SendNotificationEndpoint {
+  _SendNotificationEndpoint(this.handler);
+
+  final FutureOr<void> Function(
+      AnnouncementNotification announcement, ApiRequest request) handler;
+
+  @override
+  FutureOr<void> sendNotification(
+      AnnouncementNotification announcement, covariant ApiRequest request) {
+    return handler(announcement, request);
+  }
+}
+
+mixin _ChatApiEndpointMixin implements ApiEndpoint<ChatApiEndpoint> {
+  List<ApiEndpoint> get endpoints;
+
+  @override
+  void build(ApiBuilder builder) {
+    builder.mount('ChatApi', endpoints);
+  }
+}
+
+abstract class ChatApiEndpoint with _ChatApiEndpointMixin {
+  static ApiEndpoint<ChatApiEndpoint> from({
+    required ApiEndpoint<ChatApiSendNotificationEndpoint> sendNotification,
+  }) =>
+      _ChatApiEndpoint(sendNotification);
+
+  FutureOr<void> sendNotification(
+      ChatNotification notification, covariant ApiRequest request);
+  @override
+  List<ApiEndpoint> get endpoints => [
+        ChatApiSendNotificationEndpoint.from(sendNotification),
+      ];
+}
+
+class _ChatApiEndpoint with _ChatApiEndpointMixin {
+  _ChatApiEndpoint(this.sendNotificationEndpoint);
+  final ApiEndpoint<ChatApiSendNotificationEndpoint> sendNotificationEndpoint;
+  @override
+  List<ApiEndpoint> get endpoints => [sendNotificationEndpoint];
+}
+
+abstract class ChatApiSendNotificationEndpoint
+    implements ApiEndpoint<ChatApiSendNotificationEndpoint> {
+  ChatApiSendNotificationEndpoint();
+  factory ChatApiSendNotificationEndpoint.from(
+      FutureOr<void> Function(ChatNotification notification, ApiRequest request)
+          handler) = _ChatApiSendNotificationEndpoint;
+  FutureOr<void> sendNotification(
+      ChatNotification notification, covariant ApiRequest request);
+  @override
+  void build(ApiBuilder builder) {
+    builder.handle(
+        'sendNotification', (r) => sendNotification(r.get('notification'), r));
+  }
+}
+
+class _ChatApiSendNotificationEndpoint extends ChatApiSendNotificationEndpoint {
+  _ChatApiSendNotificationEndpoint(this.handler);
+
+  final FutureOr<void> Function(
+      ChatNotification notification, ApiRequest request) handler;
+
+  @override
+  FutureOr<void> sendNotification(
+      ChatNotification notification, covariant ApiRequest request) {
+    return handler(notification, request);
   }
 }

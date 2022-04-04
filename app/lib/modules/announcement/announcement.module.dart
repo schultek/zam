@@ -6,6 +6,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
+import 'package:shared/api/modules/announcement.dart';
 
 import '../module.dart';
 import 'pages/announcement_create_page.dart';

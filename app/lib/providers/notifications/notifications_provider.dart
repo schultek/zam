@@ -40,10 +40,4 @@ class NotificationLogic {
       ref.read(messageProvider.state).state = message;
     });
   }
-
-  Future<void> subscribe(String topic) async {
-    await setup();
-    print('Subscribing to $topic');
-    await _firebaseMessaging.subscribeToTopic(topic);
-  }
 }

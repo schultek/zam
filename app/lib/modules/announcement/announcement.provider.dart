@@ -12,6 +12,7 @@ final isDismissedProvider = FutureProvider.family((ref, String id) async {
   return dismissed.contains(id);
 });
 
+final announcementApiProvider = Provider((ref) => ref.watch(apiProvider).announcement);
 final announcementLogicProvider = Provider((ref) => AnnouncementLogic(ref));
 
 class AnnouncementLogic {
@@ -20,6 +21,12 @@ class AnnouncementLogic {
 
   Future<String> createAnnouncement(Announcement announcement) async {
     var doc = await ref.read(moduleDocProvider('announcements')).collection('announcements').add(announcement.toMap());
+    await ref.read(announcementApiProvider).sendNotification(AnnouncementNotification(
+          ref.read(selectedGroupIdProvider)!,
+          doc.id,
+          announcement.title,
+          announcement.message,
+        ));
     return doc.id;
   }
 

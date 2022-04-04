@@ -4,6 +4,7 @@ FROM dart:stable AS build
 # Resolve app dependencies.
 WORKDIR /app
 COPY pubspec.* ./
+COPY packages ./packages
 RUN dart pub get
 
 # Copy app source code (except anything in .dockerignore) and AOT compile app.
@@ -16,6 +17,7 @@ FROM scratch
 
 COPY --from=build /runtime/ /
 COPY --from=build /app/bin/server /app/bin/
+COPY serviceAccountKey.json /
 
 ARG TARGET
 ARG SIGNATURE_TYPE

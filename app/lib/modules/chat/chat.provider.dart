@@ -24,6 +24,7 @@ final channelMessagesProvider = StreamProvider.family((ref, String id) => ref
     .snapshots()
     .map((s) => s.docs.map((doc) => Mapper.fromValue<ChatMessage>(doc.toMap())).toList()));
 
+final chatApiProvider = Provider((ref) => ref.watch(apiProvider).chat);
 final chatLogicProvider = Provider((ref) => ChatLogic(ref));
 
 class ChatLogic {
@@ -44,14 +45,6 @@ class ChatLogic {
     await chat.collection('channels').doc(id).delete();
   }
 
-  void send(String channelId, String text) {
-    chat.collection('channels/$channelId/messages').add(ChatTextMessage(
-          sender: ref.read(userIdProvider)!,
-          text: text,
-          sentAt: DateTime.now(),
-        ).toMap());
-  }
-
   Future<void> joinChannel(ChannelInfo channel) async {
     await chat.collection('channels').doc(channel.id).update({
       'members': FieldValue.arrayUnion([ref.read(userIdProvider)]),
@@ -68,6 +61,14 @@ class ChatLogic {
     await chat.collection('channels').doc(id).update({
       'members': FieldValue.arrayUnion(members),
     });
+  }
+
+  Future<void> send(String channelId, String text) async {
+    var msgDoc = await chat
+        .collection('channels/$channelId/messages')
+        .add(ChatTextMessage(sender: ref.read(userIdProvider)!, text: text, sentAt: DateTime.now()).toMap());
+    ref.read(chatApiProvider).sendNotification(
+        ChatNotification(ref.read(selectedGroupIdProvider)!, channelId, msgDoc.id, 'New message', text));
   }
 
   Future<void> sendImage(String channelId, XFile res) async {

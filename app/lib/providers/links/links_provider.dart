@@ -1,12 +1,12 @@
 import 'dart:async';
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/core.dart';
 import '../../helpers/extensions.dart';
+import '../api/api.dart';
 import '../auth/claims_provider.dart';
 import '../auth/logic_provider.dart';
 import '../auth/user_provider.dart';
@@ -92,15 +92,15 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
   }
 
   Future<void> handleReceivedLink(Uri link) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('onLinkReceived');
-    var res = await callable.call({'link': link.toString()});
-    var claimsChanged = res.data as bool;
+    var claimsChanged = await ref.read(linkApiProvider).onLinkReceived(link.toString());
     if (claimsChanged) {
       await ref.read(claimsProvider.notifier).refresh();
     }
     state = LinkState.noLink();
   }
 }
+
+final linkApiProvider = Provider((ref) => ref.watch(apiProvider).links);
 
 final linkLogicProvider = Provider((ref) => LinkLogic(ref));
 
@@ -109,10 +109,9 @@ class LinkLogic {
   LinkLogic(this.ref);
 
   Future<String> createOrganizerLink({required BuildContext context, required String phoneNumber}) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createOrganizerLink');
-    var res = await callable.call({'phoneNumber': phoneNumber});
+    var link = await ref.read(linkApiProvider).createOrganizerLink(phoneNumber: phoneNumber);
     return _buildDynamicLink(
-      link: res.data as String,
+      link: link,
       meta: SocialMetaTagParameters(
         title: context.tr.become_organizer,
         description: context.tr.become_organizer_desc,
@@ -122,10 +121,9 @@ class LinkLogic {
   }
 
   Future<String> createAdminLink({required BuildContext context, required String phoneNumber}) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createAdminLink');
-    var res = await callable.call({'phoneNumber': phoneNumber});
+    var link = await ref.read(linkApiProvider).createAdminLink(phoneNumber: phoneNumber);
     return _buildDynamicLink(
-      link: res.data as String,
+      link: link,
       meta: SocialMetaTagParameters(
         title: context.tr.become_admin,
         description: context.tr.become_admin_desc,
@@ -135,10 +133,9 @@ class LinkLogic {
   }
 
   Future<String> createGroupInvitationLink({required Group group, String role = UserRoles.participant}) async {
-    HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('createGroupInvitationLink');
-    var res = await callable.call({'groupId': group.id, 'role': role});
+    var link = await ref.read(linkApiProvider).createGroupInvitationLink(group.id + 'asd', role);
     return _buildDynamicLink(
-      link: res.data as String,
+      link: link,
       meta: SocialMetaTagParameters(
         title: role == UserRoles.participant
             ? group.name
