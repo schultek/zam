@@ -1,0 +1,42 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/deploy_backend.yml'
+      - 'backend/**'
+
+name: Build and Deploy Backend
+
+jobs:
+  deploy_functions:
+    name: Deploy Functions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - uses: dart-lang/setup-dart@v1
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: ${{ secrets.FUNCTIONS_SERVICE_ACCOUNT_KEY }}
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          project_id: jufa20
+
+      - name: Write ServiceAccountKey File
+        run: 'echo "$SERVICE_ACCOUNT_KEY" > backend/serviceAccountKey.json'
+        shell: bash
+        env:
+          SERVICE_ACCOUNT_KEY: ${{ secrets.FUNCTIONS_SERVICE_ACCOUNT_KEY }}
+
+      - name: Deploy Backend
+        run: |
+          cd backend
+          dart run tool/deploy.dart
