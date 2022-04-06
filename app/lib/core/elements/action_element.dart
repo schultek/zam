@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../module/module_context.dart';
 import '../route/route.dart';
 import 'module_element.dart';
-import 'widgets/module_element_builder.dart';
+import 'widgets/element_mixin.dart';
 
-class ActionElement extends ModuleElement with ModuleElementBuilder<ActionElement> {
+class ActionElement extends ModuleElement with ElementMixin<ActionElement> {
   final IconData icon;
   final String text;
   final void Function(BuildContext)? onTap;

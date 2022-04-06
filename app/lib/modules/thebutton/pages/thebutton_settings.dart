@@ -1,31 +1,41 @@
 import 'dart:math';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../thebutton.module.dart';
-import '../widgets/clip_layer.dart';
-import '../widgets/expand_clipper.dart';
 
 class TheButtonSettings extends StatefulWidget {
-  const TheButtonSettings({required Key key}) : super(key: key);
+  const TheButtonSettings({required this.onChanged, Key? key}) : super(key: key);
+
+  final void Function(String) onChanged;
 
   @override
   _TheButtonSettingsState createState() => _TheButtonSettingsState();
 }
 
 class _TheButtonSettingsState extends State<TheButtonSettings> {
-  bool settingsOpen = false;
-  bool resetOpen = false;
-  bool confirmOpen = false;
-  bool? isResettingHealth;
-
-  final scrollController = ScrollController();
+  late final ScrollController scrollController;
 
   final options = ['0:10', '0:20', '0:30', '0:45', '1', '2', '5', '10', '24'];
   int selectedIndex = 0;
+
+  final double height = 200;
+
+  @override
+  void initState() {
+    super.initState();
+    var currentHours = context.read(theButtonProvider).value?.aliveHours ?? 0;
+    var currentOption = valueToOption(currentHours);
+    var currentIndex = options.indexOf(currentOption);
+    if (currentIndex != -1) {
+      selectedIndex = currentIndex;
+      scrollController = ScrollController(initialScrollOffset: currentIndex * height * 0.2);
+    } else {
+      scrollController = ScrollController();
+    }
+  }
 
   void animateSnap({double? pixel, required double itemSize}) {
     int cardIndex = ((pixel! - itemSize / 2) / itemSize).ceil();
@@ -55,11 +65,15 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) => Stack(
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: height),
+      child: Stack(
         children: [
-          settingsButton(context, constraints),
-          settingsPage(constraints),
+          focusShade(),
+          timerIcon(),
+          hourIcon(),
+          timeScroller(),
+          submitButton(),
         ],
       ),
     );
@@ -72,50 +86,10 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
     return h == 0 ? '0:$m' : '$h';
   }
 
-  Widget settingsButton(BuildContext context, BoxConstraints constraints) {
+  Widget focusShade() {
     return Positioned(
-      top: 0,
-      right: 0,
-      child: IconButton(
-        visualDensity: VisualDensity.compact,
-        icon: Icon(Icons.settings, size: 20, color: context.onSurfaceHighlightColor),
-        onPressed: () => setState(() {
-          settingsOpen = true;
-          selectIndex(
-            options.indexOf(asOption(context.read(theButtonProvider).value?.aliveHours) ?? options[0]),
-            constraints.maxHeight * 0.2,
-            animate: false,
-          );
-        }),
-      ),
-    );
-  }
-
-  Widget settingsPage(BoxConstraints constraints) {
-    return ClipLayer(
-      matchColor: true,
-      corner: Corner.topRight,
-      isOpen: settingsOpen,
-      child: Stack(
-        children: [
-          focusShade(constraints),
-          timerIcon(),
-          hourIcon(),
-          timeScroller(constraints),
-          submitButton(),
-          resetButton(),
-          resetLayer(),
-          confirmLayer(),
-          closeButton(),
-        ],
-      ),
-    );
-  }
-
-  Widget focusShade(BoxConstraints constraints) {
-    return Positioned(
-      top: constraints.maxHeight * 0.35,
-      bottom: constraints.maxHeight * 0.35,
+      top: height * 0.35,
+      bottom: height * 0.35,
       left: 0,
       right: 0,
       child: ThemedSurface(
@@ -165,7 +139,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
     );
   }
 
-  Widget timeScroller(BoxConstraints constraints) {
+  Widget timeScroller() {
     return Positioned.fill(
       child: ThemedSurface(
         builder: (context, fillColor) => NotificationListener(
@@ -173,7 +147,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
             if (n is ScrollEndNotification) {
               animateSnap(
                 pixel: n.metrics.pixels,
-                itemSize: constraints.maxHeight * 0.2,
+                itemSize: height * 0.2,
               );
             }
             return false;
@@ -182,7 +156,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: ListWheelScrollView(
               controller: scrollController,
-              itemExtent: constraints.maxHeight * 0.2,
+              itemExtent: height * 0.2,
               diameterRatio: 1.5,
               useMagnifier: true,
               magnification: 1.5,
@@ -193,7 +167,7 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
                     child: Text(
                       option,
                       style: context.theme.textTheme.headline5!
-                          .copyWith(color: context.onSurfaceColor, fontSize: constraints.maxWidth / 8),
+                          .copyWith(color: context.onSurfaceColor, fontSize: height / 8),
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -205,174 +179,17 @@ class _TheButtonSettingsState extends State<TheButtonSettings> {
     );
   }
 
-  Widget closeButton() {
-    return Positioned(
-      top: 0,
-      right: 0,
-      child: Builder(
-        builder: (context) => IconButton(
-          splashRadius: 20,
-          visualDensity: VisualDensity.compact,
-          icon: Icon(Icons.close, size: 20, color: context.onSurfaceColor),
-          onPressed: () {
-            setState(() {
-              settingsOpen = false;
-              resetOpen = false;
-              confirmOpen = false;
-            });
-          },
-        ),
-      ),
-    );
-  }
-
   Widget submitButton() {
     return Positioned(
-      bottom: 0,
-      right: 0,
+      bottom: 10,
+      right: 10,
       child: IconButton(
-        splashRadius: 20,
+        splashRadius: 30,
         visualDensity: VisualDensity.compact,
-        icon: Icon(Icons.check, size: 20, color: context.theme.colorScheme.primary),
+        icon: Icon(Icons.check, size: 30, color: context.theme.colorScheme.primary),
         onPressed: () {
-          setState(() {
-            context.read(theButtonLogicProvider).setAliveHours(options[selectedIndex]);
-            settingsOpen = false;
-          });
+          widget.onChanged(options[selectedIndex]);
         },
-      ),
-    );
-  }
-
-  Widget resetButton() {
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      child: Builder(
-        builder: (context) => IconButton(
-          splashRadius: 20,
-          visualDensity: VisualDensity.compact,
-          icon: Icon(Icons.settings_backup_restore, size: 20, color: context.onSurfaceColor),
-          onPressed: () {
-            setState(() {
-              resetOpen = true;
-            });
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget resetLayer() {
-    return ClipLayer(
-      isOpen: resetOpen,
-      corner: Corner.bottomLeft,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Builder(
-          builder: (context) => Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
-                onPressed: () {
-                  setState(() {
-                    confirmOpen = true;
-                    isResettingHealth = true;
-                  });
-                },
-                child: AutoSizeText(
-                  context.tr.reset_health,
-                  style: TextStyle(color: context.onSurfaceColor),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  minFontSize: 8,
-                ),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
-                onPressed: () {
-                  setState(() {
-                    confirmOpen = true;
-                    isResettingHealth = false;
-                  });
-                },
-                child: AutoSizeText(
-                  context.tr.reset_leaderboard,
-                  style: TextStyle(color: context.onSurfaceColor),
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  minFontSize: 8,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget confirmLayer() {
-    return ClipLayer(
-      isOpen: confirmOpen,
-      corner: Corner.bottomLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 30, left: 10, right: 10),
-        child: Builder(
-          builder: (context) => Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              AutoSizeText(
-                context.tr.confirm_reset(isResettingHealth ?? false),
-                style: TextStyle(color: context.onSurfaceColor),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Flexible(
-                    child: IconButton(
-                      icon: const Icon(Icons.check, color: Colors.green, size: 28),
-                      onPressed: () {
-                        if (isResettingHealth == true) {
-                          context.read(theButtonLogicProvider).resetHealth();
-                        } else if (isResettingHealth == false) {
-                          context.read(theButtonLogicProvider).resetLeaderboard();
-                        }
-                        setState(() {
-                          settingsOpen = false;
-                          confirmOpen = false;
-                          resetOpen = false;
-                        });
-                      },
-                    ),
-                  ),
-                  Flexible(
-                    child: IconButton(
-                      icon: const Icon(Icons.close, color: Colors.red, size: 28),
-                      onPressed: () {
-                        setState(() {
-                          settingsOpen = false;
-                          confirmOpen = false;
-                          resetOpen = false;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

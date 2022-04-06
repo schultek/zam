@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/editing_providers.dart';
-import '../../providers/selected_area_provider.dart';
 import '../../themes/themes.dart';
 import '../../widgets/group_selector_page.dart';
 import '../../widgets/group_settings_page.dart';
@@ -37,9 +36,6 @@ class GroupSettingsButton extends StatelessWidget {
       child: InkResponse(
         child: Icon(Icons.settings, color: context.onSurfaceColor, size: 20),
         onTap: () {
-          if (context.read(isEditingProvider)) {
-            context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
-          }
           Navigator.push(context, GroupSettingsPage.route());
         },
       ),

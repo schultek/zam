@@ -82,9 +82,6 @@ class BodyWidgetAreaState extends AreaState<MixedGridArea, ContentElement>
   ScrollController get scrollController => widget.scrollController;
 
   @override
-  bool scrollDownEnabled = false; // TODO find something better
-
-  @override
   bool didReorderItem(Offset offset, Key itemKey) {
     Offset itemOffset = getOffset(itemKey);
     Size itemSize = getSize(itemKey);

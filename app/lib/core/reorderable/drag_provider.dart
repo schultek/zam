@@ -67,9 +67,6 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
   Drag onStart(Offset position) {
     if (widgetSelector == null) {
       area.context.read(selectedAreaProvider.notifier).selectWidgetAreaById(area.id);
-      WidgetsBinding.instance!.addPostFrameCallback((timestamp) => onStart(position));
-
-      return this;
     }
 
     Vibration.vibrate(amplitude: 1, duration: 2);
@@ -95,7 +92,8 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
     dragSize = Size(renderBox.size.width, renderBox.size.height);
 
-    var height = isDropAccepted ? dragSize!.height : widgetSelector!.startHeightFor(dragSize!);
+    var height =
+        isDropAccepted || widgetSelector == null ? dragSize!.height : widgetSelector!.startHeightFor(dragSize!);
     var width = height / dragSize!.height * dragSize!.width;
 
     dragOffset = renderBox.localToGlobal(Offset.zero) + Offset(width / 2, height / 2);
@@ -121,7 +119,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
     if (dragOffset == null || widgetSelector == null) return;
     dragOffset = dragOffset! + details.delta;
 
-    if (details.globalPosition.dy < widgetSelector!.topEdge) {
+    if (widgetSelector == null || details.globalPosition.dy < widgetSelector!.topEdge) {
       if (isOverWidgetSelector) {
         isOverWidgetSelector = false;
         dragScaleAnimation!.forward();
@@ -129,12 +127,12 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
       var globalDragOffset = dragOffset! - Offset(dragSize!.width / 2, dragSize!.height / 2);
 
-      var accepted = area.didInsertItem(globalDragOffset, moduleElement!);
+      var accepted = area.didInsertItem(globalDragOffset, moduleElement!, widgetSelector == null);
       if (accepted != isDropAccepted) {
         if (accepted) {
-          widgetSelector!.takeWidget(moduleElement!);
+          widgetSelector?.takeWidget(moduleElement!);
         } else {
-          widgetSelector!.placeWidget(moduleElement!);
+          widgetSelector?.placeWidget(moduleElement!);
         }
       }
       isDropAccepted = accepted;
@@ -161,7 +159,10 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
     HapticFeedback.lightImpact();
 
     var draggedItem = read(reorderableLogicProvider).items[key];
-    if (draggedItem == null) return;
+    if (draggedItem == null) {
+      dispose();
+      return;
+    }
 
     finalAnimation = AnimationController(
       vsync: area.template,
@@ -171,12 +172,15 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
     if (isDropAccepted) {
       area.onDrop();
+    } else if (widgetSelector == null) {
+      dispose();
+      return;
     }
 
     var renderBox = draggedItem.context.findRenderObject()! as RenderBox;
     var size = renderBox.size;
 
-    var dragScale = dragScaleAnimation!.value;
+    var dragScale = dragScaleAnimation?.value ?? (isDropAccepted ? 1 : 0);
     var targetScale = isDropAccepted ? 1 : 0;
 
     var targetHeight = isDropAccepted ? size.height : widgetSelector!.startHeightFor(size);

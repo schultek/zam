@@ -31,6 +31,15 @@ class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
             );
           },
         ),
+        settings: (context) => [
+          ListTile(
+            title: const Text('Resend notification'),
+            subtitle: const Text('Send a push notification to all members'),
+            onTap: () async {
+              await context.read(announcementLogicProvider).resendNotification(announcementId);
+            },
+          ),
+        ],
       );
     } else {
       if (module.context.read(isOrganizerProvider)) {

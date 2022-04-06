@@ -9,44 +9,36 @@ import '../elements/elements.dart';
 import '../templates/templates.dart';
 import '../themes/themes.dart';
 
-class WidgetSelectorController<T extends ModuleElement> {
-  final GlobalKey<WidgetSelectorState<T>> _selectorKey;
-  final WidgetSelector<T> _widgetSelector;
-  final OverlayEntry _entry;
+mixin WidgetSelectorInsets {
+  List<Widget> get widgets;
 
-  void close() => _entry.remove();
-  bool isForArea(AreaState area) => _widgetSelector.widgetArea == area;
-  WidgetSelectorState? get state => _selectorKey.currentState;
-
-  const WidgetSelectorController(this._selectorKey, this._widgetSelector, this._entry);
+  double get outerPadding => 10;
+  double get innerPadding => 10;
+  double get headerHeight => 14;
+  double get maxItemHeight => 90;
+  double get maxItemWidth => 100;
+  double get sheetHeight => widgets.isNotEmpty ? maxItemHeight + outerPadding * 2 + innerPadding * 2 + headerHeight : 0;
 }
 
-class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
+class WidgetSelector<T extends ModuleElement> extends StatefulWidget with WidgetSelectorInsets {
+  @override
   final List<T> widgets;
-  final AreaState<Area<T>, T> widgetArea;
+  final TemplateState templateState;
+  final AreaState<Area<T>, T> areaState;
 
-  const WidgetSelector(Key key, this.widgets, this.widgetArea) : super(key: key);
+  const WidgetSelector(this.templateState, this.widgets, this.areaState, {Key? key}) : super(key: key);
 
   @override
   WidgetSelectorState createState() => WidgetSelectorState<T>();
 
-  static Future<WidgetSelectorController> show<T extends ModuleElement>(
-      TemplateState template, AreaState<Area<T>, T> widgetArea) async {
-    var selectorKey = GlobalKey<WidgetSelectorState<T>>();
+  WidgetSelectorState<T>? get state => (key as GlobalKey<WidgetSelectorState<T>>).currentState;
 
+  static Future<WidgetSelector<T>> from<T extends ModuleElement>(
+    TemplateState template,
+    AreaState<Area<T>, T> widgetArea,
+  ) async {
     List<T> widgets = await registry.getWidgetsOf<T>(widgetArea.context);
-    var widgetSelector = WidgetSelector<T>(selectorKey, widgets, widgetArea);
-
-    var entry = OverlayEntry(
-      builder: (context) => Align(
-        alignment: Alignment.bottomCenter,
-        child: InheritedTemplate(state: template, child: widgetSelector),
-      ),
-    );
-
-    Overlay.of(template.context)!.insert(entry);
-
-    return WidgetSelectorController(selectorKey, widgetSelector, entry);
+    return WidgetSelector<T>(template, widgets, widgetArea, key: GlobalKey<WidgetSelectorState<T>>());
   }
 
   static bool existsIn(BuildContext context) {
@@ -54,7 +46,8 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget {
   }
 }
 
-class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<T>> {
+class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<T>> with WidgetSelectorInsets {
+  @override
   late List<T> widgets;
   late ScrollController _scrollController;
 
@@ -103,7 +96,7 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
     }
 
     var index = widgets.indexOf(toRemove);
-    var newWidget = await registry.getWidget<T>(widget.widgetArea.context, toRemove.module.copyId());
+    var newWidget = await registry.getWidget<T>(widget.areaState.context, toRemove.module.copyId());
 
     setState(() {
       widgets = [...widgets.take(index), newWidget!, ...widgets.skip(index + 1)];
@@ -116,12 +109,6 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
     });
   }
 
-  double get outerPadding => 10;
-  double get innerPadding => 10;
-  double get headerHeight => 14;
-  double get sheetHeight => widgets.isNotEmpty ? maxItemHeight + outerPadding * 2 + innerPadding * 2 + headerHeight : 0;
-  double get maxItemHeight => 90;
-  double get maxItemWidth => 100;
   double get topEdge => (context.findRenderObject()! as RenderBox).localToGlobal(Offset.zero).dy - 10;
 
   double startHeightFor(Size size) {
@@ -157,94 +144,97 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
       return groups;
     });
 
-    return InheritedArea(
-      state: widget.widgetArea,
-      child: GroupTheme(
-        theme: widget.widgetArea.theme,
-        child: AnimatedSize(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          child: SizedBox(
-            height: sheetHeight,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                color: widget.widgetArea.context.surfaceColor,
-                boxShadow: const [BoxShadow(blurRadius: 8, spreadRadius: -4)],
-              ),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(outerPadding),
-                    child: CustomScrollView(
-                      scrollDirection: Axis.horizontal,
-                      controller: _scrollController,
-                      slivers: [
-                        for (var group in groups)
-                          SliverStickyHeader(
-                            overlapsContent: true,
-                            header: Builder(builder: (context) {
-                              return Align(
-                                alignment: Alignment.topLeft,
-                                child: Padding(
-                                  padding: EdgeInsets.only(left: innerPadding, right: innerPadding),
-                                  child: Text(
-                                    group.first.module.parent.getName(context),
-                                    style: context.theme.textTheme.caption,
+    return InheritedTemplate(
+      state: widget.templateState,
+      child: InheritedArea(
+        state: widget.areaState,
+        child: GroupTheme(
+          theme: widget.areaState.theme,
+          child: AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: SizedBox(
+              height: sheetHeight,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                  color: widget.areaState.context.surfaceColor,
+                  boxShadow: const [BoxShadow(blurRadius: 8, spreadRadius: -4)],
+                ),
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(outerPadding),
+                      child: CustomScrollView(
+                        scrollDirection: Axis.horizontal,
+                        controller: _scrollController,
+                        slivers: [
+                          for (var group in groups)
+                            SliverStickyHeader(
+                              overlapsContent: true,
+                              header: Builder(builder: (context) {
+                                return Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: innerPadding, right: innerPadding),
+                                    child: Text(
+                                      group.first.module.parent.getName(context),
+                                      style: context.theme.textTheme.caption,
+                                    ),
                                   ),
-                                ),
-                              );
-                            }),
-                            sliver: SliverPadding(
-                              padding: EdgeInsets.only(top: headerHeight),
-                              sliver: SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) {
-                                    return Padding(
-                                      padding: EdgeInsets.all(innerPadding),
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(maxWidth: maxItemWidth),
-                                        child: FittedBox(
-                                          fit: BoxFit.contain,
-                                          child: ConstrainedBox(
-                                            constraints: widget.widgetArea.constrainWidget(group[index]),
-                                            child: group[index],
+                                );
+                              }),
+                              sliver: SliverPadding(
+                                padding: EdgeInsets.only(top: headerHeight),
+                                sliver: SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) {
+                                      return Padding(
+                                        padding: EdgeInsets.all(innerPadding),
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints(maxWidth: maxItemWidth),
+                                          child: FittedBox(
+                                            fit: BoxFit.contain,
+                                            child: ConstrainedBox(
+                                              constraints: widget.areaState.constrainWidget(group[index]),
+                                              child: group[index],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                  childCount: group.length,
+                                      );
+                                    },
+                                    childCount: group.length,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  if (toDeleteElement != null)
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-                        color: context.theme.colorScheme.error.withOpacity(0.2),
+                        ],
                       ),
-                      child: Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(outerPadding + innerPadding) + EdgeInsets.only(top: headerHeight),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: maxItemWidth),
-                            child: FittedBox(
-                              fit: BoxFit.contain,
-                              child: ConstrainedBox(
-                                constraints: widget.widgetArea.constrainWidget(toDeleteElement!),
-                                child: toDeleteElement!,
+                    ),
+                    if (toDeleteElement != null)
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                          color: context.theme.colorScheme.error.withOpacity(0.2),
+                        ),
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(outerPadding + innerPadding) + EdgeInsets.only(top: headerHeight),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: maxItemWidth),
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: ConstrainedBox(
+                                  constraints: widget.areaState.constrainWidget(toDeleteElement!),
+                                  child: toDeleteElement!,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

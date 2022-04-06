@@ -47,11 +47,7 @@ class TheButtonLogic {
   }
 
   void setAliveHours(String time) {
-    var d = time.split(':');
-    int h = int.parse(d[0]);
-    int m = d.length == 2 ? int.parse(d[1]) : 0;
-
-    doc.set({'aliveHours': h + m / 60}, SetOptions(merge: true));
+    doc.set({'aliveHours': optionToValue(time)}, SetOptions(merge: true));
   }
 
   Future<void> resetState() async {
@@ -96,4 +92,17 @@ class TheButtonLogic {
       }, SetOptions(merge: true));
     }
   }
+}
+
+double optionToValue(String option) {
+  var d = option.split(':');
+  int h = int.parse(d[0]);
+  int m = d.length == 2 ? int.parse(d[1]) : 0;
+  return h + m / 60;
+}
+
+String valueToOption(double value) {
+  var h = value.floor().toString();
+  var m = ((value * 60) % 60).floor().toString();
+  return '$h${m != '0' ? ':$m' : ''}';
 }

@@ -4,7 +4,6 @@ class TheButtonElement with ElementBuilderMixin<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var buttonHelpKey = GlobalKey();
-    var buttonSettingsKey = GlobalKey();
     return ContentElement(
       module: module,
       builder: (context) {
@@ -24,8 +23,6 @@ class TheButtonElement with ElementBuilderMixin<ContentElement> {
                       child: TheButton(),
                     ),
                   ),
-                  if (context.read(isOrganizerProvider))
-                    Positioned.fill(child: TheButtonSettings(key: buttonSettingsKey)),
                   Positioned.fill(child: TheButtonHelp(key: buttonHelpKey)),
                 ],
               );
@@ -34,6 +31,55 @@ class TheButtonElement with ElementBuilderMixin<ContentElement> {
             error: (e, st) => Text('${context.tr.error}: $e'),
           );
         });
+      },
+      settings: (context) {
+        var isExpanded = false;
+        return [
+          StatefulBuilder(builder: (context, setState) {
+            return ExpansionPanelList(
+              elevation: 0,
+              expandedHeaderPadding: EdgeInsets.zero,
+              expansionCallback: (_, value) {
+                setState(() => isExpanded = !value);
+              },
+              children: [
+                ExpansionPanel(
+                  canTapOnHeader: true,
+                  isExpanded: isExpanded,
+                  headerBuilder: (c, b) => ListTile(
+                    title: Text(context.tr.alive_period),
+                    subtitle: Text(context.tr.tap_to_change),
+                  ),
+                  body: TheButtonSettings(
+                    onChanged: (value) {
+                      context.read(theButtonLogicProvider).setAliveHours(value);
+                      setState(() => isExpanded = false);
+                    },
+                  ),
+                  backgroundColor: Colors.transparent,
+                ),
+              ],
+            );
+          }),
+          ListTile(
+            title: Text(context.tr.reset_health),
+            onTap: () async {
+              var reset = await SettingsDialog.confirm(context, context.tr.confirm_reset(true));
+              if (reset) {
+                context.read(theButtonLogicProvider).resetHealth();
+              }
+            },
+          ),
+          ListTile(
+            title: Text(context.tr.reset_leaderboard),
+            onTap: () async {
+              var reset = await SettingsDialog.confirm(context, context.tr.confirm_reset(false));
+              if (reset) {
+                context.read(theButtonLogicProvider).resetLeaderboard();
+              }
+            },
+          ),
+        ];
       },
     );
   }

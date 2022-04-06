@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../module/module_context.dart';
 import 'module_element.dart';
-import 'widgets/module_element_builder.dart';
+import 'widgets/element_mixin.dart';
 
-class PageElement extends ModuleElement with ModuleElementBuilder<PageElement> {
+class PageElement extends ModuleElement with ElementMixin<PageElement> {
   final bool keepAlive;
   final Widget Function(BuildContext context) builder;
 

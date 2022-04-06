@@ -1,76 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../providers/groups/selected_group_provider.dart';
-import '../models/models.dart';
 import '../providers/editing_providers.dart';
 import '../templates/templates.dart';
 import '../themes/themes.dart';
 
-class ConfigSheetController {
-  final BuildContext _context;
-
-  void close() {
-    Route? lastRoute;
-    Navigator.of(_context).popUntil((route) {
-      try {
-        return lastRoute is ConfigSheetRoute;
-      } finally {
-        lastRoute = route;
-      }
-    });
-  }
-
-  const ConfigSheetController(this._context);
-}
-
 class ConfigSheet<T extends TemplateModel> extends StatefulWidget {
   const ConfigSheet({Key? key}) : super(key: key);
 
-  static ConfigSheetController show<T extends TemplateModel>(BuildContext context) {
-    var group = context.read(selectedGroupProvider)!;
-
-    Navigator.of(context).push(ConfigSheetRoute<T>(group));
-
-    return ConfigSheetController(context);
-  }
-
   @override
   State<ConfigSheet> createState() => _ConfigSheetState<T>();
-}
-
-class ConfigSheetRoute<T extends TemplateModel> extends TransitionRoute {
-  ConfigSheetRoute(this.group);
-  final Group group;
-
-  @override
-  Iterable<OverlayEntry> createOverlayEntries() {
-    return [
-      OverlayEntry(
-        builder: (context) => Align(
-          alignment: Alignment.bottomCenter,
-          child: InheritedTheme.captureAll(
-            context,
-            GroupTheme(
-              theme: GroupThemeData.fromModel(group.theme),
-              child: ConfigSheet<T>(),
-            ),
-          ),
-        ),
-      ),
-    ];
-  }
-
-  @override
-  bool get opaque => false;
-
-  @override
-  Duration get transitionDuration => const Duration(milliseconds: 0);
-
-  @override
-  Future<RoutePopDisposition> willPop() async {
-    return RoutePopDisposition.doNotPop;
-  }
 }
 
 class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {

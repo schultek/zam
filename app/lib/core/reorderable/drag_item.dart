@@ -25,7 +25,7 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
       : super(key: key);
 
   double scaledHeight(Size size) => lerpDouble(
-        area.template.widgetSelector?.state!.startHeightFor(size) ?? size.height,
+        area.template.widgetSelector?.state?.startHeightFor(size) ?? size.height,
         size.height,
         scaleAnimation.value,
       )!;

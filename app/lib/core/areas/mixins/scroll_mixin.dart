@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -10,30 +11,40 @@ import '../area.dart';
 mixin ScrollMixin<T extends Area<E>, E extends ModuleElement> on AreaState<T, E> {
   ScrollController get scrollController;
 
-  Function? _activeScrollCb;
+  Function? _afterScrollCb;
+  Timer? _scrollDownDebounce;
 
-  bool get scrollDownEnabled => true;
+  @override
+  void cancelDrop(Key key) {
+    _afterScrollCb = null;
+    super.cancelDrop(key);
+  }
+
+  @override
+  void onDrop() {
+    _afterScrollCb = null;
+    super.onDrop();
+  }
 
   Future<void> maybeScroll(Offset dragOffset, Key itemKey, Size itemSize) async {
     if (!context.read(isEditingProvider)) {
-      _activeScrollCb = null;
+      _afterScrollCb = null;
       return;
     }
 
-    scrollCb() {
-      _activeScrollCb = null;
+    maybeAfterScrollCb() {
+      _afterScrollCb = null;
       if (hasKey(itemKey)) {
         reorderItem(dragOffset, itemKey);
       }
     }
 
-    if (_activeScrollCb != null) {
-      _activeScrollCb = scrollCb;
+    if (_afterScrollCb != null) {
+      _afterScrollCb = maybeAfterScrollCb;
       return;
     }
 
     var position = scrollController.position;
-    int duration = 15; // in ms
 
     MediaQueryData d = MediaQuery.of(context);
     double padding = 0;
@@ -44,37 +55,47 @@ mixin ScrollMixin<T extends Area<E>, E extends ModuleElement> on AreaState<T, E>
 
       double? newOffset = checkScrollPosition(position, dragOffset.dy, itemSize.height, top, bottom);
 
-      if (newOffset != null && (newOffset - position.pixels).abs() >= 1.0) {
-        _activeScrollCb = scrollCb;
+      if (newOffset != null && newOffset > position.pixels && _scrollDownDebounce == null) {
+        _afterScrollCb = maybeAfterScrollCb;
 
-        await scrollController.position.animateTo(
-          newOffset,
-          duration: Duration(milliseconds: duration),
-          curve: Curves.linear,
-        );
+        _scrollDownDebounce = Timer(const Duration(seconds: 2), () {
+          if (_afterScrollCb != null) {
+            _afterScrollCb!();
+          } else {
+            _scrollDownDebounce = null;
+          }
+        });
 
-        if (_activeScrollCb != null) {
-          _activeScrollCb!();
-        }
+        return;
       }
+
+      _scrollDownDebounce?.cancel();
+      _scrollDownDebounce = null;
+
+      performScroll(newOffset, maybeAfterScrollCb);
     } else {
       double left = padding;
       double right = position.viewportDimension - padding;
 
       double? newOffset = checkScrollPosition(position, dragOffset.dx, itemSize.width, left, right);
+      performScroll(newOffset, maybeAfterScrollCb);
+    }
+  }
 
-      if (newOffset != null && (newOffset - position.pixels).abs() >= 1.0) {
-        _activeScrollCb = scrollCb;
+  Future<void> performScroll(double? newOffset, void Function() afterScrollCb) async {
+    var position = scrollController.position;
 
-        await scrollController.position.animateTo(
-          newOffset,
-          duration: Duration(milliseconds: duration),
-          curve: Curves.linear,
-        );
+    if (newOffset != null && (newOffset - position.pixels).abs() >= 1.0) {
+      _afterScrollCb = afterScrollCb;
 
-        if (_activeScrollCb != null) {
-          _activeScrollCb!();
-        }
+      await scrollController.position.animateTo(
+        newOffset,
+        duration: const Duration(milliseconds: 15),
+        curve: Curves.linear,
+      );
+
+      if (_afterScrollCb != null) {
+        _afterScrollCb!();
       }
     }
   }
@@ -87,7 +108,7 @@ mixin ScrollMixin<T extends Area<E>, E extends ModuleElement> on AreaState<T, E>
     if (dragOffset < top && position.pixels > position.minScrollExtent) {
       var overdrag = max(top - dragOffset, overdragMax);
       return max(position.minScrollExtent, position.pixels - step * overdrag / overdragCoef);
-    } else if (scrollDownEnabled && dragOffset + dragSize > bottom && position.pixels < position.maxScrollExtent) {
+    } else if (dragOffset + dragSize > bottom && position.pixels < position.maxScrollExtent) {
       var overdrag = max<double>(dragOffset + dragSize - bottom, overdragMax);
       return min(position.maxScrollExtent, position.pixels + step * overdrag / overdragCoef);
     } else {

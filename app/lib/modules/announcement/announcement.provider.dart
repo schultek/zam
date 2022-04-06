@@ -21,13 +21,18 @@ class AnnouncementLogic {
 
   Future<String> createAnnouncement(Announcement announcement) async {
     var doc = await ref.read(moduleDocProvider('announcements')).collection('announcements').add(announcement.toMap());
-    await ref.read(announcementApiProvider).sendNotification(AnnouncementNotification(
-          ref.read(selectedGroupIdProvider)!,
-          doc.id,
-          announcement.title,
-          announcement.message,
-        ));
+    await sendNotification(doc.id, announcement);
     return doc.id;
+  }
+
+  Future<void> resendNotification(String id) async {
+    var announcement = await ref.read(announcementProvider(id).future);
+    await sendNotification(id, announcement);
+  }
+
+  Future<void> sendNotification(String id, Announcement announcement) async {
+    await ref.read(announcementApiProvider).sendNotification(
+        AnnouncementNotification(ref.read(selectedGroupIdProvider)!, id, announcement.title, announcement.message));
   }
 
   Future<void> removeAnnouncement(String id) async {

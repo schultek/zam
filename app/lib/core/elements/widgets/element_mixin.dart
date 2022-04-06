@@ -12,9 +12,10 @@ import '../../themes/themes.dart';
 import '../../widgets/widget_selector.dart';
 import '../decorators/element_decorator.dart';
 import '../module_element.dart';
-import 'module_element_settings_dialog.dart';
+import 'element_icon_button.dart';
+import 'element_settings_button.dart';
 
-mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
+mixin ElementMixin<T extends ModuleElement> on ModuleElement {
   ElementDecorator<T> decorator(BuildContext context) => Area.of<T>(context)!.elementDecorator;
 
   T get element;
@@ -64,29 +65,30 @@ mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
                     ConstrainedBox(
                       constraints: constraints,
                       child: Builder(builder: (context) {
-                        var animation = CurvedAnimation(parent: PhasedAnimation.of(context), curve: Curves.easeInOut);
-                        return AnimatedBuilder(
-                          animation: animation,
-                          builder: (context, child) {
-                            return Transform.rotate(
+                        if (isLayoutMode) {
+                          return AbsorbPointer(child: child);
+                        } else {
+                          var animation = CurvedAnimation(parent: PhasedAnimation.of(context), curve: Curves.easeInOut);
+                          return AnimatedBuilder(
+                            animation: animation,
+                            builder: (context, child) => Transform.rotate(
                               angle: (animation.value - 0.5) * 0.015,
                               child: child,
-                            );
-                          },
-                          child: isLayoutMode
-                              ? AbsorbPointer(child: child)
-                              : ReorderableListener<T>(
-                                  delay: const Duration(milliseconds: 300),
-                                  child: AbsorbPointer(child: child),
-                                ),
-                        );
+                            ),
+                            child: ReorderableListener<T>(
+                              childKey: key,
+                              delay: const Duration(milliseconds: 300),
+                              child: AbsorbPointer(child: child),
+                            ),
+                          );
+                        }
                       }),
                     ),
                     if (!isLayoutMode)
                       Positioned(
                         top: -8,
                         left: -8,
-                        child: ModuleIconButton(
+                        child: ElementIconButton(
                           icon: Icons.close,
                           onPressed: () {
                             var areaState = Area.of<T>(context)!;
@@ -100,7 +102,7 @@ mixin ModuleElementBuilder<T extends ModuleElement> on ModuleElement {
                       Positioned(
                         top: -8,
                         left: isLayoutMode ? -8 : 25,
-                        child: ModuleSettingsButton(
+                        child: ElementSettingsButton(
                           module: element.module,
                           settings: settings!,
                         ),
@@ -136,50 +138,5 @@ class PhasedAnimation extends CompoundAnimation<double> {
   factory PhasedAnimation.of(BuildContext context) {
     var wiggle = context.read(wiggleControllerProvider)!.view;
     return PhasedAnimation(phase: wiggle, intensity: const AlwaysStoppedAnimation(1), shift: Random().nextDouble());
-  }
-}
-
-class ModuleIconButton extends StatelessWidget {
-  const ModuleIconButton({
-    required this.icon,
-    required this.onPressed,
-    required this.color,
-    required this.iconColor,
-    Key? key,
-  }) : super(key: key);
-
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  final Color color;
-  final Color iconColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        Feedback.forTap(context);
-        onPressed();
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: color,
-          ),
-          child: SizedBox(
-            width: 24,
-            height: 24,
-            child: Icon(
-              icon,
-              size: 15,
-              color: iconColor,
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

@@ -143,15 +143,13 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
     return InheritedArea(
       state: this,
       child: GestureDetector(
+        key: ValueKey(id + '-listener'),
         behavior: HitTestBehavior.deferToChild,
         onTap: isEditing
             ? () {
                 context.read(selectedAreaProvider.notifier).selectWidgetAreaById(id);
               }
             : null,
-        // onPointerDown: (e) {
-        //   context.read(selectedAreaProvider.notifier).selectWidgetAreaById(id);
-        // },
         child: Container(
           margin: getMargin(),
           decoration: BoxDecoration(
@@ -243,12 +241,12 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
 
   bool _scheduledRebuild = false;
 
-  bool didInsertItem(Offset offset, T item) {
+  bool didInsertItem(Offset offset, T item, [bool force = false]) {
     if (_scheduledRebuild) {
       return true;
     }
 
-    if (!isOverArea(offset, getSize(item.key))) {
+    if (!force && !isOverArea(offset, getSize(item.key))) {
       if (hasKey(item.key)) {
         cancelDrop(item.key);
       }

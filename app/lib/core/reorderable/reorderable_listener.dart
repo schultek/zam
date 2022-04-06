@@ -10,16 +10,19 @@ import 'reorderable_item.dart';
 class ReorderableListener<T extends ModuleElement> extends StatelessWidget {
   const ReorderableListener({
     Key? key,
+    this.childKey,
     required this.child,
     this.delay = kLongPressTimeout,
   }) : super(key: key);
 
+  final Key? childKey;
   final Widget child;
   final Duration delay;
 
   @override
   Widget build(BuildContext context) {
     return Listener(
+      behavior: HitTestBehavior.opaque,
       onPointerDown: (PointerDownEvent event) {
         _startDragging(context: context, event: event);
       },
@@ -35,7 +38,11 @@ class ReorderableListener<T extends ModuleElement> extends StatelessWidget {
           key: state.key,
           event: event,
           widgetArea: widgetArea,
-          recognizer: DelayedMultiDragGestureRecognizer(delay: delay, debugOwner: this, supportedDevices: {event.kind}),
+          recognizer: DelayedMultiDragGestureRecognizer(
+            delay: delay,
+            debugOwner: this,
+            supportedDevices: {event.kind},
+          ),
         );
   }
 }

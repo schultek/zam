@@ -2,6 +2,7 @@
   "de": [
     "single_note_tap_settings",
     "show_folders",
-    "show_add_tile"
+    "show_add_tile",
+    "alive_period"
   ]
 }

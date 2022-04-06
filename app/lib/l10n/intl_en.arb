@@ -209,6 +209,7 @@
   },
   "the_button_tagline": "A social game where you have to keep the button alive.",
   "leaderboard": "Leaderboard",
+  "alive_period": "Alive Period",
   "the_button_description": "The main goal is to never let the button die. The button will slowly loose health until it's dead. You can heal the button anytime while it is still alive by tapping on it for two seconds. But once it's dead, it can never be brought back, so stay alert.\n\nThe buttons health is synchronized across all players, so it is a group efford to keep it alive.\n\nWhen you save the button from its demise, you will get it's level. The lower the buttons health is the higher is level you get. But don't wait too long, someone else might just come along and save the button before you have the chance.",
 
   "@USERS": {},

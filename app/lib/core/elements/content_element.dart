@@ -4,9 +4,9 @@ import '../../helpers/extensions.dart';
 import '../module/module_context.dart';
 import '../route/route.dart';
 import 'module_element.dart';
-import 'widgets/module_element_builder.dart';
+import 'widgets/element_mixin.dart';
 
-class ContentElement extends ModuleElement with ModuleElementBuilder<ContentElement> {
+class ContentElement extends ModuleElement with ElementMixin<ContentElement> {
   final WidgetBuilder builder;
   final WidgetBuilder? onNavigate;
   final void Function(BuildContext context)? onTap;
