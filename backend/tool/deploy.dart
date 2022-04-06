@@ -9,7 +9,7 @@ void main() async {
   await run('dart pub get');
   await run('dart run build_runner build');
 
-  var functionsJsonPath = '.dart_tool/build/generated/backend/lib/functions.json';
+  var functionsJsonPath = 'build/.dart_tool/build/generated/backend/lib/functions.json';
   var functionsJson = await File(functionsJsonPath).readAsString();
   var functions = jsonDecode(functionsJson) as Map<String, dynamic>;
 
