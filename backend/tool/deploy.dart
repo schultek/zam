@@ -43,7 +43,7 @@ void main() async {
   }
 }
 
-Future<int> run(String command, {bool shell = false, bool output = true}) async {
+Future<void> run(String command, {bool shell = false, bool output = true}) async {
   print('RUNNING $command IN $_workingDir');
   var args = command.split(' ');
   var process = await Process.start(
@@ -58,7 +58,11 @@ Future<int> run(String command, {bool shell = false, bool output = true}) async 
   }
   process.stderr.listen((event) => stderr.add(event));
 
-  return process.exitCode;
+  var exitCode = await process.exitCode;
+
+  if (exitCode != 0) {
+    exit(exitCode);
+  }
 }
 
 String? _workingDir;
