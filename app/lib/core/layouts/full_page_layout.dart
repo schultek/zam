@@ -32,27 +32,33 @@ class FullPageLayoutModel extends LayoutModel {
   }
 
   @override
-  PreviewPage preview({Widget? header}) => PreviewPage(segments: [
-        PreviewSection(
-          fill: false,
-          child: Column(
-            children: [
-              if (header == null)
-                const Padding(
-                  padding: EdgeInsets.all(5),
-                  child: PreviewCard(width: 90, height: 190),
-                )
-              else ...[
-                header,
-                const Padding(
-                  padding: EdgeInsets.only(left: 5, right: 5, bottom: 5),
-                  child: PreviewCard(width: 90, height: 165),
+  PreviewPage preview({Widget? header}) => PreviewPage(
+        layers: [
+          PreviewLayer(
+            segments: [
+              PreviewSection(
+                fill: false,
+                child: Column(
+                  children: [
+                    if (header == null)
+                      const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: PreviewCard(width: 90, height: 190),
+                      )
+                    else ...[
+                      header,
+                      const Padding(
+                        padding: EdgeInsets.only(left: 5, right: 5, bottom: 5),
+                        child: PreviewCard(width: 90, height: 165),
+                      ),
+                    ],
+                  ],
                 ),
-              ],
+              ),
             ],
           ),
-        ),
-      ]);
+        ],
+      );
 }
 
 class FullPageLayout extends StatelessWidget {

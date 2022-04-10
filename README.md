@@ -6,8 +6,8 @@ Jugend-Freizeit-App
 
 ## Backend
 
-- Firestore Rules
-- Custom Claims
+- [x] Firestore Rules
+- [x] Custom Claims
 
 ## App
 
@@ -170,8 +170,6 @@ Jugend-Freizeit-App
 
 ### Abifahrt
 
-### Wallfahrt
-
 ### Gruppen-Trip auf Festival
 
-### 
+### Verein Orga

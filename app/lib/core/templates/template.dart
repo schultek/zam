@@ -69,8 +69,10 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
   @override
   void initState() {
     super.initState();
-    context.read(wiggleControllerProvider.notifier).state =
-        AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      context.read(wiggleControllerProvider.notifier).state =
+          AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    });
   }
 
   @override

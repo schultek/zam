@@ -11,7 +11,9 @@ import '../../providers/auth/claims_provider.dart';
 import '../../providers/groups/logic_provider.dart';
 import '../../providers/groups/selected_group_provider.dart';
 import '../themes/themes.dart';
+import '../widgets/layout_preview.dart';
 import '../widgets/settings_section.dart';
+import '../widgets/template_preview_switcher.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -29,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     var group = context.watch(selectedGroupProvider)!;
 
-    // var templateSettings = group.template.settings(context);
+    var templateSettings = group.template.settings(context);
     var moduleSettings = registry.getSettings(context);
 
     return Scaffold(
@@ -78,32 +80,32 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
           ]),
-          // SettingsSection(
-          //   title: context.tr.template,
-          //   children: [
-          //     Builder(builder: (context) {
-          //       return Row(
-          //         children: [
-          //           Expanded(
-          //             child: ListTile(
-          //               title: Text(group.template.name),
-          //               subtitle: Text(context.tr.tap_to_change),
-          //               onTap: () async {
-          //                 var newTemplate = await TemplatePreviewSwitcher.show(context, group.template);
-          //
-          //                 if (newTemplate != null) {
-          //                   context.read(groupsLogicProvider).updateTemplateModel(newTemplate);
-          //                 }
-          //               },
-          //             ),
-          //           ),
-          //           PreviewBox(preview: group.template.preview())
-          //         ],
-          //       );
-          //     }),
-          //     ...templateSettings
-          //   ],
-          // ),
+          SettingsSection(
+            title: context.tr.template,
+            children: [
+              Builder(builder: (context) {
+                return Row(
+                  children: [
+                    Expanded(
+                      child: ListTile(
+                        title: Text(group.template.name),
+                        subtitle: Text(context.tr.tap_to_change),
+                        onTap: () async {
+                          var newTemplate = await TemplatePreviewSwitcher.show(context, group.template);
+
+                          if (newTemplate != null) {
+                            context.read(groupsLogicProvider).updateTemplateModel(newTemplate);
+                          }
+                        },
+                      ),
+                    ),
+                    PreviewBox(preview: group.template.preview())
+                  ],
+                );
+              }),
+              ...templateSettings
+            ],
+          ),
           SettingsSection(title: context.tr.theme, children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),

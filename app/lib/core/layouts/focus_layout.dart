@@ -40,30 +40,36 @@ class FocusLayoutModel extends LayoutModel {
   }
 
   @override
-  PreviewPage preview({Widget? header}) => PreviewPage(segments: [
-        PreviewSection(
-          fill: false,
-          child: Column(
-            children: [
-              if (header != null) header else const SizedBox(height: 10),
-              const Center(child: PreviewCard(width: 40, height: 40)),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                child: Row(
-                  children: const [
-                    PreviewCard(width: 20, height: 20),
-                    SizedBox(width: 5),
-                    PreviewCard(width: 20, height: 20),
-                    SizedBox(width: 5),
-                    PreviewCard(width: 20, height: 20),
+  PreviewPage preview({Widget? header}) => PreviewPage(
+        layers: [
+          PreviewLayer(
+            segments: [
+              PreviewSection(
+                fill: false,
+                child: Column(
+                  children: [
+                    if (header != null) header else const SizedBox(height: 10),
+                    const Center(child: PreviewCard(width: 40, height: 40)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      child: Row(
+                        children: const [
+                          PreviewCard(width: 20, height: 20),
+                          SizedBox(width: 5),
+                          PreviewCard(width: 20, height: 20),
+                          SizedBox(width: 5),
+                          PreviewCard(width: 20, height: 20),
+                        ],
+                      ),
+                    ),
+                    const PreviewGrid(),
                   ],
                 ),
               ),
-              const PreviewGrid(),
             ],
           ),
-        ),
-      ]);
+        ],
+      );
 }
 
 class FocusLayout extends StatefulWidget {

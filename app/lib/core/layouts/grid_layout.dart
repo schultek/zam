@@ -16,17 +16,23 @@ class GridLayoutModel extends LayoutModel {
   Widget builder(LayoutContext context) => GridLayout(context);
 
   @override
-  PreviewPage preview({Widget? header}) => PreviewPage(segments: [
-        PreviewSection(
-          fill: false,
-          child: Column(
-            children: [
-              if (header != null) header else const SizedBox(height: 10),
-              const PreviewGrid(),
+  PreviewPage preview({Widget? header}) => PreviewPage(
+        layers: [
+          PreviewLayer(
+            segments: [
+              PreviewSection(
+                fill: false,
+                child: Column(
+                  children: [
+                    if (header != null) header else const SizedBox(height: 10),
+                    const PreviewGrid(),
+                  ],
+                ),
+              ),
             ],
           ),
-        ),
-      ]);
+        ],
+      );
 }
 
 class GridLayout extends StatefulWidget {

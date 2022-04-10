@@ -87,47 +87,51 @@ class DropsLayoutModel extends LayoutModel {
 
   @override
   PreviewPage preview({Widget? header}) => PreviewPage(
-        segments: [
-          PreviewSection(
-            child: Column(
-              children: [
-                if (header != null) header else const SizedBox(height: 10),
-                const Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: PreviewCard(width: 70, height: 40),
-                ),
-              ],
-            ),
-          ),
-          PreviewSection(
-            fill: false,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8, top: 3),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (int i = 0; i < 3; i++) ...[
-                    const SizedBox(height: 5),
-                    const PreviewCard(width: 40, height: 8),
-                    const SizedBox(height: 5),
-                    SingleChildScrollView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          for (int i = 0; i < 3; i++) ...[
-                            const PreviewCard(width: 30, height: 30),
-                            const SizedBox(width: 5),
-                          ]
-                        ],
-                      ),
+        layers: [
+          PreviewLayer(
+            segments: [
+              PreviewSection(
+                child: Column(
+                  children: [
+                    if (header != null) header else const SizedBox(height: 10),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                      child: PreviewCard(width: 70, height: 40),
                     ),
-                  ]
-                ],
+                  ],
+                ),
               ),
-            ),
+              PreviewSection(
+                fill: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8, top: 3),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      for (int i = 0; i < 3; i++) ...[
+                        const SizedBox(height: 5),
+                        const PreviewCard(width: 40, height: 8),
+                        const SizedBox(height: 5),
+                        SingleChildScrollView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              for (int i = 0; i < 3; i++) ...[
+                                const PreviewCard(width: 30, height: 30),
+                                const SizedBox(width: 5),
+                              ]
+                            ],
+                          ),
+                        ),
+                      ]
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       );

@@ -99,8 +99,9 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   @override
   void deactivate() {
     if (context.read(isAreaSelectedProvider(id))) {
+      var selectedAreaNotifier = context.read(selectedAreaProvider.notifier);
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
+        if (!mounted) selectedAreaNotifier.selectWidgetAreaById(null);
       });
     }
     super.deactivate();

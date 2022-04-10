@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import '../themes/themes.dart';
 
 class PreviewPage extends StatelessWidget {
-  final List<Widget> segments;
+  final List<Widget> layers;
   final double scale;
-  const PreviewPage({required this.segments, this.scale = 1, Key? key}) : super(key: key);
+  const PreviewPage({required this.layers, this.scale = 1, Key? key}) : super(key: key);
 
   PreviewPage apply({double? scale}) {
-    return PreviewPage(segments: segments, scale: scale ?? this.scale, key: key);
+    return PreviewPage(layers: layers, scale: scale ?? this.scale, key: key);
+  }
+
+  PreviewPage addLayer(Widget layer) {
+    return PreviewPage(layers: [...layers, layer], scale: scale, key: key);
   }
 
   @override
@@ -26,16 +30,28 @@ class PreviewPage extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: segments,
-              ),
+            child: Stack(
+              children: layers,
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class PreviewLayer extends StatelessWidget {
+  final List<Widget> segments;
+  const PreviewLayer({required this.segments, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      physics: const NeverScrollableScrollPhysics(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: segments,
       ),
     );
   }
@@ -60,8 +76,9 @@ class PreviewSection extends StatelessWidget {
 
 class PreviewCard extends StatelessWidget {
   final double? width, height;
+  final double radius;
 
-  const PreviewCard({this.width, this.height, Key? key}) : super(key: key);
+  const PreviewCard({this.width, this.height, this.radius = 5, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +87,7 @@ class PreviewCard extends StatelessWidget {
       builder: (context, color) => Container(
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(radius),
         ),
         width: width,
         height: height,

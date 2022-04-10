@@ -1,5 +1,5 @@
 import 'package:dart_mappable/dart_mappable.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide KeepAlive;
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../helpers/extensions.dart';
@@ -14,6 +14,7 @@ import '../../widgets/layout_preview_switcher.dart';
 import '../../widgets/settings_section.dart';
 import '../widgets/custom_page_view.dart';
 import '../widgets/empty_page.dart';
+import '../widgets/keep_alive.dart';
 import '../widgets/main_group_header.dart';
 
 part 'swipe_template_model.dart';
@@ -135,25 +136,5 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
         ),
       ),
     );
-  }
-}
-
-class KeepAlive extends StatefulWidget {
-  const KeepAlive({Key? key, required this.child}) : super(key: key);
-
-  final Widget child;
-
-  @override
-  State<KeepAlive> createState() => _KeepAliveState();
-}
-
-class _KeepAliveState extends State<KeepAlive> with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return widget.child;
   }
 }

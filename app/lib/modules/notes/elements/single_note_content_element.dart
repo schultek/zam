@@ -5,11 +5,12 @@ class SingleNoteContentElement with ElementBuilderMixin<ContentElement> {
   FutureOr<ContentElement?> build(ModuleContext module) {
     if (module.hasParams) {
       var noteOrFolder = module.getParams<String>();
+      var isFolder = noteOrFolder.startsWith('%');
       return ContentElement(
         module: module,
         builder: (context) => Consumer(
           builder: (context, ref, _) {
-            if (noteOrFolder.startsWith('%')) {
+            if (isFolder) {
               return FolderCard(
                 folder: noteOrFolder.substring(1),
                 needsSurface: true,
@@ -40,21 +41,30 @@ class SingleNoteContentElement with ElementBuilderMixin<ContentElement> {
           },
         ),
         settings: (context) => [
-          ListTile(
-            title: Text(context.tr.select_note_or_folder),
-            subtitle: Text(noteOrFolder),
-            onTap: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => SelectNotePage(
-                    onSelect: (id) {
-                      module.updateParams(id);
-                    },
+          Builder(builder: (context) {
+            String noteName;
+            if (isFolder) {
+              noteName = noteOrFolder.substring(1);
+              context.prime();
+            } else {
+              noteName = context.watch(noteProvider(noteOrFolder)).value?.title ?? context.tr.untitled_note;
+            }
+            return ListTile(
+              title: Text(context.tr.select_note_or_folder),
+              subtitle: Text(noteName),
+              onTap: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SelectNotePage(
+                      onSelect: (id) {
+                        module.updateParams(id);
+                      },
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            );
+          }),
         ],
       );
     } else {
