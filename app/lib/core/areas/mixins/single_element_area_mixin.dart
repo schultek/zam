@@ -33,7 +33,7 @@ mixin SingleElementAreaMixin<U extends Area<T>, T extends ModuleElement> on Area
   }
 
   @override
-  bool didReorderItem(Offset offset, Key itemKey) => false;
+  Offset? didReorderItem(Offset offset, Key itemKey) => null;
 
   @override
   bool canInsertItem(T item) => element == null;

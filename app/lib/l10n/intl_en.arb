@@ -29,7 +29,11 @@
   "login_with_phone": "Login with phone",
   "become_organizer": "Become an organizer",
   "become_admin": "Become an admin",
-  "proceed_and_accept_disclaimer": "By proceeding you agree to the Terms of Service and accept our privacy policy. With phone authentication, sms charges may apply.",
+  "signin_disclaimer_1": "By proceeding you agree to our",
+  "signin_disclaimer_2": "and accept our",
+  "signin_tos": "Terms of Service",
+  "signin_pp": "Privacy Policy",
+  "sms_charges_disclaimer": "With phone authentication, sms charges may apply.",
 
   "@PHONE_LOGIN": {},
 
@@ -64,6 +68,7 @@
   "logged_in_with": "Logged in with",
   "add_phone_number_hint": "You can add your phone number\nto access your groups on another device",
   "logout": "Log out",
+  "feedback": "Feedback",
 
   "@CONFIGURATION": {},
 
@@ -157,7 +162,7 @@
 
   "notes": "Notes",
   "new_note": "New Note",
-  "single_note_tap_settings": "Single Note\n(Tap Settings)",
+  "single_note_tap_settings": "Single Note\n(Choose in Settings)",
   "select_note_or_folder": "Select a Note or Folder",
   "untitled": "Untitled",
   "untitled_note": "Untitled Note",

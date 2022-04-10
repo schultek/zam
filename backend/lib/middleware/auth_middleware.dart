@@ -6,7 +6,7 @@ import 'package:firebase_admin/firebase_admin.dart';
 import 'package:openid_client/src/model.dart';
 
 // ignore: implementation_imports, depend_on_referenced_packages
-export 'package:openid_client/src/model.dart';
+export 'package:openid_client/src/model.dart' show OpenIdClaims;
 
 class Headers {
   static const auth = 'authorization';
@@ -16,7 +16,7 @@ extension AuthContext on ApiRequest {
   OpenIdClaims get user => context['claims']! as OpenIdClaims;
 }
 
-extension UserClaims on OpenIdClaims {
+extension AuthUserClaims on OpenIdClaims {
   String get uid => getTyped('user_id')!;
   bool get isAdmin => getTyped('isAdmin') ?? false;
 }

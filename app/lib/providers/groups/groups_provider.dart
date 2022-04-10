@@ -24,10 +24,15 @@ final groupsProvider = StreamProvider<List<Group>>((ref) async* {
           'users.$userId.role',
           whereIn: [
             UserRoles.participant,
-            UserRoles.leader,
             UserRoles.organizer,
           ],
         );
 
   yield* query.snapshotsMapped<Group>();
 }).cached;
+
+final joinedGroupsProvider = Provider<List<Group>>((ref) {
+  var groups = ref.watch(groupsProvider).value ?? <Group>[];
+  var userId = ref.watch(userIdProvider);
+  return groups.where((g) => g.users.containsKey(userId)).toList();
+});

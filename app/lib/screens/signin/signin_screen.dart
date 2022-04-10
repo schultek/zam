@@ -1,6 +1,8 @@
 import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/core.dart';
 import '../../helpers/extensions.dart';
@@ -64,6 +66,43 @@ class SignInScreen extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+              RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: context.tr.signin_disclaimer_1 + ' ',
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white),
+                    ),
+                    TextSpan(
+                      text: context.tr.signin_tos,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          launch('https://jufa20.web.app/terms-of-service.html');
+                        },
+                    ),
+                    TextSpan(
+                      text: ' ' + context.tr.signin_disclaimer_2 + ' ',
+                      style: Theme.of(context).textTheme.bodyText2?.copyWith(color: Colors.white),
+                    ),
+                    TextSpan(
+                      text: context.tr.signin_pp,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          ?.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          launch('https://jufa20.web.app/privacy-policy.html');
+                        },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

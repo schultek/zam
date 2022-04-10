@@ -17,12 +17,16 @@ mixin ScrollMixin<T extends Area<E>, E extends ModuleElement> on AreaState<T, E>
   @override
   void cancelDrop(Key key) {
     _afterScrollCb = null;
+    _scrollDownDebounce?.cancel();
+    _scrollDownDebounce = null;
     super.cancelDrop(key);
   }
 
   @override
   void onDrop() {
     _afterScrollCb = null;
+    _scrollDownDebounce?.cancel();
+    _scrollDownDebounce = null;
     super.onDrop();
   }
 
@@ -55,22 +59,24 @@ mixin ScrollMixin<T extends Area<E>, E extends ModuleElement> on AreaState<T, E>
 
       double? newOffset = checkScrollPosition(position, dragOffset.dy, itemSize.height, top, bottom);
 
-      if (newOffset != null && newOffset > position.pixels && _scrollDownDebounce == null) {
-        _afterScrollCb = maybeAfterScrollCb;
+      if (newOffset != null && newOffset > position.pixels) {
+        if (_scrollDownDebounce == null) {
+          _afterScrollCb = maybeAfterScrollCb;
 
-        _scrollDownDebounce = Timer(const Duration(seconds: 2), () {
-          if (_afterScrollCb != null) {
-            _afterScrollCb!();
-          } else {
-            _scrollDownDebounce = null;
-          }
-        });
+          _scrollDownDebounce = Timer(const Duration(milliseconds: 600), () {
+            if (_afterScrollCb != null) {
+              _afterScrollCb!();
+            } else {
+              _scrollDownDebounce = null;
+            }
+          });
 
-        return;
+          return;
+        }
+      } else {
+        _scrollDownDebounce?.cancel();
+        _scrollDownDebounce = null;
       }
-
-      _scrollDownDebounce?.cancel();
-      _scrollDownDebounce = null;
 
       performScroll(newOffset, maybeAfterScrollCb);
     } else {
@@ -101,16 +107,17 @@ mixin ScrollMixin<T extends Area<E>, E extends ModuleElement> on AreaState<T, E>
   }
 
   double? checkScrollPosition(ScrollPosition position, double dragOffset, double dragSize, double top, double bottom) {
-    double step = 1.0;
-    double overdragMax = 40.0;
-    double overdragCoef = 5.0;
+    double overdragMax = 100.0;
+    double factor(double overdrag) {
+      return overdrag / 5;
+    }
 
     if (dragOffset < top && position.pixels > position.minScrollExtent) {
-      var overdrag = max(top - dragOffset, overdragMax);
-      return max(position.minScrollExtent, position.pixels - step * overdrag / overdragCoef);
+      var overdrag = min(top - dragOffset, overdragMax);
+      return max(position.minScrollExtent, position.pixels - factor(overdrag));
     } else if (dragOffset + dragSize > bottom && position.pixels < position.maxScrollExtent) {
-      var overdrag = max<double>(dragOffset + dragSize - bottom, overdragMax);
-      return min(position.maxScrollExtent, position.pixels + step * overdrag / overdragCoef);
+      var overdrag = min<double>(dragOffset + dragSize - bottom, overdragMax);
+      return min(position.maxScrollExtent, position.pixels + factor(overdrag));
     } else {
       return null;
     }

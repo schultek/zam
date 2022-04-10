@@ -186,7 +186,7 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
               ),
               const Spacer(flex: 3),
               Text(
-                context.tr.proceed_and_accept_disclaimer,
+                context.tr.sms_charges_disclaimer,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white.withOpacity(0.95)),
               ),

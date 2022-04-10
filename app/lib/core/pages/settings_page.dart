@@ -11,27 +11,25 @@ import '../../providers/auth/claims_provider.dart';
 import '../../providers/groups/logic_provider.dart';
 import '../../providers/groups/selected_group_provider.dart';
 import '../themes/themes.dart';
-import 'layout_preview.dart';
-import 'settings_section.dart';
-import 'template_preview_switcher.dart';
+import '../widgets/settings_section.dart';
 
-class GroupSettingsPage extends StatefulWidget {
-  const GroupSettingsPage({Key? key}) : super(key: key);
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
-  _GroupSettingsPageState createState() => _GroupSettingsPageState();
+  _SettingsPageState createState() => _SettingsPageState();
 
   static Route route() {
-    return MaterialPageRoute(builder: (context) => const GroupSettingsPage());
+    return MaterialPageRoute(builder: (context) => const SettingsPage());
   }
 }
 
-class _GroupSettingsPageState extends State<GroupSettingsPage> {
+class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     var group = context.watch(selectedGroupProvider)!;
 
-    var templateSettings = group.template.settings(context);
+    // var templateSettings = group.template.settings(context);
     var moduleSettings = registry.getSettings(context);
 
     return Scaffold(
@@ -80,32 +78,32 @@ class _GroupSettingsPageState extends State<GroupSettingsPage> {
               },
             ),
           ]),
-          SettingsSection(
-            title: context.tr.template,
-            children: [
-              Builder(builder: (context) {
-                return Row(
-                  children: [
-                    Expanded(
-                      child: ListTile(
-                        title: Text(group.template.name),
-                        subtitle: Text(context.tr.tap_to_change),
-                        onTap: () async {
-                          var newTemplate = await TemplatePreviewSwitcher.show(context, group.template);
-
-                          if (newTemplate != null) {
-                            context.read(groupsLogicProvider).updateTemplateModel(newTemplate);
-                          }
-                        },
-                      ),
-                    ),
-                    PreviewBox(preview: group.template.preview())
-                  ],
-                );
-              }),
-              ...templateSettings
-            ],
-          ),
+          // SettingsSection(
+          //   title: context.tr.template,
+          //   children: [
+          //     Builder(builder: (context) {
+          //       return Row(
+          //         children: [
+          //           Expanded(
+          //             child: ListTile(
+          //               title: Text(group.template.name),
+          //               subtitle: Text(context.tr.tap_to_change),
+          //               onTap: () async {
+          //                 var newTemplate = await TemplatePreviewSwitcher.show(context, group.template);
+          //
+          //                 if (newTemplate != null) {
+          //                   context.read(groupsLogicProvider).updateTemplateModel(newTemplate);
+          //                 }
+          //               },
+          //             ),
+          //           ),
+          //           PreviewBox(preview: group.template.preview())
+          //         ],
+          //       );
+          //     }),
+          //     ...templateSettings
+          //   ],
+          // ),
           SettingsSection(title: context.tr.theme, children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),

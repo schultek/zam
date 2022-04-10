@@ -4,7 +4,6 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import 'drag_provider.dart';
 import 'items_provider.dart';
-import 'logic_provider.dart';
 
 enum ReorderableState { normal, placeholder, dragging }
 
@@ -28,14 +27,14 @@ class ReorderableItem extends StatefulWidget {
 }
 
 class ReorderableItemState extends State<ReorderableItem> {
-  late ReorderableLogic logic;
+  late ReorderableItemLogic logic;
 
   Key get key => widget.key!;
 
   @override
   void initState() {
     super.initState();
-    logic = context.read(reorderableLogicProvider);
+    logic = context.read(reorderableItemProvider);
     logic.register(this);
   }
 
@@ -57,6 +56,7 @@ class ReorderableItemState extends State<ReorderableItem> {
 
   @override
   Widget build(BuildContext context) {
+    logic.update(this);
     return Consumer(
       builder: (context, ref, _) {
         var isDragging = ref.watch(isDraggingProvider(key));

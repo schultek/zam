@@ -12,7 +12,7 @@ import '../../providers/groups/selected_group_provider.dart';
 import '../elements/elements.dart';
 import '../providers/editing_providers.dart';
 import '../providers/selected_area_provider.dart';
-import '../reorderable/logic_provider.dart';
+import '../reorderable/items_provider.dart';
 import '../templates/templates.dart';
 import '../themes/themes.dart';
 
@@ -226,12 +226,14 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
     return fn<T>();
   }
 
-  ReorderableLogic get logic => context.read(reorderableLogicProvider);
+  ReorderableItemLogic get _logic => context.read(reorderableItemProvider);
 
-  Offset getOffset(Key key) => logic.itemOffset(key);
-  Size getSize(Key key) => logic.itemSize(key);
-  void translateX(Key key, double delta) => logic.translateItemX(this, key, delta);
-  void translateY(Key key, double delta) => logic.translateItemY(this, key, delta);
+  Offset getOffset(Key key) => _logic.itemOffset(key);
+  Size getSize(Key key) => _logic.itemSize(key);
+  bool hasItem(Key key) => _logic.hasItem(key);
+  void addOffset(Key key, Offset offset) => _logic.addArtificialOffset(key, offset);
+  void translateX(Key key, double delta) => _logic.translateItemX(this, key, delta);
+  void translateY(Key key, double delta) => _logic.translateItemY(this, key, delta);
 
   bool isOverArea(Offset offset, Size size) {
     var areaRect = Rect.fromLTWH(areaOffset.dx, areaOffset.dy, areaSize.width, areaSize.height);
@@ -239,13 +241,7 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
     return itemRect.overlaps(areaRect);
   }
 
-  bool _scheduledRebuild = false;
-
   bool didInsertItem(Offset offset, T item, [bool force = false]) {
-    if (_scheduledRebuild) {
-      return true;
-    }
-
     if (!force && !isOverArea(offset, getSize(item.key))) {
       if (hasKey(item.key)) {
         cancelDrop(item.key);
@@ -268,27 +264,21 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   }
 
   void reorderItem(Offset offset, Key key) {
-    if (_scheduledRebuild) {
-      return;
-    }
-
     if (!hasKey(key)) {
       return;
     }
 
-    if (didReorderItem(offset, key)) {
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        _scheduledRebuild = false;
-        reorderItem(offset, key);
-      });
-      _scheduledRebuild = true;
-    }
+    Offset? reorderOffset;
+    do {
+      reorderOffset = didReorderItem(offset, key);
+      if (reorderOffset != null) addOffset(key, reorderOffset);
+    } while (reorderOffset != null);
   }
 
   List<T> getWidgets();
   T getWidgetFromKey(Key key);
   void removeItem(Key key);
-  bool didReorderItem(Offset offset, Key itemKey);
+  Offset? didReorderItem(Offset offset, Key itemKey);
   bool canInsertItem(T item) => true;
   void insertItem(Offset offset, T item);
   bool hasKey(Key key);

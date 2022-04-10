@@ -29,7 +29,11 @@
   "login_with_phone": "Mit Telefonnummer anmelden",
   "become_organizer": "Werde Organisator*in",
   "become_admin": "Werde Administrator*in",
-  "proceed_and_accept_disclaimer": "Wenn du fortfährst, akzeptierst du Jufas Nutzungsbedingungen und bestätigst, dass du Jufas Datenschutzerklärung gelesen hast. Wenn du dich per SMS registrierst, können SMS-Gebühren anfallen.",
+  "signin_disclaimer_1": "Wenn du fortfährst, stimmst du unseren",
+  "signin_disclaimer_2": "zu und akzeptierst unsere",
+  "signin_tos": "Nutzungsbedingungen",
+  "signin_pp": "Datenschutzerklärung",
+  "sms_charges_disclaimer": "Wenn du dich per SMS registrierst, können SMS-Gebühren anfallen.",
 
   "@PHONE_LOGIN": {},
 
@@ -64,6 +68,7 @@
   "logged_in_with": "Angemeldet mit",
   "add_phone_number_hint": "Du kannst deine Telefonnummer hinzufügen,\num deine Gruppen auf anderen Geräten zu nutzen",
   "logout": "Abmelden",
+  "feedback": "Feedback",
 
   "@CONFIGURATION": {},
 
@@ -157,7 +162,7 @@
 
   "notes": "Notizen",
   "new_note": "Neue Notiz",
-  "add_note": "Notiz hinzufügen\n(Tippe zum auswählen)",
+  "single_note_tap_settings": "Notiz hinzufügen\n(Wähle in Einstellugen)",
   "select_note_or_folder": "Notiz oder Ordner auswählen",
   "untitled": "Ohne Titel",
   "untitled_note": "Unbenannte Notiz",
@@ -168,6 +173,8 @@
   "change_folder": "Ordner wechseln",
   "create_new_folder": "Neuen Ordner erstellen",
   "add_editors": "Editoren hinzufügen",
+  "show_folders": "Ordner anzeigen",
+  "show_add_tile": "Plus-Kachel anzeigen",
 
   "@PHOTOS": {},
 
@@ -202,6 +209,7 @@
   "confirm_reset": "Möchtest du die\n{isHealth, select, true{Gesundheit} false{Bestenliste}} zurücksetzen?",
   "the_button_tagline": "Ein soziales Spiel bei dem der Button am leben gehalten werden muss.",
   "leaderboard": "Bestenliste",
+  "alive_period": "Lebenszeit",
   "the_button_description": "Ziel des Spiels ist es den Button nicht sterben zu lassen. Der Button wird langsam an Gesundheit verlieren bis er stirbt. Du kannst den Button jederzeit heilen wenn er noch am Leben ist durch Antippen für 2 Sekunden. Aber sobald er tot ist, kann er nicht wiederbelebt werden, also bleib wachsam.\n\nDie Gesundheit des Buttons ist synchronisiert über alle Spieler, somit ist es eine gemeinsame Anstrengung ihn am Leben zu erhalten.\n\nWenn du den Button vor seinem Ableben rettest wirst du sein aktuelles Level erhalten. Je niedriger die Gesundheit desto höher das Level was du erhälst. Aber warte nicht zu lange, jemand anderes könnte den Button retten bevor du die Chance hast.",
 
   "@USERS": {},

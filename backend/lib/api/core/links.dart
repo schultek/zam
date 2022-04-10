@@ -5,8 +5,8 @@ import 'package:api_agent/server.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared/api/app.server.dart';
 
-import '../middleware/auth_middleware.dart';
-import '../middleware/firebase_middleware.dart';
+import '../../middleware/auth_middleware.dart';
+import '../../middleware/firebase_middleware.dart';
 
 const secretKey = 'ilovejufa';
 final hmac = Hmac(sha256, utf8.encode(secretKey));

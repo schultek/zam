@@ -40,6 +40,5 @@ class GroupUser with Mappable {
 
 class UserRoles {
   static const organizer = 'organizer';
-  static const leader = 'leader';
   static const participant = 'participant';
 }

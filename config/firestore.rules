@@ -12,16 +12,16 @@ service cloud.firestore {
         return get(/databases/$(database)/documents/groups/$(groupId));
       }
 
+      function userIsAdmin() {
+        return isSignedIn() && "isAdmin" in request.auth.token && request.auth.token.isAdmin == true;
+      }
+
       function userIsInGroup(group) {
-        return isSignedIn() && request.auth.uid in group.data.users;
+        return isSignedIn() && (request.auth.uid in group.data.users || userIsAdmin());
       }
 
       function userIsOrganizer(group) {
-        return userIsInGroup(group) && group.data.users[request.auth.uid].role == 'organizer';
-      }
-
-      function userIsAdmin() {
-        return isSignedIn() && "isAdmin" in request.auth.token && request.auth.token.isAdmin == true;
+        return userIsInGroup(group) && (group.data.users[request.auth.uid].role == 'organizer' || userIsAdmin());
       }
 
       function userIsGroupCreator() {
@@ -42,8 +42,7 @@ service cloud.firestore {
           && !('role' in request.resource.data.users[request.auth.uid].diff(resource.data.users[request.auth.uid]).affectedKeys());
       }
       
-      allow read: if userIsAdmin() 
-        || userIsInGroup(resource);
+      allow read: if userIsInGroup(resource);
       
       allow update: if (userIsOrganizer(resource) && checkOrganizerUpdates()) 
         || (userIsInGroup(resource) && checkGroupUpdates());

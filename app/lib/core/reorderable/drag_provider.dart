@@ -12,7 +12,7 @@ import '../elements/elements.dart';
 import '../providers/selected_area_provider.dart';
 import '../widgets/widget_selector.dart';
 import 'drag_item.dart';
-import 'logic_provider.dart';
+import 'items_provider.dart';
 import 'reorderable_item.dart';
 
 final dragProvider = StateProvider<ReorderableDrag?>((ref) => null);
@@ -71,7 +71,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
     Vibration.vibrate(amplitude: 1, duration: 2);
 
-    var draggedItem = read(reorderableLogicProvider).items[key]!;
+    var draggedItem = read(reorderableItemProvider).items[key]!.item;
 
     read(dragWidgetProvider.state).state =
         draggedItem.widget.builder(draggedItem.context, ReorderableState.dragging, draggedItem.widget.child);
@@ -158,7 +158,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
   Future<void> end(DragEndDetails? details) async {
     HapticFeedback.lightImpact();
 
-    var draggedItem = read(reorderableLogicProvider).items[key];
+    var draggedItem = read(reorderableItemProvider).items[key];
     if (draggedItem == null) {
       dispose();
       return;
@@ -177,8 +177,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
       return;
     }
 
-    var renderBox = draggedItem.context.findRenderObject()! as RenderBox;
-    var size = renderBox.size;
+    var size = draggedItem.size;
 
     var dragScale = dragScaleAnimation?.value ?? (isDropAccepted ? 1 : 0);
     var targetScale = isDropAccepted ? 1 : 0;
@@ -186,7 +185,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
     var targetHeight = isDropAccepted ? size.height : widgetSelector!.startHeightFor(size);
     var targetWidth = targetHeight / size.height * size.width;
 
-    var targetOffset = renderBox.localToGlobal(Offset.zero) + Offset(targetWidth / 2, targetHeight / 2);
+    var targetOffset = draggedItem.offset + Offset(targetWidth / 2, targetHeight / 2);
 
     dragScaleAnimation!.stop();
 

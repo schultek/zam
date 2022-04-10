@@ -53,7 +53,6 @@ class _RecipeDialogState extends State<RecipeDialog> {
           shrinkWrap: true,
           itemCount: articleEntries.length,
           itemBuilder: (context, index) {
-            print(Provider.of<SupplyRepository>(context, listen: false).articles);
             return CheckboxListTile(
               title: Text(
                 Provider.of<SupplyRepository>(context, listen: false)

@@ -63,7 +63,7 @@ class HorizontalScrollAreaState extends AreaState<HorizontalScrollArea, ContentE
   }
 
   @override
-  bool didReorderItem(Offset offset, Key itemKey) {
+  Offset? didReorderItem(Offset offset, Key itemKey) {
     Offset itemOffset = getOffset(itemKey);
     Size itemSize = getSize(itemKey);
 
@@ -73,7 +73,7 @@ class HorizontalScrollAreaState extends AreaState<HorizontalScrollArea, ContentE
 
     if (index > 0 && offset.dx < itemOffset.dx - spacing) {
       var prevItem = elements[index - 1];
-      if (!logic.hasItem(prevItem.key)) return false;
+      if (!hasItem(prevItem.key)) return null;
       var prevItemSize = getSize(prevItem.key);
 
       if (offset.dx < itemOffset.dx - prevItemSize.width / 2 - spacing) {
@@ -82,11 +82,11 @@ class HorizontalScrollAreaState extends AreaState<HorizontalScrollArea, ContentE
           elements.insert(index - 1, draggedItem);
         });
         translateX(elements[index].key, -itemSize.width - spacing);
-        return true;
+        return Offset(-prevItemSize.width - spacing, 0);
       }
     } else if (index < elements.length - 1 && offset.dx > itemOffset.dx + spacing) {
       var nextItem = elements[index + 1];
-      if (!logic.hasItem(nextItem.key)) return false;
+      if (!hasItem(nextItem.key)) return null;
       var nextItemSize = getSize(nextItem.key);
 
       if (offset.dx > itemOffset.dx + nextItemSize.width / 2 + spacing) {
@@ -96,18 +96,18 @@ class HorizontalScrollAreaState extends AreaState<HorizontalScrollArea, ContentE
         });
 
         translateX(elements[index].key, itemSize.width + spacing);
-        return true;
+        return Offset(nextItemSize.width + spacing, 0);
       }
     }
-    return false;
+    return null;
   }
 
   @override
   void insertItem(Offset offset, ContentElement item) {
     var indexAfter = elements.indexWhere((e) {
-      if (!logic.hasItem(e.key)) return false;
-      var size = logic.itemSize(e.key);
-      return logic.itemOffset(e.key).dx + size.width > offset.dx;
+      if (!hasItem(e.key)) return false;
+      var size = getSize(e.key);
+      return getOffset(e.key).dx + size.width > offset.dx;
     });
 
     setState(() {
@@ -116,7 +116,7 @@ class HorizontalScrollAreaState extends AreaState<HorizontalScrollArea, ContentE
       } else {
         var itemWidth = getSize(item.key).width;
         for (int i = indexAfter; i < elements.length; i++) {
-          if (!logic.hasItem(elements[i].key)) continue;
+          if (!hasItem(elements[i].key)) continue;
           translateX(elements[i].key, -itemWidth - spacing);
         }
         elements.insert(indexAfter, item);
@@ -129,7 +129,7 @@ class HorizontalScrollAreaState extends AreaState<HorizontalScrollArea, ContentE
 
     var itemWidth = getSize(item.key).width;
     for (int i = index + 1; i < elements.length; i++) {
-      if (!logic.hasItem(elements[i].key)) continue;
+      if (!hasItem(elements[i].key)) continue;
       translateX(elements[i].key, itemWidth + spacing);
     }
 

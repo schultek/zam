@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../helpers/extensions.dart';
 import '../../providers/auth/claims_provider.dart';
@@ -16,14 +17,14 @@ import '../../screens/signin/phone_signin_screen.dart';
 import '../../widgets/ju_background.dart';
 import '../models/models.dart';
 import '../themes/themes.dart';
-import 'group_settings_page.dart';
+import 'settings_page.dart';
 
-class GroupSelectorPage extends StatelessWidget {
-  const GroupSelectorPage({Key? key}) : super(key: key);
+class SelectGroupPage extends StatelessWidget {
+  const SelectGroupPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var groups = context.watch(groupsProvider).value ?? <Group>[];
+    var groups = context.watch(joinedGroupsProvider);
     var selectedGroup = context.watch(selectedGroupProvider);
 
     return Scaffold(
@@ -34,7 +35,7 @@ class GroupSelectorPage extends StatelessWidget {
             IconButton(
               icon: const Icon(Icons.admin_panel_settings),
               onPressed: () {
-                Navigator.of(context, rootNavigator: true).push(AdminPanel.route());
+                Navigator.of(context, rootNavigator: true).push(AdminPanel.route(context));
               },
             ),
         ],
@@ -141,7 +142,7 @@ class GroupSelectorPage extends StatelessWidget {
 
   List<Widget> aboutSection(BuildContext context) {
     return [
-      const SizedBox(height: 20),
+      const SizedBox(height: 10),
       Text(
         context.tr.made_with_love,
         textAlign: TextAlign.center,
@@ -153,13 +154,21 @@ class GroupSelectorPage extends StatelessWidget {
         style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
       ),
       const SizedBox(height: 20),
+      OutlinedButton.icon(
+        icon: const Icon(Icons.send),
+        label: Text(context.tr.feedback),
+        onPressed: () {
+          launch('mailto:schulte.kilian97@gmail.com');
+        },
+      ),
+      const SizedBox(height: 10),
     ];
   }
 
   List<Widget> accountSection(BuildContext context) {
     var user = context.read(userProvider).value!;
 
-    var logoutButton = TextButton(
+    var logoutButton = OutlinedButton(
       child: Text(context.tr.logout),
       onPressed: () {
         context.read(authLogicProvider).signOut();
@@ -169,6 +178,7 @@ class GroupSelectorPage extends StatelessWidget {
     if (user.providerData.any((p) => p.providerId == PhoneAuthProvider.PROVIDER_ID)) {
       return [
         Center(child: Text('${context.tr.logged_in_with} ${user.phoneNumber}')),
+        const SizedBox(height: 5),
         Center(child: logoutButton),
       ];
     } else {
@@ -184,11 +194,13 @@ class GroupSelectorPage extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
         ),
+        const SizedBox(height: 5),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             logoutButton,
-            TextButton(
+            const SizedBox(width: 5),
+            OutlinedButton(
               child: Text(context.tr.add_phone_number),
               onPressed: () {
                 Navigator.of(context, rootNavigator: true).push(PhoneSignInScreen.route());
@@ -230,7 +242,7 @@ class GroupSelectorPage extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(Icons.settings, color: context.onSurfaceColor),
                         onPressed: () {
-                          Navigator.push(context, GroupSettingsPage.route());
+                          Navigator.push(context, SettingsPage.route());
                         },
                       ),
                     ),

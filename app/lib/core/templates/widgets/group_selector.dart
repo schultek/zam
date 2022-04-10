@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../pages/groups_page.dart';
+import '../../pages/settings_page.dart';
 import '../../providers/editing_providers.dart';
 import '../../themes/themes.dart';
-import '../../widgets/group_selector_page.dart';
-import '../../widgets/group_settings_page.dart';
 
 class GroupSelectorButton extends StatelessWidget {
   const GroupSelectorButton({Key? key}) : super(key: key);
@@ -19,7 +19,10 @@ class GroupSelectorButton extends StatelessWidget {
           if (context.read(isEditingProvider)) {
             context.read(editProvider.notifier).toggleEdit();
           }
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const GroupSelectorPage()));
+          Navigator.of(context).push(MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (context) => const SelectGroupPage(),
+          ));
         },
       ),
     );
@@ -36,7 +39,7 @@ class GroupSettingsButton extends StatelessWidget {
       child: InkResponse(
         child: Icon(Icons.settings, color: context.onSurfaceColor, size: 20),
         onTap: () {
-          Navigator.push(context, GroupSettingsPage.route());
+          Navigator.push(context, SettingsPage.route());
         },
       ),
     );

@@ -4,7 +4,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../areas/areas.dart';
 import '../elements/elements.dart';
-import 'logic_provider.dart';
+import 'items_provider.dart';
 import 'reorderable_item.dart';
 
 class ReorderableListener<T extends ModuleElement> extends StatelessWidget {
@@ -34,7 +34,7 @@ class ReorderableListener<T extends ModuleElement> extends StatelessWidget {
     ReorderableItemState state = context.findAncestorStateOfType<ReorderableItemState>()!;
     var widgetArea = Area.of<T>(context)!;
 
-    context.read(reorderableLogicProvider).startDragging(
+    context.read(reorderableItemProvider).startDragging(
           key: state.key,
           event: event,
           widgetArea: widgetArea,

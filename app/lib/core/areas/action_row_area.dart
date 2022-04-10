@@ -54,7 +54,7 @@ class ActionRowAreaState extends AreaState<ActionRowArea, ActionElement>
   }
 
   @override
-  bool didReorderItem(Offset offset, Key itemKey) {
+  Offset? didReorderItem(Offset offset, Key itemKey) {
     Offset itemOffset = getOffset(itemKey);
 
     int index = elements.indexWhere((e) => e.key == itemKey);
@@ -67,16 +67,16 @@ class ActionRowAreaState extends AreaState<ActionRowArea, ActionElement>
         elements.insert(index - 1, draggedItem);
       });
       translateX(elements[index].key, -spacing);
-      return true;
+      return Offset(-spacing, 0);
     } else if (index < elements.length - 1 && offset.dx > itemOffset.dx + spacing / 2 + 10) {
       setState(() {
         var draggedItem = elements.removeAt(index);
         elements.insert(index + 1, draggedItem);
       });
       translateX(elements[index].key, spacing);
-      return true;
+      return Offset(spacing, 0);
     }
-    return false;
+    return null;
   }
 
   @override

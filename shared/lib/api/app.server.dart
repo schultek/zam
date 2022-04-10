@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:api_agent/server.dart';
 
+import '../models/core/user.dart';
 import 'app.api.dart';
 import 'mapper_codec.dart';
 import 'modules/announcement.dart';
@@ -21,12 +22,15 @@ mixin _AppApiEndpointMixin implements ApiEndpoint<AppApiEndpoint> {
 abstract class AppApiEndpoint with _AppApiEndpointMixin {
   static ApiEndpoint<AppApiEndpoint> from({
     required ApiEndpoint<LinksApiEndpoint> links,
+    required ApiEndpoint<AdminApiEndpoint> admin,
     required ApiEndpoint<AnnouncementApiEndpoint> announcement,
     required ApiEndpoint<ChatApiEndpoint> chat,
   }) =>
-      _AppApiEndpoint(links, announcement, chat);
+      _AppApiEndpoint(links, admin, announcement, chat);
 
   LinksApiEndpoint get links;
+
+  AdminApiEndpoint get admin;
 
   AnnouncementApiEndpoint get announcement;
 
@@ -34,20 +38,22 @@ abstract class AppApiEndpoint with _AppApiEndpointMixin {
   @override
   List<ApiEndpoint> get endpoints => [
         links,
+        admin,
         announcement,
         chat,
       ];
 }
 
 class _AppApiEndpoint with _AppApiEndpointMixin {
-  _AppApiEndpoint(
-      this.linksEndpoint, this.announcementEndpoint, this.chatEndpoint);
+  _AppApiEndpoint(this.linksEndpoint, this.adminEndpoint,
+      this.announcementEndpoint, this.chatEndpoint);
   final ApiEndpoint<LinksApiEndpoint> linksEndpoint;
+  final ApiEndpoint<AdminApiEndpoint> adminEndpoint;
   final ApiEndpoint<AnnouncementApiEndpoint> announcementEndpoint;
   final ApiEndpoint<ChatApiEndpoint> chatEndpoint;
   @override
   List<ApiEndpoint> get endpoints =>
-      [linksEndpoint, announcementEndpoint, chatEndpoint];
+      [linksEndpoint, adminEndpoint, announcementEndpoint, chatEndpoint];
 }
 
 mixin _LinksApiEndpointMixin implements ApiEndpoint<LinksApiEndpoint> {
@@ -215,6 +221,92 @@ class _OnLinkReceivedEndpoint extends OnLinkReceivedEndpoint {
   @override
   FutureOr<bool> onLinkReceived(String link, covariant ApiRequest request) {
     return handler(link, request);
+  }
+}
+
+mixin _AdminApiEndpointMixin implements ApiEndpoint<AdminApiEndpoint> {
+  List<ApiEndpoint> get endpoints;
+
+  @override
+  void build(ApiBuilder builder) {
+    builder.mount('AdminApi', endpoints);
+  }
+}
+
+abstract class AdminApiEndpoint with _AdminApiEndpointMixin {
+  static ApiEndpoint<AdminApiEndpoint> from({
+    required ApiEndpoint<GetAllUsersEndpoint> getAllUsers,
+    required ApiEndpoint<SetClaimsEndpoint> setClaims,
+  }) =>
+      _AdminApiEndpoint(getAllUsers, setClaims);
+
+  FutureOr<List<UserData>> getAllUsers(covariant ApiRequest request);
+
+  FutureOr<void> setClaims(
+      String userId, UserClaims claims, covariant ApiRequest request);
+  @override
+  List<ApiEndpoint> get endpoints => [
+        GetAllUsersEndpoint.from(getAllUsers),
+        SetClaimsEndpoint.from(setClaims),
+      ];
+}
+
+class _AdminApiEndpoint with _AdminApiEndpointMixin {
+  _AdminApiEndpoint(this.getAllUsersEndpoint, this.setClaimsEndpoint);
+  final ApiEndpoint<GetAllUsersEndpoint> getAllUsersEndpoint;
+  final ApiEndpoint<SetClaimsEndpoint> setClaimsEndpoint;
+  @override
+  List<ApiEndpoint> get endpoints => [getAllUsersEndpoint, setClaimsEndpoint];
+}
+
+abstract class GetAllUsersEndpoint implements ApiEndpoint<GetAllUsersEndpoint> {
+  GetAllUsersEndpoint();
+  factory GetAllUsersEndpoint.from(
+          FutureOr<List<UserData>> Function(ApiRequest request) handler) =
+      _GetAllUsersEndpoint;
+  FutureOr<List<UserData>> getAllUsers(covariant ApiRequest request);
+  @override
+  void build(ApiBuilder builder) {
+    builder.handle('getAllUsers', (r) => getAllUsers(r));
+  }
+}
+
+class _GetAllUsersEndpoint extends GetAllUsersEndpoint {
+  _GetAllUsersEndpoint(this.handler);
+
+  final FutureOr<List<UserData>> Function(ApiRequest request) handler;
+
+  @override
+  FutureOr<List<UserData>> getAllUsers(covariant ApiRequest request) {
+    return handler(request);
+  }
+}
+
+abstract class SetClaimsEndpoint implements ApiEndpoint<SetClaimsEndpoint> {
+  SetClaimsEndpoint();
+  factory SetClaimsEndpoint.from(
+      FutureOr<void> Function(
+              String userId, UserClaims claims, ApiRequest request)
+          handler) = _SetClaimsEndpoint;
+  FutureOr<void> setClaims(
+      String userId, UserClaims claims, covariant ApiRequest request);
+  @override
+  void build(ApiBuilder builder) {
+    builder.handle(
+        'setClaims', (r) => setClaims(r.get('userId'), r.get('claims'), r));
+  }
+}
+
+class _SetClaimsEndpoint extends SetClaimsEndpoint {
+  _SetClaimsEndpoint(this.handler);
+
+  final FutureOr<void> Function(
+      String userId, UserClaims claims, ApiRequest request) handler;
+
+  @override
+  FutureOr<void> setClaims(
+      String userId, UserClaims claims, covariant ApiRequest request) {
+    return handler(userId, claims, request);
   }
 }
 

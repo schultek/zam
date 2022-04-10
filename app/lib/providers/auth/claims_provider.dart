@@ -2,10 +2,13 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared/models/models.dart';
 
 import 'user_provider.dart';
 
 final claimsProvider = StateNotifierProvider<ClaimsNotifier, UserClaims>((ref) => ClaimsNotifier(ref));
+
+final isAdminProvider = Provider((ref) => ref.watch(claimsProvider).isAdmin);
 
 class ClaimsNotifier extends StateNotifier<UserClaims> {
   late final StreamSubscription<User?> _userSubscription;
@@ -25,10 +28,7 @@ class ClaimsNotifier extends StateNotifier<UserClaims> {
       state = const UserClaims();
     } else {
       var result = await user.getIdTokenResult(forceRefresh);
-      state = UserClaims(
-        isGroupCreator: result.claims?['isGroupCreator'] as bool? ?? false,
-        isAdmin: result.claims?['isAdmin'] as bool? ?? false,
-      );
+      state = UserClaims.from(result.claims);
     }
   }
 
@@ -40,20 +40,5 @@ class ClaimsNotifier extends StateNotifier<UserClaims> {
   void dispose() {
     _userSubscription.cancel();
     super.dispose();
-  }
-}
-
-class UserClaims {
-  final bool isGroupCreator;
-  final bool isAdmin;
-
-  const UserClaims({
-    this.isGroupCreator = false,
-    this.isAdmin = false,
-  });
-
-  @override
-  String toString() {
-    return 'UserClaims{isGroupCreator: $isGroupCreator, isAdmin: $isAdmin}';
   }
 }

@@ -17,7 +17,6 @@ final apiProvider = Provider((ref) => AppApiClient(
 class FirebaseAuthProvider implements ApiProvider<HttpApiRequest> {
   @override
   Future<HttpApiRequest> apply(HttpApiRequest request) async {
-    print(apiDomain);
     if (FirebaseAuth.instance.currentUser != null) {
       var token = await FirebaseAuth.instance.currentUser!.getIdToken();
       return request.change(headers: {'Authorization': 'Bearer $token'});

@@ -52,12 +52,18 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
   final Map<String, AreaState> widgetAreas = {};
 
   WidgetSelector? widgetSelector;
-  ConfigSheet<M>? configSheet;
 
   List<Widget> getPageSettings();
 
   Future<void> updateModel(M model) async {
     await context.read(groupsLogicProvider).updateTemplateModel(model);
+  }
+
+  void onTemplatePageChanged(int index) async {
+    if (context.read(isEditingProvider)) {
+      context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
+    }
+    context.read(currentPageProvider.notifier).state = index;
   }
 
   @override
@@ -69,12 +75,6 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
 
   @override
   void didChangeDependencies() {
-    context.listen<EditState>(editProvider, (_, state) {
-      setState(() {
-        configSheet = state == EditState.layoutMode ? ConfigSheet<M>() : null;
-      });
-    });
-
     context.listen<String?>(selectedAreaProvider, (prevArea, area) async {
       if (prevArea == area) return;
 
@@ -148,11 +148,17 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
                     home: Stack(
                       children: [
                         buildPages(context),
-                        if (configSheet != null)
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: configSheet!,
-                          ),
+                        Builder(builder: (context) {
+                          var isLayoutMode = context.watch(editProvider.select((e) => e == EditState.layoutMode));
+                          if (isLayoutMode) {
+                            return Align(
+                              alignment: Alignment.bottomCenter,
+                              child: ConfigSheet<M>(),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }),
                         if (widgetSelector != null)
                           Align(
                             alignment: Alignment.bottomCenter,

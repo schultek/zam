@@ -5,14 +5,9 @@ import '../providers/editing_providers.dart';
 import '../templates/templates.dart';
 import '../themes/themes.dart';
 
-class ConfigSheet<T extends TemplateModel> extends StatefulWidget {
+class ConfigSheet<T extends TemplateModel> extends StatelessWidget {
   const ConfigSheet({Key? key}) : super(key: key);
 
-  @override
-  State<ConfigSheet> createState() => _ConfigSheetState<T>();
-}
-
-class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
   @override
   Widget build(BuildContext context) {
     context.watch(currentPageProvider);

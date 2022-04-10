@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/core.dart';
+import '../auth/claims_provider.dart';
 import '../auth/user_provider.dart';
 import '../general/preferences_provider.dart';
 import 'groups_provider.dart';
@@ -51,7 +52,8 @@ final groupUserProvider = Provider<GroupUser?>((ref) {
   return selectedGroup.users[userId];
 });
 
-final isOrganizerProvider = Provider((ref) => ref.watch(groupUserProvider)?.isOrganizer ?? false);
+final isOrganizerProvider =
+    Provider((ref) => ref.watch(isAdminProvider) || (ref.watch(groupUserProvider)?.isOrganizer ?? false));
 
 final groupUserByIdProvider = Provider.family((ref, String id) => ref.watch(selectedGroupProvider)?.users[id]);
 final nicknameProvider = Provider.family((ref, String id) => ref.watch(groupUserByIdProvider(id))?.nickname);

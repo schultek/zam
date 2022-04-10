@@ -47,18 +47,9 @@ class LayoutToggle extends StatelessWidget {
       width: 50,
       child: Center(
         child: IconButton(
-          icon: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4),
-              color: isLayoutMode ? context.onSurfaceColor : null,
-              border: Border.all(color: context.onSurfaceColor),
-            ),
-            padding: const EdgeInsets.all(1),
-            child: Icon(
-              Icons.tune,
-              color: isLayoutMode ? context.surfaceColor : context.onSurfaceColor,
-              size: 18,
-            ),
+          icon: CustomPaint(
+            size: const Size.square(20),
+            painter: LayoutTogglePainter(isLayoutMode, context.onSurfaceColor),
           ),
           onPressed: () {
             context.read(editProvider.notifier).toggleLayoutMode();
@@ -66,5 +57,48 @@ class LayoutToggle extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class LayoutTogglePainter extends CustomPainter {
+  final bool isLayoutMode;
+  final Color color;
+  LayoutTogglePainter(this.isLayoutMode, this.color);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    var p = Path()..addRRect(RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(4)));
+    Path sub(Path p, RRect rrect) {
+      return Path.combine(PathOperation.difference, p, Path()..addRRect(rrect));
+    }
+
+    var m = 3.5;
+    var s = size.width - m * 2;
+    var e = s / 9;
+
+    var tune = Path()
+      ..addRect(Rect.fromLTWH(0, e, 5 * e, e))
+      ..addRect(Rect.fromLTWH(6 * e, 0, e, 3 * e))
+      ..addRect(Rect.fromLTWH(7 * e, e, 2 * e, e))
+      ..addRect(Rect.fromLTWH(0, 4 * e, 2 * e, e))
+      ..addRect(Rect.fromLTWH(2 * e, 3 * e, e, 3 * e))
+      ..addRect(Rect.fromLTWH(4 * e, 4 * e, 5 * e, e))
+      ..addRect(Rect.fromLTWH(0, 7 * e, 3 * e, e))
+      ..addRect(Rect.fromLTWH(4 * e, 6 * e, e, 3 * e))
+      ..addRect(Rect.fromLTWH(5 * e, 7 * e, 4 * e, e));
+    tune = tune.shift(Offset(m, m));
+
+    if (!isLayoutMode) {
+      p = sub(p, RRect.fromLTRBR(1, 1, size.width - 1, size.height - 1, const Radius.circular(3)));
+      p = Path.combine(PathOperation.union, p, tune);
+    } else {
+      p = Path.combine(PathOperation.difference, p, tune);
+    }
+    canvas.drawPath(p, Paint()..color = color);
+  }
+
+  @override
+  bool shouldRepaint(LayoutTogglePainter oldDelegate) {
+    return oldDelegate.isLayoutMode != isLayoutMode || oldDelegate.color != color;
   }
 }

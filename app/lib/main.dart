@@ -11,12 +11,12 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'core/core.dart';
 import 'providers/auth/user_provider.dart';
 import 'providers/general/loading_provider.dart';
-import 'providers/links/links_provider.dart';
 import 'providers/groups/selected_group_provider.dart';
+import 'providers/links/links_provider.dart';
+import 'screens/group/group_screen.dart';
 import 'screens/loading/loading_link_screen.dart';
 import 'screens/loading/loading_screen.dart';
 import 'screens/signin/signin_screen.dart';
-import 'screens/group/group_screen.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(() async {
@@ -89,7 +89,7 @@ class _JufaAppState extends State<JufaApp> {
 
     return GroupTheme(
       theme: GroupThemeData(FlexScheme.material, true),
-      child: const GroupSelectorPage(),
+      child: const SelectGroupPage(),
     );
   }
 }

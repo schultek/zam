@@ -47,7 +47,7 @@ class GroupsLogic {
   }
 
   Future<void> updateGroup(Map<String, dynamic> map) async {
-    if (ref.read(groupUserProvider)?.role != UserRoles.organizer) return;
+    if (!ref.read(isOrganizerProvider)) return;
     return FirebaseFirestore.instance.collection('groups').doc(_groupId).update(map);
   }
 

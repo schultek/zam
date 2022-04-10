@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/groups/selected_group_provider.dart';
-import '../../models/group.dart';
 import '../../providers/editing_providers.dart';
 import '../../themes/themes.dart';
 import '../../widgets/layout_preview.dart';
@@ -19,19 +18,19 @@ class MainGroupHeader extends StatelessWidget {
       child: Consumer(
         builder: (context, ref, _) {
           var group = ref.watch(selectedGroupProvider)!;
-          var user = ref.watch(groupUserProvider) ?? GroupUser();
+          var isOrganizer = ref.watch(isOrganizerProvider);
 
           var isEditing = ref.watch(isEditingProvider);
 
           var leading = [
             if (!isEditing) const GroupSelectorButton(),
-            if (isEditing && user.isOrganizer) const GroupSettingsButton(),
+            if (isEditing && isOrganizer) const GroupSettingsButton(),
             if (isEditing) const SizedBox(width: 50),
           ];
 
           var trailing = [
-            if (!isEditing && !user.isOrganizer) const SizedBox(width: 50),
-            if (user.isOrganizer) EditToggles(isEditing: isEditing),
+            if (!isEditing && !isOrganizer) const SizedBox(width: 50),
+            if (isOrganizer) EditToggles(isEditing: isEditing),
           ];
 
           return Row(

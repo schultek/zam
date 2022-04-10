@@ -7,7 +7,6 @@ import '../../../main.mapper.g.dart';
 import '../../../widgets/nested_will_pop_scope.dart';
 import '../../layouts/layouts.dart';
 import '../../providers/editing_providers.dart';
-import '../../providers/selected_area_provider.dart';
 import '../../templates/templates.dart';
 import '../../themes/themes.dart';
 import '../../widgets/layout_preview.dart';
@@ -97,13 +96,7 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
             var isEditing = context.watch(isEditingProvider);
             return CustomPageView(
               controller: pageController,
-              onPageChanged: (index) {
-                if (isEditing) {
-                  context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
-                  if (context.read(editProvider) == EditState.layoutMode) {}
-                }
-                context.read(currentPageProvider.notifier).state = index;
-              },
+              onPageChanged: onTemplatePageChanged,
               children: [
                 if (model.leftPage != null) //
                   KeepAlive(
