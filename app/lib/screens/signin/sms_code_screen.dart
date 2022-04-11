@@ -1,12 +1,12 @@
-import 'package:cupertino_rounded_corners/cupertino_rounded_corners.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../core/core.dart';
 import '../../helpers/extensions.dart';
 import '../../providers/auth/logic_provider.dart';
-import '../../widgets/ju_background.dart';
+import '../../widgets/ju_layout.dart';
 
 class SmsCodeScreen extends StatefulWidget {
   final String verificationId;
@@ -25,67 +25,80 @@ class _EnterCodeState extends State<SmsCodeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: JuBackground(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 40),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              Text(
-                context.tr.enter_sms_code,
-                style: const TextStyle(color: Colors.white, fontSize: 45),
-              ),
-              const Spacer(
-                flex: 3,
-              ),
-              CupertinoCard(
-                elevation: 8.0,
-                radius: const BorderRadius.all(Radius.circular(50.0)),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: context.tr.enter_code,
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (text) {
-                        setState(() => code = text);
-                      },
-                    ),
+    return JuLayout(
+      header: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          const SizedBox(height: 40),
+          Text(
+            context.tr.enter_sms_code,
+            style: context.theme.textTheme.headline3!.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 30),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: context.tr.enter_code,
+                    border: InputBorder.none,
                   ),
+                  onChanged: (text) {
+                    setState(() => code = text);
+                  },
                 ),
               ),
-              const SizedBox(height: 40),
-              RichText(
-                text: TextSpan(
-                  text: context.tr.no_sms_received,
-                  children: [
-                    TextSpan(
-                      text: context.tr.resend_sms,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () async {
-                          setState(() => isLoading = true);
-                          await widget.onResend();
-                          setState(() => isLoading = false);
-                        },
-                    ),
-                  ],
-                  style: TextStyle(color: Colors.white.withOpacity(0.95)),
+            ),
+          ),
+          const SizedBox(height: 60),
+          RichText(
+            text: TextSpan(
+              text: context.tr.no_sms_received,
+              children: [
+                TextSpan(
+                  text: context.tr.resend_sms,
+                  style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () async {
+                      setState(() => isLoading = true);
+                      await widget.onResend();
+                      setState(() => isLoading = false);
+                    },
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const Spacer(
-                flex: 3,
-              ),
-              CupertinoCard(
-                elevation: 8.0,
-                radius: const BorderRadius.all(Radius.circular(50.0)),
-                child: InkWell(
-                  onTap: () async {
+              ],
+              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.white,
+              onPrimary: Colors.black,
+              padding: const EdgeInsets.all(20),
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+            ),
+            child: isLoading
+                ? const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(Colors.black87),
+                  )
+                : Text(
+                    context.tr.confirm,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+            onPressed: !isLoading && code.isNotEmpty
+                ? () async {
                     setState(() => isLoading = true);
                     try {
                       var user = await context.read(authLogicProvider).verifyCode(code, widget.verificationId);
@@ -114,26 +127,10 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                     if (mounted) {
                       setState(() => isLoading = false);
                     }
-                  },
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(28.0),
-                      child: isLoading
-                          ? const CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation(Colors.black87),
-                            )
-                          : Text(
-                              context.tr.confirm,
-                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                    ),
-                  ),
-                ),
-              ),
-              const Spacer(),
-            ],
+                  }
+                : null,
           ),
-        ),
+        ],
       ),
     );
   }

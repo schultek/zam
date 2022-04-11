@@ -267,13 +267,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.17.1"
-  cupertino_rounded_corners:
-    dependency: "direct main"
-    description:
-      name: cupertino_rounded_corners
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   dart_mappable:
     dependency: "direct main"
     description:

@@ -91,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         title: Text(group.template.name),
                         subtitle: Text(context.tr.tap_to_change),
                         onTap: () async {
-                          var newTemplate = await TemplatePreviewSwitcher.show(context, group.template);
+                          var newTemplate = await TemplatePreviewSwitcherDialog.show(context, group.template);
 
                           if (newTemplate != null) {
                             context.read(groupsLogicProvider).updateTemplateModel(newTemplate);

@@ -88,7 +88,7 @@ class _JufaAppState extends State<JufaApp> {
     }
 
     return GroupTheme(
-      theme: GroupThemeData(FlexScheme.material, true),
+      theme: GroupThemeData(FlexScheme.green, true),
       child: const SelectGroupPage(),
     );
   }

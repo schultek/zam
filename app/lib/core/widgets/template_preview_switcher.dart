@@ -5,9 +5,9 @@ import '../templates/templates.dart';
 import '../themes/themes.dart';
 import 'layout_preview.dart';
 
-class TemplatePreviewSwitcher extends StatefulWidget {
+class TemplatePreviewSwitcherDialog extends StatefulWidget {
   final TemplateModel currentTemplate;
-  const TemplatePreviewSwitcher({required this.currentTemplate, Key? key}) : super(key: key);
+  const TemplatePreviewSwitcherDialog({required this.currentTemplate, Key? key}) : super(key: key);
 
   static Future<TemplateModel?> show(BuildContext context, TemplateModel currentTemplate) {
     return showDialog(
@@ -15,7 +15,7 @@ class TemplatePreviewSwitcher extends StatefulWidget {
       useRootNavigator: false,
       builder: (ctx) => GroupTheme(
         theme: context.groupTheme.copy(),
-        child: TemplatePreviewSwitcher(
+        child: TemplatePreviewSwitcherDialog(
           currentTemplate: currentTemplate,
         ),
       ),
@@ -23,18 +23,16 @@ class TemplatePreviewSwitcher extends StatefulWidget {
   }
 
   @override
-  State<TemplatePreviewSwitcher> createState() => _TemplatePreviewSwitcherState();
+  State<TemplatePreviewSwitcherDialog> createState() => _TemplatePreviewSwitcherDialogState();
 }
 
-class _TemplatePreviewSwitcherState extends State<TemplatePreviewSwitcher> {
-  late final PageController controller;
-  late int page;
+class _TemplatePreviewSwitcherDialogState extends State<TemplatePreviewSwitcherDialog> {
+  late TemplateModel template;
 
   @override
   void initState() {
     super.initState();
-    page = TemplateModel.all.indexWhere((m) => m.runtimeType == widget.currentTemplate.runtimeType);
-    controller = PageController(initialPage: page);
+    template = widget.currentTemplate;
   }
 
   @override
@@ -45,83 +43,148 @@ class _TemplatePreviewSwitcherState extends State<TemplatePreviewSwitcher> {
       backgroundColor: context.surfaceColor,
       content: Padding(
         padding: const EdgeInsets.only(top: 8.0),
-        child: SizedBox(
-          width: 200,
-          height: 200,
-          child: Stack(
-            children: [
-              PageView(
-                controller: controller,
-                onPageChanged: (page) {
-                  setState(() {
-                    this.page = page;
-                  });
-                },
-                children: [
-                  for (var template in TemplateModel.all)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(child: PreviewBox(preview: template.preview(), padding: 20)),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            template.name,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
-              ),
-              Positioned(
-                right: 0,
-                top: 60,
-                child: IconButton(
-                  icon: const Icon(Icons.chevron_right),
-                  onPressed: page < TemplateModel.all.length - 1
-                      ? () {
-                          controller.nextPage(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                      : null,
-                ),
-              ),
-              Positioned(
-                left: 0,
-                top: 60,
-                child: IconButton(
-                  icon: const Icon(Icons.chevron_left),
-                  onPressed: page > 0
-                      ? () {
-                          controller.previousPage(
-                            duration: const Duration(milliseconds: 500),
-                            curve: Curves.easeInOut,
-                          );
-                        }
-                      : null,
-                ),
-              ),
-            ],
-          ),
+        child: TemplateSwitcher(
+          style: SwitcherStyle.dialog,
+          initialTemplate: widget.currentTemplate,
+          onTemplateChanged: (template) {
+            setState(() {
+              this.template = template;
+            });
+          },
         ),
       ),
       actions: [
         TextButton(
           child: Text(context.tr.ok),
           onPressed: () {
-            var newTemplate = TemplateModel.all[controller.page!.round()];
-            if (newTemplate.runtimeType == widget.currentTemplate.runtimeType) {
+            if (template.runtimeType == widget.currentTemplate.runtimeType) {
               Navigator.of(context).pop();
             } else {
-              Navigator.of(context).pop(newTemplate);
+              Navigator.of(context).pop(template);
             }
           },
         )
       ],
+    );
+  }
+}
+
+enum SwitcherStyle { card, dialog }
+
+class TemplateSwitcher extends StatefulWidget {
+  const TemplateSwitcher({this.initialTemplate, required this.onTemplateChanged, required this.style, Key? key})
+      : super(key: key);
+
+  final TemplateModel? initialTemplate;
+  final Function(TemplateModel template) onTemplateChanged;
+  final SwitcherStyle style;
+
+  @override
+  State<TemplateSwitcher> createState() => _TemplateSwitcherState();
+}
+
+class _TemplateSwitcherState extends State<TemplateSwitcher> {
+  late final PageController controller;
+  late int page;
+
+  @override
+  void initState() {
+    super.initState();
+    page = widget.initialTemplate != null
+        ? TemplateModel.all.indexWhere((m) => m.runtimeType == widget.initialTemplate.runtimeType)
+        : 0;
+    controller = PageController(initialPage: page);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 200,
+      height: 200,
+      child: Stack(
+        children: [
+          PageView(
+            controller: controller,
+            onPageChanged: (page) {
+              setState(() {
+                this.page = page;
+              });
+              widget.onTemplateChanged.call(TemplateModel.all[page]);
+            },
+            children: [
+              for (var template in TemplateModel.all)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (widget.style == SwitcherStyle.card)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: context.onSurfaceColor.withOpacity(0.3),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          context.tr.choose_template,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    Expanded(
+                      child: PreviewBox(
+                        preview: template.preview(),
+                        padding: widget.style == SwitcherStyle.card ? 10 : 20,
+                      ),
+                    ),
+                    Container(
+                      decoration: widget.style == SwitcherStyle.card
+                          ? BoxDecoration(
+                              color: context.onSurfaceColor.withOpacity(0.3),
+                            )
+                          : null,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          template.name,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+          Positioned(
+            right: 0,
+            top: 60 + (widget.style == SwitcherStyle.card ? 20 : 0),
+            child: IconButton(
+              icon: const Icon(Icons.chevron_right),
+              onPressed: page < TemplateModel.all.length - 1
+                  ? () {
+                      controller.nextPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  : null,
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 60 + (widget.style == SwitcherStyle.card ? 20 : 0),
+            child: IconButton(
+              icon: const Icon(Icons.chevron_left),
+              onPressed: page > 0
+                  ? () {
+                      controller.previousPage(
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  : null,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
