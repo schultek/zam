@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -141,19 +142,35 @@ class SelectGroupPage extends StatelessWidget {
   }
 
   List<Widget> aboutSection(BuildContext context) {
+    var n = 0;
     return [
-      const SizedBox(height: 10),
-      Text(
-        context.tr.made_with_love,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
+      GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          n++;
+          if (n == 8) {
+            n = 0;
+            showDevInfo(context);
+          }
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Text(
+              context.tr.made_with_love,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
+            ),
+            Text(
+              context.tr.copyright,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
-      Text(
-        context.tr.copyright,
-        textAlign: TextAlign.center,
-        style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
-      ),
-      const SizedBox(height: 20),
       OutlinedButton.icon(
         icon: const Icon(Icons.send),
         label: Text(context.tr.feedback),
@@ -259,6 +276,40 @@ class SelectGroupPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void showDevInfo(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return IntrinsicHeight(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('User Id'),
+                subtitle: Text(context.read(userIdProvider) ?? ''),
+              ),
+              ListTile(
+                title: const Text('App Version'),
+                subtitle: FutureBuilder<PackageInfo>(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data != null) {
+                      return Text('${snapshot.data!.version}+${snapshot.data!.buildNumber}');
+                    } else if (snapshot.error != null) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      return const Text('Loading...');
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

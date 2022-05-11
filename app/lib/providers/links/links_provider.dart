@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -98,11 +99,16 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
   }
 
   Future<void> handleReceivedLink(Uri link) async {
-    var claimsChanged = await ref.read(linkApiProvider).onLinkReceived(link.toString());
-    if (claimsChanged) {
-      await ref.read(claimsProvider.notifier).refresh();
+    try {
+      var claimsChanged = await ref.read(linkApiProvider).onLinkReceived(link.toString());
+      if (claimsChanged) {
+        await ref.read(claimsProvider.notifier).refresh();
+      }
+    } catch (e, st) {
+      FirebaseCrashlytics.instance.recordError(e, st);
+    } finally {
+      state = LinkState.noLink();
     }
-    state = LinkState.noLink();
   }
 }
 

@@ -47,6 +47,7 @@ dependencies:
   image_picker: ^0.8.4+11
   intl: ^0.17.0
   o_color_picker: ^1.0.2
+  package_info_plus: ^1.4.2
   palette_generator: ^0.3.3
   path_provider: ^2.0.9
   rive: ^0.8.4
