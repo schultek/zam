@@ -140,13 +140,14 @@ class _SettingsPageState extends State<SettingsPage> {
               onTap: () {
                 showConfirmDialog(
                   context,
-                  '${context.tr.do_want_to_leave} ${group.name}?',
+                  '${context.tr.do_want_to_leave}${group.name}?',
+                  '',
                   context.tr.leave,
                   () => context.read(groupsLogicProvider).leaveSelectedGroup(),
                 );
               },
             ),
-            if (context.read(claimsProvider).isGroupCreator)
+            if (context.read(isGroupCreatorProvider))
               ListTile(
                 title: Text(
                   context.tr.delete,
@@ -155,7 +156,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 onTap: () {
                   showConfirmDialog(
                     context,
-                    '${context.tr.do_want_to_delete} ${group.name}? ${context.tr.cant_be_undone}',
+                    '${context.tr.do_want_to_delete}${group.name}?',
+                    context.tr.cant_be_undone,
                     context.tr.delete,
                     () => context.read(groupsLogicProvider).deleteSelectedGroup(),
                   );
@@ -167,11 +169,12 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  void showConfirmDialog(BuildContext context, String title, String action, Function() onConfirmed) {
+  void showConfirmDialog(BuildContext context, String title, String content, String action, Function() onConfirmed) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(title),
+        content: Text(content),
         actions: [
           TextButton(
             child: Text(context.tr.cancel),

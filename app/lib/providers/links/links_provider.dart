@@ -77,7 +77,13 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
     var uri = link.link;
     if (uri.path.startsWith('/invitation')) {
       if (uri.path.endsWith('/organizer') || uri.path.endsWith('/admin')) {
-        state = LinkState(uri);
+        var user = ref.read(userProvider);
+        if (user.value != null && user.value!.phoneNumber != null) {
+          state = LinkState.processing();
+          handleReceivedLink(uri);
+        } else {
+          state = LinkState(uri);
+        }
       } else if (uri.path.endsWith('/group')) {
         state = LinkState.processing();
         (() async {
@@ -108,7 +114,7 @@ class LinkLogic {
   final Ref ref;
   LinkLogic(this.ref);
 
-  Future<String> createOrganizerLink({required BuildContext context, required String phoneNumber}) async {
+  Future<String> createOrganizerLink({required BuildContext context, String? phoneNumber}) async {
     var link = await ref.read(linkApiProvider).createOrganizerLink(phoneNumber: phoneNumber);
     return _buildDynamicLink(
       link: link,
@@ -120,7 +126,7 @@ class LinkLogic {
     );
   }
 
-  Future<String> createAdminLink({required BuildContext context, required String phoneNumber}) async {
+  Future<String> createAdminLink({required BuildContext context, String? phoneNumber}) async {
     var link = await ref.read(linkApiProvider).createAdminLink(phoneNumber: phoneNumber);
     return _buildDynamicLink(
       link: link,

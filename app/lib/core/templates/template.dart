@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/groups/logic_provider.dart';
@@ -51,6 +52,7 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
 
   final Map<String, AreaState> widgetAreas = {};
 
+  StateController<AnimationController?>? wiggleNotifier;
   WidgetSelector? widgetSelector;
 
   List<Widget> getPageSettings();
@@ -70,8 +72,8 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      context.read(wiggleControllerProvider.notifier).state =
-          AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+      wiggleNotifier = context.read(wiggleControllerProvider.notifier);
+      wiggleNotifier!.state = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
     });
   }
 
@@ -103,9 +105,9 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
 
   @override
   void dispose() {
-    context.read(wiggleControllerProvider.notifier).update((state) {
-      state?.dispose();
-      return null;
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      wiggleNotifier?.state?.dispose();
+      wiggleNotifier?.state = null;
     });
     super.dispose();
   }

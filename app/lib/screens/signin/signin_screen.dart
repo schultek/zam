@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/core.dart';
 import '../../helpers/extensions.dart';
 import '../../providers/auth/logic_provider.dart';
+import '../../providers/links/links_provider.dart';
 import '../../widgets/ju_layout.dart';
 import 'phone_signin_screen.dart';
 
@@ -14,6 +15,7 @@ class SignInScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var hasLink = context.watch(linkProvider) != null;
     return JuLayout(
       header: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -81,9 +83,11 @@ class SignInScreen extends StatelessWidget {
               context.tr.login_as_guest,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            onPressed: () async {
-              context.read(authLogicProvider).signInAnonymously();
-            },
+            onPressed: hasLink
+                ? null
+                : () async {
+                    context.read(authLogicProvider).signInAnonymously();
+                  },
           ),
           const SizedBox(height: 20),
           ElevatedButton(

@@ -25,7 +25,7 @@ service cloud.firestore {
       }
 
       function userIsGroupCreator() {
-        return isSignedIn() && (userIsAdmin() || ("isOrganizer" in request.auth.token && request.auth.token.isOrganizer == true));
+        return isSignedIn() && (userIsAdmin() || ("isGroupCreator" in request.auth.token && request.auth.token.isGroupCreator == true));
       }
       
       function checkGroupFormat(group) {
@@ -51,7 +51,7 @@ service cloud.firestore {
         && checkGroupFormat(request.resource) 
         && userIsOrganizer(request.resource);
       
-      allow delete: if false;
+      allow delete: if userIsOrganizer(resource) && userIsGroupCreator();
       
       match /modules/announcements/announcements/{announcementId} {
         allow read: if userIsInGroup(getGroup());

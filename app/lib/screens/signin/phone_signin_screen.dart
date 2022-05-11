@@ -103,7 +103,9 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
           phoneNumber ?? '',
           resendToken: smsToken,
           onSent: (String verificationId, int? resendToken) async {
-            completer.complete();
+            if (!completer.isCompleted) {
+              completer.complete();
+            }
             if (smsToken == null) {
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => SmsCodeScreen(

@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/core.dart';
+import '../../core/providers/editing_providers.dart';
 import '../../helpers/extensions.dart';
 import '../auth/claims_provider.dart';
 import '../auth/user_provider.dart';
@@ -52,14 +53,20 @@ class GroupsLogic {
   }
 
   Future<void> leaveSelectedGroup() async {
-    await FirebaseFirestore.instance.collection('groups').doc(_groupId).update({
+    var groupId = _groupId;
+    ref.read(selectedGroupIdProvider.notifier).state = null;
+    ref.read(editProvider.notifier).endEditing();
+    await FirebaseFirestore.instance.collection('groups').doc(groupId).update({
       'users.$_userId': FieldValue.delete(),
     });
   }
 
   Future<void> deleteSelectedGroup() async {
-    if (ref.read(claimsProvider).isGroupCreator) {
-      await FirebaseFirestore.instance.collection('groups').doc(_groupId).delete();
+    if (ref.read(isGroupCreatorProvider)) {
+      var groupId = _groupId;
+      ref.read(selectedGroupIdProvider.notifier).state = null;
+      ref.read(editProvider.notifier).endEditing();
+      await FirebaseFirestore.instance.collection('groups').doc(groupId).delete();
     }
   }
 

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 
@@ -23,8 +24,12 @@ class AuthLogic {
       phoneNumber: phoneNumber,
       forceResendingToken: resendToken,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        var user = await signInUser(credential);
-        onCompleted?.call(user);
+        try {
+          var user = await signInUser(credential);
+          onCompleted?.call(user);
+        } catch (e, st) {
+          FirebaseCrashlytics.instance.recordError(e, st);
+        }
       },
       verificationFailed: (FirebaseAuthException exception) {
         onFailed?.call(exception);
@@ -33,7 +38,7 @@ class AuthLogic {
         onSent?.call(verificationId, resendToken);
       },
       codeAutoRetrievalTimeout: (String verificationId) {
-        onFailed?.call(FirebaseAuthException(code: 'auto-retrieval-timeout'));
+        //onFailed?.call(FirebaseAuthException(code: 'auto-retrieval-timeout'));
       },
     );
   }

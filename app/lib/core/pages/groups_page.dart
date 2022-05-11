@@ -70,7 +70,7 @@ class SelectGroupPage extends StatelessWidget {
               hasScrollBody: false,
               child: Column(
                 children: [
-                  if (context.watch(isAdminProvider) || context.watch(claimsProvider).isGroupCreator) //
+                  if (context.watch(isGroupCreatorProvider)) //
                     ...createGroupSection(context),
                   Expanded(
                     child: groups.isEmpty

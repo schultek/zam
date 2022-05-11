@@ -57,6 +57,7 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                   onChanged: (text) {
                     setState(() => code = text);
                   },
+                  keyboardType: TextInputType.number,
                 ),
               ),
             ),

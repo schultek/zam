@@ -25,6 +25,12 @@ class EditNotifier extends StateNotifier<EditState> {
     }
   }
 
+  void endEditing() {
+    if (state != EditState.inactive) {
+      _finishEdit();
+    }
+  }
+
   void _startWiggle() {
     ref.read(wiggleControllerProvider)!.repeat();
   }

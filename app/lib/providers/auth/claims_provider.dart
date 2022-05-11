@@ -8,6 +8,8 @@ import 'user_provider.dart';
 
 final claimsProvider = StateNotifierProvider<ClaimsNotifier, UserClaims>((ref) => ClaimsNotifier(ref));
 
+final isGroupCreatorProvider =
+    Provider((ref) => ref.watch(claimsProvider.select((c) => c.isAdmin || c.isGroupCreator)));
 final isAdminProvider = Provider((ref) => ref.watch(claimsProvider).isAdmin);
 
 class ClaimsNotifier extends StateNotifier<UserClaims> {

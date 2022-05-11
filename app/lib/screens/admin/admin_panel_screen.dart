@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/core.dart';
 import '../../helpers/extensions.dart';
+import '../../providers/links/links_provider.dart';
 import 'pages/groups_page.dart';
 import 'pages/users_page.dart';
-import 'providers/admin_groups_provider.dart';
-import 'providers/admin_users_provider.dart';
-import 'widgets/admin_filter_button.dart';
-import 'widgets/admin_group_filter_menu.dart';
-import 'widgets/admin_user_filter_menu.dart';
+import 'widgets/admin_filter_menu.dart';
 
 class AdminPanel extends StatefulWidget {
   const AdminPanel({Key? key}) : super(key: key);
@@ -46,21 +44,25 @@ class _AdminPanelState extends State<AdminPanel> {
             ],
           ),
           actions: [
-            Builder(builder: (context) {
-              var controller = DefaultTabController.of(context)!;
-              context.prime();
-              if (controller.index == 0) {
-                return AdminFilterButton<GroupFilter>(
-                  filter: context.watch(adminGroupFilterProvider),
-                  menu: const AdminGroupFilterMenu(),
-                );
-              } else {
-                return AdminFilterButton<UserFilter>(
-                  filter: context.watch(adminUserFilterProvider),
-                  menu: const AdminUserFilterMenu(),
-                );
-              }
-            }),
+            const AdminFilterMenu(),
+            PopupMenuButton(
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: const Text('Create Admin Link'),
+                  onTap: () async {
+                    var link = await context.read(linkLogicProvider).createAdminLink(context: context);
+                    Share.share('${context.tr.become_admin_desc}: $link');
+                  },
+                ),
+                PopupMenuItem(
+                  child: const Text('Create Organizer Link'),
+                  onTap: () async {
+                    var link = await context.read(linkLogicProvider).createOrganizerLink(context: context);
+                    Share.share('${context.tr.become_organizer_desc}: $link');
+                  },
+                ),
+              ],
+            ),
           ],
         ),
         body: const TabBarView(

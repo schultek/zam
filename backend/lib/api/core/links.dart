@@ -77,6 +77,9 @@ class OnLinkReceived extends OnLinkReceivedEndpoint {
 
     var sentHmac = uri.queryParameters['hmac'];
     var sourceLink = uri.replace(queryParameters: {...uri.queryParameters}..remove('hmac')).toString();
+    if (sourceLink.endsWith('?')) {
+      sourceLink = sourceLink.substring(0, sourceLink.length - 1);
+    }
 
     var calculatedHmac = hmac.convert(utf8.encode(sourceLink)).toString();
 
