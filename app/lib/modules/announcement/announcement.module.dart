@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:shared/api/modules/announcement.dart';
 
+import '../../widgets/needs_setup_card.dart';
 import '../module.dart';
 import 'pages/announcement_create_page.dart';
 import 'widgets/announcement_card.dart';

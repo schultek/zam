@@ -102,7 +102,7 @@ class OnLinkReceived extends OnLinkReceivedEndpoint {
       if (uri.path.endsWith('organizer')) {
         await request.app.auth().setCustomUserClaims(
           request.user.uid,
-          {...user.customClaims ?? {}, 'isOrganizer': true},
+          {...user.customClaims ?? {}, 'isGroupCreator': true},
         );
       } else if (uri.path.endsWith('admin')) {
         await request.app.auth().setCustomUserClaims(

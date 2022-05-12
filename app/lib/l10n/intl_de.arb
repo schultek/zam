@@ -103,7 +103,10 @@
   "dismissible": "Verwerfbar",
   "text_color": "Textfarbe",
   "background_color": "Hintergrundfarbe",
-  "new_announcement": "Neue Mitteilung\n(Tippe zum Erstellen)",
+  "new_announcement": "Neue Mitteilung",
+  "resend_notification": "Erneut benachrichtigen",
+  "resend_notification_desc": "Sendet eine erneute Benachrichtigung/nan alle Teilnehmer",
+  "confirm_resend": "Möchtest du alle Teilnehmer erneut benachrichtigen?",
 
   "@CHAT": {},
 
@@ -132,7 +135,6 @@
   "eliminated": "Eliminiert",
   "target_player": "Zielperson",
   "add_elimination": "Eliminierung hinzufügen",
-  "new_game_setup": "Neues Spiel\n(Tippe zum Erstellen)",
   "allow_loops": "Schleifen erlauben",
   "create_game": "Spiel erstellen",
   "how_to_play": "Spielanleitung",
@@ -162,7 +164,7 @@
 
   "notes": "Notizen",
   "new_note": "Neue Notiz",
-  "single_note_tap_settings": "Notiz hinzufügen\n(Wähle in Einstellugen)",
+  "single_note": "Hervorgehobene\nNotiz oder Ordner",
   "select_note_or_folder": "Notiz oder Ordner auswählen",
   "untitled": "Ohne Titel",
   "untitled_note": "Unbenannte Notiz",
@@ -175,6 +177,7 @@
   "add_editors": "Editoren hinzufügen",
   "show_folders": "Ordner anzeigen",
   "show_add_tile": "Plus-Kachel anzeigen",
+  "open_notes": "Notizen öffnen",
 
   "@PHOTOS": {},
 

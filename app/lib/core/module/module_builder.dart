@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../elements/elements.dart';
 import 'module_context.dart';
-import 'module_registry.dart';
 
 abstract class ModuleBuilder {
   final String id;
@@ -21,7 +20,7 @@ abstract class ModuleBuilder {
   @mustCallSuper
   void dispose() {}
 
-  ModuleSettings? getSettings(BuildContext context) => null;
+  Iterable<Widget>? getSettings(BuildContext context) => null;
 }
 
 typedef ElementBuilder<T extends ModuleElement> = FutureOr<T?> Function(ModuleContext module);

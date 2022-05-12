@@ -1,11 +1,9 @@
-import 'package:flutter/animation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../templates/template.dart';
 
 final toggleVisibilityProvider = StateProvider((ref) => true);
 final templateVisibilityProvider = StateProvider((ref) => true);
-
-final wiggleControllerProvider = StateProvider<AnimationController?>((ref) => null);
 
 final editProvider = StateNotifierProvider<EditNotifier, EditState>((ref) => EditNotifier(ref));
 final isEditingProvider = Provider((ref) => ref.watch(editProvider) != EditState.inactive);
@@ -32,11 +30,11 @@ class EditNotifier extends StateNotifier<EditState> {
   }
 
   void _startWiggle() {
-    ref.read(wiggleControllerProvider)!.repeat();
+    TemplateState.wiggleController?.repeat();
   }
 
   void _stopWiggle() {
-    ref.read(wiggleControllerProvider)!.stop();
+    TemplateState.wiggleController?.stop();
   }
 
   void _beginEdit() {

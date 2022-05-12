@@ -43,7 +43,7 @@ class TheButtonLogic {
   TheButtonLogic(this.ref) : doc = ref.watch(moduleDocProvider('thebutton'));
 
   Future<void> init() async {
-    await doc.mapped<TheButtonState>().set(TheButtonState(Timestamp.now(), 2, {}));
+    await doc.set({'lastReset': FieldValue.serverTimestamp(), 'aliveHours': 2, 'leaderboard': {}});
   }
 
   void setAliveHours(String time) {
@@ -60,7 +60,7 @@ class TheButtonLogic {
         transaction.set(
           doc,
           {
-            'lastReset': Timestamp.now(),
+            'lastReset': FieldValue.serverTimestamp(),
             'leaderboard': {userId: max(level, state.leaderboard[userId] ?? 0)},
           },
           SetOptions(merge: true),
@@ -72,7 +72,7 @@ class TheButtonLogic {
   void resetHealth() {
     if (ref.read(isOrganizerProvider)) {
       doc.set({
-        'lastReset': Timestamp.now(),
+        'lastReset': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     }
   }

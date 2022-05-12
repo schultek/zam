@@ -47,9 +47,9 @@ class GroupsLogic {
     });
   }
 
-  Future<void> updateGroup(Map<String, dynamic> map) async {
+  Future<void> updateGroup(Map<String, dynamic> map, [String? groupId]) async {
     if (!ref.read(isOrganizerProvider)) return;
-    return FirebaseFirestore.instance.collection('groups').doc(_groupId).update(map);
+    return FirebaseFirestore.instance.collection('groups').doc(groupId ?? _groupId).update(map);
   }
 
   Future<void> leaveSelectedGroup() async {

@@ -103,7 +103,10 @@
   "dismissible": "Dismissible",
   "text_color": "Text Color",
   "background_color": "Background Color",
-  "new_announcement": "New Announcement\n(Tap to create)",
+  "new_announcement": "New Announcement",
+  "resend_notification": "Resend Notification",
+  "resend_notification_desc": "Send a push notification to all members",
+  "confirm_resend": "Do you want to send a push notification to all members?",
 
   "@CHAT": {},
 
@@ -132,7 +135,6 @@
   "eliminated": "Eliminated",
   "target_player": "Target",
   "add_elimination": "Add Elimination",
-  "new_game_setup": "New game\n(Tap to setup)",
   "allow_loops": "Allow loops",
   "create_game": "Create Game",
   "how_to_play": "How to play",
@@ -162,7 +164,7 @@
 
   "notes": "Notes",
   "new_note": "New Note",
-  "single_note_tap_settings": "Single Note\n(Choose in Settings)",
+  "single_note": "Highlighted\nNote or Folder",
   "select_note_or_folder": "Select a Note or Folder",
   "untitled": "Untitled",
   "untitled_note": "Untitled Note",
@@ -175,6 +177,7 @@
   "add_editors": "Add Editors",
   "show_folders": "Show Folders",
   "show_add_tile": "Show Add Tile",
+  "open_notes": "Open Notes",
 
   "@PHOTOS": {},
 

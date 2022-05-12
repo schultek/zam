@@ -71,7 +71,10 @@ class SingleNoteContentElement with ElementBuilderMixin<ContentElement> {
       if (module.context.read(isOrganizerProvider)) {
         return ContentElement(
           module: module,
-          builder: (context) => SimpleCard(title: context.tr.single_note_tap_settings, icon: Icons.add),
+          builder: (context) => NeedsSetupCard(
+            title: context.tr.single_note,
+            icon: Icons.note_add,
+          ),
           settings: (context) => [
             ListTile(
               title: Text(context.tr.select_note_or_folder),

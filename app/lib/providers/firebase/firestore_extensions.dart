@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dart_mappable/dart_mappable.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 import '../../core/core.dart';
 
@@ -14,7 +15,12 @@ extension MapperDocumentReference on DocumentReference {
     return withConverter<T>(
       fromFirestore: (snapshot, _) {
         var map = snapshot.toMap();
-        return Mapper.fromValue(map);
+        try {
+          return Mapper.fromValue(map);
+        } catch (e, st) {
+          FirebaseCrashlytics.instance.recordError(e, st);
+          rethrow;
+        }
       },
       toFirestore: (model, _) {
         Mapper.use(TimestampMapper());

@@ -10,6 +10,7 @@ import '../../modules/modules.dart';
 import '../../providers/groups/logic_provider.dart';
 import '../../providers/groups/selected_group_provider.dart';
 import '../elements/elements.dart';
+import '../module/module_context.dart';
 import '../providers/editing_providers.dart';
 import '../providers/selected_area_provider.dart';
 import '../reorderable/items_provider.dart';
@@ -32,7 +33,10 @@ class InheritedArea<T extends ModuleElement> extends InheritedWidget {
 final areaModulesProvider = Provider.family<List<String>, String>(
   (ref, String id) {
     var group = ref.watch(selectedGroupProvider);
-    return DeepEqualityList(group?.modules[id] ?? []);
+    var modules = (group?.modules[id] ?? [])
+        .where((id) => !(group?.moduleBlacklist ?? []).contains(ModuleContext.getModuleId(id)))
+        .toList();
+    return DeepEqualityList(modules);
   },
 );
 

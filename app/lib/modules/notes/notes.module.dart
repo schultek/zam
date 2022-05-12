@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../widgets/needs_setup_card.dart';
 import '../module.dart';
 import 'builders/notes_cards_builder.dart';
 import 'builders/notes_settings_builder.dart';
@@ -48,4 +49,12 @@ class NotesModule extends ModuleBuilder {
         'notes_list': NotesListContentElement(),
         'notes_list_page': NotesListPageElement(),
       };
+
+  @override
+  Iterable<Widget>? getSettings(BuildContext context) sync* {
+    yield ListTile(
+      title: Text(context.tr.open_notes),
+      onTap: () => Navigator.of(context).push(NotesPage.route()),
+    );
+  }
 }

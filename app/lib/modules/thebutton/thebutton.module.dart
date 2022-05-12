@@ -32,19 +32,18 @@ class TheButtonModule extends ModuleBuilder {
       };
 
   @override
-  ModuleSettings? getSettings(BuildContext context) {
+  Iterable<Widget>? getSettings(BuildContext context) {
     var state = context.watch(theButtonProvider);
 
-    return state.whenOrNull<ModuleSettings?>(
-      data: (state) => state != null
-          ? ModuleSettings([
-              SwitchListTile(
-                title: Text(context.tr.show_level_in_avatars),
-                value: state.showInAvatars,
-                onChanged: (v) => context.read(theButtonLogicProvider).setShowInAvatars(v),
-              ),
-            ])
-          : null,
-    );
+    if (state.value != null) {
+      return [
+        SwitchListTile(
+          title: Text(context.tr.show_level_in_avatars),
+          value: state.value!.showInAvatars,
+          onChanged: (v) => context.read(theButtonLogicProvider).setShowInAvatars(v),
+        ),
+      ];
+    }
+    return null;
   }
 }

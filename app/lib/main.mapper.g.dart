@@ -40,8 +40,6 @@ var _mappers = <BaseMapper>{
   SwipeTemplatePageMapper._(),
   TemplatePageMapper._(),
   ThemeModelMapper._(),
-  GroupFilterMapper._(),
-  UserFilterMapper._(),
   AnnouncementMapper._(),
   ChannelInfoMapper._(),
   ChatMessageMapper._(),
@@ -71,6 +69,8 @@ var _mappers = <BaseMapper>{
   UserClaimsMapper._(),
   AnnouncementNotificationMapper._(),
   ChatNotificationMapper._(),
+  GroupFilterMapper._(),
+  UserFilterMapper._(),
   DropModelMapper._(),
   DropsLayoutModelMapper._(),
   LayoutModelMapper._(),
@@ -575,58 +575,6 @@ class _ThemeModelCopyWithImpl<$R> extends BaseCopyWith<ThemeModel, $R> implement
   @override
   $R call({int? schemeIndex, bool? dark}) =>
       $then(ThemeModel(schemeIndex: schemeIndex ?? $value.schemeIndex, dark: dark ?? $value.dark));
-}
-
-class GroupFilterMapper extends BaseMapper<GroupFilter> {
-  GroupFilterMapper._();
-}
-
-extension GroupFilterMapperExtension on GroupFilter {
-  GroupFilterCopyWith<GroupFilter> get copyWith => GroupFilterCopyWith(this, $identity);
-}
-
-abstract class GroupFilterCopyWith<$R> {
-  factory GroupFilterCopyWith(GroupFilter value, Then<GroupFilter, $R> then) = _GroupFilterCopyWithImpl<$R>;
-  $R call({String? hasUser, String? hasOrganizer});
-  $R apply(GroupFilter Function(GroupFilter) transform);
-}
-
-class _GroupFilterCopyWithImpl<$R> extends BaseCopyWith<GroupFilter, $R> implements GroupFilterCopyWith<$R> {
-  _GroupFilterCopyWithImpl(GroupFilter value, Then<GroupFilter, $R> then) : super(value, then);
-
-  @override
-  $R call({Object? hasUser = $none, Object? hasOrganizer = $none}) =>
-      $then(GroupFilter(hasUser: or(hasUser, $value.hasUser), hasOrganizer: or(hasOrganizer, $value.hasOrganizer)));
-}
-
-class UserFilterMapper extends BaseMapper<UserFilter> {
-  UserFilterMapper._();
-}
-
-extension UserFilterMapperExtension on UserFilter {
-  UserFilterCopyWith<UserFilter> get copyWith => UserFilterCopyWith(this, $identity);
-}
-
-abstract class UserFilterCopyWith<$R> {
-  factory UserFilterCopyWith(UserFilter value, Then<UserFilter, $R> then) = _UserFilterCopyWithImpl<$R>;
-  $R call({bool? isAdmin, bool? isGroupCreator, String? isInGroup, String? isOrganizerOfGroup});
-  $R apply(UserFilter Function(UserFilter) transform);
-}
-
-class _UserFilterCopyWithImpl<$R> extends BaseCopyWith<UserFilter, $R> implements UserFilterCopyWith<$R> {
-  _UserFilterCopyWithImpl(UserFilter value, Then<UserFilter, $R> then) : super(value, then);
-
-  @override
-  $R call(
-          {Object? isAdmin = $none,
-          Object? isGroupCreator = $none,
-          Object? isInGroup = $none,
-          Object? isOrganizerOfGroup = $none}) =>
-      $then(UserFilter(
-          isAdmin: or(isAdmin, $value.isAdmin),
-          isGroupCreator: or(isGroupCreator, $value.isGroupCreator),
-          isInGroup: or(isInGroup, $value.isInGroup),
-          isOrganizerOfGroup: or(isOrganizerOfGroup, $value.isOrganizerOfGroup)));
 }
 
 class AnnouncementMapper extends BaseMapper<Announcement> {
@@ -2108,7 +2056,9 @@ class TheButtonStateMapper extends BaseMapper<TheButtonState> {
   Function get decoder => decode;
   TheButtonState decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
   TheButtonState fromMap(Map<String, dynamic> map) => TheButtonState(
-      Mapper.i.$get(map, 'lastReset'), Mapper.i.$get(map, 'aliveHours'), Mapper.i.$get(map, 'leaderboard'),
+      lastReset: Mapper.i.$getOpt(map, 'lastReset'),
+      aliveHours: Mapper.i.$get(map, 'aliveHours'),
+      leaderboard: Mapper.i.$get(map, 'leaderboard'),
       showInAvatars: Mapper.i.$getOpt(map, 'showInAvatars') ?? false);
 
   @override
@@ -2157,8 +2107,11 @@ class _TheButtonStateCopyWithImpl<$R> extends BaseCopyWith<TheButtonState, $R> i
   _TheButtonStateCopyWithImpl(TheButtonState value, Then<TheButtonState, $R> then) : super(value, then);
 
   @override
-  $R call({Timestamp? lastReset, double? aliveHours, Map<String, int>? leaderboard, bool? showInAvatars}) => $then(
-      TheButtonState(lastReset ?? $value.lastReset, aliveHours ?? $value.aliveHours, leaderboard ?? $value.leaderboard,
+  $R call({Object? lastReset = $none, double? aliveHours, Map<String, int>? leaderboard, bool? showInAvatars}) =>
+      $then(TheButtonState(
+          lastReset: or(lastReset, $value.lastReset),
+          aliveHours: aliveHours ?? $value.aliveHours,
+          leaderboard: leaderboard ?? $value.leaderboard,
           showInAvatars: showInAvatars ?? $value.showInAvatars));
 }
 
@@ -2599,6 +2552,58 @@ class _ChatNotificationCopyWithImpl<$R> extends BaseCopyWith<ChatNotification, $
       id ?? $value.id,
       title ?? $value.title,
       message ?? $value.message));
+}
+
+class GroupFilterMapper extends BaseMapper<GroupFilter> {
+  GroupFilterMapper._();
+}
+
+extension GroupFilterMapperExtension on GroupFilter {
+  GroupFilterCopyWith<GroupFilter> get copyWith => GroupFilterCopyWith(this, $identity);
+}
+
+abstract class GroupFilterCopyWith<$R> {
+  factory GroupFilterCopyWith(GroupFilter value, Then<GroupFilter, $R> then) = _GroupFilterCopyWithImpl<$R>;
+  $R call({String? hasUser, String? hasOrganizer});
+  $R apply(GroupFilter Function(GroupFilter) transform);
+}
+
+class _GroupFilterCopyWithImpl<$R> extends BaseCopyWith<GroupFilter, $R> implements GroupFilterCopyWith<$R> {
+  _GroupFilterCopyWithImpl(GroupFilter value, Then<GroupFilter, $R> then) : super(value, then);
+
+  @override
+  $R call({Object? hasUser = $none, Object? hasOrganizer = $none}) =>
+      $then(GroupFilter(hasUser: or(hasUser, $value.hasUser), hasOrganizer: or(hasOrganizer, $value.hasOrganizer)));
+}
+
+class UserFilterMapper extends BaseMapper<UserFilter> {
+  UserFilterMapper._();
+}
+
+extension UserFilterMapperExtension on UserFilter {
+  UserFilterCopyWith<UserFilter> get copyWith => UserFilterCopyWith(this, $identity);
+}
+
+abstract class UserFilterCopyWith<$R> {
+  factory UserFilterCopyWith(UserFilter value, Then<UserFilter, $R> then) = _UserFilterCopyWithImpl<$R>;
+  $R call({bool? isAdmin, bool? isGroupCreator, String? isInGroup, String? isOrganizerOfGroup});
+  $R apply(UserFilter Function(UserFilter) transform);
+}
+
+class _UserFilterCopyWithImpl<$R> extends BaseCopyWith<UserFilter, $R> implements UserFilterCopyWith<$R> {
+  _UserFilterCopyWithImpl(UserFilter value, Then<UserFilter, $R> then) : super(value, then);
+
+  @override
+  $R call(
+          {Object? isAdmin = $none,
+          Object? isGroupCreator = $none,
+          Object? isInGroup = $none,
+          Object? isOrganizerOfGroup = $none}) =>
+      $then(UserFilter(
+          isAdmin: or(isAdmin, $value.isAdmin),
+          isGroupCreator: or(isGroupCreator, $value.isGroupCreator),
+          isInGroup: or(isInGroup, $value.isInGroup),
+          isOrganizerOfGroup: or(isOrganizerOfGroup, $value.isOrganizerOfGroup)));
 }
 
 class DropModelMapper extends BaseMapper<DropModel> {

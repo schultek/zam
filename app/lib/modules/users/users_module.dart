@@ -25,12 +25,10 @@ class UsersModule extends ModuleBuilder {
       };
 
   @override
-  ModuleSettings? getSettings(BuildContext context) {
-    return ModuleSettings([
-      ListTile(
-        title: Text(context.tr.open_users),
-        onTap: () => Navigator.of(context).push(UsersPage.route()),
-      ),
-    ]);
+  Iterable<Widget>? getSettings(BuildContext context) sync* {
+    yield ListTile(
+      title: Text(context.tr.open_users),
+      onTap: () => Navigator.of(context).push(UsersPage.route()),
+    );
   }
 }

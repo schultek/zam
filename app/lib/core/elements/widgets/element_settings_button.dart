@@ -39,7 +39,9 @@ class _ElementSettingsButtonState extends State<ElementSettingsButton> {
   @override
   void dispose() {
     if (controller != null) {
-      navigator?.pop();
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        navigator?.pop();
+      });
     }
     super.dispose();
   }

@@ -15,7 +15,7 @@ class GameContentElement with ElementBuilderMixin<ContentElement> {
       }
       return ContentElement(
         module: module,
-        builder: (context) => SimpleCard(title: context.tr.new_game_setup, icon: Icons.add),
+        builder: (context) => NeedsSetupCard(title: context.tr.new_game, icon: Icons.casino),
         settings: (context) => [
           ListTile(
             title: Text(context.tr.new_game),

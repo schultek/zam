@@ -8,6 +8,7 @@ import '../../providers/editing_providers.dart';
 import '../../reorderable/reorderable_item.dart';
 import '../../reorderable/reorderable_listener.dart';
 import '../../route/route.dart';
+import '../../templates/template.dart';
 import '../../themes/themes.dart';
 import '../../widgets/widget_selector.dart';
 import '../decorators/element_decorator.dart';
@@ -136,7 +137,7 @@ class PhasedAnimation extends CompoundAnimation<double> {
   }
 
   factory PhasedAnimation.of(BuildContext context) {
-    var wiggle = context.read(wiggleControllerProvider)!.view;
+    var wiggle = TemplateState.wiggle;
     return PhasedAnimation(phase: wiggle, intensity: const AlwaysStoppedAnimation(1), shift: Random().nextDouble());
   }
 }

@@ -76,7 +76,7 @@ class ModuleRegistry {
     }
   }
 
-  Iterable<MapEntry<String, ModuleSettings>> getSettings(BuildContext context) sync* {
+  Iterable<MapEntry<String, Iterable<Widget>>> getSettings(BuildContext context) sync* {
     for (var module in modules.values) {
       var settings = module.getSettings(context);
       if (settings != null) yield MapEntry(module.getName(context), settings);

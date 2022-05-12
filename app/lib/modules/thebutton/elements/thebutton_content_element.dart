@@ -28,7 +28,7 @@ class TheButtonElement with ElementBuilderMixin<ContentElement> {
               );
             },
             loading: () => const LoadingShimmer(),
-            error: (e, st) => Text('${context.tr.error}: $e'),
+            error: (e, _) => Text('${context.tr.error}: $e'),
           );
         });
       },

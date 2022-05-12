@@ -129,7 +129,7 @@ class _SettingsPageState extends State<SettingsPage> {
           for (var settings in moduleSettings)
             SettingsSection(
               title: settings.key,
-              children: settings.value.settings,
+              children: settings.value.toList(),
             ),
           SettingsSection(title: context.tr.danger_zone, children: [
             ListTile(

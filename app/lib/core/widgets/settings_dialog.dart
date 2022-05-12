@@ -10,7 +10,7 @@ class SettingsDialog extends StatelessWidget {
     required this.title,
     required this.content,
     this.actions = const [],
-    this.insetPadding,
+    this.insetPadding = const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
     Key? key,
   }) : super(key: key);
 
@@ -37,6 +37,7 @@ class SettingsDialog extends StatelessWidget {
                 },
               ),
             ],
+            insetPadding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 24.0),
           ),
           useRootNavigator: false,
           barrierColor: Colors.black26,
@@ -47,7 +48,7 @@ class SettingsDialog extends StatelessWidget {
   final Widget title;
   final Widget content;
   final List<Widget> actions;
-  final EdgeInsets? insetPadding;
+  final EdgeInsets insetPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -62,34 +63,32 @@ class SettingsDialog extends StatelessWidget {
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
               color: color.withOpacity(0.4),
-              child: IntrinsicWidth(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 20),
-                      child: DefaultTextStyle(
-                        style: DialogTheme.of(context).titleTextStyle ?? Theme.of(context).textTheme.headline6!,
-                        child: title,
-                      ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24, right: 24, top: 24, bottom: 20),
+                    child: DefaultTextStyle(
+                      style: DialogTheme.of(context).titleTextStyle ?? Theme.of(context).textTheme.headline6!,
+                      child: title,
                     ),
-                    DefaultTextStyle(
-                      style: DialogTheme.of(context).contentTextStyle ?? Theme.of(context).textTheme.subtitle1!,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 8),
-                        child: content,
-                      ),
+                  ),
+                  DefaultTextStyle(
+                    style: DialogTheme.of(context).contentTextStyle ?? Theme.of(context).textTheme.subtitle1!,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 8),
+                      child: content,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8, bottom: 2),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: actions.intersperse(const SizedBox(width: 5)).toList(),
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8, bottom: 2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: actions.intersperse(const SizedBox(width: 5)).toList(),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

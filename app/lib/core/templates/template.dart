@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../providers/groups/logic_provider.dart';
@@ -52,7 +51,10 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
 
   final Map<String, AreaState> widgetAreas = {};
 
-  StateController<AnimationController?>? wiggleNotifier;
+  static Animation<double> wiggle = const AlwaysStoppedAnimation(0);
+  static AnimationController? wiggleController;
+  late AnimationController _wiggleController;
+
   WidgetSelector? widgetSelector;
 
   List<Widget> getPageSettings();
@@ -71,10 +73,9 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      wiggleNotifier = context.read(wiggleControllerProvider.notifier);
-      wiggleNotifier!.state = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
-    });
+    _wiggleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
+    wiggleController = _wiggleController;
+    wiggle = _wiggleController.view;
   }
 
   @override
@@ -105,10 +106,11 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      wiggleNotifier?.state?.dispose();
-      wiggleNotifier?.state = null;
-    });
+    _wiggleController.dispose();
+    if (_wiggleController == wiggleController) {
+      wiggleController = null;
+      wiggle = const AlwaysStoppedAnimation(0);
+    }
     super.dispose();
   }
 

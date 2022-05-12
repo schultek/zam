@@ -33,10 +33,13 @@ class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
         ),
         settings: (context) => [
           ListTile(
-            title: const Text('Resend notification'),
-            subtitle: const Text('Send a push notification to all members'),
+            title: Text(context.tr.resend_notification),
+            subtitle: Text(context.tr.resend_notification_desc),
             onTap: () async {
-              await context.read(announcementLogicProvider).resendNotification(announcementId);
+              var send = await SettingsDialog.confirm(context, context.tr.confirm_resend);
+              if (send) {
+                await context.read(announcementLogicProvider).resendNotification(announcementId);
+              }
             },
           ),
         ],
@@ -48,24 +51,9 @@ class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
           size: ElementSize.wide,
           builder: (context) => AspectRatio(
             aspectRatio: 2.1,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add,
-                    color: context.onSurfaceHighlightColor,
-                    size: 50,
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    context.tr.new_announcement,
-                    textAlign: TextAlign.center,
-                    style: context.theme.textTheme.bodyText1!.apply(color: context.onSurfaceColor),
-                  ),
-                ],
-              ),
+            child: NeedsSetupCard(
+              title: context.tr.new_announcement,
+              icon: Icons.add_comment,
             ),
           ),
           settings: (context) => [

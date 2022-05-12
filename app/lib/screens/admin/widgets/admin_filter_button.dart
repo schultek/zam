@@ -11,10 +11,7 @@ class AdminFilterButton<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: Icon(
-        Icons.filter_list,
-        color: filter != null ? context.theme.colorScheme.primary : null,
-      ),
+      icon: const Icon(Icons.filter_list),
       onPressed: () {
         showDialog(
           context: context,

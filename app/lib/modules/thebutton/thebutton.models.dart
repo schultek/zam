@@ -22,10 +22,12 @@ class TheButtonState {
   Map<String, int> leaderboard = {};
   bool showInAvatars;
 
-  TheButtonState(this.lastReset, this.aliveHours, this.leaderboard, {this.showInAvatars = false});
+  TheButtonState(
+      {Timestamp? lastReset, required this.aliveHours, required this.leaderboard, this.showInAvatars = false})
+      : lastReset = lastReset ?? Timestamp.now();
 
   int get currentLevel {
-    var hours = DateTime.now().difference(lastReset.toDate()).inSeconds / 3600.0;
+    var hours = max(0, DateTime.now().difference(lastReset.toDate()).inSeconds / 3600.0);
     return hours >= aliveHours ? -1 : (hours / aliveHours * _theButtonLevels.length).floor();
   }
 
