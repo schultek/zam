@@ -6,8 +6,8 @@ class GamesContentElement with ElementBuilderMixin<ContentElement> {
     return ContentElement(
       module: module,
       builder: (context) => SimpleCard(
-        title: context.tr.elimination,
-        icon: Icons.list,
+        title: context.tr.games,
+        icon: Icons.casino,
       ),
       onNavigate: (context) => const GamesPage(),
     );

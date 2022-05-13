@@ -5,25 +5,13 @@ import 'package:riverpod_context/riverpod_context.dart';
 import '../profile.module.dart';
 
 class ProfileImageWidget extends StatelessWidget {
-  const ProfileImageWidget({Key? key}) : super(key: key);
+  const ProfileImageWidget(this.params, {Key? key}) : super(key: key);
+
+  final ProfileImageElementParams params;
 
   @override
   Widget build(BuildContext context) {
     var user = context.watch(groupUserProvider);
-
-    var date = DateTime.now();
-    String greeting;
-    if (date.hour < 6) {
-      greeting = context.tr.good_night;
-    } else if (date.hour < 11) {
-      greeting = context.tr.good_morning;
-    } else if (date.hour < 18) {
-      greeting = context.tr.hello;
-    } else if (date.hour < 22) {
-      greeting = context.tr.good_evening;
-    } else {
-      greeting = context.tr.good_night;
-    }
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -48,16 +36,33 @@ class ProfileImageWidget extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
-            if (user?.nickname != null)
-              Text(
-                '$greeting ${user!.nickname!}',
-                style: context.theme.textTheme.headline5!.apply(color: context.onSurfaceColor),
-                textAlign: TextAlign.center,
-              ),
+            if (params.showName) ...[
+              const SizedBox(height: 15),
+              if (user?.nickname != null)
+                Text(
+                  '${params.showGreeting ? getGreeting(context) + ' ' : ''}${user!.nickname!}',
+                  style: context.theme.textTheme.titleMedium!.apply(color: context.onSurfaceColor),
+                  textAlign: TextAlign.center,
+                ),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  String getGreeting(BuildContext context) {
+    var date = DateTime.now();
+    if (date.hour < 6) {
+      return context.tr.good_night;
+    } else if (date.hour < 11) {
+      return context.tr.good_morning;
+    } else if (date.hour < 18) {
+      return context.tr.hello;
+    } else if (date.hour < 22) {
+      return context.tr.good_evening;
+    } else {
+      return context.tr.good_night;
+    }
   }
 }

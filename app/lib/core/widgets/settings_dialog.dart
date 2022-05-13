@@ -60,9 +60,9 @@ class SettingsDialog extends StatelessWidget {
         builder: (context, color) => ClipRRect(
           borderRadius: BorderRadius.circular(20),
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
             child: Container(
-              color: color.withOpacity(0.4),
+              color: color.withOpacity(0.3),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

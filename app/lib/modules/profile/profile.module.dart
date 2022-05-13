@@ -2,6 +2,7 @@ library profile_module;
 
 import 'dart:async';
 
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
 import '../module.dart';

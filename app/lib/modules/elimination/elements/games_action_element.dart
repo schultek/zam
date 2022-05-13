@@ -5,8 +5,8 @@ class GamesActionElement with ElementBuilderMixin<ActionElement> {
   FutureOr<ActionElement?> build(ModuleContext module) {
     return ActionElement(
       module: module,
-      icon: Icons.list,
-      text: module.context.tr.elimination,
+      icon: Icons.casino,
+      text: module.context.tr.games,
       onNavigate: (context) => const GamesPage(),
     );
   }

@@ -24,6 +24,7 @@ import 'modules/music/music.module.dart';
 import 'modules/notes/notes.module.dart';
 import 'modules/photos/photos.module.dart';
 import 'modules/polls/polls.module.dart';
+import 'modules/profile/profile.module.dart';
 import 'modules/thebutton/thebutton.module.dart';
 import 'screens/admin/providers/admin_groups_provider.dart';
 import 'screens/admin/providers/admin_users_provider.dart';
@@ -62,6 +63,7 @@ var _mappers = <BaseMapper>{
   PollMapper._(),
   PollStepMapper._(),
   MultipleChoiceQuestionMapper._(),
+  ProfileImageElementParamsMapper._(),
   TheButtonStateMapper._(),
   UserDataMapper._(),
   UserMetadataMapper._(),
@@ -2047,6 +2049,60 @@ class _MultipleChoiceQuestionCopyWithImpl<$R> extends BaseCopyWith<MultipleChoic
   @override
   $R call({List<String>? choices, bool? multiselect, String? type}) =>
       $then(MultipleChoiceQuestion(choices ?? $value.choices, multiselect ?? $value.multiselect, type ?? $value.type));
+}
+
+class ProfileImageElementParamsMapper extends BaseMapper<ProfileImageElementParams> {
+  ProfileImageElementParamsMapper._();
+
+  @override
+  Function get decoder => decode;
+  ProfileImageElementParams decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ProfileImageElementParams fromMap(Map<String, dynamic> map) => ProfileImageElementParams(
+      showName: Mapper.i.$getOpt(map, 'showName') ?? true, showGreeting: Mapper.i.$getOpt(map, 'showGreeting') ?? true);
+
+  @override
+  Function get encoder => (ProfileImageElementParams v) => encode(v);
+  dynamic encode(ProfileImageElementParams v) => toMap(v);
+  Map<String, dynamic> toMap(ProfileImageElementParams p) => {
+        'showName': Mapper.i.$enc(p.showName, 'showName'),
+        'showGreeting': Mapper.i.$enc(p.showGreeting, 'showGreeting')
+      };
+
+  @override
+  String stringify(ProfileImageElementParams self) =>
+      'ProfileImageElementParams(showName: ${Mapper.asString(self.showName)}, showGreeting: ${Mapper.asString(self.showGreeting)})';
+  @override
+  int hash(ProfileImageElementParams self) => Mapper.hash(self.showName) ^ Mapper.hash(self.showGreeting);
+  @override
+  bool equals(ProfileImageElementParams self, ProfileImageElementParams other) =>
+      Mapper.isEqual(self.showName, other.showName) && Mapper.isEqual(self.showGreeting, other.showGreeting);
+
+  @override
+  Function get typeFactory => (f) => f<ProfileImageElementParams>();
+}
+
+extension ProfileImageElementParamsMapperExtension on ProfileImageElementParams {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  ProfileImageElementParamsCopyWith<ProfileImageElementParams> get copyWith =>
+      ProfileImageElementParamsCopyWith(this, $identity);
+}
+
+abstract class ProfileImageElementParamsCopyWith<$R> {
+  factory ProfileImageElementParamsCopyWith(ProfileImageElementParams value, Then<ProfileImageElementParams, $R> then) =
+      _ProfileImageElementParamsCopyWithImpl<$R>;
+  $R call({bool? showName, bool? showGreeting});
+  $R apply(ProfileImageElementParams Function(ProfileImageElementParams) transform);
+}
+
+class _ProfileImageElementParamsCopyWithImpl<$R> extends BaseCopyWith<ProfileImageElementParams, $R>
+    implements ProfileImageElementParamsCopyWith<$R> {
+  _ProfileImageElementParamsCopyWithImpl(ProfileImageElementParams value, Then<ProfileImageElementParams, $R> then)
+      : super(value, then);
+
+  @override
+  $R call({bool? showName, bool? showGreeting}) => $then(ProfileImageElementParams(
+      showName: showName ?? $value.showName, showGreeting: showGreeting ?? $value.showGreeting));
 }
 
 class TheButtonStateMapper extends BaseMapper<TheButtonState> {

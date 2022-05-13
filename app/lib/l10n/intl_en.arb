@@ -122,6 +122,7 @@
   "@ELIMINATION": {},
 
   "elimination": "Elimination",
+  "games": "Games",
   "new_game": "New Game",
   "eliminate": "Eliminate",
   "hold_to_reveal": "Hold to reveal",
