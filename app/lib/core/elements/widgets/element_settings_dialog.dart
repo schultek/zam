@@ -68,7 +68,7 @@ class _ModuleElementSettingsDialogState extends State<ModuleElementSettingsDialo
       content: SettingsSection(
         margin: EdgeInsets.zero,
         children: widget.controller.settings(context),
-        backgroundOpacity: 0.4,
+        backgroundOpacity: 0.3,
       ),
       actions: [
         TextButton(

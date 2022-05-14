@@ -58,10 +58,11 @@ class _EditNotePageState extends State<EditNotePage> {
                 await saveNote();
                 var nav = Navigator.of(context);
                 var logic = context.read(notesLogicProvider);
+                var template = Template.of(context, listen: false);
                 var shouldDelete = await nav.push<bool>(NoteInfoPage.route(widget.note));
                 if (shouldDelete == true) {
                   logic.deleteNote(widget.note.id);
-                  Template.of(context, listen: false).removeWidgetsWithId(widget.note.id);
+                  template.removeWidgetsWithParams(widget.note.id);
                   nav.pop();
                 }
               },

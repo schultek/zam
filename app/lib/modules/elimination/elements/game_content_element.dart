@@ -8,6 +8,12 @@ class GameContentElement with ElementBuilderMixin<ContentElement> {
       return ContentElement(
         module: module,
         builder: (context) => EliminationGameCard(gameId),
+        settingsAction: (context) async {
+          var gameId = await Navigator.of(context).push(SelectGamePage.route());
+          if (gameId != null) {
+            module.updateParams(gameId);
+          }
+        },
       );
     } else {
       if (!module.context.read(isOrganizerProvider)) {
@@ -16,17 +22,12 @@ class GameContentElement with ElementBuilderMixin<ContentElement> {
       return ContentElement(
         module: module,
         builder: (context) => NeedsSetupCard(title: context.tr.new_game, icon: Icons.casino),
-        settings: (context) => [
-          ListTile(
-            title: Text(context.tr.new_game),
-            onTap: () async {
-              var gameId = await Navigator.of(context).push(CreateGamePage.route());
-              if (gameId != null) {
-                module.updateParams(gameId);
-              }
-            },
-          ),
-        ],
+        settingsAction: (context) async {
+          var gameId = await Navigator.of(context).push(SelectGamePage.route());
+          if (gameId != null) {
+            module.updateParams(gameId);
+          }
+        },
       );
     }
   }

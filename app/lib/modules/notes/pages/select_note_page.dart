@@ -2,12 +2,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' show Document;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../notes.module.dart';
+import 'edit_note_page.dart';
 
 class SelectNotePage extends StatefulWidget {
-  final Function(String) onSelect;
-  const SelectNotePage({Key? key, required this.onSelect}) : super(key: key);
+  const SelectNotePage({Key? key}) : super(key: key);
 
   @override
   _SelectNotePageState createState() => _SelectNotePageState();
@@ -28,37 +29,60 @@ class _SelectNotePageState extends State<SelectNotePage> {
                 var folders = data.groupListsBy((n) => n.folder);
 
                 return ListView(
-                  children: [
-                    for (var note in data)
-                      ListTile(
+                  padding: const EdgeInsets.all(15),
+                  children: <Widget>[
+                    ThemedSurface(
+                      builder: (context, color) => ListTile(
                         contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                        title: Text(note.title ?? context.tr.untitled),
-                        subtitle: Text(
-                          Document.fromJson(note.content).toPlainText().replaceAll('\n', '  '),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        leading: const Icon(Icons.sticky_note_2),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Future.delayed(const Duration(milliseconds: 300), () => widget.onSelect(note.id));
+                        title: Text(context.tr.new_note),
+                        leading: const Icon(Icons.note_add),
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+                        tileColor: color,
+                        onTap: () async {
+                          var note = context.read(notesLogicProvider).createEmptyNote();
+                          await Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditNotePage(note)));
+                          if (context.read(noteProvider(note.id)).value != null) {
+                            Navigator.of(context).pop(note.id);
+                          }
                         },
+                      ),
+                    ),
+                    for (var note in data)
+                      ThemedSurface(
+                        builder: (context, color) => ListTile(
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                          title: Text(note.title ?? context.tr.untitled),
+                          subtitle: Text(
+                            Document.fromJson(note.content).toPlainText().replaceAll('\n', '  '),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          leading: const Icon(Icons.sticky_note_2),
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+                          tileColor: color,
+                          onTap: () {
+                            Navigator.of(context).pop(note.id);
+                          },
+                        ),
                       ),
                     for (var folder in folders.entries)
                       if (folder.key != null)
-                        ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                          title: Text(folder.key!),
-                          subtitle: Text(
-                            folder.value.map((n) => n.title).join(', '),
-                            overflow: TextOverflow.ellipsis,
+                        ThemedSurface(
+                          builder: (context, color) => ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                            title: Text(folder.key!),
+                            subtitle: Text(
+                              folder.value.map((n) => n.title).join(', '),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            leading: const Icon(Icons.folder),
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+                            tileColor: color,
+                            onTap: () {
+                              Navigator.of(context).pop('%' + folder.key!);
+                            },
                           ),
-                          leading: const Icon(Icons.folder),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            Future.delayed(const Duration(milliseconds: 300), () => widget.onSelect('%' + folder.key!));
-                          },
                         ),
-                  ],
+                  ].intersperse(const SizedBox(height: 10)).toList(),
                 );
               },
               loading: () => Text('${context.tr.loading}...'),

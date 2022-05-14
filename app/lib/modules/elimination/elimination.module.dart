@@ -14,6 +14,7 @@ import '../module.dart';
 import 'builders/games_list_builder.dart';
 import 'pages/create_game_page.dart';
 import 'pages/games_page.dart';
+import 'pages/select_game_page.dart';
 import 'widgets/elimination_game_card.dart';
 
 export '../module.dart';
@@ -40,4 +41,12 @@ class EliminationGameModule extends ModuleBuilder {
         'games': GamesContentElement(),
         'games_list': GamesListContentElement(),
       };
+
+  @override
+  Iterable<Widget>? getSettings(BuildContext context) sync* {
+    yield ListTile(
+      title: Text(context.tr.open_games),
+      onTap: () => Navigator.of(context).push(GamesPage.route()),
+    );
+  }
 }

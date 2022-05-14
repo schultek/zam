@@ -20,11 +20,11 @@ class GamePage extends StatelessWidget {
       builder: (context, ref, _) {
         var gameSnap = ref.watch(gameProvider(gameId));
 
-        if (gameSnap is! AsyncData<EliminationGame>) {
+        if (gameSnap.value == null) {
           return const Scaffold();
         }
 
-        var game = gameSnap.value;
+        var game = gameSnap.value!;
 
         var curTargets = game.currentTargets;
 
@@ -65,7 +65,7 @@ class GamePage extends StatelessWidget {
 
                     if (shouldDelete == true) {
                       Navigator.pop(context);
-                      Template.of(context, listen: false).removeWidgetsWithId(game.id);
+                      Template.of(context, listen: false).removeWidgetsWithParams(game.id);
                       context.read(gameLogicProvider).deleteGame(game.id);
                     }
                   },

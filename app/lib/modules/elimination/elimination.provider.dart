@@ -4,7 +4,7 @@ final gamesProvider = StreamProvider(
     (ref) => ref.watch(moduleDocProvider('elimination')).collection('games').snapshotsMapped<EliminationGame>());
 
 final gameProvider = StreamProvider.family((ref, String id) =>
-    ref.watch(moduleDocProvider('elimination')).collection('games').doc(id).snapshotsMapped<EliminationGame>());
+    ref.watch(moduleDocProvider('elimination')).collection('games').doc(id).snapshotsMapped<EliminationGame?>());
 
 final gameLogicProvider = Provider((ref) => GameLogic(ref));
 

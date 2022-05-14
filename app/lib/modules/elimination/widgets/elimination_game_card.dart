@@ -25,6 +25,9 @@ class _EliminationGameCardState extends State<EliminationGameCard> {
 
             return game.when(
               data: (data) {
+                if (data == null) {
+                  return const LoadingShimmer();
+                }
                 var userId = ref.watch(userIdProvider)!;
                 var myTarget = data.currentTargets[userId];
                 if (myTarget == null) {
@@ -50,6 +53,26 @@ class _EliminationGameCardState extends State<EliminationGameCard> {
             );
           },
         ),
+        Consumer(builder: (context, ref, _) {
+          var game = ref.watch(gameProvider(widget.id)).value;
+
+          if (game != null) {
+            return Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 40,
+              child: Center(
+                child: Text(
+                  game.name,
+                  style: context.theme.textTheme.bodyText2,
+                ),
+              ),
+            );
+          } else {
+            return Container();
+          }
+        }),
         const Positioned.fill(child: EliminationHelp()),
         Positioned(
           top: 0,

@@ -74,6 +74,13 @@ class ModuleId {
     return binaryCodec.decode(base64Url.decode(encoded));
   }
 
+  static bool equalParams(String id, dynamic params) {
+    var parts = id.split('?');
+    var idParams = parts.length > 1 ? parts[1] : null;
+    var encodedParams = params != null ? base64Url.encode(binaryCodec.encode(params)) : null;
+    return idParams == encodedParams;
+  }
+
   @override
   String toString() {
     var paramsStr = params != null ? '?${base64Url.encode(binaryCodec.encode(params!))}' : '';

@@ -124,6 +124,8 @@
   "elimination": "Elimination",
   "games": "Games",
   "new_game": "New Game",
+  "select_game": "Select Game",
+  "open_games": "Open Games",
   "eliminate": "Eliminate",
   "hold_to_reveal": "Hold to reveal",
   "immortal": "Immortal",

@@ -21,7 +21,8 @@ class ContentElement extends ModuleElement with ElementMixin<ContentElement> {
     this.size = ElementSize.square,
     this.whenRemoved,
     SettingsBuilder? settings,
-  }) : super(module: module, settings: settings);
+    SettingsAction? settingsAction,
+  }) : super(module: module, settings: settings, settingsAction: settingsAction);
 
   factory ContentElement.text({
     required ModuleContext module,

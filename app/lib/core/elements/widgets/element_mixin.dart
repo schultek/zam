@@ -99,13 +99,14 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
                           iconColor: Colors.white,
                         ),
                       ),
-                    if (settings != null)
+                    if (settings != null || settingsAction != null)
                       Positioned(
                         top: -8,
                         left: isLayoutMode ? -8 : 25,
                         child: ElementSettingsButton(
                           module: element.module,
-                          settings: settings!,
+                          settings: settings,
+                          settingsAction: settingsAction,
                         ),
                       ),
                   ]);

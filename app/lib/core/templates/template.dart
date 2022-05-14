@@ -114,9 +114,9 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
     super.dispose();
   }
 
-  void removeWidgetsWithId(String id) {
+  void removeWidgetsWithParams(dynamic params) {
     for (var area in widgetAreas.values) {
-      area.removeWidgetWithId(id);
+      area.removeWidgetWithParams(params);
     }
   }
 

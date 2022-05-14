@@ -10,9 +10,12 @@ class GamesListBuilder {
 
   final bool needsSurface;
 
-  List<Widget> call(BuildContext context) {
+  List<Widget> call(BuildContext context, [void Function(EliminationGame game)? onTap]) {
     var games = context.watch(gamesProvider).value ?? [];
     games.sort((a, b) => b.startedAt.compareTo(a.startedAt));
-    return [for (var game in games) GameTile(game, needsSurface: needsSurface)];
+    return [
+      for (var game in games)
+        GameTile(game, onTap: onTap != null ? () => onTap(game) : null, needsSurface: needsSurface)
+    ];
   }
 }

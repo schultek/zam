@@ -124,6 +124,8 @@
   "elimination": "Eliminierung",
   "games": "Spiele",
   "new_game": "Neues Spiel",
+  "select_game": "Spiel auswählen",
+  "open_games": "Spiele öffnen",
   "eliminate": "Eliminiere",
   "hold_to_reveal": "Halte zum Aufdecken",
   "immortal": "Unsterblich",

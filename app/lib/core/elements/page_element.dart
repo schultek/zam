@@ -13,7 +13,8 @@ class PageElement extends ModuleElement with ElementMixin<PageElement> {
     required this.builder,
     this.keepAlive = true,
     SettingsBuilder? settings,
-  }) : super(module: module, settings: settings);
+    SettingsAction? settingsAction,
+  }) : super(module: module, settings: settings, settingsAction: settingsAction);
 
   @override
   PageElement get element => this;

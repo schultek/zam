@@ -40,7 +40,7 @@ class _EliminationDialogState extends State<EliminationDialog> {
           width: 400,
           child: Consumer(
             builder: (context, ref, _) {
-              var game = ref.watch(gameProvider(widget.gameId)).asData!.value;
+              var game = ref.watch(gameProvider(widget.gameId)).asData!.value!;
               var availableTargets = game.currentTargets.entries.where((e) => e.value != null && e.value != e.key);
 
               return ListView(

@@ -46,7 +46,8 @@ class WidgetSelector<T extends ModuleElement> extends StatefulWidget with Widget
   }
 }
 
-class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<T>> with WidgetSelectorInsets {
+class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<T>>
+    with WidgetSelectorInsets, TickerProviderStateMixin {
   @override
   late List<T> widgets;
   late ScrollController _scrollController;
@@ -60,11 +61,14 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
 
     _scrollController = ScrollController();
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      _scrollController.animateTo(
-        1000,
-        duration: const Duration(seconds: 80),
-        curve: Curves.linear,
-      );
+      var endScroll = _scrollController.position.maxScrollExtent;
+      if (endScroll != 0) {
+        _scrollController.customAnimateTo(
+          endScroll,
+          duration: Duration(milliseconds: (endScroll * 60).round()),
+          curve: Curves.linear,
+        );
+      }
     });
   }
 
@@ -167,6 +171,7 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
                       padding: EdgeInsets.all(outerPadding),
                       child: CustomScrollView(
                         scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
                         controller: _scrollController,
                         slivers: [
                           for (var group in groups)
@@ -242,4 +247,39 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
       ),
     );
   }
+}
+
+extension on ScrollController {
+  void customAnimateTo(double to, {required Duration duration, required Curve curve}) {
+    var pos = position;
+    var activity = CustomScrollActivity(
+      pos as ScrollActivityDelegate,
+      from: pos.pixels,
+      to: to,
+      duration: duration,
+      curve: curve,
+      vsync: pos.context.vsync,
+    );
+    pos.beginActivity(activity);
+  }
+}
+
+class CustomScrollActivity extends DrivenScrollActivity {
+  CustomScrollActivity(ScrollActivityDelegate delegate,
+      {required double from,
+      required double to,
+      required Duration duration,
+      required Curve curve,
+      required TickerProvider vsync})
+      : super(
+          delegate,
+          from: from,
+          to: to,
+          duration: duration,
+          curve: curve,
+          vsync: vsync,
+        );
+
+  @override
+  bool get shouldIgnorePointer => false;
 }

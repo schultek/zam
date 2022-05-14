@@ -56,21 +56,16 @@ class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
               icon: Icons.add_comment,
             ),
           ),
-          settings: (context) => [
-            ListTile(
-              title: Text(context.tr.new_announcement),
-              onTap: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AnnouncementPage(
-                      parentArea: Area.of<ContentElement>(module.context)!,
-                      onCreate: (id) => module.updateParams(id),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
+          settingsAction: (context) async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => AnnouncementPage(
+                  parentArea: Area.of<ContentElement>(module.context)!,
+                  onCreate: (id) => module.updateParams(id),
+                ),
+              ),
+            );
+          },
         );
       } else {
         return null;

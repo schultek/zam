@@ -22,20 +22,23 @@ class SettingsSection extends StatelessWidget {
           color: color.withOpacity(backgroundOpacity),
           child: Padding(
             padding: padding ?? EdgeInsets.zero,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (title != null)
-                  Padding(
-                    padding: const EdgeInsets.all(14.0),
-                    child: Text(
-                      title!,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            child: ListTileTheme.merge(
+              tileColor: ListTileTheme.of(context).tileColor?.withOpacity(backgroundOpacity),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (title != null)
+                    Padding(
+                      padding: const EdgeInsets.all(14.0),
+                      child: Text(
+                        title!,
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                ...children,
-              ],
+                  ...children,
+                ],
+              ),
             ),
           ),
         ),

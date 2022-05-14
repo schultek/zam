@@ -8,6 +8,10 @@ import 'create_game_page.dart';
 class GamesPage extends StatelessWidget {
   const GamesPage({Key? key}) : super(key: key);
 
+  static Route route() {
+    return MaterialPageRoute(builder: (context) => const GamesPage());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

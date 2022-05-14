@@ -205,8 +205,8 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
     updateWidgetsInGroup();
   }
 
-  void removeWidgetWithId(String id) {
-    for (var w in getWidgets().where((w) => w.id.endsWith(id))) {
+  void removeWidgetWithParams(dynamic params) {
+    for (var w in getWidgets().where((w) => ModuleId.equalParams(w.id, params))) {
       removeWidget(w.key);
     }
   }

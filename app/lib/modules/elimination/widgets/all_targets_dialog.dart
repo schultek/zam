@@ -32,7 +32,7 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
           width: 400,
           child: Consumer(
             builder: (context, ref, _) {
-              var game = ref.watch(gameProvider(widget.gameId)).asData!.value;
+              var game = ref.watch(gameProvider(widget.gameId)).asData!.value!;
               var players = game.currentTargets.keys;
 
               return GridView.count(
@@ -68,7 +68,7 @@ class _AllTargetsDialogState extends State<AllTargetsDialog> {
         title: Text(context.tr.player_status),
         content: Consumer(
           builder: (context, ref, _) {
-            var game = ref.watch(gameProvider(widget.gameId)).asData!.value;
+            var game = ref.watch(gameProvider(widget.gameId)).asData!.value!;
             var player = game.currentTargets[playerId!];
             if (player == null) {
               return Text(context.tr.eliminated);

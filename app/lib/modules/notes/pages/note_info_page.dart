@@ -65,7 +65,31 @@ class _NoteInfoPageState extends State<NoteInfoPage> {
                   style: const TextStyle(color: Colors.red),
                 ),
                 onTap: () async {
-                  Navigator.pop(context, true);
+                  var shouldDelete = await showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('${context.tr.delete} ${note.title}?'),
+                        actions: [
+                          TextButton(
+                            child: Text(context.tr.cancel),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          ElevatedButton(
+                            child: Text(context.tr.delete),
+                            onPressed: () {
+                              Navigator.pop(context, true);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+
+                  if (shouldDelete == true) {
+                    Navigator.pop(context, true);
+                  }
                 },
               ),
             ]),

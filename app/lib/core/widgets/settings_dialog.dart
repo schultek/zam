@@ -55,6 +55,7 @@ class SettingsDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: insetPadding,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
       child: ThemedSurface(
         preference: const ColorPreference(deltaElevation: 2),
         builder: (context, color) => ClipRRect(

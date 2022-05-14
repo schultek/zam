@@ -7,10 +7,13 @@ import 'element_icon_button.dart';
 import 'element_settings_dialog.dart';
 
 class ElementSettingsButton extends StatefulWidget {
-  const ElementSettingsButton({required this.module, required this.settings, Key? key}) : super(key: key);
+  const ElementSettingsButton({required this.module, this.settings, this.settingsAction, Key? key})
+      : assert(settings != null || settingsAction != null),
+        super(key: key);
 
   final ModuleContext module;
-  final SettingsBuilder settings;
+  final SettingsBuilder? settings;
+  final SettingsAction? settingsAction;
 
   @override
   State<ElementSettingsButton> createState() => _ElementSettingsButtonState();
@@ -26,7 +29,11 @@ class _ElementSettingsButtonState extends State<ElementSettingsButton> {
   void didUpdateWidget(covariant ElementSettingsButton oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (controller != null) {
-      controller!.update(widget.module, widget.settings);
+      if (widget.settings != null) {
+        controller!.update(widget.module, widget.settings!);
+      } else {
+        maybeCloseDialog();
+      }
     }
   }
 
@@ -38,12 +45,16 @@ class _ElementSettingsButtonState extends State<ElementSettingsButton> {
 
   @override
   void dispose() {
-    if (controller != null) {
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        navigator?.pop();
-      });
-    }
+    maybeCloseDialog();
     super.dispose();
+  }
+
+  void maybeCloseDialog() {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      if (controller != null) {
+        navigator?.pop();
+      }
+    });
   }
 
   @override
@@ -51,9 +62,13 @@ class _ElementSettingsButtonState extends State<ElementSettingsButton> {
     return ElementIconButton(
       icon: Icons.settings,
       onPressed: () async {
-        controller = SettingsDialogController(widget.module, widget.settings);
-        await ModuleElementSettingsDialog.show(context, controller!);
-        controller = null;
+        if (widget.settings != null) {
+          controller = SettingsDialogController(widget.module, widget.settings!);
+          await ModuleElementSettingsDialog.show(context, controller!);
+          controller = null;
+        } else {
+          widget.settingsAction!.call(context);
+        }
       }, // inkwell
       color: context.onSurfaceColor,
       iconColor: context.surfaceColor,

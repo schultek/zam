@@ -40,32 +40,14 @@ class SingleNoteContentElement with ElementBuilderMixin<ContentElement> {
             );
           },
         ),
-        settings: (context) => [
-          Builder(builder: (context) {
-            String noteName;
-            if (isFolder) {
-              noteName = noteOrFolder.substring(1);
-              context.prime();
-            } else {
-              noteName = context.watch(noteProvider(noteOrFolder)).value?.title ?? context.tr.untitled_note;
-            }
-            return ListTile(
-              title: Text(context.tr.select_note_or_folder),
-              subtitle: Text(noteName),
-              onTap: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SelectNotePage(
-                      onSelect: (id) {
-                        module.updateParams(id);
-                      },
-                    ),
-                  ),
-                );
-              },
-            );
-          }),
-        ],
+        settingsAction: (context) async {
+          var id = await Navigator.of(context).push<String>(
+            MaterialPageRoute(builder: (context) => const SelectNotePage()),
+          );
+          if (id != null) {
+            module.updateParams(id);
+          }
+        },
       );
     } else {
       if (module.context.read(isOrganizerProvider)) {
@@ -75,22 +57,14 @@ class SingleNoteContentElement with ElementBuilderMixin<ContentElement> {
             title: context.tr.single_note,
             icon: Icons.note_add,
           ),
-          settings: (context) => [
-            ListTile(
-              title: Text(context.tr.select_note_or_folder),
-              onTap: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SelectNotePage(
-                      onSelect: (id) {
-                        module.updateParams(id);
-                      },
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
+          settingsAction: (context) async {
+            var id = await Navigator.of(context).push<String>(
+              MaterialPageRoute(builder: (context) => const SelectNotePage()),
+            );
+            if (id != null) {
+              module.updateParams(id);
+            }
+          },
         );
       } else {
         return null;
