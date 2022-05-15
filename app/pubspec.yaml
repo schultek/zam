@@ -36,6 +36,7 @@ dependencies:
   flutter_native_splash: ^2.1.1
   flutter_quill: ^4.0.10
   flutter_riverpod: ^1.0.3
+  flutter_speed_dial: ^6.0.0
   flutter_sticky_header: ^0.6.1
   flutter_typeahead: ^3.2.4
   flutter_udid: ^2.0.0

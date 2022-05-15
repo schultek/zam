@@ -244,5 +244,19 @@
     "placeholders": {
       "name": {}
     }
-  }
+  },
+
+  "@SPLIT": {},
+
+  "split": "Split",
+  "open_split": "Open Split",
+  "balances": "Balances",
+  "expenses": "Expenses",
+  "new_expense": "New Expense",
+  "new_expense_desc": "Someone did buy something",
+  "new_payment": "New Payment",
+  "new_payment_desc": "Someone did receive money",
+  "new_exchange": "New Exchange",
+  "new_exchange_desc": "Someone did exchange money",
+  "new_pot": "New Pot"
 }

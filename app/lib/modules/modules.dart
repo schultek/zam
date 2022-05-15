@@ -9,6 +9,7 @@ import 'notes/notes.module.dart';
 import 'photos/photos.module.dart';
 import 'polls/polls.module.dart';
 import 'profile/profile.module.dart';
+import 'split/split.module.dart';
 import 'thebutton/thebutton.module.dart';
 import 'users/users_module.dart';
 
@@ -24,4 +25,5 @@ final registry = ModuleRegistry([
   PhotosModule(),
   LabelModule(),
   PollsModule(),
+  SplitModule(),
 ]);

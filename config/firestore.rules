@@ -149,6 +149,11 @@ service cloud.firestore {
           allow update, delete: if false;
         }
       }
+
+      match /modules/split {
+
+        allow read, write: if userIsInGroup(getGroup());
+      }
     }
   }
 }
