@@ -2,10 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 extension LocalizedContext on BuildContext {
   AppLocalizations get tr => AppLocalizations.of(this)!;
 }
+
+final dateFormat = DateFormat('dd. MMM. yyyy');
 
 extension PropertyCompare<T> on Set<T> {
   bool containsAllBy<U>(Iterable<T> other, U Function(T object) propertyGetter) {
@@ -60,4 +63,32 @@ String generateRandomId(int length) {
   var random = Random();
   var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   return List.generate(length, (index) => chars[random.nextInt(chars.length)]).join();
+}
+
+int gcd(int a, int b) {
+  while (a != 0) {
+    var tmp = a;
+    a = b % a;
+    b = tmp;
+  }
+  return b;
+}
+
+int mgcd(List<int> numbers) {
+  var result = numbers.first;
+  for (var i = 1; i < numbers.length; i++) {
+    result = gcd(numbers[i], result);
+    if (result == 1) {
+      return 1;
+    }
+  }
+  return result;
+}
+
+double round1000(double value) {
+  return (value * 1000).roundToDouble() / 1000;
+}
+
+double round100(double value) {
+  return (value * 100).roundToDouble() / 100;
 }

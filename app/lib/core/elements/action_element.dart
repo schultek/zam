@@ -17,7 +17,9 @@ class ActionElement extends ModuleElement with ElementMixin<ActionElement> {
     required this.text,
     this.onTap,
     this.onNavigate,
-  }) : super(module: module);
+    SettingsBuilder? settings,
+    SettingsAction? settingsAction,
+  }) : super(module: module, settings: settings, settingsAction: settingsAction);
 
   @override
   ActionElement get element => this;

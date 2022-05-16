@@ -7,7 +7,8 @@ import '../modules/thebutton/widgets/thebutton_shape.dart';
 
 class UserAvatar extends StatelessWidget {
   final String id;
-  const UserAvatar({Key? key, required this.id}) : super(key: key);
+  final bool small;
+  const UserAvatar({Key? key, required this.id, this.small = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,7 @@ class UserAvatar extends StatelessWidget {
           var showButtonLevel = ref.watch(theButtonProvider.select((v) => v.value?.showInAvatars ?? false));
           var userLevel = ref.watch(theButtonUserLevelProvider(id));
           return CircleAvatar(
+            radius: small ? 15 : 20,
             backgroundColor: color,
             foregroundColor: context.onSurfaceColor,
             backgroundImage: user?.profileUrl != null ? CachedNetworkImageProvider(user!.profileUrl!) : null,
@@ -29,7 +31,7 @@ class UserAvatar extends StatelessWidget {
                   if (user?.nickname != null)
                     Center(child: Text(user!.nickname!.substring(0, 1)))
                   else
-                    const Center(child: Icon(Icons.account_circle_outlined, size: 25)),
+                    Center(child: Icon(Icons.account_circle_outlined, size: small ? 20 : 25)),
                 if (showButtonLevel)
                   if (userLevel != null && userLevel >= 0 && userLevel < theButtonLevelsCount)
                     Positioned(right: -13, bottom: -13, child: StarPaint(color: getColorForLevel(userLevel, context)))

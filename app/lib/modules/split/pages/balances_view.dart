@@ -13,19 +13,39 @@ class BalancesView extends StatelessWidget {
     if (split == null) return Container();
 
     var balances = split.balances;
+    var potBalances = balances.entries.where((b) => b.key.type == SplitSourceType.pot);
+    var userBalances = balances.entries.where((b) => b.key.type == SplitSourceType.user);
     return ThemedSurface(
       builder: (context, color) => ListView(
-        padding: const EdgeInsets.symmetric(vertical: 20),
+        padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
-          for (var entry in balances.entries)
-            ListTile(
-              leading: Icon(entry.key.type == SplitSourceType.user ? Icons.account_circle : Icons.savings),
-              title: Text(entry.key.type == SplitSourceType.user
-                  ? context.watch(groupUserByIdProvider(entry.key.id))?.nickname ?? context.tr.anonymous
-                  : split.pots[entry.key.id]!.name),
-              trailing: Text(entry.value.toPrintString()),
-              tileColor: color,
-            ),
+          SettingsSection(children: [
+            for (var entry in potBalances)
+              ListTile(
+                leading: const Padding(
+                  padding: EdgeInsets.all(3),
+                  child: Icon(Icons.savings),
+                ),
+                title: Text(context.watch(splitSourceLabelProvider(entry.key))),
+                trailing: Text(
+                  entry.value.toPrintString(),
+                  style: context.theme.textTheme.bodyMedium,
+                ),
+                tileColor: color,
+              ),
+          ]),
+          SettingsSection(children: [
+            for (var entry in userBalances)
+              ListTile(
+                leading: UserAvatar(id: entry.key.id, small: true),
+                title: Text(context.watch(splitSourceLabelProvider(entry.key))),
+                trailing: Text(
+                  entry.value.toPrintString(),
+                  style: context.theme.textTheme.bodyMedium,
+                ),
+                tileColor: color,
+              ),
+          ]),
           if (context.watch(isOrganizerProvider))
             Padding(
               padding: const EdgeInsets.only(top: 8),

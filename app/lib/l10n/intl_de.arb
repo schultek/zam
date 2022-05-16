@@ -20,6 +20,7 @@
   "continuee": "Weiter",
   "hello": "Hallo",
   "ok": "OK",
+  "save": "Speichern",
 
   "@LOGIN": {},
 
@@ -229,5 +230,34 @@
   "invite_participant": "Teilnehmer einladen",
   "invite_organizer": "Organisator einladen",
   "click_link_to_join": "Klicke auf den Link um {name} beizutreten",
-  "click_link_to_organize": "Klicke auf den Link um Organisator für {name} zu werden"
+  "click_link_to_organize": "Klicke auf den Link um Organisator für {name} zu werden",
+
+  "@SPLIT": {},
+
+  "split": "Split",
+  "open_split": "Split öffnen",
+  "balances": "Bilanzen",
+  "expenses": "Ausgaben",
+  "new_expense": "Neue Ausgabe",
+  "edit_expense": "Ausgabe bearbeiten",
+  "new_expense_desc": "Jemand hat etwas gekauft",
+  "new_payment": "Neue Zahlung",
+  "edit_payment": "Zahlung bearbeiten",
+  "new_payment_desc": "Jemand hat Geld erhalten",
+  "new_exchange": "Neuer Geldwechsel",
+  "edit_exchange": "Geldwechsel bearbeiten",
+  "new_exchange_desc": "Jemand hat Geld gewechselt",
+  "new_pot": "Neuer Topf",
+  "amount": "Betrag",
+  "currency": "Währung",
+  "from": "Von",
+  "to": "Für",
+  "date": "Datum",
+  "pots": "Töpfe",
+  "percent": "Prozent",
+  "shares": "Anteile",
+  "for_everyone": "Für jeden",
+  "persons": "Personen",
+  "show_zero_balances": "Zeige Null-Bilanzen",
+  "show_pots": "Zeige Töpfe"
 }

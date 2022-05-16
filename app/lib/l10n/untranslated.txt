@@ -1,15 +1,1 @@
-{
-  "de": [
-    "split",
-    "open_split",
-    "balances",
-    "expenses",
-    "new_expense",
-    "new_expense_desc",
-    "new_payment",
-    "new_payment_desc",
-    "new_exchange",
-    "new_exchange_desc",
-    "new_pot"
-  ]
-}
+{}

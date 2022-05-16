@@ -77,11 +77,7 @@ class NotesList extends StatelessWidget {
                 Navigator.of(context).push(EditNotePage.route(note));
               },
             ),
-        ]
-            .intersperse(const Divider(
-              height: 0,
-            ))
-            .toList(),
+        ].intersperse(const Divider(height: 0)).toList(),
       ),
     );
   }

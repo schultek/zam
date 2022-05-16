@@ -1,5 +1,20 @@
 part of split_module;
 
+@MappableClass()
+class BalancesListParams {
+  final bool showZeroBalances;
+  final bool showPots;
+
+  BalancesListParams({this.showZeroBalances = true, this.showPots = true});
+}
+
+@MappableClass()
+class BalanceFocusParams {
+  final SplitSource? source;
+
+  BalanceFocusParams(this.source);
+}
+
 @MappableEnum()
 enum Currency { euro, dollar, kuna }
 
@@ -19,9 +34,9 @@ extension CurrencySymbol on Currency {
 @MappableClass()
 class SplitState {
   final Map<String, SplitPot> pots;
-  final List<SplitEntry> entries;
+  final Map<String, SplitEntry> entries;
 
-  SplitState({this.pots = const {}, this.entries = const []}) {
+  SplitState({this.pots = const {}, this.entries = const {}}) {
     balances = calcBalances();
   }
 
@@ -31,7 +46,7 @@ class SplitState {
     var balances = <SplitSource, SplitBalance>{
       ...pots.map((k, v) => MapEntry(SplitSource(k, SplitSourceType.pot), SplitBalance({Currency.euro: 0})))
     };
-    var entries = [...this.entries]..sort();
+    var entries = [...this.entries.values]..sort();
 
     void addToBalance(SplitSource source, double amount, Currency currency) {
       var balance = balances[source] ??= SplitBalance({});
@@ -40,22 +55,38 @@ class SplitState {
 
     for (var entry in entries) {
       if (entry is ExpenseEntry) {
-        addToBalance(entry.source, entry.amount, entry.currency);
+        if (entry.source.type == SplitSourceType.user) {
+          addToBalance(entry.source, entry.amount, entry.currency);
+        } else {
+          addToBalance(entry.source, -entry.amount, entry.currency);
+        }
 
         var target = entry.target;
-        if (target is PercentageExpenseTarget) {
-          for (var e in target.percentages.entries) {
-            addToBalance(e.key, -entry.amount * e.value / 100, entry.currency);
+        if (target.type == ExpenseTargetType.percent) {
+          for (var e in target.amounts.entries) {
+            addToBalance(SplitSource.user(e.key), -entry.amount * e.value / 100, entry.currency);
           }
-        } else if (target is SharesExpenseTarget) {
-          var sumShares = target.shares.values.reduce((a, b) => a + b);
-          for (var e in target.shares.entries) {
-            addToBalance(e.key, -entry.amount * e.value / sumShares, entry.currency);
+        } else if (target.type == ExpenseTargetType.shares) {
+          var sumShares = target.amounts.values.reduce((a, b) => a + b);
+          for (var e in target.amounts.entries) {
+            addToBalance(SplitSource.user(e.key), -entry.amount * e.value / sumShares, entry.currency);
+          }
+        } else if (target.type == ExpenseTargetType.amount) {
+          for (var e in target.amounts.entries) {
+            addToBalance(SplitSource.user(e.key), -entry.amount, entry.currency);
           }
         }
       } else if (entry is PaymentEntry) {
-        addToBalance(entry.source, entry.amount, entry.currency);
-        addToBalance(entry.target, -entry.amount, entry.currency);
+        if (entry.source.type == SplitSourceType.user) {
+          addToBalance(entry.source, entry.amount, entry.currency);
+        } else {
+          addToBalance(entry.source, -entry.amount, entry.currency);
+        }
+        if (entry.target.type == SplitSourceType.user) {
+          addToBalance(entry.target, -entry.amount, entry.currency);
+        } else {
+          addToBalance(entry.target, entry.amount, entry.currency);
+        }
       } else if (entry is ExchangeEntry) {
         addToBalance(SplitSource(entry.potId, SplitSourceType.pot), -entry.sourceAmount, entry.sourceCurrency);
         addToBalance(SplitSource(entry.potId, SplitSourceType.pot), entry.targetAmount, entry.targetCurrency);
@@ -71,7 +102,9 @@ class SplitBalance {
   SplitBalance(this.amounts);
 
   String toPrintString() {
-    return amounts.entries.map((e) => '${e.value} ${e.key.symbol}').join(', ');
+    var entries = amounts.entries.where((e) => e.value != 0);
+    if (entries.isEmpty && amounts.entries.isNotEmpty) entries = amounts.entries.take(1);
+    return entries.map((e) => '${e.value.toStringAsFixed(2)} ${e.key.symbol}').join(', ');
   }
 }
 
@@ -107,6 +140,9 @@ class SplitSource with Mappable {
   final SplitSourceType type;
 
   const SplitSource(this.id, this.type);
+
+  const SplitSource.user(this.id) : type = SplitSourceType.user;
+  const SplitSource.pot(this.id) : type = SplitSourceType.pot;
 }
 
 class SplitSourceHooks extends MappingHooks {
@@ -129,6 +165,8 @@ class SplitSourceHooks extends MappingHooks {
 
 @MappableClass(discriminatorValue: 'expense')
 class ExpenseEntry extends SplitEntry {
+  String title;
+
   final double amount;
   final Currency currency;
 
@@ -137,6 +175,7 @@ class ExpenseEntry extends SplitEntry {
 
   ExpenseEntry({
     required String id,
+    required this.title,
     required this.amount,
     this.currency = Currency.euro,
     required this.source,
@@ -148,6 +187,8 @@ class ExpenseEntry extends SplitEntry {
 
 @MappableClass(discriminatorValue: 'payment')
 class PaymentEntry extends SplitEntry {
+  final String title;
+
   final double amount;
   final Currency currency;
 
@@ -156,6 +197,7 @@ class PaymentEntry extends SplitEntry {
 
   PaymentEntry({
     required String id,
+    required this.title,
     required this.amount,
     this.currency = Currency.euro,
     required this.source,
@@ -165,8 +207,10 @@ class PaymentEntry extends SplitEntry {
   }) : super(id: id, createdAt: createdAt, transactedAt: transactedAt);
 }
 
-@MappableClass(discriminatorValue: 'payment')
+@MappableClass(discriminatorValue: 'exchange')
 class ExchangeEntry extends SplitEntry {
+  final String title;
+
   final double sourceAmount;
   final Currency sourceCurrency;
 
@@ -177,6 +221,7 @@ class ExchangeEntry extends SplitEntry {
 
   ExchangeEntry({
     required String id,
+    required this.title,
     required this.sourceAmount,
     required this.sourceCurrency,
     required this.targetAmount,
@@ -188,24 +233,26 @@ class ExchangeEntry extends SplitEntry {
         super(id: id, createdAt: createdAt, transactedAt: transactedAt);
 }
 
+@MappableEnum()
+enum ExpenseTargetType { percent, shares, amount }
+
 @MappableClass(discriminatorKey: 'type')
 class ExpenseTarget {
-  const ExpenseTarget();
+  final ExpenseTargetType type;
+  final Map<String, double> amounts;
 
-  const factory ExpenseTarget.percent(Map<SplitSource, double> percentages) = PercentageExpenseTarget;
-  const factory ExpenseTarget.shares(Map<SplitSource, int> shares) = SharesExpenseTarget;
-}
+  const ExpenseTarget({this.amounts = const {}, required this.type});
 
-@MappableClass(discriminatorValue: 'precent')
-class PercentageExpenseTarget extends ExpenseTarget {
-  final Map<SplitSource, double> percentages;
+  const ExpenseTarget.percent(Map<String, double> percentages)
+      : amounts = percentages,
+        type = ExpenseTargetType.percent;
 
-  const PercentageExpenseTarget(this.percentages);
-}
+  const ExpenseTarget.shares(Map<String, double> shares)
+      : amounts = shares,
+        type = ExpenseTargetType.shares;
 
-@MappableClass(discriminatorValue: 'shares')
-class SharesExpenseTarget extends ExpenseTarget {
-  final Map<SplitSource, int> shares;
-
-  const SharesExpenseTarget(this.shares);
+  const ExpenseTarget.amounts(Map<String, double> amounts)
+      // ignore: prefer_initializing_formals
+      : amounts = amounts,
+        type = ExpenseTargetType.amount;
 }

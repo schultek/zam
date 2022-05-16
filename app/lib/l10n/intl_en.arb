@@ -20,6 +20,7 @@
   "continuee": "Continue",
   "hello": "Hello",
   "ok": "OK",
+  "save": "Save",
 
   "@LOGIN": {},
 
@@ -253,10 +254,25 @@
   "balances": "Balances",
   "expenses": "Expenses",
   "new_expense": "New Expense",
+  "edit_expense": "Edit Expense",
   "new_expense_desc": "Someone did buy something",
   "new_payment": "New Payment",
+  "edit_payment": "Edit Payment",
   "new_payment_desc": "Someone did receive money",
   "new_exchange": "New Exchange",
+  "edit_exchange": "Edit Exchange",
   "new_exchange_desc": "Someone did exchange money",
-  "new_pot": "New Pot"
+  "new_pot": "New Pot",
+  "amount": "Amount",
+  "currency": "Currency",
+  "from": "From",
+  "to": "To",
+  "date": "Date",
+  "pots": "Pots",
+  "percent": "Percent",
+  "shares": "Shares",
+  "for_everyone": "For everyone",
+  "persons": "People",
+  "show_zero_balances": "Show Zero Balances",
+  "show_pots": "Show Pots"
 }

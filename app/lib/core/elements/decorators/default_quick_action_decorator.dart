@@ -32,39 +32,51 @@ class DefaultActionDecorator implements ElementDecorator<ActionElement> {
         builder: (context, fillColor) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: fillColor.withOpacity(isPlaceholder ? 0.8 : 1),
-                boxShadow: [
-                  if (!isPlaceholder)
-                    BoxShadow(
-                      blurRadius: 8,
-                      color: textColor.withOpacity(opacity * 0.5),
-                    )
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: fillColor.withOpacity(isPlaceholder ? 0.8 : 1),
+                  boxShadow: [
+                    if (!isPlaceholder)
+                      BoxShadow(
+                        blurRadius: 8,
+                        color: textColor.withOpacity(opacity * 0.5),
+                      )
+                  ],
+                ),
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(bottom: 10),
+                child: Icon(element.icon, color: isPlaceholder ? Colors.transparent : context.onSurfaceColor),
+              ),
+            ),
+            SizedBox(
+              height: 32,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (isPlaceholder)
+                    for (var line in element.text.split('\n'))
+                      Container(
+                        width: _textSize(line, textStyle).width,
+                        height: 16,
+                        color: fillColor.withOpacity(0.8),
+                      )
+                  else
+                    Text(
+                      element.text,
+                      style: textStyle.apply(
+                        color: textColor,
+                        shadows: [Shadow(blurRadius: 10, color: textColor.withOpacity(opacity * 0.5))],
+                      ),
+                      overflow: TextOverflow.visible,
+                      softWrap: false,
+                      textAlign: TextAlign.center,
+                    ),
                 ],
               ),
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(bottom: 10),
-              child: Icon(element.icon, color: isPlaceholder ? Colors.transparent : context.onSurfaceColor),
             ),
-            if (isPlaceholder)
-              Container(
-                width: _textSize(element.text, textStyle).width,
-                height: 16,
-                color: fillColor.withOpacity(0.8),
-              )
-            else
-              Text(
-                element.text,
-                style: textStyle.apply(
-                  color: textColor,
-                  shadows: [Shadow(blurRadius: 10, color: textColor.withOpacity(opacity * 0.5))],
-                ),
-                overflow: TextOverflow.visible,
-                softWrap: false,
-                textAlign: TextAlign.center,
-              ),
           ],
         ),
       ),

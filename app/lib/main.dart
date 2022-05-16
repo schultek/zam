@@ -9,7 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import 'core/core.dart';
+import 'helpers/extensions.dart';
 import 'providers/auth/user_provider.dart';
+import 'providers/general/l10n_provider.dart';
 import 'providers/general/loading_provider.dart';
 import 'providers/groups/selected_group_provider.dart';
 import 'providers/links/links_provider.dart';
@@ -62,6 +64,10 @@ class _JufaAppState extends State<JufaApp> {
       ],
       supportedLocales: AppLocalizations.supportedLocales,
       navigatorKey: navigatorKey,
+      builder: (context, child) {
+        context.read(l10nStateProvider.notifier).state = context.tr;
+        return child!;
+      },
       home: buildHome(context),
     );
   }

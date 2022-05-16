@@ -1,6 +1,6 @@
 part of route;
 
-class ModulePageRoute extends PageRouteBuilder {
+class ModulePageRoute<T> extends PageRouteBuilder<T> {
   final Widget child;
 
   ModulePageRoute(BuildContext context, {required this.child})
