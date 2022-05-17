@@ -46,10 +46,12 @@ class CardActionDecorator implements ElementDecorator<ActionElement> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(element.icon, color: context.onSurfaceColor),
+                      element.icon != null
+                          ? Icon(element.icon, color: context.onSurfaceColor)
+                          : element.iconWidget ?? Container(),
                       const SizedBox(height: 8),
                       Text(
-                        element.text,
+                        element.textBuilder(context),
                         style: context.theme.textTheme.bodyText1!.apply(color: context.onSurfaceColor),
                         textAlign: TextAlign.center,
                       ),

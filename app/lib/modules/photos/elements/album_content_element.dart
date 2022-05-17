@@ -81,7 +81,7 @@ class AlbumContentElement with ElementBuilderMixin<ContentElement> {
               var result = await onContinue();
               Navigator.of(context).pop(result);
             },
-            child: Text(context.tr.continuee),
+            child: Text(context.tr.do_continue),
           ),
         ],
       ),

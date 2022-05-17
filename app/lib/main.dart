@@ -19,6 +19,7 @@ import 'screens/group/group_screen.dart';
 import 'screens/loading/loading_link_screen.dart';
 import 'screens/loading/loading_screen.dart';
 import 'screens/signin/signin_screen.dart';
+import 'widgets/nested_will_pop_scope.dart';
 
 void main() {
   runZonedGuarded<Future<void>>(() async {
@@ -90,7 +91,10 @@ class _JufaAppState extends State<JufaApp> {
 
     var selectedGroupId = context.watch(selectedGroupIdProvider);
     if (selectedGroupId != null) {
-      return GroupScreen(key: ValueKey(selectedGroupId));
+      return NestedWillPopScope(
+        onWillPop: () async => false,
+        child: GroupScreen(key: ValueKey(selectedGroupId)),
+      );
     }
 
     return GroupTheme(

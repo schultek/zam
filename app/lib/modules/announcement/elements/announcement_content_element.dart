@@ -36,7 +36,7 @@ class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
             title: Text(context.tr.resend_notification),
             subtitle: Text(context.tr.resend_notification_desc),
             onTap: () async {
-              var send = await SettingsDialog.confirm(context, context.tr.confirm_resend);
+              var send = await SettingsDialog.confirm(context, text: context.tr.confirm_resend);
               if (send) {
                 await context.read(announcementLogicProvider).resendNotification(announcementId);
               }

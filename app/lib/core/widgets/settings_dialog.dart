@@ -14,7 +14,7 @@ class SettingsDialog extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  static Future<bool> confirm(BuildContext context, String text) async {
+  static Future<bool> confirm(BuildContext context, {required String text, String? confirm}) async {
     return await showDialog<bool>(
           context: context,
           builder: (context) => SettingsDialog(
@@ -31,7 +31,7 @@ class SettingsDialog extends StatelessWidget {
                 },
               ),
               TextButton(
-                child: Text(context.tr.confirm),
+                child: Text(confirm ?? context.tr.confirm),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },

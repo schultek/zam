@@ -87,8 +87,8 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
       body: Builder(
         builder: (context) => NestedWillPopScope(
           onWillPop: () async {
-            if (!Navigator.of(context).canPop() && pageController.page != 1) {
-              pageController.animateToPage(1);
+            if (!Navigator.of(context).canPop() && pageController.page != (model.leftPage == null ? 0 : 1)) {
+              pageController.animateToPage(model.leftPage == null ? 0 : 1);
               return false;
             }
             return true;

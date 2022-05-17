@@ -11,8 +11,17 @@ class BalancesListParams {
 @MappableClass()
 class BalanceFocusParams {
   final SplitSource? source;
+  final bool currentUser;
 
-  BalanceFocusParams(this.source);
+  BalanceFocusParams({this.source, this.currentUser = true});
+
+  SplitSource? getSource(BuildContext context) {
+    if (currentUser) {
+      var id = context.read(userIdProvider);
+      if (id != null) return SplitSource.user(id);
+    }
+    return source;
+  }
 }
 
 @MappableEnum()
@@ -111,8 +120,9 @@ class SplitBalance {
 @MappableClass()
 class SplitPot {
   String name;
+  String? icon;
 
-  SplitPot({required this.name});
+  SplitPot({required this.name, this.icon});
 }
 
 @MappableClass(discriminatorKey: 'type')

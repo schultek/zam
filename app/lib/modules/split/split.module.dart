@@ -15,6 +15,7 @@ import 'pages/edit_expense_page.dart';
 import 'pages/edit_payment_page.dart';
 import 'pages/split_page.dart';
 import 'widgets/balances_list.dart';
+import 'widgets/pot_icon.dart';
 import 'widgets/select_source_dialog.dart';
 
 export '../module.dart';

@@ -6,20 +6,35 @@ import 'module_element.dart';
 import 'widgets/element_mixin.dart';
 
 class ActionElement extends ModuleElement with ElementMixin<ActionElement> {
-  final IconData icon;
-  final String text;
+  final IconData? icon;
+  final Widget? iconWidget;
+  final String Function(BuildContext) textBuilder;
   final void Function(BuildContext)? onTap;
   final Widget Function(BuildContext)? onNavigate;
 
   ActionElement({
     required ModuleContext module,
-    required this.icon,
-    required this.text,
+    this.icon,
+    this.iconWidget,
+    required String text,
     this.onTap,
     this.onNavigate,
     SettingsBuilder? settings,
     SettingsAction? settingsAction,
-  }) : super(module: module, settings: settings, settingsAction: settingsAction);
+  })  : textBuilder = ((_) => text),
+        super(module: module, settings: settings, settingsAction: settingsAction);
+
+  ActionElement.builder({
+    required ModuleContext module,
+    this.icon,
+    this.iconWidget,
+    required String Function(BuildContext) text,
+    this.onTap,
+    this.onNavigate,
+    SettingsBuilder? settings,
+    SettingsAction? settingsAction,
+  })  : textBuilder = text,
+        super(module: module, settings: settings, settingsAction: settingsAction);
 
   @override
   ActionElement get element => this;

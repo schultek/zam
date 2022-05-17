@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../split.module.dart';
+import 'pot_icon.dart';
 
 class SelectSourceDialog extends StatefulWidget {
   const SelectSourceDialog({this.source, this.allowUsers = true, Key? key}) : super(key: key);
@@ -64,10 +65,7 @@ class _SelectSourceDialogState extends State<SelectSourceDialog> {
               for (var pot in context.read(splitProvider).value?.pots.entries ?? <MapEntry<String, SplitPot>>[])
                 ListTile(
                   title: Text(pot.value.name),
-                  leading: const Padding(
-                    padding: EdgeInsets.all(3),
-                    child: Icon(Icons.savings),
-                  ),
+                  leading: PotIcon(id: pot.key),
                   minLeadingWidth: 10,
                   tileColor: widget.source == SplitSource.pot(pot.key) ? color.withOpacity(0.5) : null,
                   onTap: () {

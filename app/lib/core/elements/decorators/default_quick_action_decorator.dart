@@ -25,6 +25,7 @@ class DefaultActionDecorator implements ElementDecorator<ActionElement> {
   Widget actionLayout(BuildContext context, ActionElement element, {bool isPlaceholder = false, double opacity = 0}) {
     var textColor = context.onSurfaceColor;
     var textStyle = context.theme.textTheme.bodyText1!.apply(fontSizeDelta: -2);
+    var text = element.textBuilder(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ThemedSurface(
@@ -45,9 +46,11 @@ class DefaultActionDecorator implements ElementDecorator<ActionElement> {
                       )
                   ],
                 ),
-                padding: const EdgeInsets.all(10),
+                padding: element.icon != null ? const EdgeInsets.all(10) : EdgeInsets.zero,
                 margin: const EdgeInsets.only(bottom: 10),
-                child: Icon(element.icon, color: isPlaceholder ? Colors.transparent : context.onSurfaceColor),
+                child: element.icon != null
+                    ? Icon(element.icon, color: isPlaceholder ? Colors.transparent : context.onSurfaceColor)
+                    : element.iconWidget ?? Container(),
               ),
             ),
             SizedBox(
@@ -57,7 +60,7 @@ class DefaultActionDecorator implements ElementDecorator<ActionElement> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (isPlaceholder)
-                    for (var line in element.text.split('\n'))
+                    for (var line in text.split('\n'))
                       Container(
                         width: _textSize(line, textStyle).width,
                         height: 16,
@@ -65,7 +68,7 @@ class DefaultActionDecorator implements ElementDecorator<ActionElement> {
                       )
                   else
                     Text(
-                      element.text,
+                      text,
                       style: textStyle.apply(
                         color: textColor,
                         shadows: [Shadow(blurRadius: 10, color: textColor.withOpacity(opacity * 0.5))],

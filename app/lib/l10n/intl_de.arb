@@ -15,12 +15,14 @@
   "loading": "Laden",
   "started": "Gestartet",
   "finish": "Fertig",
-  "delete": "Lösche",
+  "delete": "Löschen",
   "cancel": "Abbrechen",
-  "continuee": "Weiter",
+  "do_continue": "Weiter",
   "hello": "Hallo",
   "ok": "OK",
   "save": "Speichern",
+  "yes": "Ja",
+  "no": "Nein",
 
   "@LOGIN": {},
 
@@ -259,5 +261,15 @@
   "for_everyone": "Für jeden",
   "persons": "Personen",
   "show_zero_balances": "Zeige Null-Bilanzen",
-  "show_pots": "Zeige Töpfe"
+  "show_pots": "Zeige Töpfe",
+  "confirm_delete_entry": "Möchtest do diesen Eintrag löschen?",
+  "current_user": "Aktueller Nutzer",
+
+  "@WEB": {},
+
+  "web": "Web",
+  "launch_url": "Url öffnen",
+  "label": "Text",
+  "allow_navigation": "Navigation erlauben",
+  "website": "Webseite"
 }

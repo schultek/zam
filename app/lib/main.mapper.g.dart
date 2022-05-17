@@ -27,6 +27,7 @@ import 'modules/polls/polls.module.dart';
 import 'modules/profile/profile.module.dart';
 import 'modules/split/split.module.dart';
 import 'modules/thebutton/thebutton.module.dart';
+import 'modules/web/web_module.dart';
 import 'screens/admin/providers/admin_groups_provider.dart';
 import 'screens/admin/providers/admin_users_provider.dart';
 
@@ -76,6 +77,8 @@ var _mappers = <BaseMapper>{
   ExchangeEntryMapper._(),
   ExpenseTargetMapper._(),
   TheButtonStateMapper._(),
+  LaunchUrlParamsMapper._(),
+  WebPageParamsMapper._(),
   UserDataMapper._(),
   UserMetadataMapper._(),
   UserInfoMapper._(),
@@ -2178,19 +2181,23 @@ class BalanceFocusParamsMapper extends BaseMapper<BalanceFocusParams> {
   @override
   Function get decoder => decode;
   BalanceFocusParams decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  BalanceFocusParams fromMap(Map<String, dynamic> map) => BalanceFocusParams(Mapper.i.$getOpt(map, 'source'));
+  BalanceFocusParams fromMap(Map<String, dynamic> map) => BalanceFocusParams(
+      source: Mapper.i.$getOpt(map, 'source'), currentUser: Mapper.i.$getOpt(map, 'currentUser') ?? true);
 
   @override
   Function get encoder => (BalanceFocusParams v) => encode(v);
   dynamic encode(BalanceFocusParams v) => toMap(v);
-  Map<String, dynamic> toMap(BalanceFocusParams b) => {'source': Mapper.i.$enc(b.source, 'source')};
+  Map<String, dynamic> toMap(BalanceFocusParams b) =>
+      {'source': Mapper.i.$enc(b.source, 'source'), 'currentUser': Mapper.i.$enc(b.currentUser, 'currentUser')};
 
   @override
-  String stringify(BalanceFocusParams self) => 'BalanceFocusParams(source: ${Mapper.asString(self.source)})';
+  String stringify(BalanceFocusParams self) =>
+      'BalanceFocusParams(source: ${Mapper.asString(self.source)}, currentUser: ${Mapper.asString(self.currentUser)})';
   @override
-  int hash(BalanceFocusParams self) => Mapper.hash(self.source);
+  int hash(BalanceFocusParams self) => Mapper.hash(self.source) ^ Mapper.hash(self.currentUser);
   @override
-  bool equals(BalanceFocusParams self, BalanceFocusParams other) => Mapper.isEqual(self.source, other.source);
+  bool equals(BalanceFocusParams self, BalanceFocusParams other) =>
+      Mapper.isEqual(self.source, other.source) && Mapper.isEqual(self.currentUser, other.currentUser);
 
   @override
   Function get typeFactory => (f) => f<BalanceFocusParams>();
@@ -2206,7 +2213,7 @@ abstract class BalanceFocusParamsCopyWith<$R> {
   factory BalanceFocusParamsCopyWith(BalanceFocusParams value, Then<BalanceFocusParams, $R> then) =
       _BalanceFocusParamsCopyWithImpl<$R>;
   SplitSourceCopyWith<$R>? get source;
-  $R call({SplitSource? source});
+  $R call({SplitSource? source, bool? currentUser});
   $R apply(BalanceFocusParams Function(BalanceFocusParams) transform);
 }
 
@@ -2218,7 +2225,8 @@ class _BalanceFocusParamsCopyWithImpl<$R> extends BaseCopyWith<BalanceFocusParam
   SplitSourceCopyWith<$R>? get source =>
       $value.source != null ? SplitSourceCopyWith($value.source!, (v) => call(source: v)) : null;
   @override
-  $R call({Object? source = $none}) => $then(BalanceFocusParams(or(source, $value.source)));
+  $R call({Object? source = $none, bool? currentUser}) =>
+      $then(BalanceFocusParams(source: or(source, $value.source), currentUser: currentUser ?? $value.currentUser));
 }
 
 class SplitStateMapper extends BaseMapper<SplitState> {
@@ -2285,19 +2293,23 @@ class SplitPotMapper extends BaseMapper<SplitPot> {
   @override
   Function get decoder => decode;
   SplitPot decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  SplitPot fromMap(Map<String, dynamic> map) => SplitPot(name: Mapper.i.$get(map, 'name'));
+  SplitPot fromMap(Map<String, dynamic> map) =>
+      SplitPot(name: Mapper.i.$get(map, 'name'), icon: Mapper.i.$getOpt(map, 'icon'));
 
   @override
   Function get encoder => (SplitPot v) => encode(v);
   dynamic encode(SplitPot v) => toMap(v);
-  Map<String, dynamic> toMap(SplitPot s) => {'name': Mapper.i.$enc(s.name, 'name')};
+  Map<String, dynamic> toMap(SplitPot s) =>
+      {'name': Mapper.i.$enc(s.name, 'name'), 'icon': Mapper.i.$enc(s.icon, 'icon')};
 
   @override
-  String stringify(SplitPot self) => 'SplitPot(name: ${Mapper.asString(self.name)})';
+  String stringify(SplitPot self) =>
+      'SplitPot(name: ${Mapper.asString(self.name)}, icon: ${Mapper.asString(self.icon)})';
   @override
-  int hash(SplitPot self) => Mapper.hash(self.name);
+  int hash(SplitPot self) => Mapper.hash(self.name) ^ Mapper.hash(self.icon);
   @override
-  bool equals(SplitPot self, SplitPot other) => Mapper.isEqual(self.name, other.name);
+  bool equals(SplitPot self, SplitPot other) =>
+      Mapper.isEqual(self.name, other.name) && Mapper.isEqual(self.icon, other.icon);
 
   @override
   Function get typeFactory => (f) => f<SplitPot>();
@@ -2311,7 +2323,7 @@ extension SplitPotMapperExtension on SplitPot {
 
 abstract class SplitPotCopyWith<$R> {
   factory SplitPotCopyWith(SplitPot value, Then<SplitPot, $R> then) = _SplitPotCopyWithImpl<$R>;
-  $R call({String? name});
+  $R call({String? name, String? icon});
   $R apply(SplitPot Function(SplitPot) transform);
 }
 
@@ -2319,7 +2331,8 @@ class _SplitPotCopyWithImpl<$R> extends BaseCopyWith<SplitPot, $R> implements Sp
   _SplitPotCopyWithImpl(SplitPot value, Then<SplitPot, $R> then) : super(value, then);
 
   @override
-  $R call({String? name}) => $then(SplitPot(name: name ?? $value.name));
+  $R call({String? name, Object? icon = $none}) =>
+      $then(SplitPot(name: name ?? $value.name, icon: or(icon, $value.icon)));
 }
 
 class SplitEntryMapper extends BaseMapper<SplitEntry> {
@@ -2887,6 +2900,109 @@ class _TheButtonStateCopyWithImpl<$R> extends BaseCopyWith<TheButtonState, $R> i
           aliveHours: aliveHours ?? $value.aliveHours,
           leaderboard: leaderboard ?? $value.leaderboard,
           showInAvatars: showInAvatars ?? $value.showInAvatars));
+}
+
+class LaunchUrlParamsMapper extends BaseMapper<LaunchUrlParams> {
+  LaunchUrlParamsMapper._();
+
+  @override
+  Function get decoder => decode;
+  LaunchUrlParams decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  LaunchUrlParams fromMap(Map<String, dynamic> map) => LaunchUrlParams(
+      url: Mapper.i.$getOpt(map, 'url'), label: Mapper.i.$getOpt(map, 'label'), icon: Mapper.i.$getOpt(map, 'icon'));
+
+  @override
+  Function get encoder => (LaunchUrlParams v) => encode(v);
+  dynamic encode(LaunchUrlParams v) => toMap(v);
+  Map<String, dynamic> toMap(LaunchUrlParams l) => {
+        'url': Mapper.i.$enc(l.url, 'url'),
+        'label': Mapper.i.$enc(l.label, 'label'),
+        'icon': Mapper.i.$enc(l.icon, 'icon')
+      };
+
+  @override
+  String stringify(LaunchUrlParams self) =>
+      'LaunchUrlParams(url: ${Mapper.asString(self.url)}, label: ${Mapper.asString(self.label)}, icon: ${Mapper.asString(self.icon)})';
+  @override
+  int hash(LaunchUrlParams self) => Mapper.hash(self.url) ^ Mapper.hash(self.label) ^ Mapper.hash(self.icon);
+  @override
+  bool equals(LaunchUrlParams self, LaunchUrlParams other) =>
+      Mapper.isEqual(self.url, other.url) &&
+      Mapper.isEqual(self.label, other.label) &&
+      Mapper.isEqual(self.icon, other.icon);
+
+  @override
+  Function get typeFactory => (f) => f<LaunchUrlParams>();
+}
+
+extension LaunchUrlParamsMapperExtension on LaunchUrlParams {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  LaunchUrlParamsCopyWith<LaunchUrlParams> get copyWith => LaunchUrlParamsCopyWith(this, $identity);
+}
+
+abstract class LaunchUrlParamsCopyWith<$R> {
+  factory LaunchUrlParamsCopyWith(LaunchUrlParams value, Then<LaunchUrlParams, $R> then) =
+      _LaunchUrlParamsCopyWithImpl<$R>;
+  $R call({String? url, String? label, String? icon});
+  $R apply(LaunchUrlParams Function(LaunchUrlParams) transform);
+}
+
+class _LaunchUrlParamsCopyWithImpl<$R> extends BaseCopyWith<LaunchUrlParams, $R>
+    implements LaunchUrlParamsCopyWith<$R> {
+  _LaunchUrlParamsCopyWithImpl(LaunchUrlParams value, Then<LaunchUrlParams, $R> then) : super(value, then);
+
+  @override
+  $R call({Object? url = $none, Object? label = $none, Object? icon = $none}) =>
+      $then(LaunchUrlParams(url: or(url, $value.url), label: or(label, $value.label), icon: or(icon, $value.icon)));
+}
+
+class WebPageParamsMapper extends BaseMapper<WebPageParams> {
+  WebPageParamsMapper._();
+
+  @override
+  Function get decoder => decode;
+  WebPageParams decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  WebPageParams fromMap(Map<String, dynamic> map) =>
+      WebPageParams(url: Mapper.i.$getOpt(map, 'url'), canNavigate: Mapper.i.$getOpt(map, 'canNavigate') ?? true);
+
+  @override
+  Function get encoder => (WebPageParams v) => encode(v);
+  dynamic encode(WebPageParams v) => toMap(v);
+  Map<String, dynamic> toMap(WebPageParams w) =>
+      {'url': Mapper.i.$enc(w.url, 'url'), 'canNavigate': Mapper.i.$enc(w.canNavigate, 'canNavigate')};
+
+  @override
+  String stringify(WebPageParams self) =>
+      'WebPageParams(url: ${Mapper.asString(self.url)}, canNavigate: ${Mapper.asString(self.canNavigate)})';
+  @override
+  int hash(WebPageParams self) => Mapper.hash(self.url) ^ Mapper.hash(self.canNavigate);
+  @override
+  bool equals(WebPageParams self, WebPageParams other) =>
+      Mapper.isEqual(self.url, other.url) && Mapper.isEqual(self.canNavigate, other.canNavigate);
+
+  @override
+  Function get typeFactory => (f) => f<WebPageParams>();
+}
+
+extension WebPageParamsMapperExtension on WebPageParams {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  WebPageParamsCopyWith<WebPageParams> get copyWith => WebPageParamsCopyWith(this, $identity);
+}
+
+abstract class WebPageParamsCopyWith<$R> {
+  factory WebPageParamsCopyWith(WebPageParams value, Then<WebPageParams, $R> then) = _WebPageParamsCopyWithImpl<$R>;
+  $R call({String? url, bool? canNavigate});
+  $R apply(WebPageParams Function(WebPageParams) transform);
+}
+
+class _WebPageParamsCopyWithImpl<$R> extends BaseCopyWith<WebPageParams, $R> implements WebPageParamsCopyWith<$R> {
+  _WebPageParamsCopyWithImpl(WebPageParams value, Then<WebPageParams, $R> then) : super(value, then);
+
+  @override
+  $R call({Object? url = $none, bool? canNavigate}) =>
+      $then(WebPageParams(url: or(url, $value.url), canNavigate: canNavigate ?? $value.canNavigate));
 }
 
 class UserDataMapper extends BaseMapper<UserData> {

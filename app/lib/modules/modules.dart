@@ -12,6 +12,7 @@ import 'profile/profile.module.dart';
 import 'split/split.module.dart';
 import 'thebutton/thebutton.module.dart';
 import 'users/users_module.dart';
+import 'web/web_module.dart';
 
 final registry = ModuleRegistry([
   ChatModule(),
@@ -26,4 +27,5 @@ final registry = ModuleRegistry([
   LabelModule(),
   PollsModule(),
   SplitModule(),
+  WebModule(),
 ]);

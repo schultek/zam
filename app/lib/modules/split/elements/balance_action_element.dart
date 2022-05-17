@@ -8,51 +8,50 @@ class BalanceActionElement with ElementBuilderMixin<ActionElement> {
       return null;
     }
 
-    var params = module.hasParams ? module.getParams<BalanceFocusParams>() : BalanceFocusParams(null);
+    var params = module.hasParams ? module.getParams<BalanceFocusParams>() : BalanceFocusParams();
 
-    if (params.source == null) {
-      if (module.context.read(isOrganizerProvider)) {
-        return ActionElement(
-          module: module,
-          icon: Icons.account_balance,
-          text: module.context.tr.balances + '\n0.00 €',
-          onNavigate: (context) => const SplitPage(),
-          settings: (context) => [
-            ListTile(
-              title: Text(context.tr.from),
-              onTap: () async {
-                var source = await SelectSourceDialog.show(context, null);
-                if (source != null) {
-                  module.updateParams(params.copyWith(source: source));
-                }
-              },
-            )
-          ],
-        );
-      } else {
-        return null;
-      }
-    } else {
-      return ActionElement(
-        module: module,
-        icon: params.source!.type == SplitSourceType.user ? Icons.account_balance : Icons.savings,
-        text: module.context.read(splitSourceLabelProvider(params.source!)) +
-            '\n' +
-            module.context.read(sourceBalanceProvider(params.source!)).toPrintString(),
-        onNavigate: (context) => const SplitPage(),
-        settings: (context) => [
-          ListTile(
-            title: Text(context.tr.from),
-            subtitle: Text(module.context.read(splitSourceLabelProvider(params.source!))),
-            onTap: () async {
-              var source = await SelectSourceDialog.show(context, params.source);
-              if (source != null) {
-                module.updateParams(params.copyWith(source: source));
-              }
-            },
-          )
-        ],
-      );
+    var source = params.getSource(module.context);
+    if (source == null && !module.context.read(isOrganizerProvider)) {
+      return null;
     }
+
+    return ActionElement.builder(
+      module: module,
+      icon: source == null ? Icons.account_balance : null,
+      iconWidget: source == null
+          ? null
+          : source.type == SplitSourceType.user
+              ? UserAvatar(id: source.id, needsSurface: false)
+              : Center(child: PotIcon(id: source.id)),
+      text: (context) {
+        return source == null
+            ? context.tr.balances + '\n0.00 €'
+            : '${context.watch(splitSourceLabelProvider(source))}\n'
+                '${context.watch(sourceBalanceProvider(source)).toPrintString()}';
+      },
+      onNavigate: (context) => const SplitPage(),
+      settings: (context) => [
+        SwitchListTile(
+          title: Text(context.tr.current_user),
+          value: params.currentUser,
+          onChanged: (value) {
+            module.updateParams(params.copyWith(currentUser: value));
+          },
+        ),
+        ListTile(
+          enabled: !params.currentUser,
+          title: Text(context.tr.from),
+          subtitle: Text(params.source != null
+              ? module.context.read(splitSourceLabelProvider(params.source!))
+              : context.tr.tap_to_add),
+          onTap: () async {
+            var source = await SelectSourceDialog.show(context, params.source);
+            if (source != null) {
+              module.updateParams(params.copyWith(source: source));
+            }
+          },
+        )
+      ],
+    );
   }
 }

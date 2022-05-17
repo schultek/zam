@@ -64,7 +64,7 @@ class TheButtonElement with ElementBuilderMixin<ContentElement> {
           ListTile(
             title: Text(context.tr.reset_health),
             onTap: () async {
-              var reset = await SettingsDialog.confirm(context, context.tr.confirm_reset(true));
+              var reset = await SettingsDialog.confirm(context, text: context.tr.confirm_reset(true));
               if (reset) {
                 context.read(theButtonLogicProvider).resetHealth();
               }
@@ -73,7 +73,7 @@ class TheButtonElement with ElementBuilderMixin<ContentElement> {
           ListTile(
             title: Text(context.tr.reset_leaderboard),
             onTap: () async {
-              var reset = await SettingsDialog.confirm(context, context.tr.confirm_reset(false));
+              var reset = await SettingsDialog.confirm(context, text: context.tr.confirm_reset(false));
               if (reset) {
                 context.read(theButtonLogicProvider).resetLeaderboard();
               }
