@@ -98,6 +98,7 @@
   "show_quick_actions": "Show Quick Actions",
   "show_info_cards": "Show Info Cards",
   "primary_background": "Primary Background",
+  "confirm_delete_section": "Do you want to delete this section?",
 
   "@ANNOUNCEMENTS": {},
 
@@ -150,6 +151,7 @@
 
   "labels": "Labels",
   "add_label": "Add Label",
+  "centered": "Centered",
 
   "@MUSIC": {},
 
@@ -158,13 +160,21 @@
   "add_to_queue": "Add to queue",
   "add_to_playlist": "Add to playlist",
   "remove_from_playlist": "Remove from playlist",
-  "play_spotify": "Play Spotify\n(Tap to login)",
   "connect_to_device": "Connect to device",
   "select_playlist": "Select Playlist",
   "search_track": "Search Track",
   "search_for_songs": "Search for Songs",
   "playlist": "Playlist",
   "create_shared_playlist": "Create shared Playlist",
+  "login_spotify": "Login with Spotify",
+  "signed_in": "Signed In",
+  "signed_out": "Signed Out",
+  "allow_user_accounts": "Allow User Accounts",
+  "allow_users_spotify_login": "Allow users to login with their spotify account",
+  "show_player_controls": "Show Player Controls",
+  "allow_control_playback": "Allow users to control playback",
+  "show_playlist_controls": "Show Playlist Controls",
+  "allow_modify_playlist": "Allow users to modify the shared playlist",
 
   "@NOTES": {},
 

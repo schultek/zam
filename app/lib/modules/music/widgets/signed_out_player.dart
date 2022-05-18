@@ -15,7 +15,7 @@ class SignedOutPlayer extends StatelessWidget {
             .read(musicLogicProvider)
             .signInToSpotify((authUri, redirectUri) => openSignIn(context, authUri, redirectUri));
       },
-      child: SimpleCard(title: context.tr.play_spotify, icon: Icons.music_note),
+      child: SimpleCard(title: context.tr.login_spotify, icon: Icons.music_note),
     );
   }
 

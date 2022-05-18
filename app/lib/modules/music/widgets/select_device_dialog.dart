@@ -24,6 +24,8 @@ class _SelectDeviceDialogState extends State<SelectDeviceDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(context.tr.connect_to_device),
+      contentPadding: const EdgeInsets.only(top: 16),
+      clipBehavior: Clip.antiAlias,
       content: SizedBox(
         width: 400,
         child: FutureBuilder<List<Device>>(

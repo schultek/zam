@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../core/widgets/input_list_tile.dart';
 import '../module.dart';
 import 'widgets/label_widget.dart';
 
@@ -18,23 +20,45 @@ class LabelModule extends ModuleBuilder {
       };
 }
 
+@MappableClass()
+class LabelParams {
+  final String? label;
+  final bool centered;
+
+  const LabelParams({this.label, this.centered = false});
+}
+
 class TextLabel with ElementBuilderMixin<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
-    if (module.hasParams) {
-      var label = module.getParams<String>();
-      return ContentElement.text(
-        module: module,
-        builder: (_) => LabelWidget(label: label, module: module),
-      );
-    } else {
-      if (module.context.read(isOrganizerProvider)) {
-        return ContentElement.text(
-          module: module,
-          builder: (_) => LabelWidget(module: module),
-        );
-      }
+    var params = module.getParams<LabelParams?>() ?? const LabelParams();
+
+    if (params.label == null && !module.context.read(isOrganizerProvider)) {
       return null;
     }
+
+    return ContentElement.text(
+      module: module,
+      builder: (_) => LabelWidget(
+        label: params.label,
+        align: params.centered ? TextAlign.center : null,
+      ),
+      settings: (context) => [
+        InputListTile(
+          label: context.tr.label,
+          value: params.label,
+          onChanged: (value) {
+            module.updateParams(params.copyWith(label: value));
+          },
+        ),
+        SwitchListTile(
+          title: Text(context.tr.centered),
+          value: params.centered,
+          onChanged: (value) {
+            module.updateParams(params.copyWith(centered: value));
+          },
+        ),
+      ],
+    );
   }
 }

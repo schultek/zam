@@ -20,6 +20,7 @@ import 'core/themes/theme_model.dart';
 import 'modules/announcement/announcement.module.dart';
 import 'modules/chat/chat.module.dart';
 import 'modules/elimination/elimination.module.dart';
+import 'modules/labels/labels.module.dart';
 import 'modules/music/music.module.dart';
 import 'modules/notes/notes.module.dart';
 import 'modules/photos/photos.module.dart';
@@ -51,6 +52,8 @@ var _mappers = <BaseMapper>{
   ChatFileMessageMapper._(),
   EliminationGameMapper._(),
   EliminationEntryMapper._(),
+  LabelParamsMapper._(),
+  PlayerParamsMapper._(),
   MusicConfigMapper._(),
   SpotifyPlayerMapper._(),
   SpotifyCredentialsMapper._(),
@@ -1156,6 +1159,114 @@ class _EliminationEntryCopyWithImpl<$R> extends BaseCopyWith<EliminationEntry, $
       eliminatedBy ?? $value.eliminatedBy,
       description ?? $value.description,
       time ?? $value.time));
+}
+
+class LabelParamsMapper extends BaseMapper<LabelParams> {
+  LabelParamsMapper._();
+
+  @override
+  Function get decoder => decode;
+  LabelParams decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  LabelParams fromMap(Map<String, dynamic> map) =>
+      LabelParams(label: Mapper.i.$getOpt(map, 'label'), centered: Mapper.i.$getOpt(map, 'centered') ?? false);
+
+  @override
+  Function get encoder => (LabelParams v) => encode(v);
+  dynamic encode(LabelParams v) => toMap(v);
+  Map<String, dynamic> toMap(LabelParams l) =>
+      {'label': Mapper.i.$enc(l.label, 'label'), 'centered': Mapper.i.$enc(l.centered, 'centered')};
+
+  @override
+  String stringify(LabelParams self) =>
+      'LabelParams(label: ${Mapper.asString(self.label)}, centered: ${Mapper.asString(self.centered)})';
+  @override
+  int hash(LabelParams self) => Mapper.hash(self.label) ^ Mapper.hash(self.centered);
+  @override
+  bool equals(LabelParams self, LabelParams other) =>
+      Mapper.isEqual(self.label, other.label) && Mapper.isEqual(self.centered, other.centered);
+
+  @override
+  Function get typeFactory => (f) => f<LabelParams>();
+}
+
+extension LabelParamsMapperExtension on LabelParams {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  LabelParamsCopyWith<LabelParams> get copyWith => LabelParamsCopyWith(this, $identity);
+}
+
+abstract class LabelParamsCopyWith<$R> {
+  factory LabelParamsCopyWith(LabelParams value, Then<LabelParams, $R> then) = _LabelParamsCopyWithImpl<$R>;
+  $R call({String? label, bool? centered});
+  $R apply(LabelParams Function(LabelParams) transform);
+}
+
+class _LabelParamsCopyWithImpl<$R> extends BaseCopyWith<LabelParams, $R> implements LabelParamsCopyWith<$R> {
+  _LabelParamsCopyWithImpl(LabelParams value, Then<LabelParams, $R> then) : super(value, then);
+
+  @override
+  $R call({Object? label = $none, bool? centered}) =>
+      $then(LabelParams(label: or(label, $value.label), centered: centered ?? $value.centered));
+}
+
+class PlayerParamsMapper extends BaseMapper<PlayerParams> {
+  PlayerParamsMapper._();
+
+  @override
+  Function get decoder => decode;
+  PlayerParams decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  PlayerParams fromMap(Map<String, dynamic> map) => PlayerParams(
+      allowUserAccount: Mapper.i.$getOpt(map, 'allowUserAccount') ?? false,
+      showPlayerControls: Mapper.i.$getOpt(map, 'showPlayerControls') ?? true,
+      showPlaylistControls: Mapper.i.$getOpt(map, 'showPlaylistControls') ?? true);
+
+  @override
+  Function get encoder => (PlayerParams v) => encode(v);
+  dynamic encode(PlayerParams v) => toMap(v);
+  Map<String, dynamic> toMap(PlayerParams p) => {
+        'allowUserAccount': Mapper.i.$enc(p.allowUserAccount, 'allowUserAccount'),
+        'showPlayerControls': Mapper.i.$enc(p.showPlayerControls, 'showPlayerControls'),
+        'showPlaylistControls': Mapper.i.$enc(p.showPlaylistControls, 'showPlaylistControls')
+      };
+
+  @override
+  String stringify(PlayerParams self) =>
+      'PlayerParams(allowUserAccount: ${Mapper.asString(self.allowUserAccount)}, showPlayerControls: ${Mapper.asString(self.showPlayerControls)}, showPlaylistControls: ${Mapper.asString(self.showPlaylistControls)})';
+  @override
+  int hash(PlayerParams self) =>
+      Mapper.hash(self.allowUserAccount) ^
+      Mapper.hash(self.showPlayerControls) ^
+      Mapper.hash(self.showPlaylistControls);
+  @override
+  bool equals(PlayerParams self, PlayerParams other) =>
+      Mapper.isEqual(self.allowUserAccount, other.allowUserAccount) &&
+      Mapper.isEqual(self.showPlayerControls, other.showPlayerControls) &&
+      Mapper.isEqual(self.showPlaylistControls, other.showPlaylistControls);
+
+  @override
+  Function get typeFactory => (f) => f<PlayerParams>();
+}
+
+extension PlayerParamsMapperExtension on PlayerParams {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  PlayerParamsCopyWith<PlayerParams> get copyWith => PlayerParamsCopyWith(this, $identity);
+}
+
+abstract class PlayerParamsCopyWith<$R> {
+  factory PlayerParamsCopyWith(PlayerParams value, Then<PlayerParams, $R> then) = _PlayerParamsCopyWithImpl<$R>;
+  $R call({bool? allowUserAccount, bool? showPlayerControls, bool? showPlaylistControls});
+  $R apply(PlayerParams Function(PlayerParams) transform);
+}
+
+class _PlayerParamsCopyWithImpl<$R> extends BaseCopyWith<PlayerParams, $R> implements PlayerParamsCopyWith<$R> {
+  _PlayerParamsCopyWithImpl(PlayerParams value, Then<PlayerParams, $R> then) : super(value, then);
+
+  @override
+  $R call({bool? allowUserAccount, bool? showPlayerControls, bool? showPlaylistControls}) => $then(PlayerParams(
+      allowUserAccount: allowUserAccount ?? $value.allowUserAccount,
+      showPlayerControls: showPlayerControls ?? $value.showPlayerControls,
+      showPlaylistControls: showPlaylistControls ?? $value.showPlaylistControls));
 }
 
 class MusicConfigMapper extends BaseMapper<MusicConfig> {

@@ -27,11 +27,15 @@ class ContentElement extends ModuleElement with ElementMixin<ContentElement> {
   factory ContentElement.text({
     required ModuleContext module,
     required WidgetBuilder builder,
+    SettingsBuilder? settings,
+    SettingsAction? settingsAction,
   }) {
     return ContentElement(
       module: module,
       builder: (context) => ContentElementText(builder),
       size: ElementSize.wide,
+      settings: settings,
+      settingsAction: settingsAction,
     );
   }
 

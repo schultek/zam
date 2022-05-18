@@ -65,7 +65,7 @@ class _EliminationGameCardState extends State<EliminationGameCard> {
               child: Center(
                 child: Text(
                   game.name,
-                  style: context.theme.textTheme.bodyText2,
+                  style: context.theme.textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
             );

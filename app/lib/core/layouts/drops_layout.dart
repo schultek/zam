@@ -12,7 +12,10 @@ import '../areas/areas.dart';
 import '../elements/elements.dart';
 import '../providers/editing_providers.dart';
 import '../themes/themes.dart';
+import '../widgets/input_list_tile.dart';
 import '../widgets/layout_preview.dart';
+import '../widgets/settings_dialog.dart';
+import '../widgets/settings_section.dart';
 import 'layout_model.dart';
 import 'widgets/fill_overscroll.dart';
 
@@ -225,18 +228,15 @@ class _DropsLayoutState extends State<DropsLayout> {
                             child: LabelWidget(
                               label: drop.label,
                               padding: const EdgeInsets.symmetric(vertical: 8),
-                              onChanged: (value) {
-                                widget.layoutContext.update(widget.model.copyWith.drops //
-                                    .at(widget.model.drops.indexOf(drop))
-                                    .call(label: value));
-                              },
                             ),
                           ),
                           if (context.read(isOrganizerProvider)) ...[
                             const SizedBox(width: 10),
                             IconButton(
-                              icon: Icon(drop.isHidden ? Icons.visibility_off : Icons.visibility,
-                                  color: context.onSurfaceHighlightColor),
+                              icon: Icon(
+                                drop.isHidden ? Icons.visibility_off : Icons.visibility,
+                                color: context.onSurfaceHighlightColor,
+                              ),
                               onPressed: () {
                                 widget.layoutContext.update(widget.model.copyWith.drops //
                                     .at(widget.model.drops.indexOf(drop))
@@ -245,10 +245,54 @@ class _DropsLayoutState extends State<DropsLayout> {
                             ),
                             if (context.watch(isEditingProvider))
                               IconButton(
-                                icon: Icon(Icons.delete, color: context.theme.errorColor),
+                                icon: Icon(Icons.settings, color: context.onSurfaceColor),
                                 onPressed: () {
-                                  widget.layoutContext.update(widget.model.copyWith.drops //
-                                      .where((d) => d.id != drop.id));
+                                  showDialog(
+                                    context: context,
+                                    useRootNavigator: false,
+                                    barrierColor: Colors.black26,
+                                    builder: (context) => SettingsDialog(
+                                      title: Text(context.tr.settings),
+                                      content: SettingsSection(
+                                        margin: EdgeInsets.zero,
+                                        backgroundOpacity: 0.3,
+                                        children: [
+                                          InputListTile(
+                                            label: context.tr.label,
+                                            value: drop.label,
+                                            onChanged: (value) {
+                                              widget.layoutContext.update(widget.model.copyWith.drops //
+                                                  .at(widget.model.drops.indexOf(drop))
+                                                  .call(label: value));
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: Text(context.tr.delete),
+                                            trailing: Icon(Icons.delete, color: context.theme.colorScheme.error),
+                                            onTap: () async {
+                                              var delete = await SettingsDialog.confirm(
+                                                context,
+                                                text: context.tr.confirm_delete_section,
+                                                confirm: context.tr.delete,
+                                              );
+                                              if (delete) {
+                                                widget.layoutContext.update(widget.model.copyWith.drops //
+                                                    .where((d) => d.id != drop.id));
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          child: Text(context.tr.ok),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
                                 },
                               ),
                           ],

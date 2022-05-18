@@ -8,10 +8,12 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:oauth2/oauth2.dart' as oauth;
+import 'package:riverpod_context/riverpod_context.dart';
 import 'package:spotify/spotify.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../widgets/needs_setup_card.dart';
 import '../module.dart';
-import 'widgets/signed_out_player.dart';
 import 'widgets/spotify_player.dart';
 
 export 'package:cloud_firestore/cloud_firestore.dart' show Timestamp;

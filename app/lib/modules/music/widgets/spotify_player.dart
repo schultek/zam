@@ -7,12 +7,18 @@ import '../pages/manage_playlist_page.dart';
 import 'select_device_dialog.dart';
 
 class SpotifyPlayerCard extends StatelessWidget {
-  const SpotifyPlayerCard({Key? key}) : super(key: key);
+  const SpotifyPlayerCard({this.showPlayerControls = true, this.showPlaylistControls = true, Key? key})
+      : super(key: key);
+
+  final bool showPlayerControls;
+  final bool showPlaylistControls;
 
   @override
   Widget build(BuildContext context) {
     var _ = context.watch(spotifySyncProvider);
     var player = context.watch(playerProvider);
+
+    var isOrganizer = context.watch(isOrganizerProvider);
 
     var trackName = player?.track.name;
     var artistName = player?.track.artists.map((a) => a.name).join(', ');
@@ -46,69 +52,65 @@ class SpotifyPlayerCard extends StatelessWidget {
                 ],
               ),
             ),
-          Positioned.fill(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  iconSize: 25,
-                  icon: Icon(
-                    Icons.skip_previous,
-                    color: context.onSurfaceColor.withOpacity(player != null ? 1 : 0.5),
-                  ),
-                  onPressed: player != null
-                      ? () {
-                          context.read(musicLogicProvider).skipPrevious();
-                        }
-                      : null,
-                ),
-                IconButton(
-                  iconSize: 40,
-                  icon: Icon(
-                    player?.isPlaying ?? true ? Icons.pause : Icons.play_arrow,
-                    color: context.onSurfaceColor.withOpacity(player != null ? 1 : 0.5),
-                  ),
-                  onPressed: player != null
-                      ? () {
-                          if (player.isPlaying) {
-                            context.read(musicLogicProvider).pause();
-                          } else {
-                            context.read(musicLogicProvider).resume();
-                          }
-                        }
-                      : null,
-                ),
-                IconButton(
-                  iconSize: 25,
-                  icon: Icon(
-                    Icons.skip_next,
-                    color: context.onSurfaceColor.withOpacity(player != null ? 1 : 0.5),
-                  ),
-                  onPressed: player != null
-                      ? () {
-                          context.read(musicLogicProvider).skipNext();
-                        }
-                      : null,
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            right: 5,
-            bottom: 5,
-            child: player != null
-                ? IconButton(
-                    iconSize: 22,
-                    icon: Icon(
-                      Icons.playlist_play,
-                      color: context.onSurfaceColor,
+          if (showPlayerControls || isOrganizer)
+            Positioned.fill(
+              child: Opacity(
+                opacity: showPlayerControls ? 1 : 0.5,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      iconSize: 25,
+                      icon: Icon(
+                        Icons.skip_previous,
+                        color: context.onSurfaceColor.withOpacity(player != null ? 1 : 0.5),
+                      ),
+                      onPressed: player != null
+                          ? () {
+                              context.read(musicLogicProvider).skipPrevious();
+                            }
+                          : null,
                     ),
-                    onPressed: () async {
-                      context.read(musicLogicProvider).getDevices();
-                      Navigator.of(context).push(ManagePlaylistPage.route(context));
-                    },
-                  )
-                : IconButton(
+                    IconButton(
+                      iconSize: 40,
+                      icon: Icon(
+                        player?.isPlaying ?? true ? Icons.pause : Icons.play_arrow,
+                        color: context.onSurfaceColor.withOpacity(player != null ? 1 : 0.5),
+                      ),
+                      onPressed: player != null
+                          ? () {
+                              if (player.isPlaying) {
+                                context.read(musicLogicProvider).pause();
+                              } else {
+                                context.read(musicLogicProvider).resume();
+                              }
+                            }
+                          : null,
+                    ),
+                    IconButton(
+                      iconSize: 25,
+                      icon: Icon(
+                        Icons.skip_next,
+                        color: context.onSurfaceColor.withOpacity(player != null ? 1 : 0.5),
+                      ),
+                      onPressed: player != null
+                          ? () {
+                              context.read(musicLogicProvider).skipNext();
+                            }
+                          : null,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          if (player == null)
+            if (showPlayerControls || isOrganizer)
+              Positioned(
+                right: 5,
+                bottom: 5,
+                child: Opacity(
+                  opacity: showPlayerControls ? 1 : 0.5,
+                  child: IconButton(
                     iconSize: 22,
                     icon: Icon(
                       Icons.devices,
@@ -118,7 +120,28 @@ class SpotifyPlayerCard extends StatelessWidget {
                       await SelectDeviceDialog.show(context);
                     },
                   ),
-          ),
+                ),
+              ),
+          if (player != null)
+            if (showPlaylistControls || isOrganizer)
+              Positioned(
+                right: 5,
+                bottom: 5,
+                child: Opacity(
+                  opacity: showPlaylistControls ? 1 : 0.5,
+                  child: IconButton(
+                    iconSize: 22,
+                    icon: Icon(
+                      Icons.playlist_play,
+                      color: context.onSurfaceColor,
+                    ),
+                    onPressed: () async {
+                      context.read(musicLogicProvider).getDevices();
+                      Navigator.of(context).push(ManagePlaylistPage.route(context));
+                    },
+                  ),
+                ),
+              ),
         ],
       ),
     );

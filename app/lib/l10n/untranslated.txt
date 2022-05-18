@@ -1,1 +1,15 @@
-{}
+{
+  "de": [
+    "confirm_delete_section",
+    "centered",
+    "login_spotify",
+    "signed_in",
+    "signed_out",
+    "allow_user_accounts",
+    "allow_users_spotify_login",
+    "show_player_controls",
+    "allow_control_playback",
+    "show_playlist_controls",
+    "allow_modify_playlist"
+  ]
+}

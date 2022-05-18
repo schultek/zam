@@ -21,6 +21,7 @@ import 'widgets/select_source_dialog.dart';
 export '../module.dart';
 
 part 'elements/balance_action_element.dart';
+part 'elements/balance_content_element.dart';
 part 'elements/balances_list_content_element.dart';
 part 'elements/new_exchange_action_element.dart';
 part 'elements/new_expense_action_element.dart';
@@ -44,6 +45,7 @@ class SplitModule extends ModuleBuilder {
         'split_action': SplitActionElement(),
         'split_balance_list': BalancesListContentSegment(),
         'balance_action_element': BalanceActionElement(),
+        'balance_content_element': BalanceContentElement(),
         'split': SplitElement(),
       };
 
