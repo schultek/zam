@@ -402,10 +402,15 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(label, style: context.theme.textTheme.caption),
+        Text(
+          label,
+          style: context.theme.textTheme.caption!.copyWith(
+            color: context.groupTheme.dark ? context.onSurfaceColor : context.surfaceColor,
+          ),
+        ),
         const SizedBox(height: 8),
         FloatingActionButton(
-          shape: selected ? CircleBorder(side: BorderSide(color: context.onSurfaceHighlightColor)) : null,
+          shape: selected ? CircleBorder(side: BorderSide(color: context.onSurfaceHighlightColor, width: 2)) : null,
           backgroundColor: context.surfaceColor,
           foregroundColor: context.onSurfaceHighlightColor,
           child: Icon(icon),

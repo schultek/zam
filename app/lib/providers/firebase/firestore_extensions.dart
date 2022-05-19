@@ -14,8 +14,11 @@ extension MapperDocumentReference on DocumentReference {
   DocumentReference<T> mapped<T>() {
     return withConverter<T>(
       fromFirestore: (snapshot, _) {
-        var map = snapshot.toMap();
         try {
+          if (!snapshot.exists) {
+            return null as T;
+          }
+          var map = snapshot.toMap();
           return Mapper.fromValue(map);
         } catch (e, st) {
           FirebaseCrashlytics.instance.recordError(e, st);

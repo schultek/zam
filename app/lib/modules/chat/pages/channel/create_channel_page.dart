@@ -28,15 +28,23 @@ class _CreateChannelPageState extends State<CreateChannelPage> {
     Navigator.of(context).pushReplacement(AddMembersPage.route(channel));
   }
 
+  bool get isValid => name != null && name!.isNotEmpty;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(context.tr.new_channel),
         actions: [
-          TextButton(
-            onPressed: name != null && name!.isNotEmpty ? createChannel : null,
-            child: Text(context.tr.create),
+          ThemedSurface(
+            preference: ColorPreference(useHighlightColor: !context.groupTheme.dark),
+            builder: (context, _) => TextButton(
+              onPressed: isValid ? createChannel : null,
+              child: Text(
+                context.tr.create,
+                style: TextStyle(color: context.onSurfaceHighlightColor.withOpacity(isValid ? 1 : 0.5)),
+              ),
+            ),
           ),
         ],
       ),

@@ -27,32 +27,44 @@ class _AddChannelPageState extends State<AddChannelPage> {
         builder: (context, ref, _) {
           var channelsToJoin = ref.watch(channelsToJoinProvider);
           return channelsToJoin.when(
-            data: (channels) => ListView.separated(
+            data: (channels) => ListView(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              itemCount: channels.length,
-              itemBuilder: (ctx, index) => ListTile(
-                title: Text(channels[index].name),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                leading: const Icon(Icons.tag),
-                minLeadingWidth: 0,
-                onTap: () async {
-                  await ref.read(chatLogicProvider).joinChannel(channels[index]);
-                  Navigator.of(context).pushReplacement(ChannelPage.route(channels[index].id));
-                },
-              ),
-              separatorBuilder: (context, _) => const Divider(),
+              children: [
+                for (var channel in channels)
+                  ThemedSurface(
+                    builder: (context, color) => Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: ListTile(
+                        title: Text(channel.name),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        tileColor: color,
+                        leading: const Icon(Icons.tag),
+                        minLeadingWidth: 0,
+                        onTap: () async {
+                          await ref.read(chatLogicProvider).joinChannel(channel);
+                          Navigator.of(context).pushReplacement(ChannelPage.route(channel.id));
+                        },
+                      ),
+                    ),
+                  ),
+                ThemedSurface(
+                  builder: (context, color) => ListTile(
+                    title: Text(context.tr.new_channel),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    tileColor: color,
+                    leading: const Icon(Icons.add_box),
+                    minLeadingWidth: 0,
+                    onTap: () async {
+                      Navigator.of(context).pushReplacement(CreateChannelPage.route());
+                    },
+                  ),
+                ),
+              ],
             ),
             loading: () => const CircularProgressIndicator(),
             error: (e, st) => Text('${context.tr.error}: $e'),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushReplacement(CreateChannelPage.route());
-        },
-        backgroundColor: context.onSurfaceColor,
-        child: const Icon(Icons.add),
       ),
     );
   }

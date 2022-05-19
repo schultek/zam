@@ -32,10 +32,18 @@ class _AddMembersPageState extends State<AddMembersPage> {
       appBar: AppBar(
         title: Text(context.tr.add_members),
         actions: [
-          TextButton(
-            onPressed: selectedUsers.isNotEmpty ? addMembers : null,
-            child: Text(context.tr.add),
-          )
+          ThemedSurface(
+            preference: ColorPreference(useHighlightColor: !context.groupTheme.dark),
+            builder: (context, _) => TextButton(
+              onPressed: selectedUsers.isNotEmpty ? addMembers : null,
+              child: Text(
+                context.tr.add,
+                style: TextStyle(
+                  color: context.onSurfaceHighlightColor.withOpacity(selectedUsers.isNotEmpty ? 1 : 0.5),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
       body: Consumer(

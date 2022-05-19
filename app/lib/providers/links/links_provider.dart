@@ -145,7 +145,7 @@ class LinkLogic {
   }
 
   Future<String> createGroupInvitationLink({required Group group, String role = UserRoles.participant}) async {
-    var link = await ref.read(linkApiProvider).createGroupInvitationLink(group.id + 'asd', role);
+    var link = await ref.read(linkApiProvider).createGroupInvitationLink(group.id, role);
     return _buildDynamicLink(
       link: link,
       meta: SocialMetaTagParameters(

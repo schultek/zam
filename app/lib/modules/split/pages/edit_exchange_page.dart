@@ -72,6 +72,7 @@ class _EditExchangePageState extends State<EditExchangePage> {
                 initialValue: title,
                 decoration: InputDecoration(
                   hintText: context.tr.title,
+                  hintStyle: TextStyle(color: context.onSurfaceColor.withOpacity(0.5)),
                   border: InputBorder.none,
                   filled: false,
                 ),

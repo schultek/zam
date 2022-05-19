@@ -77,7 +77,7 @@ class ManagePlaylistPage extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.open_in_new),
                   onPressed: () {
-                    launch(playlist.spotifyUrl);
+                    launchUrl(Uri.parse(playlist.spotifyUrl));
                   },
                 )
             ],

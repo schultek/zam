@@ -55,13 +55,14 @@ class _SelectSourceDialogState extends State<SelectSourceDialog> {
                     },
                   ),
               ],
-              Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
-                child: Text(
-                  context.tr.pots,
-                  style: context.theme.textTheme.caption,
+              if (context.read(splitProvider).value?.pots.isNotEmpty ?? false)
+                Padding(
+                  padding: const EdgeInsets.only(left: 16, top: 8, bottom: 4),
+                  child: Text(
+                    context.tr.pots,
+                    style: context.theme.textTheme.caption,
+                  ),
                 ),
-              ),
               for (var pot in context.read(splitProvider).value?.pots.entries ?? <MapEntry<String, SplitPot>>[])
                 ListTile(
                   title: Text(pot.value.name),

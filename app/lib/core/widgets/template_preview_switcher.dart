@@ -86,10 +86,12 @@ class TemplateSwitcher extends StatefulWidget {
 class _TemplateSwitcherState extends State<TemplateSwitcher> {
   late final PageController controller;
   late int page;
+  late bool hasMultipleTemplates;
 
   @override
   void initState() {
     super.initState();
+    hasMultipleTemplates = TemplateModel.all.length > 1;
     page = widget.initialTemplate != null
         ? TemplateModel.all.indexWhere((m) => m.runtimeType == widget.initialTemplate.runtimeType)
         : 0;
@@ -124,7 +126,7 @@ class _TemplateSwitcherState extends State<TemplateSwitcher> {
                         ),
                         padding: const EdgeInsets.all(10),
                         child: Text(
-                          context.tr.choose_template,
+                          hasMultipleTemplates ? context.tr.choose_template : context.tr.template,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center,
                         ),
@@ -153,36 +155,38 @@ class _TemplateSwitcherState extends State<TemplateSwitcher> {
                 ),
             ],
           ),
-          Positioned(
-            right: 0,
-            top: 60 + (widget.style == SwitcherStyle.card ? 20 : 0),
-            child: IconButton(
-              icon: const Icon(Icons.chevron_right),
-              onPressed: page < TemplateModel.all.length - 1
-                  ? () {
-                      controller.nextPage(
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                      );
-                    }
-                  : null,
+          if (hasMultipleTemplates) ...[
+            Positioned(
+              right: 0,
+              top: 60 + (widget.style == SwitcherStyle.card ? 20 : 0),
+              child: IconButton(
+                icon: const Icon(Icons.chevron_right),
+                onPressed: page < TemplateModel.all.length - 1
+                    ? () {
+                        controller.nextPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    : null,
+              ),
             ),
-          ),
-          Positioned(
-            left: 0,
-            top: 60 + (widget.style == SwitcherStyle.card ? 20 : 0),
-            child: IconButton(
-              icon: const Icon(Icons.chevron_left),
-              onPressed: page > 0
-                  ? () {
-                      controller.previousPage(
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeInOut,
-                      );
-                    }
-                  : null,
+            Positioned(
+              left: 0,
+              top: 60 + (widget.style == SwitcherStyle.card ? 20 : 0),
+              child: IconButton(
+                icon: const Icon(Icons.chevron_left),
+                onPressed: page > 0
+                    ? () {
+                        controller.previousPage(
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    : null,
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );

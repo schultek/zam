@@ -1,15 +1,14 @@
 part of split_module;
 
-final splitProvider = StreamProvider<SplitState?>((ref) {
+final splitProvider = StreamProvider<SplitState?>((ref) async* {
   var doc = ref.watch(moduleDocProvider('split'));
 
-  doc.get().then((d) {
-    if (!d.exists) {
-      doc.mapped().set(SplitState());
-    }
-  });
+  var snapshot = await doc.get();
+  if (!snapshot.exists) {
+    await doc.mapped<SplitState>().set(SplitState());
+  }
 
-  return doc.snapshotsMapped<SplitState?>();
+  yield* doc.snapshotsMapped<SplitState?>();
 });
 
 final splitLogicProvider = Provider((ref) => SplitLogic(ref));

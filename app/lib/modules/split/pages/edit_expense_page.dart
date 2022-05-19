@@ -64,6 +64,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
                 initialValue: title,
                 decoration: InputDecoration(
                   hintText: context.tr.title,
+                  hintStyle: TextStyle(color: context.onSurfaceColor.withOpacity(0.5)),
                   border: InputBorder.none,
                   filled: false,
                 ),
@@ -86,8 +87,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
                   ? () {
                       if (target.amounts.isEmpty) {
                         target = ExpenseTarget.shares({
-                          for (var user in context.read(selectedGroupProvider)!.users.keys)
-                            if (source!.type != SplitSourceType.user || user != source!.id) user: 1,
+                          for (var user in context.read(selectedGroupProvider)!.users.keys) user: 1,
                         });
                       }
                       Navigator.of(context).pop(ExpenseEntry(
@@ -183,7 +183,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
               trailing: Row(mainAxisSize: MainAxisSize.min, children: [
                 if (target.amounts.isEmpty)
                   Text(
-                      '${context.watch(selectedGroupProvider.select((g) => g?.users.length ?? 0)) - (source?.type == SplitSourceType.user ? 1 : 0)} ${context.tr.persons}')
+                      '${context.watch(selectedGroupProvider.select((g) => g?.users.length ?? 0))} ${context.tr.persons}')
                 else if (target.amounts.length == 1) ...[
                   Text(context.watch(groupUserByIdProvider(target.amounts.keys.first))?.nickname ??
                       context.tr.anonymous),
