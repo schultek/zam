@@ -75,7 +75,7 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
     super.initState();
     var invitationLink = context.read(linkProvider);
     this.invitationLink = invitationLink;
-    requiredPhoneNumber = invitationLink?.queryParameters['phoneNumber'] ?? '';
+    requiredPhoneNumber = invitationLink?.queryParameters['phoneNumber'];
   }
 
   bool get isValid =>

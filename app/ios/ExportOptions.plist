@@ -4,11 +4,13 @@
 <dict>
 	<key>destination</key>
 	<string>export</string>
+	<key>manageAppVersionAndBuildNumber</key>
+	<true/>
 	<key>method</key>
 	<string>app-store</string>
 	<key>provisioningProfiles</key>
 	<dict>
-		<key>de.schultek.jufa</key>
+		<key>de.schultek.jufaapp</key>
 		<string>Jufa Distribution</string>
 	</dict>
 	<key>signingCertificate</key>
@@ -18,7 +20,7 @@
 	<key>stripSwiftSymbols</key>
 	<true/>
 	<key>teamID</key>
-	<string>B3V6W6LZQS</string>
+	<string>Z7M8CCYS27</string>
 	<key>uploadBitcode</key>
 	<false/>
 	<key>uploadSymbols</key>
