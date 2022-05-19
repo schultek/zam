@@ -135,7 +135,6 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
       await ref.read(claimsProvider.notifier).refresh();
     }
     if (LinkState.isGroupInvitationLink(uri)) {
-      print("SET GRoup id ${uri.queryParameters['groupId']}");
       ref.read(selectedGroupIdProvider.notifier).state = uri.queryParameters['groupId'];
     }
   }

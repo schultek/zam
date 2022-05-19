@@ -28,7 +28,6 @@ final linksApi = LinksApiEndpoint.from(
 
 String hashLink(String link, bool hasQuery) {
   var hash = hmac.convert(utf8.encode(link)).toString();
-  print('Created hash $hash for link $link');
   return '$link${hasQuery ? '&' : '?'}hmac=$hash';
 }
 
@@ -86,8 +85,6 @@ class OnLinkReceived extends OnLinkReceivedEndpoint {
 
     var calculatedHmac = hmac.convert(utf8.encode(Uri.decodeFull(parts[0]))).toString();
     var sentHmac = parts[1];
-
-    print('Calculated hash $calculatedHmac for link ${parts[0]} with sent hash $sentHmac');
 
     if (sentHmac != calculatedHmac) {
       throw ApiException(400, 'Invalid link hash for $link');
