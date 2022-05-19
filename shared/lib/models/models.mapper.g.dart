@@ -252,7 +252,7 @@ class _ChatNotificationCopyWithImpl<$R> extends BaseCopyWith<ChatNotification, $
 class UserStatusMapper extends EnumMapper<UserStatus> {
   UserStatusMapper._();
 
-  @override  UserStatus fromString(String value) {
+  @override  UserStatus decode(dynamic value) {
     switch (value) {
       case 'active': return UserStatus.active;
       case 'disabled': return UserStatus.disabled;
@@ -261,7 +261,7 @@ class UserStatusMapper extends EnumMapper<UserStatus> {
     }
   }
 
-  @override  String toStringValue(UserStatus value) {
+  @override  dynamic encode(UserStatus value) {
     switch (value) {
       case UserStatus.active: return 'active';
       case UserStatus.disabled: return 'disabled';
@@ -271,6 +271,8 @@ class UserStatusMapper extends EnumMapper<UserStatus> {
 }
 
 extension UserStatusMapperExtension on UserStatus {
+  dynamic toValue() => Mapper.toValue(this);
+  @Deprecated('Use \'toValue\' instead')
   String toStringValue() => Mapper.toValue(this) as String;
 }
 

@@ -26,7 +26,10 @@
 
   "@LOGIN": {},
 
-  "almost_done": "Fast geschafft.\nWir bereiten alles für dich vor...",
+  "one_space_for_everything": "Ein Ort für Alles",
+  "organize_groups_desc": "Organisiere Gruppen-Ausflüge, Events und mehr. Gestalte deinen Gruppen-Bereich genau nach deinen Bedürfnissen.",
+  "almost_done": "Fast geschafft",
+  "prepare_in_progress": "Wir bereiten alles für dich vor...",
   "login_to_jufa": "Bei Jufa anmelden",
   "login_as_guest": "Als Gast anmelden",
   "login_with_phone": "Mit Telefonnummer anmelden",
@@ -37,6 +40,10 @@
   "signin_tos": "Nutzungsbedingungen",
   "signin_pp": "Datenschutzerklärung",
   "sms_charges_disclaimer": "Wenn du dich per SMS registrierst, können SMS-Gebühren anfallen.",
+  "login_to_become_organizer": "Mit deiner Telefonnummer anmelden um ein Gruppen-Organisator*in zu werden.",
+  "login_to_become_admin": "Mit deiner Telefonnummer anmelden um ein Admin zu werden.",
+  "login_to_join_group":  "Anmelden um {isOrganizer, select, true{Organisator*in bei {group} zu werden.} false{{group} beizutreten.}}",
+  "the_group": "der Gruppe",
 
   "@PHONE_LOGIN": {},
 
@@ -72,6 +79,7 @@
   "add_phone_number_hint": "Du kannst deine Telefonnummer hinzufügen,\num deine Gruppen auf anderen Geräten zu nutzen",
   "logout": "Abmelden",
   "feedback": "Feedback",
+  "join_the_group" : "Der Gruppe beitreten",
 
   "@CONFIGURATION": {},
 
@@ -98,6 +106,7 @@
   "show_quick_actions": "Schnellaktionen anzeigen",
   "show_info_cards": "Infokarten anzeigen",
   "primary_background": "Primärer Hintergrund",
+  "confirm_delete_section": "Möchtest du diesen Abschnitt löschen?",
 
   "@ANNOUNCEMENTS": {},
 
@@ -150,6 +159,7 @@
 
   "labels": "Beschriftung",
   "add_label": "Label hinzufügen",
+  "centered": "Zentriert",
 
   "@MUSIC": {},
 
@@ -158,13 +168,21 @@
   "add_to_queue": "Zur Warteschlange hinzufügen",
   "add_to_playlist": "Zur Playlist hinzufügen",
   "remove_from_playlist": "Von Playlist entfernen",
-  "play_spotify": "Spotify abspielen\n(Tippe zum anmelden)",
   "connect_to_device": "Mit Gerät verbinden",
   "select_playlist": "Playlist auswählen",
   "search_track": "Lied suchen",
   "search_for_songs": "Suche nach Liedern",
   "playlist": "Playlist",
   "create_shared_playlist": "Geteilte Playlist erstellen",
+  "login_spotify": "Login mit Spotify",
+  "signed_in": "Angemeldet",
+  "signed_out": "Abgemeldet",
+  "allow_user_accounts": "Nutzer-Accounts erlauben",
+  "allow_users_spotify_login": "Erlaube Nutzern sich mit ihrem Spotify-Account anzumelden",
+  "show_player_controls": "Wiedergabe-Steuerung anzeigen",
+  "allow_control_playback": "Erlaube Nutzern die Wiedergabe zu steuern",
+  "show_playlist_controls": "Playlist-Steuerung anzeigen",
+  "allow_modify_playlist": "Erlaube Nutzern die geteile Playlist zu bearbeiten",
 
   "@NOTES": {},
 

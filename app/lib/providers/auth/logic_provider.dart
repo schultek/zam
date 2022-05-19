@@ -7,7 +7,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 
-import '../groups/selected_group_provider.dart';
+import '../../modules/announcement/announcement.module.dart';
 
 final authLogicProvider = Provider((ref) => AuthLogic(ref));
 
@@ -57,6 +57,7 @@ class AuthLogic {
       userCredential = await FirebaseAuth.instance.signInWithCredential(phoneAuthCredential);
     }
 
+    ref.read(linkStateProvider.notifier).checkInvitationLink();
     FirebaseAnalytics.instance.logLogin(loginMethod: 'phone');
 
     return userCredential.user!;
@@ -65,6 +66,7 @@ class AuthLogic {
   Future<void> signInAnonymously() async {
     String udid = await FlutterUdid.udid;
     String idHash = sha1.convert(utf8.encode(udid)).toString();
+
     print('URI: $udid ($idHash)');
     var email = '$idHash@jufa20.web.app';
     var results = await FirebaseAuth.instance.fetchSignInMethodsForEmail(email);
@@ -74,6 +76,7 @@ class AuthLogic {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: udid);
     }
 
+    ref.read(linkStateProvider.notifier).checkInvitationLink();
     FirebaseAnalytics.instance.logLogin(loginMethod: 'anonymous');
   }
 

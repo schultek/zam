@@ -26,7 +26,10 @@
 
   "@LOGIN": {},
 
-  "almost_done": "Almost done.\nWe will prepare everything for you...",
+  "one_space_for_everything": "One Space for Everything",
+  "organize_groups_desc": "Organize group trips, events and more. Customize your group space to best fit your needs.",
+  "almost_done": "Almost done",
+  "prepare_in_progress": "We will prepare everything for you...",
   "login_to_jufa": "Login to Jufa",
   "login_as_guest": "Login as guest",
   "login_with_phone": "Login with phone",
@@ -37,6 +40,16 @@
   "signin_tos": "Terms of Service",
   "signin_pp": "Privacy Policy",
   "sms_charges_disclaimer": "With phone authentication, sms charges may apply.",
+  "login_to_become_organizer": "Login with your phone to become a group organizer.",
+  "login_to_become_admin": "Login with your phone to become an admin.",
+  "login_to_join_group":  "Login to {isOrganizer, select, true{become an organizer of {group}.} false{join {group}.}}",
+  "@login_to_join_group": {
+    "placeholders": {
+      "group": {},
+      "isOrganizer": {}
+    }
+  },
+  "the_group": "the group",
 
   "@PHONE_LOGIN": {},
 
@@ -72,6 +85,7 @@
   "add_phone_number_hint": "You can add your phone number\nto access your groups on another device",
   "logout": "Log out",
   "feedback": "Feedback",
+  "join_the_group" : "Join the group",
 
   "@CONFIGURATION": {},
 

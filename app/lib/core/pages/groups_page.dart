@@ -175,7 +175,7 @@ class SelectGroupPage extends StatelessWidget {
         icon: const Icon(Icons.send),
         label: Text(context.tr.feedback),
         onPressed: () {
-          launch('mailto:schulte.kilian97@gmail.com');
+          launchUrl(Uri.parse('mailto:schulte.kilian97@gmail.com'));
         },
       ),
       const SizedBox(height: 10),

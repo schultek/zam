@@ -26,17 +26,18 @@ final linksApi = LinksApiEndpoint.from(
   onLinkReceived: OnLinkReceived(),
 );
 
-String hashLink(String link, String? query) {
+String hashLink(String link, bool hasQuery) {
   var hash = hmac.convert(utf8.encode(link)).toString();
-  return '$link${query != null ? '?$query&hmac=$hash' : '?hmac=$hash'}';
+  print('Created hash $hash for link $link');
+  return '$link${hasQuery ? '&' : '?'}hmac=$hash';
 }
 
 class CreateAdminLink extends CreateAdminLinkEndpoint {
   @override
   FutureOr<String> createAdminLink(String? phoneNumber, ApiRequest request) {
     return hashLink(
-      '$linkBaseUrl/invitation/admin',
-      phoneNumber != null ? 'phoneNumber=${Uri.encodeQueryComponent(phoneNumber)}' : null,
+      '$linkBaseUrl/invitation/admin${phoneNumber != null ? '?phoneNumber=${Uri.encodeQueryComponent(phoneNumber)}' : ''}',
+      phoneNumber != null,
     );
   }
 }
@@ -45,8 +46,8 @@ class CreateOrganizerLink extends CreateOrganizerLinkEndpoint {
   @override
   FutureOr<String> createOrganizerLink(String? phoneNumber, ApiRequest request) {
     return hashLink(
-      '$linkBaseUrl/invitation/organizer',
-      phoneNumber != null ? 'phoneNumber=${Uri.encodeQueryComponent(phoneNumber)}' : null,
+      '$linkBaseUrl/invitation/organizer${phoneNumber != null ? '?phoneNumber=${Uri.encodeQueryComponent(phoneNumber)}' : ''}',
+      phoneNumber != null,
     );
   }
 }
@@ -66,7 +67,9 @@ class CreateGroupInvitationLink extends CreateGroupInvitationLinkEndpoint {
       throw ApiException(400, 'You are not authorized to create this invitation link.');
     }
 
-    return hashLink('$linkBaseUrl/invitation/group', 'groupId=$groupId&role=$role');
+    return hashLink(
+        '$linkBaseUrl/invitation/group?groupId=$groupId&role=$role&name=${base64UrlEncode(utf8.encode(group.get('name') as String))}',
+        true);
   }
 }
 
@@ -75,16 +78,19 @@ class OnLinkReceived extends OnLinkReceivedEndpoint {
   FutureOr<bool> onLinkReceived(String link, ApiRequest request) async {
     var uri = Uri.parse(link);
 
-    var sentHmac = uri.queryParameters['hmac'];
-    var sourceLink = uri.replace(queryParameters: {...uri.queryParameters}..remove('hmac')).toString();
-    if (sourceLink.endsWith('?')) {
-      sourceLink = sourceLink.substring(0, sourceLink.length - 1);
+    var parts = link.split(RegExp(r'(&|\?)hmac='));
+
+    if (parts.length != 2) {
+      throw ApiException(400, 'Invalid link $link');
     }
 
-    var calculatedHmac = hmac.convert(utf8.encode(sourceLink)).toString();
+    var calculatedHmac = hmac.convert(utf8.encode(Uri.decodeFull(parts[0]))).toString();
+    var sentHmac = parts[1];
+
+    print('Calculated hash $calculatedHmac for link ${parts[0]} with sent hash $sentHmac');
 
     if (sentHmac != calculatedHmac) {
-      throw ApiException(400, 'Invalid link hash');
+      throw ApiException(400, 'Invalid link hash for $link');
     }
 
     if (uri.path == '/invitation/organizer' || uri.path == '/invitation/admin') {

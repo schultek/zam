@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../../core/core.dart';
@@ -48,20 +50,45 @@ class _LoadingLinkScreenState extends State<LoadingLinkScreen> with TickerProvid
                 const SizedBox(height: 40),
                 Text(
                   context.tr.jufa,
-                  style: const TextStyle(
-                    fontSize: 50,
-                    color: Colors.white,
+                  style: context.theme.textTheme.headline3!.copyWith(
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  context.tr.almost_done,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.6),
-                    fontSize: 18,
+                    color: Colors.white,
                   ),
                   textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 40),
+                ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      color: Colors.white30,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            context.tr.almost_done,
+                            style: context.theme.textTheme.bodyLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            context.tr.prepare_in_progress,
+                            style: context.theme.textTheme.bodyLarge!.copyWith(
+                              color: Colors.white.withOpacity(0.9),
+                              height: 1.5,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

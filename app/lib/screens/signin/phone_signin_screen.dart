@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,16 +78,15 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
     requiredPhoneNumber = invitationLink?.queryParameters['phoneNumber'] ?? '';
   }
 
-  Future<void> _onSignedIn(User user) async {
-    if (invitationLink != null) {
-      await context.read(linkStateProvider.notifier).handleReceivedLink(invitationLink!);
-    }
-  }
+  bool get isValid =>
+      phoneNumber != null &&
+      phoneNumber!.isNotEmpty &&
+      (requiredPhoneNumber == null || requiredPhoneNumber == phoneNumber);
 
   String _getTitleText() {
-    if (invitationLink?.path.endsWith('/organizer') ?? false) {
+    if (LinkState.isOrganizerInvitationLink(invitationLink)) {
       return context.tr.become_organizer;
-    } else if (invitationLink?.path.endsWith('/admin') ?? false) {
+    } else if (LinkState.isAdminInvitationLink(invitationLink)) {
       return context.tr.become_admin;
     } else if (context.read(userProvider).value != null) {
       return context.tr.add_phone_number;
@@ -100,47 +98,42 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
   Future<void> verifyPhoneNumber([int? smsToken]) async {
     var completer = Completer();
     await context.read(authLogicProvider).verifyPhoneNumber(
-          phoneNumber ?? '',
-          resendToken: smsToken,
-          onSent: (String verificationId, int? resendToken) async {
-            if (!completer.isCompleted) {
-              completer.complete();
-            }
-            if (smsToken == null) {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => SmsCodeScreen(
-                  verificationId,
-                  _onSignedIn,
-                  () => verifyPhoneNumber(resendToken),
-                ),
-              ));
-            }
-          },
-          onCompleted: _onSignedIn,
-          onFailed: (err) {
-            if (!mounted) return;
-            print(err);
+      phoneNumber ?? '',
+      resendToken: smsToken,
+      onSent: (String verificationId, int? resendToken) async {
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+        if (smsToken == null) {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => SmsCodeScreen(verificationId, () => verifyPhoneNumber(resendToken)),
+          ));
+        }
+      },
+      onFailed: (err) {
+        if (!mounted) return;
+        print(err);
 
-            var msg = '';
-            switch (err.code) {
-              case 'invalid-phone-number':
-                msg = context.tr.invalid_phone_number;
-                break;
-              default:
-                msg = '${context.tr.unknown_error} (${err.code})';
-                break;
-            }
+        var msg = '';
+        switch (err.code) {
+          case 'invalid-phone-number':
+            msg = context.tr.invalid_phone_number;
+            break;
+          default:
+            msg = '${context.tr.unknown_error} (${err.code})';
+            break;
+        }
 
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              backgroundColor: Colors.red,
-              content: Text(msg),
-            ));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(msg),
+        ));
 
-            if (!completer.isCompleted) {
-              completer.complete();
-            }
-          },
-        );
+        if (!completer.isCompleted) {
+          completer.complete();
+        }
+      },
+    );
 
     await completer.future;
   }
@@ -212,7 +205,7 @@ class _PhoneSignInScreenState extends State<PhoneSignInScreen> {
                     context.tr.send_code,
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-            onPressed: !isLoading && (phoneNumber?.isNotEmpty ?? false)
+            onPressed: !isLoading && isValid
                 ? () async {
                     FocusManager.instance.primaryFocus?.unfocus();
                     setState(() => isLoading = true);

@@ -10,10 +10,9 @@ import '../../widgets/ju_layout.dart';
 
 class SmsCodeScreen extends StatefulWidget {
   final String verificationId;
-  final Function(User user) onSignedIn;
   final Future<void> Function() onResend;
 
-  const SmsCodeScreen(this.verificationId, this.onSignedIn, this.onResend, {Key? key}) : super(key: key);
+  const SmsCodeScreen(this.verificationId, this.onResend, {Key? key}) : super(key: key);
 
   @override
   _EnterCodeState createState() => _EnterCodeState();
@@ -102,8 +101,7 @@ class _EnterCodeState extends State<SmsCodeScreen> {
                 ? () async {
                     setState(() => isLoading = true);
                     try {
-                      var user = await context.read(authLogicProvider).verifyCode(code, widget.verificationId);
-                      await widget.onSignedIn(user);
+                      await context.read(authLogicProvider).verifyCode(code, widget.verificationId);
                     } on FirebaseAuthException catch (e) {
                       print(e);
 

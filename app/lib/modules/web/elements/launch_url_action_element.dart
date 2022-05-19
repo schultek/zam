@@ -31,8 +31,9 @@ class LaunchUrlActionElement with ElementBuilderMixin<ActionElement> {
           : null,
       text: params.label ?? module.context.tr.launch_url,
       onTap: (context) {
-        if (params.url != null) {
-          launch(params.url!);
+        var uri = Uri.tryParse(params.url ?? '');
+        if (uri != null) {
+          launchUrl(uri);
         }
       },
       settings: (context) => [

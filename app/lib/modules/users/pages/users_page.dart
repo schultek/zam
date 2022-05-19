@@ -43,29 +43,7 @@ class UsersPage extends StatelessWidget {
                 }
               },
             ),
-            PopupMenuButton<String>(
-              offset: const Offset(0, 56),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  child: ListTile(title: Text(context.tr.invite_participant)),
-                  value: UserRoles.participant,
-                ),
-                PopupMenuItem(
-                  child: ListTile(title: Text(context.tr.invite_organizer)),
-                  value: UserRoles.organizer,
-                ),
-              ],
-              icon: const Icon(Icons.add_link),
-              onSelected: (role) async {
-                var group = context.read(selectedGroupProvider)!;
-                String link = await context.read(linkLogicProvider).createGroupInvitationLink(group: group, role: role);
-                if (role == UserRoles.participant) {
-                  Share.share('${context.tr.click_link_to_join(group.name)}: $link');
-                } else if (role == UserRoles.organizer) {
-                  Share.share('${context.tr.click_link_to_organize(group.name)}: $link');
-                }
-              },
-            ),
+            const InvitationLinkButton(),
           ],
         ],
       ),
@@ -137,4 +115,61 @@ class UsersPage extends StatelessWidget {
 
 extension on String {
   String capitalize() => this[0].toUpperCase() + substring(1);
+}
+
+class InvitationLinkButton extends StatefulWidget {
+  const InvitationLinkButton({Key? key}) : super(key: key);
+
+  @override
+  State<InvitationLinkButton> createState() => _InvitationLinkButtonState();
+}
+
+class _InvitationLinkButtonState extends State<InvitationLinkButton> {
+  bool isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      offset: const Offset(0, 56),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          child: ListTile(title: Text(context.tr.invite_participant)),
+          value: UserRoles.participant,
+        ),
+        PopupMenuItem(
+          child: ListTile(title: Text(context.tr.invite_organizer)),
+          value: UserRoles.organizer,
+        ),
+      ],
+      icon: isLoading
+          ? const Padding(
+              padding: EdgeInsets.all(6),
+              child: Center(
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: CircularProgressIndicator.adaptive(
+                    valueColor: AlwaysStoppedAnimation(Colors.white),
+                    strokeWidth: 2,
+                  ),
+                ),
+              ),
+            )
+          : const Icon(Icons.add_link),
+      onSelected: (role) async {
+        setState(() => isLoading = true);
+        try {
+          var group = context.read(selectedGroupProvider)!;
+          String link = await context
+              .read(linkLogicProvider)
+              .createGroupInvitationLink(context: context, group: group, role: role);
+          if (role == UserRoles.participant) {
+            await Share.share('${context.tr.click_link_to_join(group.name)}: $link');
+          } else if (role == UserRoles.organizer) {
+            await Share.share('${context.tr.click_link_to_organize(group.name)}: $link');
+          }
+        } finally {
+          setState(() => isLoading = false);
+        }
+      },
+    );
+  }
 }

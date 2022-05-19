@@ -12,6 +12,7 @@ import '../auth/claims_provider.dart';
 import '../auth/logic_provider.dart';
 import '../auth/user_provider.dart';
 import '../firebase/firebase_provider.dart';
+import '../groups/selected_group_provider.dart';
 
 final linkStateProvider = StateNotifierProvider<LinkStateNotifier, LinkState>((ref) => LinkStateNotifier(ref));
 
@@ -40,6 +41,12 @@ class LinkState {
   factory LinkState.noLink() = NoLinkState;
   factory LinkState.processing() = ProcessingLinkState;
   factory LinkState.loading() = LoadingLinkState;
+
+  static bool isOrganizerInvitationLink(Uri? uri) => uri?.path == '/invitation/organizer';
+  static bool isAdminInvitationLink(Uri? uri) => uri?.path == '/invitation/admin';
+  static bool isGroupInvitationLink(Uri? uri) => uri?.path == '/invitation/group';
+  static bool isInvitationLink(Uri? uri) =>
+      isGroupInvitationLink(uri) || isOrganizerInvitationLink(uri) || isAdminInvitationLink(uri);
 }
 
 class LinkStateNotifier extends StateNotifier<LinkState> {
@@ -58,56 +65,78 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
   }
 
   Future<void> setup() async {
-    await ref.read(firebaseProvider.future);
+    try {
+      await ref.read(firebaseProvider.future);
 
-    var link = await FirebaseDynamicLinks.instance.getInitialLink();
-    if (link != null) {
-      await _handleDynamicLink(link);
-    }
-    if (state is LoadingLinkState) {
-      state = LinkState.noLink();
+      var link = await FirebaseDynamicLinks.instance.getInitialLink();
+      if (link != null) {
+        _handleDynamicLink(link);
+      } else {
+        state = LinkState.noLink();
+      }
+    } catch (e, st) {
+      FirebaseCrashlytics.instance.recordError(e, st);
     }
 
-    _linkSub = FirebaseDynamicLinks.instance.onLink.listen((PendingDynamicLinkData? link) async {
+    _linkSub = FirebaseDynamicLinks.instance.onLink.listen((PendingDynamicLinkData? link) {
       if (link == null) return;
-      await _handleDynamicLink(link);
+      _handleDynamicLink(link);
     });
   }
 
-  Future<void> _handleDynamicLink(PendingDynamicLinkData link) async {
-    var uri = link.link;
-    if (uri.path.startsWith('/invitation')) {
-      if (uri.path.endsWith('/organizer') || uri.path.endsWith('/admin')) {
-        var user = ref.read(userProvider);
-        if (user.value != null && user.value!.phoneNumber != null) {
-          state = LinkState.processing();
-          handleReceivedLink(uri);
-        } else {
-          state = LinkState(uri);
-        }
-      } else if (uri.path.endsWith('/group')) {
-        state = LinkState.processing();
-        (() async {
-          var user = ref.read(userProvider);
-          if (user.asData?.value == null) {
-            await ref.read(authLogicProvider).signInAnonymously();
-          }
-          await handleReceivedLink(uri);
-        })();
+  void checkInvitationLink() async {
+    if (state is UriLinkState) {
+      try {
+        await _processLink((state as UriLinkState).uri);
+      } catch (e, st) {
+        FirebaseCrashlytics.instance.recordError(e, st);
+      } finally {
+        state = LinkState.noLink();
       }
     }
   }
 
-  Future<void> handleReceivedLink(Uri link) async {
+  void _handleDynamicLink(PendingDynamicLinkData link) async {
+    var uri = link.link;
+
+    if (!LinkState.isInvitationLink(uri)) {
+      state = LinkState.noLink();
+      return;
+    }
+
+    var needsPhoneAuth = !LinkState.isGroupInvitationLink(uri);
+    var finallyReset = true;
+
     try {
-      var claimsChanged = await ref.read(linkApiProvider).onLinkReceived(link.toString());
-      if (claimsChanged) {
-        await ref.read(claimsProvider.notifier).refresh();
+      var user = await ref.read(userProvider.future);
+      if (user != null && (!needsPhoneAuth || user.phoneNumber != null)) {
+        await _processLink(uri);
+      } else {
+        if (needsPhoneAuth && user != null) {
+          await ref.read(authLogicProvider).signOut();
+        }
+        state = LinkState(uri);
+        finallyReset = false;
       }
     } catch (e, st) {
       FirebaseCrashlytics.instance.recordError(e, st);
     } finally {
-      state = LinkState.noLink();
+      if (finallyReset) {
+        state = LinkState.noLink();
+      }
+    }
+  }
+
+  Future<void> _processLink(Uri uri) async {
+    state = LinkState.processing();
+
+    var claimsChanged = await ref.read(linkApiProvider).onLinkReceived(uri.toString());
+    if (claimsChanged) {
+      await ref.read(claimsProvider.notifier).refresh();
+    }
+    if (LinkState.isGroupInvitationLink(uri)) {
+      print("SET GRoup id ${uri.queryParameters['groupId']}");
+      ref.read(selectedGroupIdProvider.notifier).state = uri.queryParameters['groupId'];
     }
   }
 }
@@ -115,6 +144,9 @@ class LinkStateNotifier extends StateNotifier<LinkState> {
 final linkApiProvider = Provider((ref) => ref.watch(apiProvider).links);
 
 final linkLogicProvider = Provider((ref) => LinkLogic(ref));
+
+const _appLogoUrl =
+    'https://firebasestorage.googleapis.com/v0/b/jufa20.appspot.com/o/180.png?alt=media&token=06c67193-0f25-40d4-9c55-53e36de402c2';
 
 class LinkLogic {
   final Ref ref;
@@ -127,7 +159,7 @@ class LinkLogic {
       meta: SocialMetaTagParameters(
         title: context.tr.become_organizer,
         description: context.tr.become_organizer_desc,
-        imageUrl: Uri.parse('https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
+        imageUrl: Uri.parse(_appLogoUrl),
       ),
     );
   }
@@ -139,22 +171,20 @@ class LinkLogic {
       meta: SocialMetaTagParameters(
         title: context.tr.become_admin,
         description: context.tr.become_admin_desc,
-        imageUrl: Uri.parse('https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
+        imageUrl: Uri.parse(_appLogoUrl),
       ),
     );
   }
 
-  Future<String> createGroupInvitationLink({required Group group, String role = UserRoles.participant}) async {
+  Future<String> createGroupInvitationLink(
+      {required BuildContext context, required Group group, String role = UserRoles.participant}) async {
     var link = await ref.read(linkApiProvider).createGroupInvitationLink(group.id, role);
     return _buildDynamicLink(
       link: link,
       meta: SocialMetaTagParameters(
-        title: role == UserRoles.participant
-            ? group.name
-            : "Werde ${role == UserRoles.organizer ? 'Organisator' : 'Teilnehmer'} bei ${group.name}",
-        description: 'Trete dem Ausflug bei.',
-        imageUrl: Uri.parse(
-            group.pictureUrl ?? 'https://www.pexels.com/photo/853168/download/?auto=compress&cs=tinysrgb&h=200&w=200'),
+        title: '${group.name}${role == UserRoles.organizer ? ' - ${context.tr.become_organizer}' : ''}',
+        description: context.tr.join_the_group,
+        imageUrl: Uri.parse(group.pictureUrl ?? _appLogoUrl),
       ),
     );
   }

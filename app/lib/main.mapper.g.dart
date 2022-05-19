@@ -3934,7 +3934,7 @@ class CurrencyMapper extends EnumMapper<Currency> {
   CurrencyMapper._();
 
   @override
-  Currency fromString(String value) {
+  Currency decode(dynamic value) {
     switch (value) {
       case 'euro':
         return Currency.euro;
@@ -3948,7 +3948,7 @@ class CurrencyMapper extends EnumMapper<Currency> {
   }
 
   @override
-  String toStringValue(Currency value) {
+  dynamic encode(Currency value) {
     switch (value) {
       case Currency.euro:
         return 'euro';
@@ -3961,6 +3961,8 @@ class CurrencyMapper extends EnumMapper<Currency> {
 }
 
 extension CurrencyMapperExtension on Currency {
+  dynamic toValue() => Mapper.toValue(this);
+  @Deprecated('Use \'toValue\' instead')
   String toStringValue() => Mapper.toValue(this) as String;
 }
 
@@ -3968,7 +3970,7 @@ class SplitSourceTypeMapper extends EnumMapper<SplitSourceType> {
   SplitSourceTypeMapper._();
 
   @override
-  SplitSourceType fromString(String value) {
+  SplitSourceType decode(dynamic value) {
     switch (value) {
       case 'user':
         return SplitSourceType.user;
@@ -3980,7 +3982,7 @@ class SplitSourceTypeMapper extends EnumMapper<SplitSourceType> {
   }
 
   @override
-  String toStringValue(SplitSourceType value) {
+  dynamic encode(SplitSourceType value) {
     switch (value) {
       case SplitSourceType.user:
         return 'user';
@@ -3991,6 +3993,8 @@ class SplitSourceTypeMapper extends EnumMapper<SplitSourceType> {
 }
 
 extension SplitSourceTypeMapperExtension on SplitSourceType {
+  dynamic toValue() => Mapper.toValue(this);
+  @Deprecated('Use \'toValue\' instead')
   String toStringValue() => Mapper.toValue(this) as String;
 }
 
@@ -3998,7 +4002,7 @@ class ExpenseTargetTypeMapper extends EnumMapper<ExpenseTargetType> {
   ExpenseTargetTypeMapper._();
 
   @override
-  ExpenseTargetType fromString(String value) {
+  ExpenseTargetType decode(dynamic value) {
     switch (value) {
       case 'percent':
         return ExpenseTargetType.percent;
@@ -4012,7 +4016,7 @@ class ExpenseTargetTypeMapper extends EnumMapper<ExpenseTargetType> {
   }
 
   @override
-  String toStringValue(ExpenseTargetType value) {
+  dynamic encode(ExpenseTargetType value) {
     switch (value) {
       case ExpenseTargetType.percent:
         return 'percent';
@@ -4025,6 +4029,8 @@ class ExpenseTargetTypeMapper extends EnumMapper<ExpenseTargetType> {
 }
 
 extension ExpenseTargetTypeMapperExtension on ExpenseTargetType {
+  dynamic toValue() => Mapper.toValue(this);
+  @Deprecated('Use \'toValue\' instead')
   String toStringValue() => Mapper.toValue(this) as String;
 }
 
@@ -4032,7 +4038,7 @@ class UserStatusMapper extends EnumMapper<UserStatus> {
   UserStatusMapper._();
 
   @override
-  UserStatus fromString(String value) {
+  UserStatus decode(dynamic value) {
     switch (value) {
       case 'active':
         return UserStatus.active;
@@ -4046,7 +4052,7 @@ class UserStatusMapper extends EnumMapper<UserStatus> {
   }
 
   @override
-  String toStringValue(UserStatus value) {
+  dynamic encode(UserStatus value) {
     switch (value) {
       case UserStatus.active:
         return 'active';
@@ -4059,6 +4065,8 @@ class UserStatusMapper extends EnumMapper<UserStatus> {
 }
 
 extension UserStatusMapperExtension on UserStatus {
+  dynamic toValue() => Mapper.toValue(this);
+  @Deprecated('Use \'toValue\' instead')
   String toStringValue() => Mapper.toValue(this) as String;
 }
 
