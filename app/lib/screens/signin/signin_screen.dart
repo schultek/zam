@@ -23,6 +23,7 @@ class SignInScreen extends StatelessWidget {
 
     return JuLayout(
       header: Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(

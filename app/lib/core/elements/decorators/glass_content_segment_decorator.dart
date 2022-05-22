@@ -34,12 +34,12 @@ class GlassContentElementDecorator implements ElementDecorator<ContentElement> {
     var w = ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: child != null ? 6 : 2, sigmaY: child != null ? 6 : 2),
+        filter: ImageFilter.blur(sigmaX: child != null ? 10 : 2, sigmaY: child != null ? 10 : 2),
         child: ThemedSurface(
           builder: (context, fillColor) => Material(
             textStyle: TextStyle(color: context.onSurfaceColor),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            color: fillColor.withOpacity(child != null ? 0.2 : 0.1),
+            color: fillColor.withOpacity(0.1),
             child: child ?? Container(),
           ),
         ),

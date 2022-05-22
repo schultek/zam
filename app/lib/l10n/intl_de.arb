@@ -107,6 +107,7 @@
   "show_info_cards": "Infokarten anzeigen",
   "primary_background": "Primärer Hintergrund",
   "confirm_delete_section": "Möchtest du diesen Abschnitt löschen?",
+  "invert_header_color": "Header Farbe invertieren",
 
   "@ANNOUNCEMENTS": {},
 

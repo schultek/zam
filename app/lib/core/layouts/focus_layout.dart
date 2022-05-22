@@ -1,8 +1,14 @@
+import 'dart:ui' as ui;
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
+import '../../modules/profile/widgets/image_selector.dart';
+import '../../providers/groups/logic_provider.dart';
 import '../areas/areas.dart';
 import '../elements/elements.dart';
 import '../themes/themes.dart';
@@ -12,10 +18,17 @@ import 'widgets/fill_overscroll.dart';
 
 @MappableClass(discriminatorValue: 'focus')
 class FocusLayoutModel extends LayoutModel {
-  const FocusLayoutModel({this.showActions = true, this.showInfo = true}) : super();
+  const FocusLayoutModel({
+    this.showActions = true,
+    this.showInfo = true,
+    this.coverUrl,
+    this.invertHeader = false,
+  }) : super();
 
   final bool showActions;
   final bool showInfo;
+  final String? coverUrl;
+  final bool invertHeader;
 
   @override
   String get name => 'Focus Layout';
@@ -25,6 +38,8 @@ class FocusLayoutModel extends LayoutModel {
 
   @override
   List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
+    bool isLoadingImage = false;
+
     return [
       SwitchListTile(
         title: Text(context.tr.show_quick_actions),
@@ -35,6 +50,44 @@ class FocusLayoutModel extends LayoutModel {
         title: Text(context.tr.show_info_cards),
         value: showInfo,
         onChanged: (value) => update(copyWith(showInfo: value)),
+      ),
+      StatefulBuilder(
+        builder: (context, setState) => ListTile(
+          title: Text(context.tr.custom_cover_image),
+          subtitle: Text(coverUrl != null ? context.tr.tap_to_change : context.tr.tap_to_add),
+          trailing: isLoadingImage
+              ? const Padding(
+                  padding: EdgeInsets.all(20),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
+              : coverUrl != null
+                  ? IconButton(
+                      icon: Icon(Icons.delete, color: context.theme.colorScheme.error),
+                      onPressed: () {
+                        update(copyWith(coverUrl: null));
+                      },
+                    )
+                  : null,
+          onTap: () async {
+            setState(() => isLoadingImage = true);
+            var pngBytes = await ImageSelector.fromGallery(context, crop: false);
+            if (pngBytes != null) {
+              var link = await context
+                  .read(groupsLogicProvider)
+                  .uploadFile('layouts/${generateRandomId(4)}/cover.png', pngBytes);
+              update(copyWith(coverUrl: link));
+            }
+            setState(() => isLoadingImage = false);
+          },
+        ),
+      ),
+      SwitchListTile(
+        title: Text(context.tr.invert_header_color),
+        value: invertHeader,
+        onChanged: (value) => update(copyWith(invertHeader: value)),
       ),
     ];
   }
@@ -100,12 +153,18 @@ class _FocusLayoutState extends State<FocusLayout> {
           SliverToBoxAdapter(
             child: ThemedSurface(
               preference: const ColorPreference(useHighlightColor: true),
-              builder: (context, color) => CustomPaint(
-                painter: FocusBackgroundPainter(context, color),
-                child: Column(
+              builder: (context, color) => Stack(fit: StackFit.passthrough, children: [
+                Positioned.fill(
+                  child: FocusBackground(widget.model, color),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     if (widget.layoutContext.header != null) //
-                      widget.layoutContext.header!
+                      if (widget.model.invertHeader)
+                        ThemedSurface(builder: (_, __) => widget.layoutContext.header!)
+                      else
+                        widget.layoutContext.header!
                     else
                       SizedBox(height: MediaQuery.of(context).padding.top + 20),
                     SizedBox(
@@ -115,7 +174,9 @@ class _FocusLayoutState extends State<FocusLayout> {
                           aspectRatio: 1,
                           child: SingleElementArea(
                             id: widget.layoutContext.id + '_focus',
-                            decorator: const ClippedContentElementDecorator(),
+                            decorator: widget.model.coverUrl != null
+                                ? const GlassContentElementDecorator()
+                                : const ClippedContentElementDecorator(),
                           ),
                         ),
                       ),
@@ -147,7 +208,7 @@ class _FocusLayoutState extends State<FocusLayout> {
                       )
                   ],
                 ),
-              ),
+              ]),
             ),
           ),
           SliverPadding(
@@ -162,16 +223,60 @@ class _FocusLayoutState extends State<FocusLayout> {
   }
 }
 
+class FocusBackground extends StatelessWidget {
+  const FocusBackground(this.model, this.color, {Key? key}) : super(key: key);
+
+  final FocusLayoutModel model;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipOval(
+      clipper: FocusBackgroundClipper(),
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          image: model.coverUrl != null
+              ? DecorationImage(
+                  image: CachedNetworkImageProvider(model.coverUrl!),
+                  fit: BoxFit.cover,
+                )
+              : null,
+        ),
+        child: model.coverUrl != null ? Container(color: color.withOpacity(0.4)) : null,
+      ),
+    );
+    // return CustomPaint(painter: FocusBackgroundPainter(context, color));
+  }
+}
+
+class FocusBackgroundClipper extends CustomClipper<Rect> {
+  @override
+  Rect getClip(Size size) {
+    var r = size.height * 0.92;
+    return Rect.fromLTWH(size.width / 4 - r, -r, r * 2, r * 2);
+  }
+
+  @override
+  bool shouldReclip(covariant CustomClipper<Rect> oldClipper) {
+    return false;
+  }
+}
+
 class FocusBackgroundPainter extends CustomPainter {
   final BuildContext context;
   final Color color;
+  final ui.Image? image;
 
-  FocusBackgroundPainter(this.context, this.color);
+  FocusBackgroundPainter(this.context, this.color, [this.image]);
 
   @override
   void paint(Canvas canvas, Size size) {
     canvas.clipRect(Offset.zero & size);
     canvas.drawCircle(Offset(size.width / 4, 0.0), size.height * 0.92, Paint()..color = color);
+    if (image != null) {
+      canvas.drawImage(image!, Offset.zero, Paint());
+    }
   }
 
   @override

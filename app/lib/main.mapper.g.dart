@@ -3787,7 +3787,10 @@ class FocusLayoutModelMapper extends BaseMapper<FocusLayoutModel> {
   Function get decoder => decode;
   FocusLayoutModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
   FocusLayoutModel fromMap(Map<String, dynamic> map) => FocusLayoutModel(
-      showActions: Mapper.i.$getOpt(map, 'showActions') ?? true, showInfo: Mapper.i.$getOpt(map, 'showInfo') ?? true);
+      showActions: Mapper.i.$getOpt(map, 'showActions') ?? true,
+      showInfo: Mapper.i.$getOpt(map, 'showInfo') ?? true,
+      coverUrl: Mapper.i.$getOpt(map, 'coverUrl'),
+      invertHeader: Mapper.i.$getOpt(map, 'invertHeader') ?? false);
 
   @override
   Function get encoder => (FocusLayoutModel v) => encode(v);
@@ -3795,17 +3798,26 @@ class FocusLayoutModelMapper extends BaseMapper<FocusLayoutModel> {
   Map<String, dynamic> toMap(FocusLayoutModel f) => {
         'showActions': Mapper.i.$enc(f.showActions, 'showActions'),
         'showInfo': Mapper.i.$enc(f.showInfo, 'showInfo'),
+        'coverUrl': Mapper.i.$enc(f.coverUrl, 'coverUrl'),
+        'invertHeader': Mapper.i.$enc(f.invertHeader, 'invertHeader'),
         'type': 'focus'
       };
 
   @override
   String stringify(FocusLayoutModel self) =>
-      'FocusLayoutModel(showActions: ${Mapper.asString(self.showActions)}, showInfo: ${Mapper.asString(self.showInfo)})';
+      'FocusLayoutModel(showActions: ${Mapper.asString(self.showActions)}, showInfo: ${Mapper.asString(self.showInfo)}, coverUrl: ${Mapper.asString(self.coverUrl)}, invertHeader: ${Mapper.asString(self.invertHeader)})';
   @override
-  int hash(FocusLayoutModel self) => Mapper.hash(self.showActions) ^ Mapper.hash(self.showInfo);
+  int hash(FocusLayoutModel self) =>
+      Mapper.hash(self.showActions) ^
+      Mapper.hash(self.showInfo) ^
+      Mapper.hash(self.coverUrl) ^
+      Mapper.hash(self.invertHeader);
   @override
   bool equals(FocusLayoutModel self, FocusLayoutModel other) =>
-      Mapper.isEqual(self.showActions, other.showActions) && Mapper.isEqual(self.showInfo, other.showInfo);
+      Mapper.isEqual(self.showActions, other.showActions) &&
+      Mapper.isEqual(self.showInfo, other.showInfo) &&
+      Mapper.isEqual(self.coverUrl, other.coverUrl) &&
+      Mapper.isEqual(self.invertHeader, other.invertHeader);
 
   @override
   Function get typeFactory => (f) => f<FocusLayoutModel>();
@@ -3820,7 +3832,7 @@ extension FocusLayoutModelMapperExtension on FocusLayoutModel {
 abstract class FocusLayoutModelCopyWith<$R> {
   factory FocusLayoutModelCopyWith(FocusLayoutModel value, Then<FocusLayoutModel, $R> then) =
       _FocusLayoutModelCopyWithImpl<$R>;
-  $R call({bool? showActions, bool? showInfo});
+  $R call({bool? showActions, bool? showInfo, String? coverUrl, bool? invertHeader});
   $R apply(FocusLayoutModel Function(FocusLayoutModel) transform);
 }
 
@@ -3829,8 +3841,11 @@ class _FocusLayoutModelCopyWithImpl<$R> extends BaseCopyWith<FocusLayoutModel, $
   _FocusLayoutModelCopyWithImpl(FocusLayoutModel value, Then<FocusLayoutModel, $R> then) : super(value, then);
 
   @override
-  $R call({bool? showActions, bool? showInfo}) =>
-      $then(FocusLayoutModel(showActions: showActions ?? $value.showActions, showInfo: showInfo ?? $value.showInfo));
+  $R call({bool? showActions, bool? showInfo, Object? coverUrl = $none, bool? invertHeader}) => $then(FocusLayoutModel(
+      showActions: showActions ?? $value.showActions,
+      showInfo: showInfo ?? $value.showInfo,
+      coverUrl: or(coverUrl, $value.coverUrl),
+      invertHeader: invertHeader ?? $value.invertHeader));
 }
 
 class FullPageLayoutModelMapper extends BaseMapper<FullPageLayoutModel> {
