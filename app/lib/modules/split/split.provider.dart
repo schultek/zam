@@ -27,7 +27,7 @@ final splitPotProvider = Provider.family((ref, String id) => ref.watch(splitProv
 final balancesProvider = Provider((ref) => ref.watch(splitProvider).value?.balances ?? {});
 
 final sourceBalanceProvider = Provider.family((ref, SplitSource source) {
-  return ref.watch(balancesProvider)[source] ?? SplitBalance({Currency.euro: 0});
+  return ref.watch(balancesProvider)[source] ?? SplitBalance.zeroEuros;
 });
 
 final userBalanceProvider = Provider.family((ref, String id) {

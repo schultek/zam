@@ -16,7 +16,6 @@ class BalancesView extends StatelessWidget {
 
     var balances = split.balances;
     var potBalances = balances.entries.where((b) => b.key.type == SplitSourceType.pot);
-    var userBalances = balances.entries.where((b) => b.key.type == SplitSourceType.user);
     return ThemedSurface(
       builder: (context, color) => ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -34,12 +33,12 @@ class BalancesView extends StatelessWidget {
               ),
           ]),
           SettingsSection(children: [
-            for (var entry in userBalances)
+            for (var entry in context.watch(selectedGroupProvider)!.users.entries)
               ListTile(
-                leading: UserAvatar(id: entry.key.id, small: true),
-                title: Text(context.watch(splitSourceLabelProvider(entry.key))),
+                leading: UserAvatar(id: entry.key, small: true),
+                title: Text(context.watch(splitSourceLabelProvider(SplitSource.user(entry.key)))),
                 trailing: Text(
-                  entry.value.toPrintString(),
+                  (balances[SplitSource.user(entry.key)] ?? SplitBalance.zeroEuros).toPrintString(),
                   style: context.theme.textTheme.bodyMedium,
                 ),
                 tileColor: color,

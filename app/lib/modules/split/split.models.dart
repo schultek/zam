@@ -53,7 +53,7 @@ class SplitState {
 
   Map<SplitSource, SplitBalance> calcBalances() {
     var balances = <SplitSource, SplitBalance>{
-      ...pots.map((k, v) => MapEntry(SplitSource(k, SplitSourceType.pot), SplitBalance({Currency.euro: 0})))
+      ...pots.map((k, v) => MapEntry(SplitSource(k, SplitSourceType.pot), SplitBalance.zeroEuros))
     };
     var entries = [...this.entries.values]..sort();
 
@@ -108,7 +108,10 @@ class SplitState {
 
 class SplitBalance {
   Map<Currency, double> amounts;
+
   SplitBalance(this.amounts);
+
+  static final zeroEuros = SplitBalance({Currency.euro: 0});
 
   String toPrintString() {
     var entries = amounts.entries.where((e) => e.value != 0);
