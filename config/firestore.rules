@@ -37,8 +37,8 @@ service cloud.firestore {
       }
 
       function checkGroupUpdates() {
-        return request.resource.data.diff(resource.data).affectedKeys() == ['users'].toSet()
-          && request.resource.data.users.diff(resource.data.users).affectedKeys() == [request.auth.uid].toSet()
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['users'])
+          && request.resource.data.users.diff(resource.data.users).affectedKeys().hasOnly([request.auth.uid])
           && !('role' in request.resource.data.users[request.auth.uid].diff(resource.data.users[request.auth.uid]).affectedKeys());
       }
       

@@ -40,8 +40,10 @@ class NotificationLogic {
       ref.read(messageProvider.state).state = message;
     });
 
-    FirebaseMessaging.onBackgroundMessage((message) async {
-      print('Background message: ${message.data}');
-    });
+    FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);
   }
+}
+
+Future<void> onBackgroundMessage(message) async {
+  print('Background message: ${message.data}');
 }
