@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -22,8 +23,8 @@ class JuLayout extends StatelessWidget {
             SafeArea(
               child: Align(
                 alignment: Alignment.topCenter,
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height - height,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height - height),
                   child: Padding(
                     padding: const EdgeInsets.all(40),
                     child: header,
@@ -32,7 +33,9 @@ class JuLayout extends StatelessWidget {
               ),
             ),
             Positioned.fill(
-              top: MediaQuery.of(context).size.height - MediaQuery.of(context).viewInsets.bottom - height,
+              top: max(MediaQuery.of(context).padding.top + 10,
+                  MediaQuery.of(context).size.height - height - MediaQuery.of(context).viewInsets.bottom),
+              bottom: 0,
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                 child: BackdropFilter(
@@ -40,7 +43,10 @@ class JuLayout extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     color: Colors.white30,
-                    child: body,
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: body,
+                    ),
                   ),
                 ),
               ),

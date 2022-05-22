@@ -6,6 +6,7 @@ import '../../core/core.dart';
 import '../auth/claims_provider.dart';
 import '../auth/user_provider.dart';
 import '../general/preferences_provider.dart';
+import '../notifications/notifications_provider.dart';
 import 'groups_provider.dart';
 
 final selectedGroupIdProvider = StateNotifierProvider<GroupIdNotifier, String?>((ref) {
@@ -18,7 +19,9 @@ final selectedGroupIdProvider = StateNotifierProvider<GroupIdNotifier, String?>(
 class GroupIdNotifier extends StateNotifier<String?> {
   final Ref ref;
 
-  GroupIdNotifier(this.ref, String? initialState) : super(initialState);
+  GroupIdNotifier(this.ref, String? initialState) : super(initialState) {
+    ref.read(notificationsProvider).setup();
+  }
 
   SharedPreferences? get prefs => ref.read(sharedPreferencesProvider).value;
 
@@ -30,6 +33,7 @@ class GroupIdNotifier extends StateNotifier<String?> {
       prefs?.remove('selected_group_id');
     }
     super.state = value;
+    ref.read(notificationsProvider).setup();
   }
 }
 

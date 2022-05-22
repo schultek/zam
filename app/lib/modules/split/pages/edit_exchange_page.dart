@@ -70,6 +70,7 @@ class _EditExchangePageState extends State<EditExchangePage> {
               padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
               child: TextFormField(
                 initialValue: title,
+                autofocus: true,
                 decoration: InputDecoration(
                   hintText: context.tr.title,
                   hintStyle: TextStyle(color: context.onSurfaceColor.withOpacity(0.5)),

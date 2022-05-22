@@ -130,7 +130,7 @@ service cloud.firestore {
           && request.auth.uid in request.resource.data.members;
 
         allow update, delete: if userIsInGroup(getGroup()) 
-          && request.auth.uid in resource.data.members;
+          && (resource.data.isOpen || request.auth.uid in resource.data.members);
       
         match /messages/{messageId} {
 
@@ -143,8 +143,7 @@ service cloud.firestore {
 
           allow create: if userIsInGroup(getGroup())
             && request.auth.uid in getChannel().data.members
-            && request.resource.data.sender == request.auth.uid
-            && request.resource.data.sentAt == request.time;
+            && request.resource.data.sender == request.auth.uid;
 
           allow update, delete: if false;
         }

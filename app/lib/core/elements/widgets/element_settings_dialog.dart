@@ -22,6 +22,12 @@ class SettingsDialogController {
     _settings = settings;
     _state?.update();
   }
+
+  void close() {
+    if (_state?.mounted ?? false) {
+      Navigator.pop(_state!.context);
+    }
+  }
 }
 
 class ModuleElementSettingsDialog<T extends ModuleElement> extends StatefulWidget {

@@ -41,8 +41,9 @@ class _AddChannelPageState extends State<AddChannelPage> {
                         leading: const Icon(Icons.tag),
                         minLeadingWidth: 0,
                         onTap: () async {
+                          var nav = Navigator.of(context);
                           await ref.read(chatLogicProvider).joinChannel(channel);
-                          Navigator.of(context).pushReplacement(ChannelPage.route(channel.id));
+                          nav.pushReplacement(ChannelPage.route(channel.id));
                         },
                       ),
                     ),

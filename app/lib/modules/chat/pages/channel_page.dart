@@ -103,8 +103,8 @@ class _ChannelPageState extends State<ChannelPage> {
                     ? () async {
                         var shouldLeave = await Navigator.of(context).push(ChannelInfoPage.route(channel));
                         if (shouldLeave == true) {
-                          await context.read(chatLogicProvider).leaveChannel(widget.id);
                           Navigator.of(context).pop();
+                          await context.read(chatLogicProvider).leaveChannel(widget.id);
                         }
                       }
                     : null,

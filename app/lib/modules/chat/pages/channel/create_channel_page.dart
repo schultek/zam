@@ -53,6 +53,7 @@ class _CreateChannelPageState extends State<CreateChannelPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
+              autofocus: true,
               decoration: InputDecoration(
                 labelText: context.tr.name,
                 prefixIcon: const Icon(Icons.tag),

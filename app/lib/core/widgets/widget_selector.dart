@@ -184,7 +184,7 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
                                     padding: EdgeInsets.only(left: innerPadding, right: innerPadding),
                                     child: Text(
                                       group.first.module.parent.getName(context),
-                                      style: context.theme.textTheme.caption,
+                                      style: context.theme.textTheme.caption!.copyWith(color: context.onSurfaceColor),
                                     ),
                                   ),
                                 );

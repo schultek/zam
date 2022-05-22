@@ -44,6 +44,7 @@ class _CreateGamePageState extends State<CreateGamePage> {
             padding: const EdgeInsets.all(14),
             children: [
               TextField(
+                autofocus: true,
                 decoration: InputDecoration(labelText: context.tr.name),
                 onChanged: (text) => setState(() => _name = text),
               ),

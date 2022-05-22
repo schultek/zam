@@ -29,6 +29,8 @@ class _InputListTileState extends State<InputListTile> {
   late String? value = widget.value;
   late final FocusNode focusNode;
 
+  late String? savedValue;
+
   @override
   void initState() {
     super.initState();
@@ -36,9 +38,19 @@ class _InputListTileState extends State<InputListTile> {
     focusNode = FocusNode()
       ..addListener(() {
         if (!focusNode.hasPrimaryFocus) {
-          setState(() => hasFocus = false);
+          save(value);
         }
       });
+  }
+
+  void save(String? value) {
+    if (!hasFocus) return;
+    if (value != null) {
+      widget.onChanged(value);
+    }
+    setState(() {
+      hasFocus = false;
+    });
   }
 
   @override
@@ -60,12 +72,7 @@ class _InputListTileState extends State<InputListTile> {
             border: InputBorder.none,
             filled: false,
           ),
-          onFieldSubmitted: (value) {
-            widget.onChanged(value);
-            setState(() {
-              hasFocus = false;
-            });
-          },
+          onFieldSubmitted: save,
           onChanged: (value) {
             this.value = value;
           },
@@ -74,12 +81,7 @@ class _InputListTileState extends State<InputListTile> {
         trailing: IconButton(
           icon: const Icon(Icons.check),
           onPressed: () {
-            if (value != null) {
-              widget.onChanged(value!);
-            }
-            setState(() {
-              hasFocus = false;
-            });
+            save(value);
           },
         ),
       );

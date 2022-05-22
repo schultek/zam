@@ -35,15 +35,17 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   @override
   Widget build(BuildContext context) {
     return JuLayout(
-      height: 500,
+      height: 450,
       header: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(height: 40),
-          Text(
-            context.tr.create_new_group,
-            style: context.theme.textTheme.headline3!.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
-            textAlign: TextAlign.center,
+          const SizedBox(height: 20),
+          Center(
+            child: Text(
+              context.tr.create_new_group,
+              style: context.theme.textTheme.headline3!.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),

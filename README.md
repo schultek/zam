@@ -2,6 +2,14 @@
 
 Jugend-Freizeit-App
 
+# Todo
+
+- [x] Create Group Vertical Overflow with Keyboard
+- [x] Join Channel Not Working
+- [x] Reordering of last child
+- [x] Input tile save on blur
+- [x] Expense dialog autofocus
+
 # Roadmap
 
 ## Backend
@@ -109,7 +117,7 @@ Jugend-Freizeit-App
   - View docs, images, pdfs
 - Screentime Tree
   - Data Notification and Pong
-- Money Split
+- [x] Money Split
 - Map
   - Add Markers / Routes
   - Share Live Location

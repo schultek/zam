@@ -273,8 +273,9 @@ class BodyWidgetAreaState extends AreaState<MixedGridArea, ContentElement>
               translateY(belowRow[0].key, itemSize.height + spacing);
               translateY(grid[index.row][1].key, -itemSize.height - spacing);
 
-              grid[index.row][0] = belowRow[0];
-              belowRow.add(grid[index.row][1]);
+              var sibling = grid[index.row][1];
+              grid[index.row] = [belowRow[0]];
+              belowRow.add(sibling);
 
               _removeAtIndex(GridIndex(index.row + 1, index.column, ElementSize.square));
             }

@@ -12,7 +12,17 @@ extension FirebaseContext on ApiRequest {
 extension MulticaseMessage on CloudMessaging {
   Future<void> sendAll(Iterable<String> tokens, Message message) {
     return Future.wait([
-      for (var token in tokens) send(Message.fromJson(message.toJson())..token = token),
+      for (var token in tokens)
+        send(Message(
+          token: token,
+          android: message.android,
+          apns: message.apns,
+          data: message.data,
+          notification: message.notification,
+          name: message.name,
+          fcmOptions: message.fcmOptions,
+          webpush: message.webpush,
+        )),
     ]);
   }
 }

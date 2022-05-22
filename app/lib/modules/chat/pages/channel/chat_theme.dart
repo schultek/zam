@@ -30,7 +30,7 @@ class CustomChatTheme extends ChatTheme {
           inputBorderRadius: const BorderRadius.vertical(
             top: Radius.circular(20),
           ),
-          inputPadding: EdgeInsets.zero,
+          inputPadding: const EdgeInsets.all(24),
           inputTextColor: theme.colorScheme.onSurface,
           inputTextCursorColor: null,
           inputTextDecoration: InputDecoration(

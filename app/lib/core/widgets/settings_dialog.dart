@@ -10,7 +10,7 @@ class SettingsDialog extends StatelessWidget {
     required this.title,
     required this.content,
     this.actions = const [],
-    this.insetPadding = const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+    this.insetPadding = const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
     Key? key,
   }) : super(key: key);
 
@@ -37,7 +37,7 @@ class SettingsDialog extends StatelessWidget {
                 },
               ),
             ],
-            insetPadding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 24.0),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 16),
           ),
           useRootNavigator: false,
           barrierColor: Colors.black26,

@@ -212,11 +212,11 @@ class SelectGroupPage extends StatelessWidget {
           style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8)),
         ),
         const SizedBox(height: 5),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 5,
           children: [
             logoutButton,
-            const SizedBox(width: 5),
             OutlinedButton(
               child: Text(context.tr.add_phone_number),
               onPressed: () {

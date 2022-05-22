@@ -39,5 +39,9 @@ class NotificationLogic {
       print('Message opened App: ${message.data}');
       ref.read(messageProvider.state).state = message;
     });
+
+    FirebaseMessaging.onBackgroundMessage((message) async {
+      print('Background message: ${message.data}');
+    });
   }
 }

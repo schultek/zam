@@ -22,6 +22,7 @@ class AnnouncementPage extends StatefulWidget {
 class _AnnouncementPageState extends State<AnnouncementPage> {
   Announcement announcement = Announcement(message: '');
   bool isCreating = false;
+  final titleFocusNode = FocusNode();
 
   late final ContentElement fakeElement;
 
@@ -37,6 +38,10 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
 
   @override
   Widget build(BuildContext context) {
+    var visibleHeight = MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).viewInsets.bottom;
+    print(visibleHeight);
     return Scaffold(
       appBar: AppBar(
         title: Text(context.tr.create_announcement),
@@ -63,16 +68,28 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
           GroupTheme(
             theme: widget.parentArea.theme,
             child: Builder(builder: (context) {
+              print(MediaQuery.of(context));
               return Container(
                 color: context.surfaceColor,
                 padding: const EdgeInsets.all(20),
                 child: Center(
-                  child: ConstrainedBox(
-                    constraints: widget.parentArea.constrainWidget(fakeElement),
-                    child: widget.parentArea.elementDecorator.decorateElement(
-                      context,
-                      fakeElement,
-                      AnnouncementCard(announcement: AsyncValue.data(announcement), onDismissed: () {}),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      titleFocusNode.requestFocus();
+                    },
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxHeight: 0.3 * visibleHeight),
+                      child: FittedBox(
+                        child: ConstrainedBox(
+                          constraints: widget.parentArea.constrainWidget(fakeElement),
+                          child: widget.parentArea.elementDecorator.decorateElement(
+                            context,
+                            fakeElement,
+                            AnnouncementCard(announcement: AsyncValue.data(announcement), onDismissed: () {}),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -83,53 +100,58 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
             height: 0,
           ),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(labelText: context.tr.title),
-                  style: TextStyle(color: context.onSurfaceColor),
-                  onChanged: (text) => setState(() => announcement = announcement.copyWith(title: text)),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  decoration: InputDecoration(labelText: context.tr.message),
-                  style: TextStyle(color: context.onSurfaceColor),
-                  onChanged: (text) => setState(() => announcement = announcement.copyWith(message: text)),
-                ),
-                const SizedBox(height: 20),
-                CheckboxListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
-                  title: Text(context.tr.dismissible),
-                  onChanged: (dismiss) => setState(() => announcement = announcement.copyWith(isDismissible: dismiss)),
-                  value: announcement.isDismissible,
-                ),
-                const SizedBox(height: 20),
-                ...colorPicker(
-                  label: context.tr.text_color,
-                  value: announcement.textColor,
-                  onRemove: () => setState(() => announcement = Announcement(
-                        title: announcement.title,
-                        message: announcement.message,
-                        backgroundColor: announcement.backgroundColor,
-                        isDismissible: announcement.isDismissible,
-                      )),
-                  onChange: (color) => setState(() => announcement = announcement.copyWith(textColor: color)),
-                ),
-                const SizedBox(height: 20),
-                ...colorPicker(
-                  label: context.tr.background_color,
-                  value: announcement.backgroundColor,
-                  onRemove: () => setState(() => announcement = Announcement(
-                        title: announcement.title,
-                        message: announcement.message,
-                        textColor: announcement.textColor,
-                        isDismissible: announcement.isDismissible,
-                      )),
-                  onChange: (color) => setState(() => announcement = announcement.copyWith(backgroundColor: color)),
-                ),
-                const SizedBox(height: 40),
-              ],
+            child: Form(
+              child: ListView(
+                padding: const EdgeInsets.all(20),
+                children: [
+                  TextField(
+                    autofocus: true,
+                    focusNode: titleFocusNode,
+                    decoration: InputDecoration(labelText: context.tr.title),
+                    style: TextStyle(color: context.onSurfaceColor),
+                    onChanged: (text) => setState(() => announcement = announcement.copyWith(title: text)),
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    decoration: InputDecoration(labelText: context.tr.message),
+                    style: TextStyle(color: context.onSurfaceColor),
+                    onChanged: (text) => setState(() => announcement = announcement.copyWith(message: text)),
+                  ),
+                  const SizedBox(height: 20),
+                  CheckboxListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+                    title: Text(context.tr.dismissible),
+                    onChanged: (dismiss) =>
+                        setState(() => announcement = announcement.copyWith(isDismissible: dismiss)),
+                    value: announcement.isDismissible,
+                  ),
+                  const SizedBox(height: 20),
+                  ...colorPicker(
+                    label: context.tr.text_color,
+                    value: announcement.textColor,
+                    onRemove: () => setState(() => announcement = Announcement(
+                          title: announcement.title,
+                          message: announcement.message,
+                          backgroundColor: announcement.backgroundColor,
+                          isDismissible: announcement.isDismissible,
+                        )),
+                    onChange: (color) => setState(() => announcement = announcement.copyWith(textColor: color)),
+                  ),
+                  const SizedBox(height: 20),
+                  ...colorPicker(
+                    label: context.tr.background_color,
+                    value: announcement.backgroundColor,
+                    onRemove: () => setState(() => announcement = Announcement(
+                          title: announcement.title,
+                          message: announcement.message,
+                          textColor: announcement.textColor,
+                          isDismissible: announcement.isDismissible,
+                        )),
+                    onChange: (color) => setState(() => announcement = announcement.copyWith(backgroundColor: color)),
+                  ),
+                  const SizedBox(height: 40),
+                ],
+              ),
             ),
           ),
         ],

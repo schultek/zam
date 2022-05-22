@@ -133,77 +133,77 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
 
     return InheritedTemplate(
       state: this,
-      child: MediaQuery(
-        data: MediaQuery.of(context).addPadding(
-            bottom: editState == EditState.layoutMode
-                ? MediaQuery.of(context).size.height * 0.2
-                : editState == EditState.widgetMode
-                    ? widgetSelector?.sheetHeight ?? 0
-                    : 0),
-        child: GroupTheme(
-          theme: GroupThemeData.fromModel(group.theme),
-          child: Builder(builder: (context) {
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: FlexColorScheme.themedSystemNavigationBar(
-                context,
-                noAppBar: true,
-              ),
-              child: Stack(
-                children: [
-                  TemplateNavigator(
-                    home: Stack(
-                      children: [
-                        buildPages(context),
-                        Builder(builder: (context) {
-                          var isLayoutMode = context.watch(editProvider.select((e) => e == EditState.layoutMode));
-                          if (isLayoutMode) {
-                            return Align(
-                              alignment: Alignment.bottomCenter,
-                              child: ConfigSheet<M>(),
+      child: GroupTheme(
+        theme: GroupThemeData.fromModel(group.theme),
+        child: Builder(builder: (context) {
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: FlexColorScheme.themedSystemNavigationBar(
+              context,
+              noAppBar: true,
+            ),
+            child: Stack(
+              children: [
+                TemplateNavigator(
+                  home: Stack(
+                    children: [
+                      MediaQuery(
+                        data: MediaQuery.of(context).addPadding(
+                            bottom: editState == EditState.layoutMode
+                                ? MediaQuery.of(context).size.height * 0.2
+                                : editState == EditState.widgetMode
+                                    ? widgetSelector?.sheetHeight ?? 0
+                                    : 0),
+                        child: buildPages(context),
+                      ),
+                      Builder(builder: (context) {
+                        var isLayoutMode = context.watch(editProvider.select((e) => e == EditState.layoutMode));
+                        if (isLayoutMode) {
+                          return Align(
+                            alignment: Alignment.bottomCenter,
+                            child: ConfigSheet<M>(),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
+                      if (widgetSelector != null)
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: widgetSelector,
+                        ),
+                      Builder(
+                        builder: (context) {
+                          if (context.watch(isEditingProvider) && !context.watch(toggleVisibilityProvider)) {
+                            return Positioned(
+                              top: 45,
+                              right: 5,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(30),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                  child: Material(
+                                    color: Colors.transparent,
+                                    child: Container(
+                                      color: context.onSurfaceColor.withOpacity(0.1),
+                                      padding: const EdgeInsets.all(5),
+                                      child: const EditToggles(notifyVisibility: false),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             );
                           } else {
                             return Container();
                           }
-                        }),
-                        if (widgetSelector != null)
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: widgetSelector,
-                          ),
-                        Builder(
-                          builder: (context) {
-                            if (context.watch(isEditingProvider) && !context.watch(toggleVisibilityProvider)) {
-                              return Positioned(
-                                top: 45,
-                                right: 5,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(30),
-                                  child: BackdropFilter(
-                                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: Container(
-                                        color: context.onSurfaceColor.withOpacity(0.1),
-                                        padding: const EdgeInsets.all(5),
-                                        child: const EditToggles(notifyVisibility: false),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            } else {
-                              return Container();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          }),
-        ),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
