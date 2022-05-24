@@ -14,7 +14,7 @@ final splitProvider = StreamProvider<SplitState?>((ref) async* {
 final splitLogicProvider = Provider((ref) => SplitLogic(ref));
 
 final splitSourceLabelProvider = Provider.family((ref, SplitSource source) {
-  if (source.type == SplitSourceType.user) {
+  if (source.isUser) {
     return ref.watch(groupUserByIdProvider(source.id))?.nickname ?? ref.read(l10nProvider).anonymous;
   } else {
     return ref.watch(splitProvider.select((split) => split.value?.pots[source.id]?.name)) ??
@@ -41,6 +41,10 @@ class SplitLogic {
 
   Future<void> updateEntry(SplitEntry entry) {
     return doc.update({'entries.${entry.id}': Mapper.toValue(entry)});
+  }
+
+  Future<void> toggleBilling() {
+    return doc.update({'showBilling': !(ref.read(splitProvider).value?.showBilling ?? false)});
   }
 
   Future<void> addNewPot(SplitPot pot) {

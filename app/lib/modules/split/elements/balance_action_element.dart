@@ -20,7 +20,7 @@ class BalanceActionElement with ElementBuilderMixin<ActionElement> {
       icon: source == null ? Icons.account_balance : null,
       iconWidget: source == null
           ? null
-          : source.type == SplitSourceType.user
+          : source.isUser
               ? UserAvatar(id: source.id, needsSurface: false)
               : Center(child: PotIcon(id: source.id)),
       text: (context) {

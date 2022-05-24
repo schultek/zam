@@ -164,10 +164,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
                   ? Row(mainAxisSize: MainAxisSize.min, children: [
                       Text(context.watch(splitSourceLabelProvider(source!))),
                       const SizedBox(width: 10),
-                      if (source!.type == SplitSourceType.user)
-                        UserAvatar(id: source!.id, small: true)
-                      else
-                        PotIcon(id: source!.id),
+                      if (source!.isUser) UserAvatar(id: source!.id, small: true) else PotIcon(id: source!.id),
                     ])
                   : null,
               onTap: () async {

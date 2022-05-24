@@ -235,7 +235,7 @@
   "reset_health": "Gesundheit zurücksetzen",
   "reset_leaderboard": "Bestenliste zurücksetzen",
   "confirm_reset": "Möchtest du die\n{isHealth, select, true{Gesundheit} false{Bestenliste}} zurücksetzen?",
-  "the_button_tagline": "Ein soziales Spiel bei dem der Button am leben gehalten werden muss.",
+  "the_button_tagline": "Ein soziales Spiel bei dem der Button am Leben gehalten werden muss.",
   "leaderboard": "Bestenliste",
   "alive_period": "Lebenszeit",
   "the_button_description": "Ziel des Spiels ist es den Button nicht sterben zu lassen. Der Button wird langsam an Gesundheit verlieren bis er stirbt. Du kannst den Button jederzeit heilen wenn er noch am Leben ist durch Antippen für 2 Sekunden. Aber sobald er tot ist, kann er nicht wiederbelebt werden, also bleib wachsam.\n\nDie Gesundheit des Buttons ist synchronisiert über alle Spieler, somit ist es eine gemeinsame Anstrengung ihn am Leben zu erhalten.\n\nWenn du den Button vor seinem Ableben rettest wirst du sein aktuelles Level erhalten. Je niedriger die Gesundheit desto höher das Level was du erhälst. Aber warte nicht zu lange, jemand anderes könnte den Button retten bevor du die Chance hast.",
@@ -259,6 +259,7 @@
   "open_split": "Split öffnen",
   "balances": "Bilanzen",
   "expenses": "Ausgaben",
+  "billing": "Abrechnung",
   "new_expense": "Neue Ausgabe",
   "edit_expense": "Ausgabe bearbeiten",
   "new_expense_desc": "Jemand hat etwas gekauft",
@@ -283,6 +284,8 @@
   "show_pots": "Zeige Töpfe",
   "confirm_delete_entry": "Möchtest do diesen Eintrag löschen?",
   "current_user": "Aktueller Nutzer",
+  "show_billing": "Abrechnung anzeigen",
+  "hide_billing": "Abrechnung ausblenden",
 
   "@WEB": {},
 

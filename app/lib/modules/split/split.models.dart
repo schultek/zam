@@ -44,16 +44,19 @@ extension CurrencySymbol on Currency {
 class SplitState {
   final Map<String, SplitPot> pots;
   final Map<String, SplitEntry> entries;
+  final bool showBilling;
 
-  SplitState({this.pots = const {}, this.entries = const {}}) {
+  SplitState({this.pots = const {}, this.entries = const {}, this.showBilling = false}) {
     balances = calcBalances();
+    billing = calcBilling();
   }
 
   late final Map<SplitSource, SplitBalance> balances;
+  late final List<BillingEntry> billing;
 
   Map<SplitSource, SplitBalance> calcBalances() {
     var balances = <SplitSource, SplitBalance>{
-      ...pots.map((k, v) => MapEntry(SplitSource(k, SplitSourceType.pot), SplitBalance.zeroEuros))
+      ...pots.map((k, v) => MapEntry(SplitSource(k, SplitSourceType.pot), SplitBalance({Currency.euro: 0})))
     };
     var entries = [...this.entries.values]..sort();
 
@@ -64,7 +67,7 @@ class SplitState {
 
     for (var entry in entries) {
       if (entry is ExpenseEntry) {
-        if (entry.source.type == SplitSourceType.user) {
+        if (entry.source.isUser) {
           addToBalance(entry.source, entry.amount, entry.currency);
         } else {
           addToBalance(entry.source, -entry.amount, entry.currency);
@@ -86,12 +89,12 @@ class SplitState {
           }
         }
       } else if (entry is PaymentEntry) {
-        if (entry.source.type == SplitSourceType.user) {
+        if (entry.source.isUser) {
           addToBalance(entry.source, entry.amount, entry.currency);
         } else {
           addToBalance(entry.source, -entry.amount, entry.currency);
         }
-        if (entry.target.type == SplitSourceType.user) {
+        if (entry.target.isUser) {
           addToBalance(entry.target, -entry.amount, entry.currency);
         } else {
           addToBalance(entry.target, entry.amount, entry.currency);
@@ -104,6 +107,66 @@ class SplitState {
 
     return balances;
   }
+
+  List<BillingEntry> calcBilling() {
+    var usedCurrencies = balances.values.expand((b) => b.amounts.keys.where((c) => b.amounts[c] != 0)).toSet();
+    var allUsers = balances.keys.where((s) => s.isUser).map((s) => s.id).toList();
+    var entries = <BillingEntry>[];
+
+    for (var currency in usedCurrencies) {
+      var currBalances = balances.entries
+          .map((e) => BalanceEntry(e.key, (e.value.amounts[currency] ?? 0) * (e.key.isUser ? 1 : -1)))
+          .toList();
+
+      var balanceSum = currBalances.fold<double>(0.0, (sum, b) => sum + b.value);
+      var targetBalance = balanceSum / allUsers.length;
+
+      var positives = currBalances
+          .map((b) => b.key.isUser ? BalanceEntry(b.key, b.value - targetBalance) : b)
+          .where((b) => b.value > 0)
+          .toList()
+        ..sort((a, b) => a.value - b.value < 0 ? -1 : 1);
+      var negatives = currBalances
+          .map((b) => b.key.isUser ? BalanceEntry(b.key, b.value - targetBalance) : b)
+          .where((b) => b.value < 0)
+          .toList()
+        ..sort((a, b) => a.value - b.value < 0 ? 1 : -1);
+
+      while (positives.isNotEmpty) {
+        var posLast = positives.last;
+
+        if (negatives.isEmpty) break;
+        var negLast = negatives.last;
+
+        if (-negLast.value >= posLast.value) {
+          entries.add(BillingEntry(negLast.key, posLast.key, currency, posLast.value));
+          posLast.value = 0;
+          negLast.value += posLast.value;
+        } else {
+          entries.add(BillingEntry(negLast.key, posLast.key, currency, -negLast.value));
+          posLast.value += negLast.value;
+          negLast.value = 0;
+        }
+
+        if (posLast.value == 0) {
+          positives.removeLast();
+        }
+        if (negLast.value == 0) {
+          negatives.removeLast();
+        }
+      }
+    }
+
+    return entries;
+  }
+}
+
+@MappableClass()
+class BalanceEntry with Mappable {
+  final SplitSource key;
+  double value;
+
+  BalanceEntry(this.key, this.value);
 }
 
 class SplitBalance {
@@ -118,6 +181,16 @@ class SplitBalance {
     if (entries.isEmpty && amounts.entries.isNotEmpty) entries = amounts.entries.take(1);
     return entries.map((e) => '${e.value.toStringAsFixed(2)} ${e.key.symbol}').join(', ');
   }
+}
+
+@MappableClass()
+class BillingEntry with Mappable {
+  final SplitSource from;
+  final SplitSource to;
+  final Currency currency;
+  final double amount;
+
+  BillingEntry(this.from, this.to, this.currency, this.amount);
 }
 
 @MappableClass()
@@ -156,6 +229,9 @@ class SplitSource with Mappable {
 
   const SplitSource.user(this.id) : type = SplitSourceType.user;
   const SplitSource.pot(this.id) : type = SplitSourceType.pot;
+
+  bool get isUser => type == SplitSourceType.user;
+  bool get isPot => type == SplitSourceType.pot;
 }
 
 class SplitSourceHooks extends MappingHooks {

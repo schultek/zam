@@ -15,7 +15,7 @@ class BalancesView extends StatelessWidget {
     if (split == null) return Container();
 
     var balances = split.balances;
-    var potBalances = balances.entries.where((b) => b.key.type == SplitSourceType.pot);
+    var potBalances = balances.entries.where((b) => b.key.isPot);
     return ThemedSurface(
       builder: (context, color) => ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -60,6 +60,23 @@ class BalancesView extends StatelessWidget {
                     if (pot != null) {
                       context.read(splitLogicProvider).addNewPot(pot);
                     }
+                  },
+                ),
+              ),
+            ),
+          if (context.watch(isOrganizerProvider))
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: context.theme.colorScheme.onPrimary,
+                    onPrimary: context.theme.colorScheme.primary,
+                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+                  ),
+                  child: Text(split.showBilling ? context.tr.hide_billing : context.tr.show_billing),
+                  onPressed: () async {
+                    context.read(splitLogicProvider).toggleBilling();
                   },
                 ),
               ),

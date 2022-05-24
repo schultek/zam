@@ -158,10 +158,7 @@ class _EditPaymentPageState extends State<EditPaymentPage> {
                   ? Row(mainAxisSize: MainAxisSize.min, children: [
                       Text(context.watch(splitSourceLabelProvider(source!))),
                       const SizedBox(width: 10),
-                      if (source!.type == SplitSourceType.user)
-                        UserAvatar(id: source!.id, small: true)
-                      else
-                        PotIcon(id: source!.id),
+                      if (source!.isUser) UserAvatar(id: source!.id, small: true) else PotIcon(id: source!.id),
                     ])
                   : null,
               onTap: () async {
@@ -179,10 +176,7 @@ class _EditPaymentPageState extends State<EditPaymentPage> {
                   ? Row(mainAxisSize: MainAxisSize.min, children: [
                       Text(context.watch(splitSourceLabelProvider(target!))),
                       const SizedBox(width: 10),
-                      if (target!.type == SplitSourceType.user)
-                        UserAvatar(id: target!.id, small: true)
-                      else
-                        PotIcon(id: target!.id),
+                      if (target!.isUser) UserAvatar(id: target!.id, small: true) else PotIcon(id: target!.id),
                     ])
                   : null,
               onTap: () async {

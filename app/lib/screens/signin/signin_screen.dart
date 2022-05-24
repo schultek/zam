@@ -61,7 +61,7 @@ class SignInScreen extends StatelessWidget {
                       ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      launchUrl(Uri.parse('https://jufa20.web.app/terms-of-service.html'));
+                      launchUrl(Uri.parse('https://jufa.schultek.de/terms-of-service.html'));
                     },
                 ),
                 TextSpan(
@@ -76,7 +76,7 @@ class SignInScreen extends StatelessWidget {
                       ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      launchUrl(Uri.parse('https://jufa20.web.app/privacy-policy.html'));
+                      launchUrl(Uri.parse('https://jufa.schultek.de/privacy-policy.html'));
                     },
                 ),
               ],

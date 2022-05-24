@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../../core/widgets/input_list_tile.dart';
 import '../../chat.module.dart';
 import 'add_members_page.dart';
 import 'members_page.dart';
@@ -19,12 +21,22 @@ class ChannelInfoPage extends StatefulWidget {
 class _ChannelInfoPageState extends State<ChannelInfoPage> {
   @override
   Widget build(BuildContext context) {
+    var channel = context.watch(channelProvider(widget.channel.id)) ?? widget.channel;
     return Scaffold(
       appBar: AppBar(
         title: Text(context.tr.channel_details),
       ),
       body: ListView(
         children: [
+          SettingsSection(children: [
+            InputListTile(
+              label: context.tr.name,
+              value: channel.name,
+              onChanged: (value) {
+                context.read(chatLogicProvider).updateChannel(widget.channel.id, {'name': value});
+              },
+            ),
+          ]),
           SettingsSection(children: [
             ListTile(
               title: Text(context.tr.add_members),

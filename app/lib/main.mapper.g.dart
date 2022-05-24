@@ -72,6 +72,8 @@ var _mappers = <BaseMapper>{
   BalancesListParamsMapper._(),
   BalanceFocusParamsMapper._(),
   SplitStateMapper._(),
+  BalanceEntryMapper._(),
+  BillingEntryMapper._(),
   SplitPotMapper._(),
   SplitEntryMapper._(),
   SplitSourceMapper._(),
@@ -2347,24 +2349,36 @@ class SplitStateMapper extends BaseMapper<SplitState> {
   Function get decoder => decode;
   SplitState decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
   SplitState fromMap(Map<String, dynamic> map) => SplitState(
-      pots: Mapper.i.$getOpt(map, 'pots') ?? const {}, entries: Mapper.i.$getOpt(map, 'entries') ?? const {});
+      pots: Mapper.i.$getOpt(map, 'pots') ?? const {},
+      entries: Mapper.i.$getOpt(map, 'entries') ?? const {},
+      showBilling: Mapper.i.$getOpt(map, 'showBilling') ?? false);
 
   @override
   Function get encoder => (SplitState v) => encode(v);
   dynamic encode(SplitState v) => toMap(v);
-  Map<String, dynamic> toMap(SplitState s) =>
-      {'pots': Mapper.i.$enc(s.pots, 'pots'), 'entries': Mapper.i.$enc(s.entries, 'entries')};
+  Map<String, dynamic> toMap(SplitState s) => {
+        'pots': Mapper.i.$enc(s.pots, 'pots'),
+        'entries': Mapper.i.$enc(s.entries, 'entries'),
+        'showBilling': Mapper.i.$enc(s.showBilling, 'showBilling')
+      };
 
   @override
   String stringify(SplitState self) =>
-      'SplitState(pots: ${Mapper.asString(self.pots)}, entries: ${Mapper.asString(self.entries)}, balances: ${Mapper.asString(self.balances)})';
+      'SplitState(pots: ${Mapper.asString(self.pots)}, entries: ${Mapper.asString(self.entries)}, showBilling: ${Mapper.asString(self.showBilling)}, balances: ${Mapper.asString(self.balances)}, billing: ${Mapper.asString(self.billing)})';
   @override
-  int hash(SplitState self) => Mapper.hash(self.pots) ^ Mapper.hash(self.entries) ^ Mapper.hash(self.balances);
+  int hash(SplitState self) =>
+      Mapper.hash(self.pots) ^
+      Mapper.hash(self.entries) ^
+      Mapper.hash(self.showBilling) ^
+      Mapper.hash(self.balances) ^
+      Mapper.hash(self.billing);
   @override
   bool equals(SplitState self, SplitState other) =>
       Mapper.isEqual(self.pots, other.pots) &&
       Mapper.isEqual(self.entries, other.entries) &&
-      Mapper.isEqual(self.balances, other.balances);
+      Mapper.isEqual(self.showBilling, other.showBilling) &&
+      Mapper.isEqual(self.balances, other.balances) &&
+      Mapper.isEqual(self.billing, other.billing);
 
   @override
   Function get typeFactory => (f) => f<SplitState>();
@@ -2380,7 +2394,7 @@ abstract class SplitStateCopyWith<$R> {
   factory SplitStateCopyWith(SplitState value, Then<SplitState, $R> then) = _SplitStateCopyWithImpl<$R>;
   MapCopyWith<$R, String, SplitPot, SplitPotCopyWith<$R>> get pots;
   MapCopyWith<$R, String, SplitEntry, SplitEntryCopyWith<$R>> get entries;
-  $R call({Map<String, SplitPot>? pots, Map<String, SplitEntry>? entries});
+  $R call({Map<String, SplitPot>? pots, Map<String, SplitEntry>? entries, bool? showBilling});
   $R apply(SplitState Function(SplitState) transform);
 }
 
@@ -2394,8 +2408,120 @@ class _SplitStateCopyWithImpl<$R> extends BaseCopyWith<SplitState, $R> implement
   MapCopyWith<$R, String, SplitEntry, SplitEntryCopyWith<$R>> get entries =>
       MapCopyWith($value.entries, (v, t) => SplitEntryCopyWith(v, t), (v) => call(entries: v));
   @override
-  $R call({Map<String, SplitPot>? pots, Map<String, SplitEntry>? entries}) =>
-      $then(SplitState(pots: pots ?? $value.pots, entries: entries ?? $value.entries));
+  $R call({Map<String, SplitPot>? pots, Map<String, SplitEntry>? entries, bool? showBilling}) => $then(SplitState(
+      pots: pots ?? $value.pots, entries: entries ?? $value.entries, showBilling: showBilling ?? $value.showBilling));
+}
+
+class BalanceEntryMapper extends BaseMapper<BalanceEntry> {
+  BalanceEntryMapper._();
+
+  @override
+  Function get decoder => decode;
+  BalanceEntry decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  BalanceEntry fromMap(Map<String, dynamic> map) =>
+      BalanceEntry(Mapper.i.$get(map, 'key'), Mapper.i.$get(map, 'value'));
+
+  @override
+  Function get encoder => (BalanceEntry v) => encode(v);
+  dynamic encode(BalanceEntry v) => toMap(v);
+  Map<String, dynamic> toMap(BalanceEntry b) =>
+      {'key': Mapper.i.$enc(b.key, 'key'), 'value': Mapper.i.$enc(b.value, 'value')};
+
+  @override
+  String stringify(BalanceEntry self) =>
+      'BalanceEntry(key: ${Mapper.asString(self.key)}, value: ${Mapper.asString(self.value)})';
+  @override
+  int hash(BalanceEntry self) => Mapper.hash(self.key) ^ Mapper.hash(self.value);
+  @override
+  bool equals(BalanceEntry self, BalanceEntry other) =>
+      Mapper.isEqual(self.key, other.key) && Mapper.isEqual(self.value, other.value);
+
+  @override
+  Function get typeFactory => (f) => f<BalanceEntry>();
+}
+
+extension BalanceEntryMapperExtension on BalanceEntry {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  BalanceEntryCopyWith<BalanceEntry> get copyWith => BalanceEntryCopyWith(this, $identity);
+}
+
+abstract class BalanceEntryCopyWith<$R> {
+  factory BalanceEntryCopyWith(BalanceEntry value, Then<BalanceEntry, $R> then) = _BalanceEntryCopyWithImpl<$R>;
+  SplitSourceCopyWith<$R> get key;
+  $R call({SplitSource? key, double? value});
+  $R apply(BalanceEntry Function(BalanceEntry) transform);
+}
+
+class _BalanceEntryCopyWithImpl<$R> extends BaseCopyWith<BalanceEntry, $R> implements BalanceEntryCopyWith<$R> {
+  _BalanceEntryCopyWithImpl(BalanceEntry value, Then<BalanceEntry, $R> then) : super(value, then);
+
+  @override
+  SplitSourceCopyWith<$R> get key => SplitSourceCopyWith($value.key, (v) => call(key: v));
+  @override
+  $R call({SplitSource? key, double? value}) => $then(BalanceEntry(key ?? $value.key, value ?? $value.value));
+}
+
+class BillingEntryMapper extends BaseMapper<BillingEntry> {
+  BillingEntryMapper._();
+
+  @override
+  Function get decoder => decode;
+  BillingEntry decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  BillingEntry fromMap(Map<String, dynamic> map) => BillingEntry(Mapper.i.$get(map, 'from'), Mapper.i.$get(map, 'to'),
+      Mapper.i.$get(map, 'currency'), Mapper.i.$get(map, 'amount'));
+
+  @override
+  Function get encoder => (BillingEntry v) => encode(v);
+  dynamic encode(BillingEntry v) => toMap(v);
+  Map<String, dynamic> toMap(BillingEntry b) => {
+        'from': Mapper.i.$enc(b.from, 'from'),
+        'to': Mapper.i.$enc(b.to, 'to'),
+        'currency': Mapper.i.$enc(b.currency, 'currency'),
+        'amount': Mapper.i.$enc(b.amount, 'amount')
+      };
+
+  @override
+  String stringify(BillingEntry self) =>
+      'BillingEntry(from: ${Mapper.asString(self.from)}, to: ${Mapper.asString(self.to)}, currency: ${Mapper.asString(self.currency)}, amount: ${Mapper.asString(self.amount)})';
+  @override
+  int hash(BillingEntry self) =>
+      Mapper.hash(self.from) ^ Mapper.hash(self.to) ^ Mapper.hash(self.currency) ^ Mapper.hash(self.amount);
+  @override
+  bool equals(BillingEntry self, BillingEntry other) =>
+      Mapper.isEqual(self.from, other.from) &&
+      Mapper.isEqual(self.to, other.to) &&
+      Mapper.isEqual(self.currency, other.currency) &&
+      Mapper.isEqual(self.amount, other.amount);
+
+  @override
+  Function get typeFactory => (f) => f<BillingEntry>();
+}
+
+extension BillingEntryMapperExtension on BillingEntry {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  BillingEntryCopyWith<BillingEntry> get copyWith => BillingEntryCopyWith(this, $identity);
+}
+
+abstract class BillingEntryCopyWith<$R> {
+  factory BillingEntryCopyWith(BillingEntry value, Then<BillingEntry, $R> then) = _BillingEntryCopyWithImpl<$R>;
+  SplitSourceCopyWith<$R> get from;
+  SplitSourceCopyWith<$R> get to;
+  $R call({SplitSource? from, SplitSource? to, Currency? currency, double? amount});
+  $R apply(BillingEntry Function(BillingEntry) transform);
+}
+
+class _BillingEntryCopyWithImpl<$R> extends BaseCopyWith<BillingEntry, $R> implements BillingEntryCopyWith<$R> {
+  _BillingEntryCopyWithImpl(BillingEntry value, Then<BillingEntry, $R> then) : super(value, then);
+
+  @override
+  SplitSourceCopyWith<$R> get from => SplitSourceCopyWith($value.from, (v) => call(from: v));
+  @override
+  SplitSourceCopyWith<$R> get to => SplitSourceCopyWith($value.to, (v) => call(to: v));
+  @override
+  $R call({SplitSource? from, SplitSource? to, Currency? currency, double? amount}) =>
+      $then(BillingEntry(from ?? $value.from, to ?? $value.to, currency ?? $value.currency, amount ?? $value.amount));
 }
 
 class SplitPotMapper extends BaseMapper<SplitPot> {

@@ -14,6 +14,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:shared/api/modules/chat.dart';
 
+import '../../providers/general/l10n_provider.dart';
 import '../module.dart';
 import 'pages/channel_page.dart';
 import 'pages/chat_page.dart';

@@ -5,6 +5,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../split.module.dart';
 import 'balances_view.dart';
+import 'billing_view.dart';
 import 'edit_exchange_page.dart';
 import 'edit_expense_page.dart';
 import 'edit_payment_page.dart';
@@ -24,38 +25,50 @@ class SplitPage extends StatefulWidget {
 final _splitTabIndexProvider = StateProvider((ref) => 0);
 
 class _SplitPageState extends State<SplitPage> with TickerProviderStateMixin {
-  late final TabController controller;
+  TabController? controller;
 
-  @override
-  void initState() {
-    super.initState();
-    controller = TabController(initialIndex: context.read(_splitTabIndexProvider), length: 2, vsync: this)
-      ..addListener(() {
-        context.read(_splitTabIndexProvider.notifier).state = controller.index;
-      });
+  void updateTabController(bool showBilling) {
+    if (controller?.length == (showBilling ? 3 : 2)) {
+      return;
+    }
+    setState(() {
+      controller?.dispose();
+      controller =
+          TabController(initialIndex: context.read(_splitTabIndexProvider), length: showBilling ? 3 : 2, vsync: this)
+            ..addListener(() {
+              context.read(_splitTabIndexProvider.notifier).state = controller!.index;
+            });
+    });
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    var showBilling = context.watch(splitProvider.select((split) => split.value?.showBilling ?? false));
+    updateTabController(showBilling);
     return Scaffold(
       appBar: AppBar(
         title: Text(context.tr.split),
         bottom: TabBar(
           controller: controller,
-          tabs: [Tab(text: context.tr.balances), Tab(text: context.tr.expenses)],
+          tabs: [
+            Tab(text: context.tr.balances),
+            Tab(text: context.tr.expenses),
+            if (showBilling) Tab(text: context.tr.billing),
+          ],
         ),
       ),
       body: TabBarView(
         controller: controller,
-        children: const [
-          BalancesView(),
-          ExpensesView(),
+        children: [
+          const BalancesView(),
+          const ExpensesView(),
+          if (showBilling) const BillingView(),
         ],
       ),
       floatingActionButton: SpeedDial(

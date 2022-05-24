@@ -30,7 +30,7 @@ class BalanceContentElement with ElementBuilderMixin<ContentElement> {
                   scale: 1.6,
                   child: source == null
                       ? const Icon(Icons.account_balance)
-                      : source.type == SplitSourceType.user
+                      : source.isUser
                           ? UserAvatar(id: source.id)
                           : Center(child: PotIcon(id: source.id)),
                 ),

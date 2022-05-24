@@ -45,6 +45,10 @@ class ChatLogic {
     await chat.collection('channels').doc(id).delete();
   }
 
+  Future<void> updateChannel(String channelId, Map<String, dynamic> data) async {
+    await chat.collection('channels').doc(channelId).update(data);
+  }
+
   Future<void> joinChannel(ChannelInfo channel) async {
     await chat.collection('channels').doc(channel.id).update({
       'members': FieldValue.arrayUnion([ref.read(userIdProvider)]),
@@ -67,8 +71,17 @@ class ChatLogic {
     var msgDoc = await chat
         .collection('channels/$channelId/messages')
         .add(ChatTextMessage(sender: ref.read(userIdProvider)!, text: text, sentAt: DateTime.now()).toMap());
-    ref.read(chatApiProvider).sendNotification(
-        ChatNotification(ref.read(selectedGroupIdProvider)!, channelId, msgDoc.id, 'New message', text));
+
+    var channelName = ref.read(channelProvider(channelId))?.name;
+    var userName =
+        ref.read(groupUserByIdProvider(ref.read(userIdProvider) ?? ''))?.nickname ?? ref.read(l10nProvider).anonymous;
+    ref.read(chatApiProvider).sendNotification(ChatNotification(
+          ref.read(selectedGroupIdProvider)!,
+          channelId,
+          msgDoc.id,
+          channelName ?? ref.read(l10nProvider).message,
+          '$userName: $text',
+        ));
   }
 
   Future<void> sendImage(String channelId, XFile res) async {

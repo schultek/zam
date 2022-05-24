@@ -212,6 +212,13 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
                             onPressed: () {
                               addUserToTargets(user.key);
                               setState(() {});
+                              if (!context
+                                  .read(selectedGroupProvider)!
+                                  .users
+                                  .keys
+                                  .any((k) => !amounts.containsKey(k))) {
+                                Navigator.of(context).pop();
+                              }
                             },
                             icon: const Icon(Icons.add),
                           ),
@@ -219,6 +226,9 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
                           onTap: () {
                             addUserToTargets(user.key);
                             setState(() {});
+                            if (!context.read(selectedGroupProvider)!.users.keys.any((k) => !amounts.containsKey(k))) {
+                              Navigator.of(context).pop();
+                            }
                           },
                         ),
                   ],
@@ -239,157 +249,174 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 20),
-            child: Material(
-              color: Colors.transparent,
-              child: ThemedSurface(
-                builder: (context, color) => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _modeToggle(
-                      label: context.tr.percent,
-                      icon: Icons.percent,
-                      selected: type == ExpenseTargetType.percent,
-                      onSelect: () {
-                        updateType(ExpenseTargetType.percent);
-                      },
-                    ),
-                    const SizedBox(width: 16),
-                    _modeToggle(
-                      label: context.tr.shares,
-                      icon: Icons.onetwothree,
-                      selected: type == ExpenseTargetType.shares,
-                      onSelect: () {
-                        updateType(ExpenseTargetType.shares);
-                      },
-                    ),
-                    const SizedBox(width: 16),
-                    _modeToggle(
-                      label: context.tr.amount,
-                      icon: Icons.numbers,
-                      selected: type == ExpenseTargetType.amount,
-                      onSelect: () {
-                        updateType(ExpenseTargetType.amount);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-        AlertDialog(
+    return AnimatedPadding(
+      padding: MediaQuery.of(context).viewInsets,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.decelerate,
+      child: MediaQuery.removeViewInsets(
+        removeLeft: true,
+        removeTop: true,
+        removeRight: true,
+        removeBottom: true,
+        context: context,
+        child: Align(
           alignment: Alignment.center,
-          contentPadding: const EdgeInsets.symmetric(vertical: 8),
-          clipBehavior: Clip.antiAlias,
-          content: SizedBox(
-            width: 400,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 400),
-              child: AnimatedSize(
-                alignment: Alignment.topCenter,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                child: Form(
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    children: [
-                      if (amounts.isEmpty)
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(30),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(context.tr.for_everyone, style: context.theme.textTheme.caption),
-                                Text(
-                                  '${equalSplitAmount.toStringAsFixed(2)} ${widget.currency.symbol}',
-                                  style: context.theme.textTheme.headline6,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      for (var key in amounts.keys)
-                        Builder(builder: (context) {
-                          var user = context.read(groupUserByIdProvider(key))!;
-                          return ListTile(
-                            title: Row(
-                              children: [
-                                Flexible(
-                                  fit: FlexFit.tight,
-                                  child: Text(user.nickname ?? context.tr.anonymous),
-                                ),
-                                Flexible(
-                                  child: TextField(
-                                    controller: textControllerFor(key),
-                                    decoration: InputDecoration(
-                                      border: const OutlineInputBorder(),
-                                      isDense: true,
-                                      suffixIcon: Text(type == ExpenseTargetType.percent
-                                          ? '%'
-                                          : type == ExpenseTargetType.amount
-                                              ? widget.currency.symbol
-                                              : ''),
-                                      suffixIconConstraints: const BoxConstraints(minWidth: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AlertDialog(
+                contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                clipBehavior: Clip.antiAlias,
+                content: SizedBox(
+                  width: 400,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 400),
+                    child: AnimatedSize(
+                      alignment: Alignment.topCenter,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      child: Form(
+                        child: ListView(
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          children: [
+                            if (amounts.isEmpty)
+                              Center(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showAddUserDialog();
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(30),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(context.tr.for_everyone, style: context.theme.textTheme.caption),
+                                        Text(
+                                          '${equalSplitAmount.toStringAsFixed(2)} ${widget.currency.symbol}',
+                                          style: context.theme.textTheme.headline6,
+                                        ),
+                                      ],
                                     ),
-                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                    onSubmitted: (value) {
-                                      if (value.isEmpty) {
-                                        textControllerFor(key).text = amountString(amounts[key]!);
-                                      } else {
-                                        onChangedAmount(key, double.parse(value));
-                                      }
-                                      if (amounts.keys.last != key) {
-                                        FocusScope.of(context).nextFocus();
-                                      }
-                                    },
-                                    textInputAction: amounts.keys.last == key ? null : TextInputAction.next,
                                   ),
                                 ),
-                                const SizedBox(width: 5),
-                                IconButton(
-                                  splashRadius: 25,
-                                  visualDensity: VisualDensity.compact,
-                                  onPressed: () {
-                                    deleteUserFromTargets(key);
-                                  },
-                                  icon: const Icon(Icons.delete),
-                                ),
-                              ],
-                            ),
-                            leading: UserAvatar(id: key, small: true),
-                            minLeadingWidth: 10,
-                          );
-                        }),
-                    ],
+                              ),
+                            for (var key in amounts.keys)
+                              Builder(builder: (context) {
+                                var user = context.read(groupUserByIdProvider(key))!;
+                                return ListTile(
+                                  title: Row(
+                                    children: [
+                                      Flexible(
+                                        fit: FlexFit.tight,
+                                        child: Text(user.nickname ?? context.tr.anonymous),
+                                      ),
+                                      Flexible(
+                                        child: TextField(
+                                          controller: textControllerFor(key),
+                                          decoration: InputDecoration(
+                                            border: const OutlineInputBorder(),
+                                            isDense: true,
+                                            suffixIcon: Text(type == ExpenseTargetType.percent
+                                                ? '%'
+                                                : type == ExpenseTargetType.amount
+                                                    ? widget.currency.symbol
+                                                    : ''),
+                                            suffixIconConstraints: const BoxConstraints(minWidth: 20),
+                                          ),
+                                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                          onSubmitted: (value) {
+                                            if (value.isEmpty) {
+                                              textControllerFor(key).text = amountString(amounts[key]!);
+                                            } else {
+                                              onChangedAmount(key, double.parse(value));
+                                            }
+                                            if (amounts.keys.last != key) {
+                                              FocusScope.of(context).nextFocus();
+                                            }
+                                          },
+                                          textInputAction: amounts.keys.last == key ? null : TextInputAction.next,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 5),
+                                      IconButton(
+                                        splashRadius: 25,
+                                        visualDensity: VisualDensity.compact,
+                                        onPressed: () {
+                                          deleteUserFromTargets(key);
+                                        },
+                                        icon: const Icon(Icons.delete),
+                                      ),
+                                    ],
+                                  ),
+                                  leading: UserAvatar(id: key, small: true),
+                                  minLeadingWidth: 10,
+                                );
+                              }),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                actions: [
+                  IconButton(
+                    splashRadius: 25,
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      showAddUserDialog();
+                    },
+                  ),
+                  TextButton(
+                    child: Text(context.tr.save),
+                    onPressed: saveTarget,
+                  )
+                ],
+                actionsAlignment: MainAxisAlignment.spaceBetween,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Material(
+                  color: Colors.transparent,
+                  child: ThemedSurface(
+                    builder: (context, color) => Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _modeToggle(
+                          label: context.tr.percent,
+                          icon: Icons.percent,
+                          selected: type == ExpenseTargetType.percent,
+                          onSelect: () {
+                            updateType(ExpenseTargetType.percent);
+                          },
+                        ),
+                        const SizedBox(width: 16),
+                        _modeToggle(
+                          label: context.tr.shares,
+                          icon: Icons.onetwothree,
+                          selected: type == ExpenseTargetType.shares,
+                          onSelect: () {
+                            updateType(ExpenseTargetType.shares);
+                          },
+                        ),
+                        const SizedBox(width: 16),
+                        _modeToggle(
+                          label: context.tr.amount,
+                          icon: Icons.numbers,
+                          selected: type == ExpenseTargetType.amount,
+                          onSelect: () {
+                            updateType(ExpenseTargetType.amount);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-          actions: [
-            IconButton(
-              splashRadius: 25,
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                showAddUserDialog();
-              },
-            ),
-            TextButton(
-              child: Text(context.tr.save),
-              onPressed: saveTarget,
-            )
-          ],
-          actionsAlignment: MainAxisAlignment.spaceBetween,
         ),
-      ],
+      ),
     );
   }
 

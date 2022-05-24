@@ -19,8 +19,8 @@ class BalancesList extends StatelessWidget {
       balanceEntries = balanceEntries.where((e) => e.value.amounts.values.any((v) => v != 0));
     }
 
-    var potBalances = balanceEntries.where((b) => b.key.type == SplitSourceType.pot);
-    var userBalances = balanceEntries.where((b) => b.key.type == SplitSourceType.user);
+    var potBalances = balanceEntries.where((b) => b.key.isPot);
+    var userBalances = balanceEntries.where((b) => b.key.isUser);
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 20),
