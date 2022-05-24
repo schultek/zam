@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+html, body {
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background-color: #56B95F88;
+  display: flex;
+  min-height: 100vh;
+  flex-flow: column;
+}
+
+.main {
+  flex: 1;
+
+  display: flex;
+  flex-flow: row wrap;
+  padding: 2em 0;
+}
+
+.content {
+  flex: 3;
+
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+
+  padding: 0 2em;
+}
+
+.title {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+
+  font-size: 2rem;
+}
+
+.title h1 {
+  margin: 0;
+  font-weight: 300;
+  text-decoration: none;
+  color: initial;
+}
+
+.content h2 {
+  margin: 1em 2em;
+  text-align: center;
+}
+
+.content p {
+  text-align: justify;
+  font-size: 1.2rem;
+}
+
+.logo {
+  width: 2em;
+  height: 2em;
+  
+  margin-right: 1em;
+}
+
+.store-links {
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+
+.store-links > * {
+  width: 10em;
+}
+
+
+.store-links img {
+  width: 100%;
+}
+
+.side {
+  flex: 2;
+  min-width: 200px;
+
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  padding: 2em 2em;
+}
+
+.side img {
+  max-width: 50%;
+}
+
+.side img:first-child {
+  padding-left: 5%;
+}
+
+.side img:last-child {
+  transform: scale(0.8);
+}
+
+footer {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+
+  padding: 2em;
+}
+
+footer a {
+  color: inherit;
+  margin: 1em 2em;
+  text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+  footer {
+    flex-flow: column;
+  }
+}
