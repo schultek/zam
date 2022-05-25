@@ -3,6 +3,7 @@ library chat_module;
 import 'dart:async';
 import 'dart:io';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:dart_mappable/dart_mappable.dart';
@@ -12,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_context/riverpod_context.dart';
-import 'package:shared/api/modules/chat.dart';
 
 import '../../providers/general/l10n_provider.dart';
 import '../module.dart';

@@ -71,17 +71,33 @@ class ChatLogic {
     var msgDoc = await chat
         .collection('channels/$channelId/messages')
         .add(ChatTextMessage(sender: ref.read(userIdProvider)!, text: text, sentAt: DateTime.now()).toMap());
-
     var channelName = ref.read(channelProvider(channelId))?.name;
     var userName =
         ref.read(groupUserByIdProvider(ref.read(userIdProvider) ?? ''))?.nickname ?? ref.read(l10nProvider).anonymous;
-    ref.read(chatApiProvider).sendNotification(ChatNotification(
-          ref.read(selectedGroupIdProvider)!,
-          channelId,
-          msgDoc.id,
-          channelName ?? ref.read(l10nProvider).message,
-          '$userName: $text',
-        ));
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: msgDoc.id.hashCode,
+        channelKey: 'basic_channel',
+        groupKey: 'jufa',
+        summary: 'hello summary',
+        title: channelName ?? ref.read(l10nProvider).message,
+        body: '$userName: $text',
+        // notificationLayout: NotificationLayout.Messaging,
+      ),
+      actionButtons: [
+        NotificationActionButton(key: 'close', label: 'Close', buttonType: ActionButtonType.Default),
+        NotificationActionButton(key: 'reply', label: 'Reply', buttonType: ActionButtonType.InputField),
+      ],
+    );
+
+    // ref.read(chatApiProvider).sendNotification(ChatNotification(
+    //       ref.read(selectedGroupIdProvider)!,
+    //       channelId,
+    //       msgDoc.id,
+    //       channelName ?? ref.read(l10nProvider).message,
+    //       '$userName: $text',
+    //     ));
   }
 
   Future<void> sendImage(String channelId, XFile res) async {
