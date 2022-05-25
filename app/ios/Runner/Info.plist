@@ -52,7 +52,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Camera access is needed to take pictures</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Photo library access is needed to select and send images from your photo library</string>
+	<string>Allow access to photos to upload a profile picture for your avatar or set a group cover image.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

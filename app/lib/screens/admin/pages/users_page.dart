@@ -52,7 +52,7 @@ class UsersPage extends StatelessWidget {
       return ExpansionTile(
         title: Text('${user.phoneNumber ?? context.tr.anonymous}'
             '${groups.isNotEmpty ? ' (${groups.map((g) => g.users[user.id]?.nickname).whereType<String>().join(', ')})' : ''}'),
-        subtitle: Text('${groups.length} Groups'),
+        subtitle: Text(user.id, style: TextStyle(color: context.onSurfaceColor.withOpacity(0.8))),
         leading: Icon(
           user.claims.isAdmin
               ? Icons.security

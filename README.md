@@ -2,26 +2,11 @@
 
 Jugend-Freizeit-App
 
-# Todo
+# TODOs
 
-- [x] Create Group Vertical Overflow with Keyboard
-- [x] Join Channel Not Working
-- [x] Reordering of last child
-- [x] Input tile save on blur
-- [x] Expense dialog autofocus
+- Game Entry Error?
 
 # Roadmap
-
-## Backend
-
-- [x] Firestore Rules
-- [x] Custom Claims
-
-## App
-
-- Offline capability
-- [x] Themes
-- [x] Localization
 
 ## Modules
 
