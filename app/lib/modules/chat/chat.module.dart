@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_context/riverpod_context.dart';
+import 'package:shared/api/modules/chat.dart';
 
 import '../../providers/general/l10n_provider.dart';
 import '../module.dart';
@@ -63,5 +64,38 @@ class ChatModule extends ModuleBuilder {
   void dispose() {
     _msgSub?.cancel();
     super.dispose();
+  }
+
+  @override
+  void handleMessage(ModuleMessage message) async {
+    if (message is NotificationMessage) {
+      var ref = message.payload['ref'] as Ref;
+
+      if (message.key == 'reply') {
+        var notification = decodePayload<ChatNotification>(message.payload['payload'] as String);
+
+        var user = await ref.read(userProvider.future);
+        if (user == null) return;
+
+        var group = await ref.read(groupByIdProvider(notification.groupId).future);
+        if (group == null) return;
+
+        var groupUser = group.users[user.uid];
+        if (groupUser == null) return;
+
+        notification = notification.copyWith(
+          userId: user.uid,
+          userName: groupUser.nickname ?? ref.read(l10nProvider).anonymous,
+          pictureUrl: groupUser.profileUrl,
+          text: message.input,
+        );
+
+        await ref.read(notificationLogicProvider).sendNotification(notification, showNotification: true);
+      }
+    } else if (message is BackgroundMessage) {
+      var notification = decodePayload<ChatNotification>(message.payload);
+
+      message.container.read(notificationLogicProvider).createNotification(notification);
+    }
   }
 }

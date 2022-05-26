@@ -215,15 +215,15 @@ class ChatNotificationMapper extends BaseMapper<ChatNotification> {
 
   @override Function get decoder => decode;
   ChatNotification decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  ChatNotification fromMap(Map<String, dynamic> map) => ChatNotification(Mapper.i.$get(map, 'groupId'), Mapper.i.$get(map, 'channelId'), Mapper.i.$get(map, 'id'), Mapper.i.$get(map, 'title'), Mapper.i.$get(map, 'message'));
+  ChatNotification fromMap(Map<String, dynamic> map) => ChatNotification(Mapper.i.$get(map, 'id'), Mapper.i.$get(map, 'groupId'), Mapper.i.$get(map, 'groupName'), Mapper.i.$get(map, 'color'), Mapper.i.$get(map, 'channelId'), Mapper.i.$get(map, 'channelName'), Mapper.i.$get(map, 'userId'), Mapper.i.$get(map, 'userName'), Mapper.i.$getOpt(map, 'pictureUrl'), Mapper.i.$get(map, 'text'));
 
   @override Function get encoder => (ChatNotification v) => encode(v);
   dynamic encode(ChatNotification v) => toMap(v);
-  Map<String, dynamic> toMap(ChatNotification c) => {'groupId': Mapper.i.$enc(c.groupId, 'groupId'), 'channelId': Mapper.i.$enc(c.channelId, 'channelId'), 'id': Mapper.i.$enc(c.id, 'id'), 'title': Mapper.i.$enc(c.title, 'title'), 'message': Mapper.i.$enc(c.message, 'message')};
+  Map<String, dynamic> toMap(ChatNotification c) => {'id': Mapper.i.$enc(c.id, 'id'), 'groupId': Mapper.i.$enc(c.groupId, 'groupId'), 'groupName': Mapper.i.$enc(c.groupName, 'groupName'), 'color': Mapper.i.$enc(c.color, 'color'), 'channelId': Mapper.i.$enc(c.channelId, 'channelId'), 'channelName': Mapper.i.$enc(c.channelName, 'channelName'), 'userId': Mapper.i.$enc(c.userId, 'userId'), 'userName': Mapper.i.$enc(c.userName, 'userName'), 'pictureUrl': Mapper.i.$enc(c.pictureUrl, 'pictureUrl'), 'text': Mapper.i.$enc(c.text, 'text')};
 
-  @override String stringify(ChatNotification self) => 'ChatNotification(groupId: ${Mapper.asString(self.groupId)}, channelId: ${Mapper.asString(self.channelId)}, id: ${Mapper.asString(self.id)}, title: ${Mapper.asString(self.title)}, message: ${Mapper.asString(self.message)})';
-  @override int hash(ChatNotification self) => Mapper.hash(self.groupId) ^ Mapper.hash(self.channelId) ^ Mapper.hash(self.id) ^ Mapper.hash(self.title) ^ Mapper.hash(self.message);
-  @override bool equals(ChatNotification self, ChatNotification other) => Mapper.isEqual(self.groupId, other.groupId) && Mapper.isEqual(self.channelId, other.channelId) && Mapper.isEqual(self.id, other.id) && Mapper.isEqual(self.title, other.title) && Mapper.isEqual(self.message, other.message);
+  @override String stringify(ChatNotification self) => 'ChatNotification(id: ${Mapper.asString(self.id)}, groupId: ${Mapper.asString(self.groupId)}, groupName: ${Mapper.asString(self.groupName)}, color: ${Mapper.asString(self.color)}, channelId: ${Mapper.asString(self.channelId)}, channelName: ${Mapper.asString(self.channelName)}, userId: ${Mapper.asString(self.userId)}, userName: ${Mapper.asString(self.userName)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, text: ${Mapper.asString(self.text)})';
+  @override int hash(ChatNotification self) => Mapper.hash(self.id) ^ Mapper.hash(self.groupId) ^ Mapper.hash(self.groupName) ^ Mapper.hash(self.color) ^ Mapper.hash(self.channelId) ^ Mapper.hash(self.channelName) ^ Mapper.hash(self.userId) ^ Mapper.hash(self.userName) ^ Mapper.hash(self.pictureUrl) ^ Mapper.hash(self.text);
+  @override bool equals(ChatNotification self, ChatNotification other) => Mapper.isEqual(self.id, other.id) && Mapper.isEqual(self.groupId, other.groupId) && Mapper.isEqual(self.groupName, other.groupName) && Mapper.isEqual(self.color, other.color) && Mapper.isEqual(self.channelId, other.channelId) && Mapper.isEqual(self.channelName, other.channelName) && Mapper.isEqual(self.userId, other.userId) && Mapper.isEqual(self.userName, other.userName) && Mapper.isEqual(self.pictureUrl, other.pictureUrl) && Mapper.isEqual(self.text, other.text);
 
   @override Function get typeFactory => (f) => f<ChatNotification>();
 }
@@ -236,14 +236,14 @@ extension ChatNotificationMapperExtension  on ChatNotification {
 
 abstract class ChatNotificationCopyWith<$R> {
   factory ChatNotificationCopyWith(ChatNotification value, Then<ChatNotification, $R> then) = _ChatNotificationCopyWithImpl<$R>;
-  $R call({String? groupId, String? channelId, String? id, String? title, String? message});
+  $R call({String? id, String? groupId, String? groupName, String? color, String? channelId, String? channelName, String? userId, String? userName, String? pictureUrl, String? text});
   $R apply(ChatNotification Function(ChatNotification) transform);
 }
 
 class _ChatNotificationCopyWithImpl<$R> extends BaseCopyWith<ChatNotification, $R> implements ChatNotificationCopyWith<$R> {
   _ChatNotificationCopyWithImpl(ChatNotification value, Then<ChatNotification, $R> then) : super(value, then);
 
-  @override $R call({String? groupId, String? channelId, String? id, String? title, String? message}) => $then(ChatNotification(groupId ?? $value.groupId, channelId ?? $value.channelId, id ?? $value.id, title ?? $value.title, message ?? $value.message));
+  @override $R call({String? id, String? groupId, String? groupName, String? color, String? channelId, String? channelName, String? userId, String? userName, Object? pictureUrl = $none, String? text}) => $then(ChatNotification(id ?? $value.id, groupId ?? $value.groupId, groupName ?? $value.groupName, color ?? $value.color, channelId ?? $value.channelId, channelName ?? $value.channelName, userId ?? $value.userId, userName ?? $value.userName, or(pictureUrl, $value.pictureUrl), text ?? $value.text));
 }
 
 

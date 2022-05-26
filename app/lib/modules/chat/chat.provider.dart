@@ -67,37 +67,34 @@ class ChatLogic {
     });
   }
 
-  Future<void> send(String channelId, String text) async {
-    var msgDoc = await chat
+  Future<void> send(String channelId, String text, {bool showNotification = false}) async {
+    var msgDoc = await ref
+        .read(moduleDocProvider('chat'))
         .collection('channels/$channelId/messages')
         .add(ChatTextMessage(sender: ref.read(userIdProvider)!, text: text, sentAt: DateTime.now()).toMap());
-    var channelName = ref.read(channelProvider(channelId))?.name;
-    var userName =
-        ref.read(groupUserByIdProvider(ref.read(userIdProvider) ?? ''))?.nickname ?? ref.read(l10nProvider).anonymous;
 
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: msgDoc.id.hashCode,
-        channelKey: 'basic_channel',
-        groupKey: 'jufa',
-        summary: 'hello summary',
-        title: channelName ?? ref.read(l10nProvider).message,
-        body: '$userName: $text',
-        // notificationLayout: NotificationLayout.Messaging,
-      ),
-      actionButtons: [
-        NotificationActionButton(key: 'close', label: 'Close', buttonType: ActionButtonType.Default),
-        NotificationActionButton(key: 'reply', label: 'Reply', buttonType: ActionButtonType.InputField),
-      ],
-    );
+    var userId = ref.read(userIdProvider)!;
+    var user = ref.read(groupUserProvider)!;
+    var group = ref.read(selectedGroupProvider)!;
 
-    // ref.read(chatApiProvider).sendNotification(ChatNotification(
-    //       ref.read(selectedGroupIdProvider)!,
-    //       channelId,
-    //       msgDoc.id,
-    //       channelName ?? ref.read(l10nProvider).message,
-    //       '$userName: $text',
-    //     ));
+    var userName = user.nickname ?? ref.read(l10nProvider).anonymous;
+    var pictureUrl = user.profileUrl;
+
+    var channel = ref.read(channelProvider(channelId));
+    var channelName = channel!.name;
+
+    await ref.read(notificationLogicProvider).sendNotification(ChatNotification(
+          msgDoc.id,
+          group.id,
+          group.name,
+          encodeColor(GroupThemeData.fromModel(group.theme).themeData.colorScheme.primary),
+          channelId,
+          channelName,
+          userId,
+          userName,
+          pictureUrl,
+          text,
+        ));
   }
 
   Future<void> sendImage(String channelId, XFile res) async {
@@ -143,5 +140,56 @@ class ChatLogic {
       print('ERROR ON SENDING FILE $e');
       return;
     }
+  }
+}
+
+final notificationLogicProvider = Provider((ref) => NotificationLogic(ref));
+
+class NotificationLogic {
+  final Ref ref;
+  NotificationLogic(this.ref);
+
+  Future<void> sendNotification(ChatNotification notification, {bool showNotification = false}) async {
+    await ref.read(chatApiProvider).sendNotification(notification);
+
+    if (showNotification) {
+      await createNotification(notification);
+    }
+  }
+
+  Future<void> createNotification(ChatNotification notification) async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: notification.id.hashCode,
+        channelKey: 'chat',
+        groupKey: notification.channelId,
+        summary: '${notification.groupName} - ${notification.channelName}',
+        title: notification.userName,
+        body: notification.text,
+        largeIcon: notification.pictureUrl,
+        roundedLargeIcon: true,
+        color: decodeColor(notification.color),
+        notificationLayout: NotificationLayout.Messaging,
+        category: NotificationCategory.Message,
+        payload: {
+          'moduleId': 'chat',
+          'payload': encodePayload(notification),
+        },
+      ),
+      actionButtons: [
+        NotificationActionButton(
+          key: 'close',
+          label: 'Close',
+          autoDismissible: true,
+          buttonType: ActionButtonType.Default,
+        ),
+        NotificationActionButton(
+          key: 'reply',
+          label: 'Reply',
+          autoDismissible: false,
+          buttonType: ActionButtonType.InputField,
+        ),
+      ],
+    );
   }
 }

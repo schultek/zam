@@ -11,3 +11,11 @@ final firebaseProvider = FutureProvider((ref) => Firebase.initializeApp().whenCo
       }
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     }));
+
+final firestoreDocProvider = Provider.family((ref, String path) {
+  return FirebaseFirestore.instance.doc(path);
+});
+
+final firestoreCollectionProvider = Provider.family((ref, String path) {
+  return FirebaseFirestore.instance.collection(path);
+});

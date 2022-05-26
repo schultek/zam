@@ -10,12 +10,6 @@ import '../elements/elements.dart';
 import 'module_builder.dart';
 import 'module_context.dart';
 
-class ModuleSettings {
-  List<Widget> settings;
-
-  ModuleSettings(this.settings);
-}
-
 class ModuleRegistry {
   final Map<String, ModuleBuilder> modules;
   ModuleRegistry(List<ModuleBuilder> modules) : modules = Map.fromEntries(modules.map((m) => MapEntry(m.id, m)));
@@ -80,6 +74,16 @@ class ModuleRegistry {
     for (var module in modules.values) {
       var settings = module.getSettings(context);
       if (settings != null) yield MapEntry(module.getName(context), settings);
+    }
+  }
+
+  void handleMessage(ModuleMessage message) {
+    if (message.moduleId != null) {
+      modules[message.moduleId!]?.handleMessage(message);
+    } else {
+      for (var m in modules.values) {
+        m.handleMessage(message);
+      }
     }
   }
 }

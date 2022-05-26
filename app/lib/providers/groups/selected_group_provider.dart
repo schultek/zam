@@ -37,13 +37,13 @@ class GroupIdNotifier extends StateNotifier<String?> {
   }
 }
 
+final groupByIdProvider = Provider.family<AsyncValue<Group?>, String>((ref, String id) {
+  return ref.watch(groupsProvider.select((g) => g.whenData((g) => g.where((g) => g.id == id).firstOrNull)));
+});
+
 final selectedGroupProvider = Provider<Group?>((ref) {
   var selectedGroupId = ref.watch(selectedGroupIdProvider);
-
-  var groups = ref.watch(groupsProvider);
-  var group = groups.value?.where((t) => t.id == selectedGroupId).firstOrNull;
-
-  return group;
+  return ref.watch(groupByIdProvider(selectedGroupId ?? '')).value;
 });
 
 final groupUserProvider = Provider<GroupUser?>((ref) {

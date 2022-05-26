@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
 import '../elements/elements.dart';
@@ -21,6 +22,15 @@ abstract class ModuleBuilder {
   void dispose() {}
 
   Iterable<Widget>? getSettings(BuildContext context) => null;
+
+  void handleMessage(ModuleMessage message) {}
+}
+
+@MappableClass(discriminatorKey: 'type')
+class ModuleMessage {
+  final String? moduleId;
+
+  ModuleMessage(this.moduleId);
 }
 
 typedef ElementBuilder<T extends ModuleElement> = FutureOr<T?> Function(ModuleContext module);
