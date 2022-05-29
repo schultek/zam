@@ -18,7 +18,7 @@ class AnnouncementCard extends StatelessWidget {
           Widget child = Container(
             color: data.backgroundColor,
             child: Padding(
-              padding: const EdgeInsets.all(30),
+              padding: const EdgeInsets.all(25),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -33,7 +33,7 @@ class AnnouncementCard extends StatelessWidget {
                             color: data.textColor ?? context.onSurfaceColor,
                           ),
                           maxLines: 5,
-                          stepGranularity: 10,
+                          stepGranularity: 5,
                           minFontSize: 10,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -52,7 +52,7 @@ class AnnouncementCard extends StatelessWidget {
                           color: data.textColor ?? context.onSurfaceColor,
                         ),
                         maxLines: 5,
-                        stepGranularity: 10,
+                        stepGranularity: 2,
                         minFontSize: 10,
                         overflow: TextOverflow.ellipsis,
                         textAlign: TextAlign.center,

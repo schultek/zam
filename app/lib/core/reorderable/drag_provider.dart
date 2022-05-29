@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
@@ -69,7 +70,11 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
       area.context.read(selectedAreaProvider.notifier).selectWidgetAreaById(area.id);
     }
 
-    Vibration.vibrate(amplitude: 1, duration: 2);
+    if (Platform.isAndroid) {
+      Vibration.vibrate(amplitude: 1, duration: 2);
+    } else {
+      HapticFeedback.heavyImpact();
+    }
 
     var draggedItem = read(reorderableItemProvider).items[key]!.item;
 
