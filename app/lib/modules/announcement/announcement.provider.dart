@@ -31,8 +31,16 @@ class AnnouncementLogic {
   }
 
   Future<void> sendNotification(String id, Announcement announcement) async {
-    await ref.read(announcementApiProvider).sendNotification(
-        AnnouncementNotification(ref.read(selectedGroupIdProvider)!, id, announcement.title, announcement.message));
+    var group = ref.read(selectedGroupProvider)!;
+    await ref.read(announcementApiProvider).sendNotification(AnnouncementNotification(
+          group.id,
+          group.name,
+          group.pictureUrl,
+          id,
+          announcement.title ?? ref.read(l10nProvider).new_announcement,
+          announcement.message,
+          encodeColor(GroupThemeData.fromModel(group.theme).themeData.colorScheme.primary),
+        ));
   }
 
   Future<void> removeAnnouncement(String id) async {

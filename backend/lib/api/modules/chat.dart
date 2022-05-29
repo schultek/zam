@@ -27,7 +27,10 @@ class ChatApi extends ChatApiEndpoint {
         .firestore()
         .doc('groups/${notification.groupId}/modules/chat/channels/${notification.channelId}')
         .get();
-    var tokens = (channel.get('members') as List).map((id) => users[id]?['token']).whereType<String>();
+    var tokens = (channel.get('members') as List)
+        .where((id) => id != notification.userId)
+        .map((id) => users[id]?['token'])
+        .whereType<String>();
 
     await request.app.messaging().sendAll(
         tokens,

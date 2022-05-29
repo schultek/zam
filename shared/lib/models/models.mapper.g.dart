@@ -179,15 +179,15 @@ class AnnouncementNotificationMapper extends BaseMapper<AnnouncementNotification
 
   @override Function get decoder => decode;
   AnnouncementNotification decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  AnnouncementNotification fromMap(Map<String, dynamic> map) => AnnouncementNotification(Mapper.i.$get(map, 'groupId'), Mapper.i.$get(map, 'id'), Mapper.i.$getOpt(map, 'title'), Mapper.i.$get(map, 'message'));
+  AnnouncementNotification fromMap(Map<String, dynamic> map) => AnnouncementNotification(Mapper.i.$get(map, 'groupId'), Mapper.i.$get(map, 'groupName'), Mapper.i.$getOpt(map, 'groupPicture'), Mapper.i.$get(map, 'id'), Mapper.i.$get(map, 'title'), Mapper.i.$get(map, 'message'), Mapper.i.$getOpt(map, 'color'));
 
   @override Function get encoder => (AnnouncementNotification v) => encode(v);
   dynamic encode(AnnouncementNotification v) => toMap(v);
-  Map<String, dynamic> toMap(AnnouncementNotification a) => {'groupId': Mapper.i.$enc(a.groupId, 'groupId'), 'id': Mapper.i.$enc(a.id, 'id'), 'title': Mapper.i.$enc(a.title, 'title'), 'message': Mapper.i.$enc(a.message, 'message')};
+  Map<String, dynamic> toMap(AnnouncementNotification a) => {'groupId': Mapper.i.$enc(a.groupId, 'groupId'), 'groupName': Mapper.i.$enc(a.groupName, 'groupName'), 'groupPicture': Mapper.i.$enc(a.groupPicture, 'groupPicture'), 'id': Mapper.i.$enc(a.id, 'id'), 'title': Mapper.i.$enc(a.title, 'title'), 'message': Mapper.i.$enc(a.message, 'message'), 'color': Mapper.i.$enc(a.color, 'color')};
 
-  @override String stringify(AnnouncementNotification self) => 'AnnouncementNotification(groupId: ${Mapper.asString(self.groupId)}, id: ${Mapper.asString(self.id)}, title: ${Mapper.asString(self.title)}, message: ${Mapper.asString(self.message)})';
-  @override int hash(AnnouncementNotification self) => Mapper.hash(self.groupId) ^ Mapper.hash(self.id) ^ Mapper.hash(self.title) ^ Mapper.hash(self.message);
-  @override bool equals(AnnouncementNotification self, AnnouncementNotification other) => Mapper.isEqual(self.groupId, other.groupId) && Mapper.isEqual(self.id, other.id) && Mapper.isEqual(self.title, other.title) && Mapper.isEqual(self.message, other.message);
+  @override String stringify(AnnouncementNotification self) => 'AnnouncementNotification(groupId: ${Mapper.asString(self.groupId)}, groupName: ${Mapper.asString(self.groupName)}, groupPicture: ${Mapper.asString(self.groupPicture)}, id: ${Mapper.asString(self.id)}, title: ${Mapper.asString(self.title)}, message: ${Mapper.asString(self.message)}, color: ${Mapper.asString(self.color)})';
+  @override int hash(AnnouncementNotification self) => Mapper.hash(self.groupId) ^ Mapper.hash(self.groupName) ^ Mapper.hash(self.groupPicture) ^ Mapper.hash(self.id) ^ Mapper.hash(self.title) ^ Mapper.hash(self.message) ^ Mapper.hash(self.color);
+  @override bool equals(AnnouncementNotification self, AnnouncementNotification other) => Mapper.isEqual(self.groupId, other.groupId) && Mapper.isEqual(self.groupName, other.groupName) && Mapper.isEqual(self.groupPicture, other.groupPicture) && Mapper.isEqual(self.id, other.id) && Mapper.isEqual(self.title, other.title) && Mapper.isEqual(self.message, other.message) && Mapper.isEqual(self.color, other.color);
 
   @override Function get typeFactory => (f) => f<AnnouncementNotification>();
 }
@@ -200,14 +200,14 @@ extension AnnouncementNotificationMapperExtension  on AnnouncementNotification {
 
 abstract class AnnouncementNotificationCopyWith<$R> {
   factory AnnouncementNotificationCopyWith(AnnouncementNotification value, Then<AnnouncementNotification, $R> then) = _AnnouncementNotificationCopyWithImpl<$R>;
-  $R call({String? groupId, String? id, String? title, String? message});
+  $R call({String? groupId, String? groupName, String? groupPicture, String? id, String? title, String? message, String? color});
   $R apply(AnnouncementNotification Function(AnnouncementNotification) transform);
 }
 
 class _AnnouncementNotificationCopyWithImpl<$R> extends BaseCopyWith<AnnouncementNotification, $R> implements AnnouncementNotificationCopyWith<$R> {
   _AnnouncementNotificationCopyWithImpl(AnnouncementNotification value, Then<AnnouncementNotification, $R> then) : super(value, then);
 
-  @override $R call({String? groupId, String? id, Object? title = $none, String? message}) => $then(AnnouncementNotification(groupId ?? $value.groupId, id ?? $value.id, or(title, $value.title), message ?? $value.message));
+  @override $R call({String? groupId, String? groupName, Object? groupPicture = $none, String? id, String? title, String? message, Object? color = $none}) => $then(AnnouncementNotification(groupId ?? $value.groupId, groupName ?? $value.groupName, or(groupPicture, $value.groupPicture), id ?? $value.id, title ?? $value.title, message ?? $value.message, or(color, $value.color)));
 }
 
 class ChatNotificationMapper extends BaseMapper<ChatNotification> {

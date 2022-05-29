@@ -1,10 +1,8 @@
 import 'dart:convert';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:dart_mappable/dart_mappable.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/module/module_builder.dart';
@@ -34,11 +32,9 @@ class NotificationLogic {
         [
           NotificationChannel(
             channelGroupKey: 'basic_channel_group',
-            channelKey: 'basic_channel',
-            channelName: 'Basic notifications',
-            channelDescription: 'Notification channel for basic tests',
-            defaultColor: const Color(0xFF9D50DD),
-            ledColor: Colors.white,
+            channelKey: 'announcements',
+            channelName: 'Announcements',
+            channelDescription: 'Notification channel for announcements',
           ),
           NotificationChannel(
             channelGroupKey: 'basic_channel_group',
@@ -48,16 +44,13 @@ class NotificationLogic {
             groupKey: 'chat',
             groupSort: GroupSort.Desc,
             groupAlertBehavior: GroupAlertBehavior.Children,
-            defaultColor: Colors.lightGreen,
-            ledColor: Colors.lightGreen,
-            vibrationPattern: lowVibrationPattern,
             importance: NotificationImportance.High,
           )
         ],
         // Channel groups are only visual and are not required
         channelGroups: [
           NotificationChannelGroup(
-            channelGroupkey: 'basic_channel_group',
+            channelGroupKey: 'basic_channel_group',
             channelGroupName: 'Basic group',
           ),
         ],
@@ -72,15 +65,7 @@ class NotificationLogic {
       await AwesomeNotifications().requestPermissionToSendNotifications();
     }
 
-    AwesomeNotifications().actionStream.listen((ReceivedAction receivedAction) async {
-      print('Action received $receivedAction');
-      var buttonKey = receivedAction.buttonKeyPressed;
-      var buttonKeyInput = receivedAction.buttonKeyInput;
-      var payload = {...receivedAction.payload ?? {}, 'ref': ref};
-      registry.handleMessage(
-        NotificationMessage(payload['moduleId'] as String? ?? '', buttonKey, buttonKeyInput, payload),
-      );
-    });
+    AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceived);
 
     if (!_firebaseMessaging.isAutoInitEnabled) {
       await _firebaseMessaging.setAutoInitEnabled(true);
@@ -106,11 +91,11 @@ class NotificationMessage extends ModuleMessage {
   final String key;
   final String input;
   final Map<String, dynamic> payload;
+  final ProviderContainer container;
 
-  NotificationMessage(String moduleId, this.key, this.input, this.payload) : super(moduleId);
+  NotificationMessage(String moduleId, this.key, this.input, this.payload, this.container) : super(moduleId);
 }
 
-@MappableClass()
 class BackgroundMessage extends ModuleMessage {
   final ProviderContainer container;
   final String payload;
@@ -126,15 +111,31 @@ String encodePayload(dynamic value) {
   return base64Encode(utf8.encode(Mapper.toJson(value)));
 }
 
+Future<void> onActionReceived(ReceivedAction receivedAction) async {
+  print('Action received $receivedAction');
+  try {
+    var buttonKey = receivedAction.buttonKeyPressed;
+    var buttonKeyInput = receivedAction.buttonKeyInput;
+    var payload = receivedAction.payload ?? {};
+    await registry.handleMessage(
+      NotificationMessage(payload['moduleId'] ?? '', buttonKey, buttonKeyInput, payload, ProviderContainer()),
+    );
+  } catch (e, st) {
+    FirebaseCrashlytics.instance.recordError(e, st);
+  }
+}
+
 Future<void> onBackgroundMessage(RemoteMessage message) async {
   print('Background message: ${message.data}');
   try {
+    await AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceived);
+
     var msg = BackgroundMessage(
       moduleId: message.data['moduleId'] as String,
       container: ProviderContainer(),
       payload: message.data['payload'] as String,
     );
-    registry.handleMessage(msg);
+    await registry.handleMessage(msg);
   } catch (e, st) {
     FirebaseCrashlytics.instance.recordError(e, st);
   }

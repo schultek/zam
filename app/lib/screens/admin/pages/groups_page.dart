@@ -67,7 +67,8 @@ class GroupsPage extends StatelessWidget {
             children: [
               ListTile(
                 title: const Text('Blacklist'),
-                subtitle: Text(group.moduleBlacklist.map((id) => registry.modules[id]!.getName(context)).join(', ')),
+                subtitle:
+                    Text(group.moduleBlacklist.map((id) => registry.modules[id]?.getName(context) ?? id).join(', ')),
                 isThreeLine: group.moduleBlacklist.isNotEmpty,
                 trailing: IconButton(
                   icon: const Icon(Icons.edit),

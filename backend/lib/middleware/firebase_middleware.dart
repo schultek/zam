@@ -22,7 +22,7 @@ extension MulticaseMessage on CloudMessaging {
           name: message.name,
           fcmOptions: message.fcmOptions,
           webpush: message.webpush,
-        )),
+        )).catchError((e) {}),
     ]);
   }
 }

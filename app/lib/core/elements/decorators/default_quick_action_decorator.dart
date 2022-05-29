@@ -24,7 +24,7 @@ class DefaultActionDecorator implements ElementDecorator<ActionElement> {
 
   Widget actionLayout(BuildContext context, ActionElement element, {bool isPlaceholder = false, double opacity = 0}) {
     var textColor = context.onSurfaceColor;
-    var textStyle = context.theme.textTheme.bodyText1!.apply(fontSizeDelta: -2);
+    var textStyle = context.theme.textTheme.bodyText1!.apply(fontSizeDelta: -3);
     var text = element.textBuilder(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -75,6 +75,7 @@ class DefaultActionDecorator implements ElementDecorator<ActionElement> {
                       ),
                       overflow: TextOverflow.visible,
                       softWrap: false,
+                      maxLines: 2,
                       textAlign: TextAlign.center,
                     ),
                 ],

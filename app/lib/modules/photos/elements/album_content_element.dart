@@ -11,7 +11,10 @@ class AlbumContentElement with ElementBuilderMixin<ContentElement> {
         module: module,
         builder: (context) => PhotosAlbumShortcutCard(album),
         onTap: (context) {
-          launchUrl(Uri.parse(album.albumUrl));
+          launchUrl(
+            Uri.parse(album.albumUrl),
+            mode: LaunchMode.externalApplication,
+          );
         },
         whenRemoved: (context) {
           context.read(googleAccountProvider.notifier).signOut();

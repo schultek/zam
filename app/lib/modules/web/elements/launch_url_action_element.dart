@@ -33,7 +33,7 @@ class LaunchUrlActionElement with ElementBuilderMixin<ActionElement> {
       onTap: (context) {
         var uri = Uri.tryParse(params.url ?? '');
         if (uri != null) {
-          launchUrl(uri);
+          launchUrl(uri, mode: LaunchMode.externalApplication);
         }
       },
       settings: (context) => [

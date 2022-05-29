@@ -344,6 +344,8 @@ PODS:
   - AppAuth/Core (1.5.0)
   - AppAuth/ExternalUserAgent (1.5.0):
     - AppAuth/Core
+  - awesome_notifications (0.0.3):
+    - Flutter
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
     - BoringSSL-GRPC/Interface (= 0.0.7)
@@ -626,6 +628,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - camera (from `.symlinks/plugins/camera/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -692,6 +695,8 @@ SPEC REPOS:
     - SwiftyGif
 
 EXTERNAL SOURCES:
+  awesome_notifications:
+    :path: ".symlinks/plugins/awesome_notifications/ios"
   camera:
     :path: ".symlinks/plugins/camera/ios"
   cloud_firestore:
@@ -754,6 +759,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   AppAuth: 80317d99ac7ff2801a2f18ff86b48cd315ed465d
+  awesome_notifications: 04530aafec8dac4635244ed4b4072f4aea6cc938
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   camera: 9993f92f2c793e87b65e35f3a23c70582afb05b1
   cloud_firestore: c6c42fe62809b7417aa3c45a6ef0c2812f7fb0d6

@@ -53,3 +53,4 @@ app.*.map.json
 
 # Module Reflection
 lib/main.reflectable.dart
+.fvm/flutter_sdk

@@ -11,10 +11,25 @@ import 'module_builder.dart';
 import 'module_context.dart';
 
 class ModuleRegistry {
-  final Map<String, ModuleBuilder> modules;
-  ModuleRegistry(List<ModuleBuilder> modules) : modules = Map.fromEntries(modules.map((m) => MapEntry(m.id, m)));
+  final List<ModuleBuilder Function()> factories;
+  final Map<String, ModuleBuilder> modules = {};
+
+  ModuleRegistry(this.factories);
+
+  bool isInitialized = false;
+  void initModules() {
+    if (isInitialized) return;
+    modules.clear();
+    for (var factory in factories) {
+      var m = factory();
+      modules[m.id] = m;
+    }
+    isInitialized = true;
+  }
 
   FutureOr<T?> getWidget<T extends ModuleElement>(BuildContext context, String id) async {
+    initModules();
+
     var moduleId = ModuleContext.getModuleId(id);
     var module = modules[moduleId];
     if (module == null) return null;
@@ -28,6 +43,8 @@ class ModuleRegistry {
   }
 
   Future<List<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) async {
+    initModules();
+
     var moduleBlacklist = context.read(selectedGroupProvider)!.moduleBlacklist;
     var widgets = await Future.wait([
       for (var m in modules.entries)
@@ -62,27 +79,35 @@ class ModuleRegistry {
     for (var module in modules.values) {
       module.dispose();
     }
+    modules.clear();
+    isInitialized = false;
   }
 
   Iterable<Route> generateInitialRoutes(BuildContext context) sync* {
+    initModules();
+
     for (var module in modules.values) {
       yield* module.generateInitialRoutes(context);
     }
   }
 
   Iterable<MapEntry<String, Iterable<Widget>>> getSettings(BuildContext context) sync* {
+    initModules();
+
     for (var module in modules.values) {
       var settings = module.getSettings(context);
       if (settings != null) yield MapEntry(module.getName(context), settings);
     }
   }
 
-  void handleMessage(ModuleMessage message) {
+  Future<void> handleMessage(ModuleMessage message) async {
+    initModules();
+
     if (message.moduleId != null) {
-      modules[message.moduleId!]?.handleMessage(message);
+      await modules[message.moduleId!]?.handleMessage(message);
     } else {
       for (var m in modules.values) {
-        m.handleMessage(message);
+        await m.handleMessage(message);
       }
     }
   }

@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:api_agent/api_agent.dart';
 // ignore: implementation_imports
 import 'package:firebase_admin/src/messaging.dart';
 import 'package:shared/api/app.server.dart';
 import 'package:shared/api/modules/announcement.dart';
+import 'package:shared/models/models.mapper.g.dart';
 
 import '../../middleware/firebase_middleware.dart';
 
@@ -19,8 +21,9 @@ class AnnouncementApi extends AnnouncementApiEndpoint {
     await request.app.messaging().sendAll(
         tokens,
         Message()
-          ..notification = (Notification()
-            ..title = announcement.title ?? 'New Announcement'
-            ..body = announcement.message));
+          ..data = {
+            'moduleId': 'announcements',
+            'payload': base64Encode(utf8.encode(Mapper.toJson(announcement))),
+          });
   }
 }

@@ -23,7 +23,7 @@ abstract class ModuleBuilder {
 
   Iterable<Widget>? getSettings(BuildContext context) => null;
 
-  void handleMessage(ModuleMessage message) {}
+  Future<void> handleMessage(ModuleMessage message) async {}
 }
 
 @MappableClass(discriminatorKey: 'type')

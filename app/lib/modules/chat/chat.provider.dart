@@ -87,7 +87,7 @@ class ChatLogic {
           msgDoc.id,
           group.id,
           group.name,
-          encodeColor(GroupThemeData.fromModel(group.theme).themeData.colorScheme.primary),
+          encodeColor(GroupThemeData.fromModel(group.theme).themeData.colorScheme.primary)!,
           channelId,
           channelName,
           userId,
@@ -158,38 +158,59 @@ class NotificationLogic {
   }
 
   Future<void> createNotification(ChatNotification notification) async {
-    await AwesomeNotifications().createNotification(
-      content: NotificationContent(
-        id: notification.id.hashCode,
-        channelKey: 'chat',
-        groupKey: notification.channelId,
-        summary: '${notification.groupName} - ${notification.channelName}',
-        title: notification.userName,
-        body: notification.text,
-        largeIcon: notification.pictureUrl,
-        roundedLargeIcon: true,
-        color: decodeColor(notification.color),
-        notificationLayout: NotificationLayout.Messaging,
-        category: NotificationCategory.Message,
-        payload: {
-          'moduleId': 'chat',
-          'payload': encodePayload(notification),
-        },
-      ),
-      actionButtons: [
-        NotificationActionButton(
-          key: 'close',
-          label: 'Close',
-          autoDismissible: true,
-          buttonType: ActionButtonType.Default,
+    if (Platform.isAndroid) {
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: notification.id.hashCode,
+          channelKey: 'chat',
+          groupKey: notification.channelId,
+          summary: '${notification.groupName} - ${notification.channelName}',
+          title: notification.userName,
+          body: notification.text,
+          largeIcon: notification.pictureUrl,
+          roundedLargeIcon: true,
+          color: decodeColor(notification.color),
+          notificationLayout: NotificationLayout.Messaging,
+          category: NotificationCategory.Message,
+          payload: {
+            'moduleId': 'chat',
+            'payload': encodePayload(notification),
+          },
         ),
-        NotificationActionButton(
-          key: 'reply',
-          label: 'Reply',
-          autoDismissible: false,
-          buttonType: ActionButtonType.InputField,
+        actionButtons: [
+          NotificationActionButton(
+            key: 'reply',
+            label: 'Reply',
+            autoDismissible: false,
+            requireInputText: true,
+            actionType: ActionType.SilentBackgroundAction,
+          ),
+        ],
+      );
+    } else {
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: notification.id.hashCode,
+          channelKey: 'chat',
+          groupKey: notification.channelId,
+          title: '${notification.groupName} - ${notification.channelName}',
+          body: '${notification.userName}: ${notification.text}',
+          category: NotificationCategory.Message,
+          payload: {
+            'moduleId': 'chat',
+            'payload': encodePayload(notification),
+          },
         ),
-      ],
-    );
+        actionButtons: [
+          NotificationActionButton(
+            key: 'reply',
+            label: 'Reply',
+            autoDismissible: false,
+            requireInputText: true,
+            actionType: ActionType.SilentBackgroundAction,
+          ),
+        ],
+      );
+    }
   }
 }

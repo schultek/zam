@@ -54,11 +54,3 @@ class ChatFileMessage extends ChatMessage {
     required DateTime sentAt,
   }) : super(sender: sender, text: text, sentAt: sentAt);
 }
-
-Color decodeColor(String value) {
-  return Color(int.parse('ff${value.substring(1)}', radix: 16));
-}
-
-String encodeColor(Color value) {
-  return "#${(value.value & 0xFFFFFF).toRadixString(16).padLeft(6, '0')}";
-}

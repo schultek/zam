@@ -30,7 +30,6 @@ import 'modules/profile/profile.module.dart';
 import 'modules/split/split.module.dart';
 import 'modules/thebutton/thebutton.module.dart';
 import 'modules/web/web_module.dart';
-import 'providers/notifications/notifications_provider.dart';
 import 'screens/admin/providers/admin_groups_provider.dart';
 import 'screens/admin/providers/admin_users_provider.dart';
 
@@ -40,7 +39,6 @@ var _mappers = <BaseMapper>{
   // class mappers
   ModuleMessageMapper._(),
   ModuleIdMapper._(),
-  BackgroundMessageMapper._(),
   GroupMapper._(),
   GroupUserMapper._(),
   SwipeTemplateModelMapper._(),
@@ -118,26 +116,12 @@ class ModuleMessageMapper extends BaseMapper<ModuleMessage> {
 
   @override
   Function get decoder => decode;
-  ModuleMessage decode(dynamic v) => checked(v, (Map<String, dynamic> map) {
-        switch (map['type']) {
-          case 'BackgroundMessage':
-            return BackgroundMessageMapper._().decode(map);
-          default:
-            return fromMap(map);
-        }
-      });
+  ModuleMessage decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
   ModuleMessage fromMap(Map<String, dynamic> map) => ModuleMessage(Mapper.i.$getOpt(map, 'moduleId'));
 
   @override
   Function get encoder => (ModuleMessage v) => encode(v);
-  dynamic encode(ModuleMessage v) {
-    if (v is BackgroundMessage) {
-      return BackgroundMessageMapper._().encode(v);
-    } else {
-      return toMap(v);
-    }
-  }
-
+  dynamic encode(ModuleMessage v) => toMap(v);
   Map<String, dynamic> toMap(ModuleMessage m) => {'moduleId': Mapper.i.$enc(m.moduleId, 'moduleId')};
 
   @override
@@ -227,67 +211,6 @@ class _ModuleIdCopyWithImpl<$R> extends BaseCopyWith<ModuleId, $R> implements Mo
       elementId ?? $value.elementId,
       uniqueId ?? $value.uniqueId,
       or(params, $value.params)));
-}
-
-class BackgroundMessageMapper extends BaseMapper<BackgroundMessage> {
-  BackgroundMessageMapper._();
-
-  @override
-  Function get decoder => decode;
-  BackgroundMessage decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  BackgroundMessage fromMap(Map<String, dynamic> map) => BackgroundMessage(
-      moduleId: Mapper.i.$getOpt(map, 'moduleId'),
-      container: Mapper.i.$get(map, 'container'),
-      payload: Mapper.i.$get(map, 'payload'));
-
-  @override
-  Function get encoder => (BackgroundMessage v) => encode(v);
-  dynamic encode(BackgroundMessage v) => toMap(v);
-  Map<String, dynamic> toMap(BackgroundMessage b) => {
-        'moduleId': Mapper.i.$enc(b.moduleId, 'moduleId'),
-        'container': Mapper.i.$enc(b.container, 'container'),
-        'payload': Mapper.i.$enc(b.payload, 'payload'),
-        'type': 'BackgroundMessage'
-      };
-
-  @override
-  String stringify(BackgroundMessage self) =>
-      'BackgroundMessage(moduleId: ${Mapper.asString(self.moduleId)}, container: ${Mapper.asString(self.container)}, payload: ${Mapper.asString(self.payload)})';
-  @override
-  int hash(BackgroundMessage self) =>
-      Mapper.hash(self.moduleId) ^ Mapper.hash(self.container) ^ Mapper.hash(self.payload);
-  @override
-  bool equals(BackgroundMessage self, BackgroundMessage other) =>
-      Mapper.isEqual(self.moduleId, other.moduleId) &&
-      Mapper.isEqual(self.container, other.container) &&
-      Mapper.isEqual(self.payload, other.payload);
-
-  @override
-  Function get typeFactory => (f) => f<BackgroundMessage>();
-}
-
-extension BackgroundMessageMapperExtension on BackgroundMessage {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  BackgroundMessageCopyWith<BackgroundMessage> get copyWith => BackgroundMessageCopyWith(this, $identity);
-}
-
-abstract class BackgroundMessageCopyWith<$R> {
-  factory BackgroundMessageCopyWith(BackgroundMessage value, Then<BackgroundMessage, $R> then) =
-      _BackgroundMessageCopyWithImpl<$R>;
-  $R call({String? moduleId, ProviderContainer? container, String? payload});
-  $R apply(BackgroundMessage Function(BackgroundMessage) transform);
-}
-
-class _BackgroundMessageCopyWithImpl<$R> extends BaseCopyWith<BackgroundMessage, $R>
-    implements BackgroundMessageCopyWith<$R> {
-  _BackgroundMessageCopyWithImpl(BackgroundMessage value, Then<BackgroundMessage, $R> then) : super(value, then);
-
-  @override
-  $R call({Object? moduleId = $none, ProviderContainer? container, String? payload}) => $then(BackgroundMessage(
-      moduleId: or(moduleId, $value.moduleId),
-      container: container ?? $value.container,
-      payload: payload ?? $value.payload));
 }
 
 class GroupMapper extends BaseMapper<Group> {
@@ -3677,31 +3600,49 @@ class AnnouncementNotificationMapper extends BaseMapper<AnnouncementNotification
   @override
   Function get decoder => decode;
   AnnouncementNotification decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  AnnouncementNotification fromMap(Map<String, dynamic> map) => AnnouncementNotification(Mapper.i.$get(map, 'groupId'),
-      Mapper.i.$get(map, 'id'), Mapper.i.$getOpt(map, 'title'), Mapper.i.$get(map, 'message'));
+  AnnouncementNotification fromMap(Map<String, dynamic> map) => AnnouncementNotification(
+      Mapper.i.$get(map, 'groupId'),
+      Mapper.i.$get(map, 'groupName'),
+      Mapper.i.$getOpt(map, 'groupPicture'),
+      Mapper.i.$get(map, 'id'),
+      Mapper.i.$get(map, 'title'),
+      Mapper.i.$get(map, 'message'),
+      Mapper.i.$getOpt(map, 'color'));
 
   @override
   Function get encoder => (AnnouncementNotification v) => encode(v);
   dynamic encode(AnnouncementNotification v) => toMap(v);
   Map<String, dynamic> toMap(AnnouncementNotification a) => {
         'groupId': Mapper.i.$enc(a.groupId, 'groupId'),
+        'groupName': Mapper.i.$enc(a.groupName, 'groupName'),
+        'groupPicture': Mapper.i.$enc(a.groupPicture, 'groupPicture'),
         'id': Mapper.i.$enc(a.id, 'id'),
         'title': Mapper.i.$enc(a.title, 'title'),
-        'message': Mapper.i.$enc(a.message, 'message')
+        'message': Mapper.i.$enc(a.message, 'message'),
+        'color': Mapper.i.$enc(a.color, 'color')
       };
 
   @override
   String stringify(AnnouncementNotification self) =>
-      'AnnouncementNotification(groupId: ${Mapper.asString(self.groupId)}, id: ${Mapper.asString(self.id)}, title: ${Mapper.asString(self.title)}, message: ${Mapper.asString(self.message)})';
+      'AnnouncementNotification(groupId: ${Mapper.asString(self.groupId)}, groupName: ${Mapper.asString(self.groupName)}, groupPicture: ${Mapper.asString(self.groupPicture)}, id: ${Mapper.asString(self.id)}, title: ${Mapper.asString(self.title)}, message: ${Mapper.asString(self.message)}, color: ${Mapper.asString(self.color)})';
   @override
   int hash(AnnouncementNotification self) =>
-      Mapper.hash(self.groupId) ^ Mapper.hash(self.id) ^ Mapper.hash(self.title) ^ Mapper.hash(self.message);
+      Mapper.hash(self.groupId) ^
+      Mapper.hash(self.groupName) ^
+      Mapper.hash(self.groupPicture) ^
+      Mapper.hash(self.id) ^
+      Mapper.hash(self.title) ^
+      Mapper.hash(self.message) ^
+      Mapper.hash(self.color);
   @override
   bool equals(AnnouncementNotification self, AnnouncementNotification other) =>
       Mapper.isEqual(self.groupId, other.groupId) &&
+      Mapper.isEqual(self.groupName, other.groupName) &&
+      Mapper.isEqual(self.groupPicture, other.groupPicture) &&
       Mapper.isEqual(self.id, other.id) &&
       Mapper.isEqual(self.title, other.title) &&
-      Mapper.isEqual(self.message, other.message);
+      Mapper.isEqual(self.message, other.message) &&
+      Mapper.isEqual(self.color, other.color);
 
   @override
   Function get typeFactory => (f) => f<AnnouncementNotification>();
@@ -3717,7 +3658,14 @@ extension AnnouncementNotificationMapperExtension on AnnouncementNotification {
 abstract class AnnouncementNotificationCopyWith<$R> {
   factory AnnouncementNotificationCopyWith(AnnouncementNotification value, Then<AnnouncementNotification, $R> then) =
       _AnnouncementNotificationCopyWithImpl<$R>;
-  $R call({String? groupId, String? id, String? title, String? message});
+  $R call(
+      {String? groupId,
+      String? groupName,
+      String? groupPicture,
+      String? id,
+      String? title,
+      String? message,
+      String? color});
   $R apply(AnnouncementNotification Function(AnnouncementNotification) transform);
 }
 
@@ -3727,8 +3675,22 @@ class _AnnouncementNotificationCopyWithImpl<$R> extends BaseCopyWith<Announcemen
       : super(value, then);
 
   @override
-  $R call({String? groupId, String? id, Object? title = $none, String? message}) => $then(AnnouncementNotification(
-      groupId ?? $value.groupId, id ?? $value.id, or(title, $value.title), message ?? $value.message));
+  $R call(
+          {String? groupId,
+          String? groupName,
+          Object? groupPicture = $none,
+          String? id,
+          String? title,
+          String? message,
+          Object? color = $none}) =>
+      $then(AnnouncementNotification(
+          groupId ?? $value.groupId,
+          groupName ?? $value.groupName,
+          or(groupPicture, $value.groupPicture),
+          id ?? $value.id,
+          title ?? $value.title,
+          message ?? $value.message,
+          or(color, $value.color)));
 }
 
 class ChatNotificationMapper extends BaseMapper<ChatNotification> {
