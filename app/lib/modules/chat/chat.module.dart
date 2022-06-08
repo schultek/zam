@@ -116,7 +116,6 @@ class ChatModule extends ModuleBuilder {
       }
     } else if (message is BackgroundMessage) {
       var notification = decodePayload<ChatNotification>(message.payload);
-
       await message.container.read(notificationLogicProvider).createNotification(notification);
     }
   }

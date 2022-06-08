@@ -7,7 +7,7 @@ import 'package:cropperx/cropperx.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../profile.module.dart';
+import '../../helpers/extensions.dart';
 
 class ImageSelector {
   static Future<Uint8List?> fromGallery(

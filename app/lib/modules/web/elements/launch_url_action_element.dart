@@ -5,8 +5,9 @@ class LaunchUrlParams {
   final String? url;
   final String? label;
   final String? icon;
+  final String? imageUrl;
 
-  LaunchUrlParams({this.url, this.label, this.icon});
+  LaunchUrlParams({this.url, this.label, this.icon, this.imageUrl});
 }
 
 class LaunchUrlActionElement with ElementBuilderMixin<ActionElement> {

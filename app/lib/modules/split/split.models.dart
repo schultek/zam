@@ -44,9 +44,10 @@ extension CurrencySymbol on Currency {
 class SplitState {
   final Map<String, SplitPot> pots;
   final Map<String, SplitEntry> entries;
+  final List<SplitTemplate> templates;
   final bool showBilling;
 
-  SplitState({this.pots = const {}, this.entries = const {}, this.showBilling = false}) {
+  SplitState({this.pots = const {}, this.entries = const {}, this.showBilling = false, this.templates = const []}) {
     balances = calcBalances();
     billing = calcBilling();
   }
@@ -162,6 +163,14 @@ class SplitState {
 }
 
 @MappableClass()
+class SplitTemplate with Mappable {
+  final String name;
+  final ExpenseTarget target;
+
+  SplitTemplate(this.name, this.target);
+}
+
+@MappableClass()
 class BalanceEntry with Mappable {
   final SplitSource key;
   double value;
@@ -179,7 +188,7 @@ class SplitBalance {
   String toPrintString() {
     var entries = amounts.entries.where((e) => e.value != 0);
     if (entries.isEmpty && amounts.entries.isNotEmpty) entries = amounts.entries.take(1);
-    return entries.map((e) => '${e.value.toStringAsFixed(2)} ${e.key.symbol}').join(', ');
+    return entries.map((e) => '${e.value.toStringAsFixed(2)}${e.key.symbol}').join(', ');
   }
 }
 

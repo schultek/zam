@@ -52,8 +52,10 @@ class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
           builder: (context) => AspectRatio(
             aspectRatio: 2.1,
             child: NeedsSetupCard(
-              title: context.tr.new_announcement,
-              icon: Icons.add_comment,
+              child: SimpleCard(
+                title: context.tr.new_announcement,
+                icon: Icons.add_comment,
+              ),
             ),
           ),
           settingsAction: (context) async {

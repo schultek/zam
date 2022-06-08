@@ -20,7 +20,9 @@ class GroupIdNotifier extends StateNotifier<String?> {
   final Ref ref;
 
   GroupIdNotifier(this.ref, String? initialState) : super(initialState) {
-    ref.read(notificationsProvider).setup();
+    if (initialState != null) {
+      ref.read(notificationsProvider).setup();
+    }
   }
 
   SharedPreferences? get prefs => ref.read(sharedPreferencesProvider).value;
@@ -29,11 +31,11 @@ class GroupIdNotifier extends StateNotifier<String?> {
   set state(String? value) {
     if (value != null) {
       prefs?.setString('selected_group_id', value);
+      ref.read(notificationsProvider).setup();
     } else {
       prefs?.remove('selected_group_id');
     }
     super.state = value;
-    ref.read(notificationsProvider).setup();
   }
 }
 

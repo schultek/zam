@@ -117,7 +117,7 @@ class OnLinkReceived extends OnLinkReceivedEndpoint {
       return true;
     } else if (uri.path == '/invitation/group') {
       var groupId = uri.queryParameters['groupId'];
-      var role = uri.queryParameters['role'];
+      var role = uri.queryParameters['role'] ?? 'participant';
 
       var groupRef = request.app.firestore().doc('groups/$groupId');
       var group = await groupRef.get();
@@ -126,8 +126,14 @@ class OnLinkReceived extends OnLinkReceivedEndpoint {
         throw ApiException(400, 'The group with id $groupId does not exist.');
       }
 
+      var userRole = group.get('users.${request.user.uid}.role');
+      if (userRole == 'organizer') {
+        // Don't downgrade organizer users via link
+        return false;
+      }
+
       print('Adding user ${request.user.uid} to group $groupId with role $role.');
-      await groupRef.update({'users.${request.user.uid}.role': role ?? 'participant'});
+      await groupRef.update({'users.${request.user.uid}.role': role});
     }
 
     return false;

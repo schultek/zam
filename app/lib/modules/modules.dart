@@ -6,7 +6,6 @@ import 'elimination/elimination.module.dart';
 import 'labels/labels.module.dart';
 import 'music/music.module.dart';
 import 'notes/notes.module.dart';
-import 'photos/photos.module.dart';
 import 'polls/polls.module.dart';
 import 'profile/profile.module.dart';
 import 'split/split.module.dart';
@@ -23,7 +22,6 @@ final registry = ModuleRegistry([
   AnnouncementModule.new,
   EliminationGameModule.new,
   ProfileModule.new,
-  PhotosModule.new,
   LabelModule.new,
   PollsModule.new,
   SplitModule.new,

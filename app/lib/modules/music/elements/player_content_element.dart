@@ -43,8 +43,10 @@ class PlayerContentElement with ElementBuilderMixin<ContentElement> {
                 );
               } else {
                 return const NeedsSetupCard(
-                  title: 'Spotify',
-                  icon: Icons.music_note,
+                  child: SimpleCard(
+                    title: 'Spotify',
+                    icon: Icons.music_note,
+                  ),
                 );
               }
             } else {
@@ -123,6 +125,7 @@ class PlayerContentElement with ElementBuilderMixin<ContentElement> {
               child: WebView(
                 javascriptMode: JavascriptMode.unrestricted,
                 initialUrl: authUri.toString(),
+                userAgent: 'Chrome/102.0.0.0 Mobile',
                 navigationDelegate: (navReq) {
                   if (navReq.url.startsWith(redirectUri)) {
                     Navigator.of(context).pop(navReq.url);

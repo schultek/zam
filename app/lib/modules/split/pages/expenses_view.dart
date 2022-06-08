@@ -26,9 +26,22 @@ class ExpensesView extends StatelessWidget {
                 leading: const Icon(Icons.shopping_basket),
                 title: Text(entry.title),
                 subtitle: Text(context.watch(splitSourceLabelProvider(entry.source))),
-                trailing: Text(
-                  '${entry.amount.toStringAsFixed(2)} ${entry.currency.symbol}',
-                  style: context.theme.textTheme.bodyMedium,
+                trailing: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${entry.amount.toStringAsFixed(2)} ${entry.currency.symbol}',
+                      style: context.theme.textTheme.bodyMedium,
+                    ),
+                    Opacity(
+                      opacity: 0.6,
+                      child: Text(
+                        dateFormat.format(entry.transactedAt ?? entry.createdAt),
+                        style: context.theme.textTheme.caption,
+                      ),
+                    ),
+                  ],
                 ),
                 tileColor: color,
                 onTap: () async {
@@ -55,9 +68,22 @@ class ExpensesView extends StatelessWidget {
                     Text(context.watch(splitSourceLabelProvider(entry.target))),
                   ],
                 ),
-                trailing: Text(
-                  '${entry.amount.toStringAsFixed(2)} ${entry.currency.symbol}',
-                  style: context.theme.textTheme.bodyMedium,
+                trailing: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      '${entry.amount.toStringAsFixed(2)} ${entry.currency.symbol}',
+                      style: context.theme.textTheme.bodyMedium,
+                    ),
+                    Opacity(
+                      opacity: 0.6,
+                      child: Text(
+                        dateFormat.format(entry.transactedAt ?? entry.createdAt),
+                        style: context.theme.textTheme.caption,
+                      ),
+                    ),
+                  ],
                 ),
                 tileColor: color,
                 onTap: () async {
@@ -77,22 +103,36 @@ class ExpensesView extends StatelessWidget {
                     Text(context.watch(splitSourceLabelProvider(SplitSource.pot(entry.potId)))),
                   ],
                 ),
-                trailing: Row(
+                trailing: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      '${entry.sourceAmount.toStringAsFixed(2)} ${entry.sourceCurrency.symbol}',
-                      style: context.theme.textTheme.bodyMedium,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '${entry.sourceAmount.toStringAsFixed(2)} ${entry.sourceCurrency.symbol}',
+                          style: context.theme.textTheme.bodyMedium,
+                        ),
+                        const SizedBox(width: 5),
+                        Icon(
+                          Icons.arrow_right_alt,
+                          color: context.onSurfaceColor.withOpacity(0.8),
+                          size: 18,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          '${entry.targetAmount.toStringAsFixed(2)} ${entry.targetCurrency.symbol}',
+                          style: context.theme.textTheme.bodyMedium,
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 5),
-                    Icon(
-                      Icons.arrow_right_alt,
-                      color: context.onSurfaceColor.withOpacity(0.8),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      '${entry.targetAmount.toStringAsFixed(2)} ${entry.targetCurrency.symbol}',
-                      style: context.theme.textTheme.bodyMedium,
+                    Opacity(
+                      opacity: 0.6,
+                      child: Text(
+                        dateFormat.format(entry.transactedAt ?? entry.createdAt),
+                        style: context.theme.textTheme.caption,
+                      ),
                     ),
                   ],
                 ),

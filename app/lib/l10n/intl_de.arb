@@ -287,6 +287,8 @@
   "current_user": "Aktueller Nutzer",
   "show_billing": "Abrechnung anzeigen",
   "hide_billing": "Abrechnung ausblenden",
+  "save_as_template": "Als Vorlage speichern",
+  "select_template": "Vorlage auswählen",
 
   "@WEB": {},
 
@@ -294,5 +296,6 @@
   "launch_url": "Url öffnen",
   "label": "Text",
   "allow_navigation": "Navigation erlauben",
-  "website": "Webseite"
+  "website": "Webseite",
+  "custom_image": "Individuelles Bild"
 }

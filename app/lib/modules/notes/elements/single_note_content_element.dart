@@ -54,9 +54,10 @@ class SingleNoteContentElement with ElementBuilderMixin<ContentElement> {
         return ContentElement(
           module: module,
           builder: (context) => NeedsSetupCard(
+              child: SimpleCard(
             title: context.tr.single_note,
             icon: Icons.note_add,
-          ),
+          )),
           settingsAction: (context) async {
             var id = await Navigator.of(context).push<String>(
               MaterialPageRoute(builder: (context) => const SelectNotePage()),

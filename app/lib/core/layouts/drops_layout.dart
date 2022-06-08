@@ -6,7 +6,6 @@ import 'package:riverpod_context/riverpod_context.dart';
 import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
 import '../../modules/labels/widgets/label_widget.dart';
-import '../../modules/profile/widgets/image_selector.dart';
 import '../../providers/providers.dart';
 import '../areas/areas.dart';
 import '../elements/elements.dart';
@@ -14,6 +13,7 @@ import '../providers/editing_providers.dart';
 import '../themes/themes.dart';
 import '../widgets/input_list_tile.dart';
 import '../widgets/layout_preview.dart';
+import '../widgets/select_image_list_tile.dart';
 import '../widgets/settings_dialog.dart';
 import '../widgets/settings_section.dart';
 import 'layout_model.dart';
@@ -44,46 +44,23 @@ class DropsLayoutModel extends LayoutModel {
 
   @override
   List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
-    bool isLoadingImage = false;
-
     return [
       SwitchListTile(
         title: Text(context.tr.wide_focus),
         value: wideFocus,
         onChanged: (value) => update(copyWith(wideFocus: value)),
       ),
-      StatefulBuilder(
-        builder: (context, setState) => ListTile(
-          title: Text(context.tr.custom_cover_image),
-          subtitle: Text(coverUrl != null ? context.tr.tap_to_change : context.tr.tap_to_add),
-          trailing: isLoadingImage
-              ? const Padding(
-                  padding: EdgeInsets.all(20),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                )
-              : coverUrl != null
-                  ? IconButton(
-                      icon: Icon(Icons.delete, color: context.theme.colorScheme.error),
-                      onPressed: () {
-                        update(copyWith(coverUrl: null));
-                      },
-                    )
-                  : null,
-          onTap: () async {
-            setState(() => isLoadingImage = true);
-            var pngBytes = await ImageSelector.fromGallery(context, crop: false);
-            if (pngBytes != null) {
-              var link = await context
-                  .read(groupsLogicProvider)
-                  .uploadFile('layouts/${generateRandomId(4)}/cover.png', pngBytes);
-              update(copyWith(coverUrl: link));
-            }
-            setState(() => isLoadingImage = false);
-          },
-        ),
+      SelectImageListTile(
+        label: context.tr.custom_cover_image,
+        hasImage: coverUrl != null,
+        onImageSelected: (bytes) async {
+          var link =
+              await context.read(groupsLogicProvider).uploadFile('layouts/${generateRandomId(4)}/cover.png', bytes);
+          update(copyWith(coverUrl: link));
+        },
+        onDelete: () {
+          update(copyWith(coverUrl: null));
+        },
       ),
     ];
   }

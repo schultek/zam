@@ -24,7 +24,6 @@ import 'modules/elimination/elimination.module.dart';
 import 'modules/labels/labels.module.dart';
 import 'modules/music/music.module.dart';
 import 'modules/notes/notes.module.dart';
-import 'modules/photos/photos.module.dart';
 import 'modules/polls/polls.module.dart';
 import 'modules/profile/profile.module.dart';
 import 'modules/split/split.module.dart';
@@ -66,7 +65,6 @@ var _mappers = <BaseMapper>{
   SpotifyArtistMapper._(),
   NotesListParamsMapper._(),
   NoteMapper._(),
-  AlbumShortcutMapper._(),
   PollMapper._(),
   PollStepMapper._(),
   MultipleChoiceQuestionMapper._(),
@@ -74,6 +72,7 @@ var _mappers = <BaseMapper>{
   BalancesListParamsMapper._(),
   BalanceFocusParamsMapper._(),
   SplitStateMapper._(),
+  SplitTemplateMapper._(),
   BalanceEntryMapper._(),
   BillingEntryMapper._(),
   SplitPotMapper._(),
@@ -1984,73 +1983,6 @@ class _NoteCopyWithImpl<$R> extends BaseCopyWith<Note, $R> implements NoteCopyWi
           editors: editors ?? $value.editors));
 }
 
-class AlbumShortcutMapper extends BaseMapper<AlbumShortcut> {
-  AlbumShortcutMapper._();
-
-  @override
-  Function get decoder => decode;
-  AlbumShortcut decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  AlbumShortcut fromMap(Map<String, dynamic> map) => AlbumShortcut(
-      Mapper.i.$get(map, 'id'),
-      Mapper.i.$getOpt(map, 'title'),
-      Mapper.i.$get(map, 'albumUrl'),
-      Mapper.i.$get(map, 'coverUrl'),
-      Mapper.i.$getOpt(map, 'itemsCount'));
-
-  @override
-  Function get encoder => (AlbumShortcut v) => encode(v);
-  dynamic encode(AlbumShortcut v) => toMap(v);
-  Map<String, dynamic> toMap(AlbumShortcut a) => {
-        'id': Mapper.i.$enc(a.id, 'id'),
-        'title': Mapper.i.$enc(a.title, 'title'),
-        'albumUrl': Mapper.i.$enc(a.albumUrl, 'albumUrl'),
-        'coverUrl': Mapper.i.$enc(a.coverUrl, 'coverUrl'),
-        'itemsCount': Mapper.i.$enc(a.itemsCount, 'itemsCount')
-      };
-
-  @override
-  String stringify(AlbumShortcut self) =>
-      'AlbumShortcut(id: ${Mapper.asString(self.id)}, title: ${Mapper.asString(self.title)}, albumUrl: ${Mapper.asString(self.albumUrl)}, coverUrl: ${Mapper.asString(self.coverUrl)}, itemsCount: ${Mapper.asString(self.itemsCount)})';
-  @override
-  int hash(AlbumShortcut self) =>
-      Mapper.hash(self.id) ^
-      Mapper.hash(self.title) ^
-      Mapper.hash(self.albumUrl) ^
-      Mapper.hash(self.coverUrl) ^
-      Mapper.hash(self.itemsCount);
-  @override
-  bool equals(AlbumShortcut self, AlbumShortcut other) =>
-      Mapper.isEqual(self.id, other.id) &&
-      Mapper.isEqual(self.title, other.title) &&
-      Mapper.isEqual(self.albumUrl, other.albumUrl) &&
-      Mapper.isEqual(self.coverUrl, other.coverUrl) &&
-      Mapper.isEqual(self.itemsCount, other.itemsCount);
-
-  @override
-  Function get typeFactory => (f) => f<AlbumShortcut>();
-}
-
-extension AlbumShortcutMapperExtension on AlbumShortcut {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  AlbumShortcutCopyWith<AlbumShortcut> get copyWith => AlbumShortcutCopyWith(this, $identity);
-}
-
-abstract class AlbumShortcutCopyWith<$R> {
-  factory AlbumShortcutCopyWith(AlbumShortcut value, Then<AlbumShortcut, $R> then) = _AlbumShortcutCopyWithImpl<$R>;
-  $R call({String? id, String? title, String? albumUrl, String? coverUrl, String? itemsCount});
-  $R apply(AlbumShortcut Function(AlbumShortcut) transform);
-}
-
-class _AlbumShortcutCopyWithImpl<$R> extends BaseCopyWith<AlbumShortcut, $R> implements AlbumShortcutCopyWith<$R> {
-  _AlbumShortcutCopyWithImpl(AlbumShortcut value, Then<AlbumShortcut, $R> then) : super(value, then);
-
-  @override
-  $R call({String? id, Object? title = $none, String? albumUrl, String? coverUrl, Object? itemsCount = $none}) =>
-      $then(AlbumShortcut(id ?? $value.id, or(title, $value.title), albumUrl ?? $value.albumUrl,
-          coverUrl ?? $value.coverUrl, or(itemsCount, $value.itemsCount)));
-}
-
 class PollMapper extends BaseMapper<Poll> {
   PollMapper._();
 
@@ -2396,7 +2328,8 @@ class SplitStateMapper extends BaseMapper<SplitState> {
   SplitState fromMap(Map<String, dynamic> map) => SplitState(
       pots: Mapper.i.$getOpt(map, 'pots') ?? const {},
       entries: Mapper.i.$getOpt(map, 'entries') ?? const {},
-      showBilling: Mapper.i.$getOpt(map, 'showBilling') ?? false);
+      showBilling: Mapper.i.$getOpt(map, 'showBilling') ?? false,
+      templates: Mapper.i.$getOpt(map, 'templates') ?? const []);
 
   @override
   Function get encoder => (SplitState v) => encode(v);
@@ -2404,16 +2337,18 @@ class SplitStateMapper extends BaseMapper<SplitState> {
   Map<String, dynamic> toMap(SplitState s) => {
         'pots': Mapper.i.$enc(s.pots, 'pots'),
         'entries': Mapper.i.$enc(s.entries, 'entries'),
-        'showBilling': Mapper.i.$enc(s.showBilling, 'showBilling')
+        'showBilling': Mapper.i.$enc(s.showBilling, 'showBilling'),
+        'templates': Mapper.i.$enc(s.templates, 'templates')
       };
 
   @override
   String stringify(SplitState self) =>
-      'SplitState(pots: ${Mapper.asString(self.pots)}, entries: ${Mapper.asString(self.entries)}, showBilling: ${Mapper.asString(self.showBilling)}, balances: ${Mapper.asString(self.balances)}, billing: ${Mapper.asString(self.billing)})';
+      'SplitState(pots: ${Mapper.asString(self.pots)}, entries: ${Mapper.asString(self.entries)}, templates: ${Mapper.asString(self.templates)}, showBilling: ${Mapper.asString(self.showBilling)}, balances: ${Mapper.asString(self.balances)}, billing: ${Mapper.asString(self.billing)})';
   @override
   int hash(SplitState self) =>
       Mapper.hash(self.pots) ^
       Mapper.hash(self.entries) ^
+      Mapper.hash(self.templates) ^
       Mapper.hash(self.showBilling) ^
       Mapper.hash(self.balances) ^
       Mapper.hash(self.billing);
@@ -2421,6 +2356,7 @@ class SplitStateMapper extends BaseMapper<SplitState> {
   bool equals(SplitState self, SplitState other) =>
       Mapper.isEqual(self.pots, other.pots) &&
       Mapper.isEqual(self.entries, other.entries) &&
+      Mapper.isEqual(self.templates, other.templates) &&
       Mapper.isEqual(self.showBilling, other.showBilling) &&
       Mapper.isEqual(self.balances, other.balances) &&
       Mapper.isEqual(self.billing, other.billing);
@@ -2439,7 +2375,12 @@ abstract class SplitStateCopyWith<$R> {
   factory SplitStateCopyWith(SplitState value, Then<SplitState, $R> then) = _SplitStateCopyWithImpl<$R>;
   MapCopyWith<$R, String, SplitPot, SplitPotCopyWith<$R>> get pots;
   MapCopyWith<$R, String, SplitEntry, SplitEntryCopyWith<$R>> get entries;
-  $R call({Map<String, SplitPot>? pots, Map<String, SplitEntry>? entries, bool? showBilling});
+  ListCopyWith<$R, SplitTemplate, SplitTemplateCopyWith<$R>> get templates;
+  $R call(
+      {Map<String, SplitPot>? pots,
+      Map<String, SplitEntry>? entries,
+      bool? showBilling,
+      List<SplitTemplate>? templates});
   $R apply(SplitState Function(SplitState) transform);
 }
 
@@ -2453,8 +2394,69 @@ class _SplitStateCopyWithImpl<$R> extends BaseCopyWith<SplitState, $R> implement
   MapCopyWith<$R, String, SplitEntry, SplitEntryCopyWith<$R>> get entries =>
       MapCopyWith($value.entries, (v, t) => SplitEntryCopyWith(v, t), (v) => call(entries: v));
   @override
-  $R call({Map<String, SplitPot>? pots, Map<String, SplitEntry>? entries, bool? showBilling}) => $then(SplitState(
-      pots: pots ?? $value.pots, entries: entries ?? $value.entries, showBilling: showBilling ?? $value.showBilling));
+  ListCopyWith<$R, SplitTemplate, SplitTemplateCopyWith<$R>> get templates =>
+      ListCopyWith($value.templates, (v, t) => SplitTemplateCopyWith(v, t), (v) => call(templates: v));
+  @override
+  $R call(
+          {Map<String, SplitPot>? pots,
+          Map<String, SplitEntry>? entries,
+          bool? showBilling,
+          List<SplitTemplate>? templates}) =>
+      $then(SplitState(
+          pots: pots ?? $value.pots,
+          entries: entries ?? $value.entries,
+          showBilling: showBilling ?? $value.showBilling,
+          templates: templates ?? $value.templates));
+}
+
+class SplitTemplateMapper extends BaseMapper<SplitTemplate> {
+  SplitTemplateMapper._();
+
+  @override
+  Function get decoder => decode;
+  SplitTemplate decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SplitTemplate fromMap(Map<String, dynamic> map) =>
+      SplitTemplate(Mapper.i.$get(map, 'name'), Mapper.i.$get(map, 'target'));
+
+  @override
+  Function get encoder => (SplitTemplate v) => encode(v);
+  dynamic encode(SplitTemplate v) => toMap(v);
+  Map<String, dynamic> toMap(SplitTemplate s) =>
+      {'name': Mapper.i.$enc(s.name, 'name'), 'target': Mapper.i.$enc(s.target, 'target')};
+
+  @override
+  String stringify(SplitTemplate self) =>
+      'SplitTemplate(name: ${Mapper.asString(self.name)}, target: ${Mapper.asString(self.target)})';
+  @override
+  int hash(SplitTemplate self) => Mapper.hash(self.name) ^ Mapper.hash(self.target);
+  @override
+  bool equals(SplitTemplate self, SplitTemplate other) =>
+      Mapper.isEqual(self.name, other.name) && Mapper.isEqual(self.target, other.target);
+
+  @override
+  Function get typeFactory => (f) => f<SplitTemplate>();
+}
+
+extension SplitTemplateMapperExtension on SplitTemplate {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SplitTemplateCopyWith<SplitTemplate> get copyWith => SplitTemplateCopyWith(this, $identity);
+}
+
+abstract class SplitTemplateCopyWith<$R> {
+  factory SplitTemplateCopyWith(SplitTemplate value, Then<SplitTemplate, $R> then) = _SplitTemplateCopyWithImpl<$R>;
+  ExpenseTargetCopyWith<$R> get target;
+  $R call({String? name, ExpenseTarget? target});
+  $R apply(SplitTemplate Function(SplitTemplate) transform);
+}
+
+class _SplitTemplateCopyWithImpl<$R> extends BaseCopyWith<SplitTemplate, $R> implements SplitTemplateCopyWith<$R> {
+  _SplitTemplateCopyWithImpl(SplitTemplate value, Then<SplitTemplate, $R> then) : super(value, then);
+
+  @override
+  ExpenseTargetCopyWith<$R> get target => ExpenseTargetCopyWith($value.target, (v) => call(target: v));
+  @override
+  $R call({String? name, ExpenseTarget? target}) => $then(SplitTemplate(name ?? $value.name, target ?? $value.target));
 }
 
 class BalanceEntryMapper extends BaseMapper<BalanceEntry> {
@@ -3191,7 +3193,10 @@ class LaunchUrlParamsMapper extends BaseMapper<LaunchUrlParams> {
   Function get decoder => decode;
   LaunchUrlParams decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
   LaunchUrlParams fromMap(Map<String, dynamic> map) => LaunchUrlParams(
-      url: Mapper.i.$getOpt(map, 'url'), label: Mapper.i.$getOpt(map, 'label'), icon: Mapper.i.$getOpt(map, 'icon'));
+      url: Mapper.i.$getOpt(map, 'url'),
+      label: Mapper.i.$getOpt(map, 'label'),
+      icon: Mapper.i.$getOpt(map, 'icon'),
+      imageUrl: Mapper.i.$getOpt(map, 'imageUrl'));
 
   @override
   Function get encoder => (LaunchUrlParams v) => encode(v);
@@ -3199,19 +3204,22 @@ class LaunchUrlParamsMapper extends BaseMapper<LaunchUrlParams> {
   Map<String, dynamic> toMap(LaunchUrlParams l) => {
         'url': Mapper.i.$enc(l.url, 'url'),
         'label': Mapper.i.$enc(l.label, 'label'),
-        'icon': Mapper.i.$enc(l.icon, 'icon')
+        'icon': Mapper.i.$enc(l.icon, 'icon'),
+        'imageUrl': Mapper.i.$enc(l.imageUrl, 'imageUrl')
       };
 
   @override
   String stringify(LaunchUrlParams self) =>
-      'LaunchUrlParams(url: ${Mapper.asString(self.url)}, label: ${Mapper.asString(self.label)}, icon: ${Mapper.asString(self.icon)})';
+      'LaunchUrlParams(url: ${Mapper.asString(self.url)}, label: ${Mapper.asString(self.label)}, icon: ${Mapper.asString(self.icon)}, imageUrl: ${Mapper.asString(self.imageUrl)})';
   @override
-  int hash(LaunchUrlParams self) => Mapper.hash(self.url) ^ Mapper.hash(self.label) ^ Mapper.hash(self.icon);
+  int hash(LaunchUrlParams self) =>
+      Mapper.hash(self.url) ^ Mapper.hash(self.label) ^ Mapper.hash(self.icon) ^ Mapper.hash(self.imageUrl);
   @override
   bool equals(LaunchUrlParams self, LaunchUrlParams other) =>
       Mapper.isEqual(self.url, other.url) &&
       Mapper.isEqual(self.label, other.label) &&
-      Mapper.isEqual(self.icon, other.icon);
+      Mapper.isEqual(self.icon, other.icon) &&
+      Mapper.isEqual(self.imageUrl, other.imageUrl);
 
   @override
   Function get typeFactory => (f) => f<LaunchUrlParams>();
@@ -3226,7 +3234,7 @@ extension LaunchUrlParamsMapperExtension on LaunchUrlParams {
 abstract class LaunchUrlParamsCopyWith<$R> {
   factory LaunchUrlParamsCopyWith(LaunchUrlParams value, Then<LaunchUrlParams, $R> then) =
       _LaunchUrlParamsCopyWithImpl<$R>;
-  $R call({String? url, String? label, String? icon});
+  $R call({String? url, String? label, String? icon, String? imageUrl});
   $R apply(LaunchUrlParams Function(LaunchUrlParams) transform);
 }
 
@@ -3235,8 +3243,12 @@ class _LaunchUrlParamsCopyWithImpl<$R> extends BaseCopyWith<LaunchUrlParams, $R>
   _LaunchUrlParamsCopyWithImpl(LaunchUrlParams value, Then<LaunchUrlParams, $R> then) : super(value, then);
 
   @override
-  $R call({Object? url = $none, Object? label = $none, Object? icon = $none}) =>
-      $then(LaunchUrlParams(url: or(url, $value.url), label: or(label, $value.label), icon: or(icon, $value.icon)));
+  $R call({Object? url = $none, Object? label = $none, Object? icon = $none, Object? imageUrl = $none}) =>
+      $then(LaunchUrlParams(
+          url: or(url, $value.url),
+          label: or(label, $value.label),
+          icon: or(icon, $value.icon),
+          imageUrl: or(imageUrl, $value.imageUrl)));
 }
 
 class WebPageParamsMapper extends BaseMapper<WebPageParams> {

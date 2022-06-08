@@ -92,7 +92,7 @@ class _WebViewPageState extends State<WebViewPage> {
       );
     }
     if (widget.url == null) {
-      return NeedsSetupCard(title: context.tr.website, icon: Icons.language);
+      return NeedsSetupCard(child: SimpleCard(title: context.tr.website, icon: Icons.language));
     }
     return NestedWillPopScope(
       onWillPop: () async {

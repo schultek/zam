@@ -10,8 +10,6 @@ import '../../main.mapper.g.dart';
 import '../../modules/modules.dart';
 import '../groups/logic_provider.dart';
 
-final messageProvider = StateProvider<RemoteMessage?>((ref) => null);
-
 final notificationsProvider = Provider((ref) => NotificationLogic(ref));
 
 class NotificationLogic {
@@ -25,7 +23,17 @@ class NotificationLogic {
   Future<void> setup() async {
     if (_isSetup) return;
 
-    var settings = await _firebaseMessaging.requestPermission();
+    var settings = await _firebaseMessaging.getNotificationSettings();
+
+    if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
+      settings = await _firebaseMessaging.requestPermission(provisional: false);
+    }
+
+    if (settings.authorizationStatus == AuthorizationStatus.denied) {
+      return;
+    }
+
+    _isSetup = true;
 
     await AwesomeNotifications().initialize(
         'resource://drawable/app_icon',
@@ -56,15 +64,6 @@ class NotificationLogic {
         ],
         debug: true);
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      _isSetup = true;
-    }
-
-    var isAllowed = await AwesomeNotifications().isNotificationAllowed();
-    if (!isAllowed) {
-      await AwesomeNotifications().requestPermissionToSendNotifications();
-    }
-
     AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceived);
 
     if (!_firebaseMessaging.isAutoInitEnabled) {
@@ -80,7 +79,6 @@ class NotificationLogic {
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       print('Message opened App: ${message.data}');
-      ref.read(messageProvider.state).state = message;
     });
 
     FirebaseMessaging.onBackgroundMessage(onBackgroundMessage);

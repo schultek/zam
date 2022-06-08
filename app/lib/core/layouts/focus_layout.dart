@@ -7,12 +7,12 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../helpers/extensions.dart';
 import '../../main.mapper.g.dart';
-import '../../modules/profile/widgets/image_selector.dart';
 import '../../providers/groups/logic_provider.dart';
 import '../areas/areas.dart';
 import '../elements/elements.dart';
 import '../themes/themes.dart';
 import '../widgets/layout_preview.dart';
+import '../widgets/select_image_list_tile.dart';
 import 'layout_model.dart';
 import 'widgets/fill_overscroll.dart';
 
@@ -38,8 +38,6 @@ class FocusLayoutModel extends LayoutModel {
 
   @override
   List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
-    bool isLoadingImage = false;
-
     return [
       SwitchListTile(
         title: Text(context.tr.show_quick_actions),
@@ -51,38 +49,17 @@ class FocusLayoutModel extends LayoutModel {
         value: showInfo,
         onChanged: (value) => update(copyWith(showInfo: value)),
       ),
-      StatefulBuilder(
-        builder: (context, setState) => ListTile(
-          title: Text(context.tr.custom_cover_image),
-          subtitle: Text(coverUrl != null ? context.tr.tap_to_change : context.tr.tap_to_add),
-          trailing: isLoadingImage
-              ? const Padding(
-                  padding: EdgeInsets.all(20),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                )
-              : coverUrl != null
-                  ? IconButton(
-                      icon: Icon(Icons.delete, color: context.theme.colorScheme.error),
-                      onPressed: () {
-                        update(copyWith(coverUrl: null));
-                      },
-                    )
-                  : null,
-          onTap: () async {
-            setState(() => isLoadingImage = true);
-            var pngBytes = await ImageSelector.fromGallery(context, crop: false);
-            if (pngBytes != null) {
-              var link = await context
-                  .read(groupsLogicProvider)
-                  .uploadFile('layouts/${generateRandomId(4)}/cover.png', pngBytes);
-              update(copyWith(coverUrl: link));
-            }
-            setState(() => isLoadingImage = false);
-          },
-        ),
+      SelectImageListTile(
+        label: context.tr.custom_cover_image,
+        hasImage: coverUrl != null,
+        onImageSelected: (bytes) async {
+          var link =
+              await context.read(groupsLogicProvider).uploadFile('layouts/${generateRandomId(4)}/cover.png', bytes);
+          update(copyWith(coverUrl: link));
+        },
+        onDelete: () {
+          update(copyWith(coverUrl: null));
+        },
       ),
       SwitchListTile(
         title: Text(context.tr.invert_header_color),

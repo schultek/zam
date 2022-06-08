@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../split.module.dart';
@@ -27,6 +29,7 @@ class SelectTargetDialog extends StatefulWidget {
 
 class _SelectTargetDialogState extends State<SelectTargetDialog> {
   late Map<String, double> amounts;
+  late Map<String, FocusNode> focusNodes;
   late ExpenseTargetType type;
 
   Map<String, TextEditingController> controllers = {};
@@ -36,11 +39,38 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
     super.initState();
     if (widget.target == null) {
       amounts = {};
+      focusNodes = {};
       type = ExpenseTargetType.percent;
     } else {
       amounts = {...widget.target!.amounts};
+      focusNodes = amounts.map((key, _) => MapEntry(key, createFocusNode(key)));
       type = widget.target!.type;
     }
+  }
+
+  final _currentEdited = <String>{};
+
+  FocusNode createFocusNode(String key) {
+    var focusNode = FocusNode();
+    focusNode.addListener(() {
+      if (!focusNode.hasPrimaryFocus) {
+        var value = textControllerFor(key).text;
+        if (value.isEmpty) {
+          textControllerFor(key).text = amountString(amounts[key]!);
+        } else {
+          onChangedAmount(key, double.parse(value));
+        }
+
+        var isStillEditing = focusNodes.values.any((f) => f.hasPrimaryFocus);
+        if (!isStillEditing) {
+          _currentEdited.clear();
+        }
+      } else {
+        var controller = textControllerFor(key);
+        controller.selection = TextSelection(baseOffset: 0, extentOffset: controller.text.length);
+      }
+    });
+    return focusNode;
   }
 
   double get equalSplitAmount {
@@ -86,6 +116,8 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
     var amount = amounts[id]!;
     setState(() {
       amounts.remove(id);
+      focusNodes.remove(id);
+      _currentEdited.remove(id);
     });
     if (amounts.isNotEmpty) {
       var length = amounts.length;
@@ -104,22 +136,54 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
   }
 
   void onChangedAmount(String id, double value) {
-    var currValue = amounts[id]!;
+    _currentEdited.add(id);
+
+    var unedited = amounts.keys.where((k) => !_currentEdited.contains(k));
+    var edited = _currentEdited.where((k) => k != id);
+
     if (type == ExpenseTargetType.percent) {
       value = min(100, max(0, value));
-      var rest = 100 - value;
-      var factor = rest == 0 ? 0 : rest / (100 - currValue);
-      for (var key in amounts.keys) {
-        updateAmount(key, amounts[key]! * factor);
+      var available = 100.0 - edited.fold(0.0, (v, k) => v + amounts[k]!);
+      var rest = available - value;
+      if (rest < 0) {
+        value = available;
+        rest = 0;
+      }
+      if (unedited.isNotEmpty) {
+        var currSum = unedited.fold<double>(0.0, (v, k) => v + amounts[k]!);
+        for (var key in unedited) {
+          if (currSum == 0) {
+            updateAmount(key, rest / unedited.length);
+          } else {
+            var factor = amounts[key]! / currSum;
+            updateAmount(key, rest * factor);
+          }
+        }
+      } else if (rest != 0) {
+        value = available;
       }
     } else if (type == ExpenseTargetType.shares) {
       value = max(0, value).roundToDouble();
     } else {
       value = min(widget.amount, max(0, value));
-      var rest = widget.amount - value;
-      var factor = rest == 0 ? 0 : rest / (widget.amount - currValue);
-      for (var key in amounts.keys) {
-        updateAmount(key, amounts[key]! * factor);
+      var available = widget.amount - edited.fold(0.0, (v, k) => v + amounts[k]!);
+      var rest = available - value;
+      if (rest < 0) {
+        value = available;
+        rest = 0;
+      }
+      if (unedited.isNotEmpty) {
+        var currSum = unedited.fold<double>(0.0, (v, k) => v + amounts[k]!);
+        for (var key in unedited) {
+          if (currSum == 0) {
+            updateAmount(key, rest / unedited.length);
+          } else {
+            var factor = amounts[key]! / currSum;
+            updateAmount(key, rest * factor);
+          }
+        }
+      } else if (rest != 0) {
+        value = available;
       }
     }
     updateAmount(id, value);
@@ -130,6 +194,9 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
       value = round1000(value);
       amounts[id] = value;
       controllers[id]?.text = amountString(value);
+      if (!focusNodes.containsKey(id)) {
+        focusNodes[id] = createFocusNode(id);
+      }
     });
   }
 
@@ -183,70 +250,6 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
     Navigator.of(context).pop(ExpenseTarget(amounts: amounts, type: type));
   }
 
-  void showAddUserDialog() {
-    showDialog(
-      context: context,
-      useRootNavigator: false,
-      builder: (context) => AlertDialog(
-          clipBehavior: Clip.antiAlias,
-          contentPadding: EdgeInsets.zero,
-          content: SizedBox(
-            width: 400,
-            child: StatefulBuilder(
-              builder: (context, setState) => AnimatedSize(
-                alignment: Alignment.topCenter,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                child: ListView(
-                  physics: const BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  children: [
-                    for (var user in context.read(selectedGroupProvider)!.users.entries)
-                      if (!amounts.containsKey(user.key))
-                        ListTile(
-                          leading: UserAvatar(id: user.key, small: true),
-                          title: Text(user.value.nickname ?? context.tr.anonymous),
-                          trailing: IconButton(
-                            splashRadius: 25,
-                            visualDensity: VisualDensity.compact,
-                            onPressed: () {
-                              addUserToTargets(user.key);
-                              setState(() {});
-                              if (!context
-                                  .read(selectedGroupProvider)!
-                                  .users
-                                  .keys
-                                  .any((k) => !amounts.containsKey(k))) {
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            icon: const Icon(Icons.add),
-                          ),
-                          minLeadingWidth: 10,
-                          onTap: () {
-                            addUserToTargets(user.key);
-                            setState(() {});
-                            if (!context.read(selectedGroupProvider)!.users.keys.any((k) => !amounts.containsKey(k))) {
-                              Navigator.of(context).pop();
-                            }
-                          },
-                        ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: Text(context.tr.ok),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ]),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedPadding(
@@ -264,118 +267,201 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              AlertDialog(
-                contentPadding: const EdgeInsets.symmetric(vertical: 8),
-                clipBehavior: Clip.antiAlias,
-                content: SizedBox(
-                  width: 400,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 400),
-                    child: AnimatedSize(
-                      alignment: Alignment.topCenter,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      child: Form(
-                        child: ListView(
-                          shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
+              Flexible(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 400),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
+                    child: Material(
+                      color: Theme.of(context).dialogBackgroundColor,
+                      elevation: 24,
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))),
+                      type: MaterialType.card,
+                      clipBehavior: Clip.antiAlias,
+                      child: SizedBox(
+                        width: 400,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            if (amounts.isEmpty)
-                              Center(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    showAddUserDialog();
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(30),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(context.tr.for_everyone, style: context.theme.textTheme.caption),
-                                        Text(
-                                          '${equalSplitAmount.toStringAsFixed(2)} ${widget.currency.symbol}',
-                                          style: context.theme.textTheme.headline6,
+                            Flexible(
+                              child: AnimatedSize(
+                                alignment: Alignment.topCenter,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                                child: Form(
+                                  child: ListView(
+                                    padding: const EdgeInsets.only(top: 8),
+                                    shrinkWrap: true,
+                                    physics: const BouncingScrollPhysics(),
+                                    children: [
+                                      if (amounts.isEmpty)
+                                        Center(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              showAddUserDialog();
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(30),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(context.tr.for_everyone, style: context.theme.textTheme.caption),
+                                                  Text(
+                                                    '${equalSplitAmount.toStringAsFixed(2)} ${widget.currency.symbol}',
+                                                    style: context.theme.textTheme.headline6,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ],
-                                    ),
+                                      for (var key in amounts.keys)
+                                        Builder(builder: (context) {
+                                          var user = context.read(groupUserByIdProvider(key))!;
+                                          return ListTile(
+                                            contentPadding:
+                                                const EdgeInsets.only(left: 16, top: 0, bottom: 0, right: 8),
+                                            title: Row(
+                                              children: [
+                                                Flexible(
+                                                  fit: FlexFit.tight,
+                                                  child: Text(user.nickname ?? context.tr.anonymous),
+                                                ),
+                                                Flexible(
+                                                  child: TextField(
+                                                    controller: textControllerFor(key),
+                                                    focusNode: focusNodes[key],
+                                                    inputFormatters: [
+                                                      TextInputFormatter.withFunction((old, newVal) => TextEditingValue(
+                                                          text: newVal.text.replaceAll(',', '.'),
+                                                          selection: newVal.selection)),
+                                                    ],
+                                                    decoration: InputDecoration(
+                                                      border: const OutlineInputBorder(),
+                                                      isDense: true,
+                                                      suffixIcon: Text(type == ExpenseTargetType.percent
+                                                          ? '%'
+                                                          : type == ExpenseTargetType.amount
+                                                              ? widget.currency.symbol
+                                                              : ''),
+                                                      suffixIconConstraints: const BoxConstraints(minWidth: 20),
+                                                    ),
+                                                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                                    textInputAction:
+                                                        amounts.keys.last == key ? null : TextInputAction.next,
+                                                    onSubmitted: (value) {
+                                                      if (amounts.keys.last != key) {
+                                                        focusNodes[amounts.keys
+                                                                .elementAt(amounts.keys.toList().indexOf(key) + 1)]
+                                                            ?.requestFocus();
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 5),
+                                                IconButton(
+                                                  splashRadius: 25,
+                                                  onPressed: () {
+                                                    deleteUserFromTargets(key);
+                                                  },
+                                                  icon: const Icon(Icons.delete),
+                                                ),
+                                              ],
+                                            ),
+                                            leading: UserAvatar(id: key, small: true),
+                                            minLeadingWidth: 10,
+                                          );
+                                        }),
+                                      if (context.read(selectedGroupProvider)!.users.length > amounts.length)
+                                        ListTile(
+                                          contentPadding: const EdgeInsets.only(left: 16, top: 0, bottom: 0, right: 8),
+                                          title: Row(
+                                            children: [
+                                              Flexible(
+                                                fit: FlexFit.tight,
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Container(
+                                                    width: 50,
+                                                    height: 16,
+                                                    color: context.onSurfaceColor.withOpacity(0.1),
+                                                  ),
+                                                ),
+                                              ),
+                                              Flexible(
+                                                child: Opacity(
+                                                  opacity: 0.8,
+                                                  child: TextField(
+                                                    enabled: false,
+                                                    decoration: InputDecoration(
+                                                      border: const OutlineInputBorder(),
+                                                      isDense: true,
+                                                      suffixIcon: Text(
+                                                        type == ExpenseTargetType.percent
+                                                            ? '%'
+                                                            : type == ExpenseTargetType.amount
+                                                                ? widget.currency.symbol
+                                                                : '',
+                                                        style:
+                                                            TextStyle(color: context.onSurfaceColor.withOpacity(0.5)),
+                                                      ),
+                                                      suffixIconConstraints: const BoxConstraints(minWidth: 20),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 5),
+                                              IconButton(
+                                                splashRadius: 25,
+                                                onPressed: showAddUserDialog,
+                                                icon: const Icon(Icons.add),
+                                              ),
+                                            ],
+                                          ),
+                                          leading: CircleAvatar(
+                                            radius: 15,
+                                            backgroundColor: context.onSurfaceColor.withOpacity(0.1),
+                                          ),
+                                          minLeadingWidth: 10,
+                                          onTap: showAddUserDialog,
+                                        ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            for (var key in amounts.keys)
-                              Builder(builder: (context) {
-                                var user = context.read(groupUserByIdProvider(key))!;
-                                return ListTile(
-                                  title: Row(
-                                    children: [
-                                      Flexible(
-                                        fit: FlexFit.tight,
-                                        child: Text(user.nickname ?? context.tr.anonymous),
-                                      ),
-                                      Flexible(
-                                        child: TextField(
-                                          controller: textControllerFor(key),
-                                          decoration: InputDecoration(
-                                            border: const OutlineInputBorder(),
-                                            isDense: true,
-                                            suffixIcon: Text(type == ExpenseTargetType.percent
-                                                ? '%'
-                                                : type == ExpenseTargetType.amount
-                                                    ? widget.currency.symbol
-                                                    : ''),
-                                            suffixIconConstraints: const BoxConstraints(minWidth: 20),
-                                          ),
-                                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                                          onSubmitted: (value) {
-                                            if (value.isEmpty) {
-                                              textControllerFor(key).text = amountString(amounts[key]!);
-                                            } else {
-                                              onChangedAmount(key, double.parse(value));
-                                            }
-                                            if (amounts.keys.last != key) {
-                                              FocusScope.of(context).nextFocus();
-                                            }
-                                          },
-                                          textInputAction: amounts.keys.last == key ? null : TextInputAction.next,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 5),
-                                      IconButton(
-                                        splashRadius: 25,
-                                        visualDensity: VisualDensity.compact,
-                                        onPressed: () {
-                                          deleteUserFromTargets(key);
-                                        },
-                                        icon: const Icon(Icons.delete),
-                                      ),
-                                    ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    splashRadius: 25,
+                                    icon: const Icon(Icons.bookmarks),
+                                    onPressed: showTemplateDialog,
                                   ),
-                                  leading: UserAvatar(id: key, small: true),
-                                  minLeadingWidth: 10,
-                                );
-                              }),
+                                  IconButton(
+                                    splashRadius: 25,
+                                    icon: const Icon(Icons.bookmark_add),
+                                    onPressed: amounts.isNotEmpty ? showSaveTemplateDialog : null,
+                                  ),
+                                  const Spacer(),
+                                  TextButton(
+                                    child: Text(context.tr.save),
+                                    onPressed: saveTarget,
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
                     ),
                   ),
                 ),
-                actions: [
-                  IconButton(
-                    splashRadius: 25,
-                    icon: const Icon(Icons.add),
-                    onPressed: () {
-                      showAddUserDialog();
-                    },
-                  ),
-                  TextButton(
-                    child: Text(context.tr.save),
-                    onPressed: saveTarget,
-                  )
-                ],
-                actionsAlignment: MainAxisAlignment.spaceBetween,
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.only(bottom: 24),
                 child: Material(
                   color: Colors.transparent,
                   child: ThemedSurface(
@@ -445,5 +531,192 @@ class _SelectTargetDialogState extends State<SelectTargetDialog> {
         ),
       ],
     );
+  }
+
+  void showAddUserDialog() {
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => AlertDialog(
+        clipBehavior: Clip.antiAlias,
+        contentPadding: EdgeInsets.zero,
+        content: SizedBox(
+          width: 400,
+          child: StatefulBuilder(
+            builder: (context, setState) => AnimatedSize(
+              alignment: Alignment.topCenter,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: ListView(
+                physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
+                children: [
+                  for (var user in context.read(selectedGroupProvider)!.users.entries)
+                    if (!amounts.containsKey(user.key))
+                      ListTile(
+                        leading: UserAvatar(id: user.key, small: true),
+                        title: Text(user.value.nickname ?? context.tr.anonymous),
+                        trailing: IconButton(
+                          splashRadius: 25,
+                          onPressed: () {
+                            addUserToTargets(user.key);
+                            setState(() {});
+                            if (!context.read(selectedGroupProvider)!.users.keys.any((k) => !amounts.containsKey(k))) {
+                              Navigator.of(context).pop();
+                            }
+                          },
+                          icon: Icon(Icons.add, color: context.onSurfaceColor),
+                        ),
+                        minLeadingWidth: 10,
+                        onTap: () {
+                          addUserToTargets(user.key);
+                          setState(() {});
+                          if (!context.read(selectedGroupProvider)!.users.keys.any((k) => !amounts.containsKey(k))) {
+                            Navigator.of(context).pop();
+                          }
+                        },
+                      ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: Text(context.tr.ok),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  void showSaveTemplateDialog() {
+    String name = '';
+
+    Future<void> save() async {
+      await context
+          .read(splitLogicProvider)
+          .addNewTemplate(SplitTemplate(name, ExpenseTarget(amounts: {...amounts}, type: type)));
+    }
+
+    showDialog(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          clipBehavior: Clip.antiAlias,
+          title: Text(context.tr.save_as_template),
+          content: TextField(
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
+              labelText: context.tr.name,
+            ),
+            onChanged: (value) {
+              setState(() => name = value);
+            },
+            onSubmitted: (_) async {
+              await save();
+              Navigator.pop(context);
+            },
+          ),
+          actions: [
+            TextButton(
+              child: Text(context.tr.cancel),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: Text(context.tr.save),
+              onPressed: name.isNotEmpty
+                  ? () async {
+                      await save();
+
+                      Navigator.pop(context);
+                    }
+                  : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showTemplateDialog() async {
+    var template = await showDialog<SplitTemplate>(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => AlertDialog(
+        clipBehavior: Clip.antiAlias,
+        title: Text(context.tr.select_template),
+        titlePadding: const EdgeInsets.only(top: 20, left: 20, right: 20, bottom: 10),
+        contentPadding: EdgeInsets.zero,
+        content: SizedBox(
+          width: 400,
+          child: AnimatedSize(
+            alignment: Alignment.topCenter,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            child: ListView(
+              physics: const BouncingScrollPhysics(),
+              shrinkWrap: true,
+              children: [
+                for (var template
+                    in context.watch(splitProvider.select((s) => s.value?.templates ?? <SplitTemplate>[])))
+                  ListTile(
+                    contentPadding: const EdgeInsets.only(left: 16, top: 0, bottom: 0, right: 8),
+                    leading: const Icon(Icons.bookmark),
+                    title: Text(template.name),
+                    trailing: Row(mainAxisSize: MainAxisSize.min, children: [
+                      if (template.target.amounts.length == 1) ...[
+                        Text(context.watch(groupUserByIdProvider(template.target.amounts.keys.first))?.nickname ??
+                            context.tr.anonymous),
+                        const SizedBox(width: 10),
+                        UserAvatar(id: template.target.amounts.keys.first, small: true),
+                      ] else
+                        Text('${template.target.amounts.length} ${context.tr.persons}'),
+                      const SizedBox(width: 5),
+                      IconButton(
+                        splashRadius: 25,
+                        icon: Icon(Icons.delete, color: context.onSurfaceColor),
+                        onPressed: () {
+                          context.read(splitLogicProvider).removeTemplate(template);
+                        },
+                      )
+                    ]),
+                    minLeadingWidth: 10,
+                    onTap: () {
+                      Navigator.pop(context, template);
+                    },
+                  ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: Text(context.tr.cancel),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
+    );
+
+    if (template != null) {
+      setState(() {
+        _currentEdited.clear();
+        focusNodes.clear();
+        amounts.clear();
+        for (var e in template.target.amounts.entries) {
+          updateAmount(e.key, e.value);
+        }
+        type = template.target.type;
+      });
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../split.module.dart';
@@ -62,7 +63,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
               padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
               child: TextFormField(
                 initialValue: title,
-                autofocus: true,
+                autofocus: title == null || title!.isEmpty,
                 decoration: InputDecoration(
                   hintText: context.tr.title,
                   hintStyle: TextStyle(color: context.onSurfaceColor.withOpacity(0.5)),
@@ -120,8 +121,13 @@ class _EditExpensePageState extends State<EditExpensePage> {
                   Text(context.tr.amount),
                   Expanded(
                     child: TextFormField(
-                      initialValue: amount.toStringAsFixed(2),
+                      initialValue: amount != 0 ? amount.toStringAsFixed(2) : null,
+                      inputFormatters: [
+                        TextInputFormatter.withFunction((old, newVal) =>
+                            TextEditingValue(text: newVal.text.replaceAll(',', '.'), selection: newVal.selection)),
+                      ],
                       decoration: InputDecoration(
+                        hintText: '0.00',
                         border: InputBorder.none,
                         suffixText: currency.symbol,
                         filled: false,

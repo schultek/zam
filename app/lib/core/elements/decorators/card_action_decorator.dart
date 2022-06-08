@@ -54,6 +54,8 @@ class CardActionDecorator implements ElementDecorator<ActionElement> {
                         element.textBuilder(context),
                         style: context.theme.textTheme.bodyText1!.apply(color: context.onSurfaceColor),
                         textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),

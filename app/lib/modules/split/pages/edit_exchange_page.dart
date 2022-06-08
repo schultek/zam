@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../split.module.dart';
@@ -70,7 +71,7 @@ class _EditExchangePageState extends State<EditExchangePage> {
               padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
               child: TextFormField(
                 initialValue: title,
-                autofocus: true,
+                autofocus: title == null || title!.isEmpty,
                 decoration: InputDecoration(
                   hintText: context.tr.title,
                   hintStyle: TextStyle(color: context.onSurfaceColor.withOpacity(0.5)),
@@ -124,8 +125,13 @@ class _EditExchangePageState extends State<EditExchangePage> {
                   Text(context.tr.amount),
                   Expanded(
                     child: TextFormField(
-                      initialValue: sourceAmount.toStringAsFixed(2),
+                      initialValue: sourceAmount != 0 ? sourceAmount.toStringAsFixed(2) : null,
+                      inputFormatters: [
+                        TextInputFormatter.withFunction((old, newVal) =>
+                            TextEditingValue(text: newVal.text.replaceAll(',', '.'), selection: newVal.selection)),
+                      ],
                       decoration: InputDecoration(
+                        hintText: '0.00',
                         border: InputBorder.none,
                         suffixText: sourceCurrency.symbol,
                         filled: false,
@@ -168,8 +174,13 @@ class _EditExchangePageState extends State<EditExchangePage> {
                   Text(context.tr.amount),
                   Expanded(
                     child: TextFormField(
-                      initialValue: targetAmount.toStringAsFixed(2),
+                      initialValue: targetAmount != 0 ? targetAmount.toStringAsFixed(2) : null,
+                      inputFormatters: [
+                        TextInputFormatter.withFunction((old, newVal) =>
+                            TextEditingValue(text: newVal.text.replaceAll(',', '.'), selection: newVal.selection)),
+                      ],
                       decoration: InputDecoration(
+                        hintText: '0.00',
                         border: InputBorder.none,
                         suffixText: targetCurrency?.symbol,
                         filled: false,

@@ -27,7 +27,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       users: {userId: GroupUser(role: UserRoles.organizer)},
       template: const SwipeTemplateModel(),
       theme: ThemeModel(schemeIndex: FlexScheme.blue.index),
-      moduleBlacklist: ['music', 'photos', 'polls'],
+      moduleBlacklist: ['music', 'polls'],
     );
     return FirebaseFirestore.instance.collection('groups').add(group.toMap());
   }

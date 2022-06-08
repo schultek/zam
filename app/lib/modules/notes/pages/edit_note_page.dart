@@ -26,6 +26,9 @@ enum SaveMode { idle, saving, saved }
 class _EditNotePageState extends State<EditNotePage> {
   late final QuillController _controller;
   late final TextEditingController _titleController;
+  late final ScrollController _scrollController;
+
+  double _noteOpacity = 0.0;
 
   final editorFocusNode = FocusNode();
   final editorFocusListenable = ValueNotifier(false);
@@ -53,6 +56,14 @@ class _EditNotePageState extends State<EditNotePage> {
     )..document.changes.listen((e) => debouncedSave());
 
     _titleController = TextEditingController(text: widget.note.title)..addListener(debouncedSave);
+
+    _scrollController = ScrollController();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      setState(() {
+        _noteOpacity = 1;
+      });
+    });
 
     editorFocusNode.addListener(() {
       editorFocusListenable.value = editorFocusNode.hasPrimaryFocus;
@@ -170,39 +181,44 @@ class _EditNotePageState extends State<EditNotePage> {
                 },
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child: ListView(
-                    shrinkWrap: true,
-                    reverse: true,
-                    children: [
-                      QuillEditor(
-                        controller: _controller,
-                        scrollController: ScrollController(),
-                        scrollable: false,
-                        focusNode: editorFocusNode,
-                        autoFocus: false,
-                        readOnly: !isEditor,
-                        expands: false,
-                        padding: const EdgeInsets.all(20.0),
-                        keyboardAppearance: context.theme.brightness,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: TextField(
-                          autofocus: isEditor,
-                          controller: _titleController,
-                          decoration: InputDecoration(
-                            hintText: context.tr.title,
-                            filled: false,
-                            border: InputBorder.none,
-                          ),
-                          style: TextStyle(fontSize: 30, color: context.onSurfaceColor),
-                          onChanged: (_) => debouncedSave(),
-                          textInputAction: TextInputAction.next,
-                          onSubmitted: (_) => editorFocusNode.requestFocus(),
+                  child: AnimatedOpacity(
+                    opacity: _noteOpacity,
+                    duration: const Duration(milliseconds: 200),
+                    child: ListView(
+                      shrinkWrap: true,
+                      reverse: true,
+                      controller: _scrollController,
+                      children: [
+                        QuillEditor(
+                          controller: _controller,
+                          scrollController: ScrollController(),
+                          scrollable: false,
+                          focusNode: editorFocusNode,
+                          autoFocus: false,
                           readOnly: !isEditor,
+                          expands: false,
+                          padding: const EdgeInsets.all(20.0),
+                          keyboardAppearance: context.theme.brightness,
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: TextField(
+                            autofocus: isEditor && (widget.note.title ?? '').isEmpty,
+                            controller: _titleController,
+                            decoration: InputDecoration(
+                              hintText: context.tr.title,
+                              filled: false,
+                              border: InputBorder.none,
+                            ),
+                            style: TextStyle(fontSize: 30, color: context.onSurfaceColor),
+                            onChanged: (_) => debouncedSave(),
+                            textInputAction: TextInputAction.next,
+                            onSubmitted: (_) => editorFocusNode.requestFocus(),
+                            readOnly: !isEditor,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

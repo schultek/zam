@@ -308,6 +308,8 @@
   "current_user": "Current User",
   "show_billing": "Show Billing",
   "hide_billing": "Hide Billing",
+  "save_as_template": "Save as template",
+  "select_template": "Select template",
 
   "@WEB": {},
 
@@ -315,5 +317,6 @@
   "launch_url": "Launch Url",
   "label": "Label",
   "allow_navigation": "Allow Navigation",
-  "website": "Website"
+  "website": "Website",
+  "custom_image": "Custom Image"
 }

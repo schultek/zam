@@ -55,4 +55,20 @@ class SplitLogic {
   Future<void> deleteEntry(String id) {
     return doc.update({'entries.$id': FieldValue.delete()});
   }
+
+  Future<void> addNewTemplate(SplitTemplate template) {
+    return doc.update({
+      'templates': FieldValue.arrayUnion([Mapper.toValue(template)]),
+    });
+  }
+
+  Future<void> removeTemplate(SplitTemplate template) async {
+    var templates = ref.read(splitProvider).value?.templates;
+    if (templates == null) {
+      return;
+    }
+    return doc.update({
+      'templates': templates.where((t) => t != template).map(Mapper.toValue).toList(),
+    });
+  }
 }
