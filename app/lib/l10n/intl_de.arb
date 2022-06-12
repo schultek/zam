@@ -289,6 +289,7 @@
   "hide_billing": "Abrechnung ausblenden",
   "save_as_template": "Als Vorlage speichern",
   "select_template": "Vorlage auswählen",
+  "created_at": "Erstellt am",
 
   "@WEB": {},
 

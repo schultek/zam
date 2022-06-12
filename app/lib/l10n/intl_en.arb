@@ -310,6 +310,7 @@
   "hide_billing": "Hide Billing",
   "save_as_template": "Save as template",
   "select_template": "Select template",
+  "created_at": "Created At",
 
   "@WEB": {},
 
