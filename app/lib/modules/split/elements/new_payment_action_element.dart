@@ -10,7 +10,7 @@ class NewPaymentActionElement with ElementBuilderMixin<ActionElement> {
       onTap: (BuildContext context) async {
         var logic = context.read(splitLogicProvider);
         var result =
-            await Navigator.of(context).push<ExchangeEntry>(ModulePageRoute(context, child: const EditPaymentPage()));
+            await Navigator.of(context).push<PaymentEntry>(ModulePageRoute(context, child: const EditPaymentPage()));
         if (result != null) {
           logic.updateEntry(result);
         }

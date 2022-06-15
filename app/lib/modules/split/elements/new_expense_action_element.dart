@@ -10,7 +10,7 @@ class NewExpenseActionElement with ElementBuilderMixin<ActionElement> {
       onTap: (BuildContext context) async {
         var logic = context.read(splitLogicProvider);
         var result =
-            await Navigator.of(context).push<ExchangeEntry>(ModulePageRoute(context, child: const EditExpensePage()));
+            await Navigator.of(context).push<ExpenseEntry>(ModulePageRoute(context, child: const EditExpensePage()));
         if (result != null) {
           logic.updateEntry(result);
         }

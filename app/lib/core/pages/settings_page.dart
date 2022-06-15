@@ -45,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
             padding: const EdgeInsets.symmetric(horizontal: 80),
             child: GestureDetector(
               onTap: () async {
-                var pngBytes = await ImageSelector.fromGallery(context, cropOverlayType: OverlayType.rectangle);
+                var pngBytes = await ImageSelector.open(context, cropOverlayType: OverlayType.rectangle);
                 if (pngBytes != null) {
                   context.read(groupsLogicProvider).setGroupPicture(pngBytes);
                 }

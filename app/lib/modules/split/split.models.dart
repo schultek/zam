@@ -271,6 +271,8 @@ class ExpenseEntry extends SplitEntry {
   final SplitSource source;
   final ExpenseTarget target;
 
+  final String? photoUrl;
+
   ExpenseEntry({
     required String id,
     required this.title,
@@ -278,6 +280,7 @@ class ExpenseEntry extends SplitEntry {
     this.currency = Currency.euro,
     required this.source,
     required this.target,
+    this.photoUrl,
     required DateTime createdAt,
     DateTime? transactedAt,
   }) : super(id: id, createdAt: createdAt, transactedAt: transactedAt);

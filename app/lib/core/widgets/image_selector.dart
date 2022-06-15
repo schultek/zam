@@ -10,13 +10,15 @@ import 'package:image_picker/image_picker.dart';
 import '../../helpers/extensions.dart';
 
 class ImageSelector {
-  static Future<Uint8List?> fromGallery(
+  static Future<Uint8List?> open(
     BuildContext context, {
+    ImageSource source = ImageSource.gallery,
     bool crop = true,
     double cropAspectRatio = 1,
     OverlayType cropOverlayType = OverlayType.none,
+    double? maxWidth,
   }) async {
-    XFile? image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    XFile? image = await ImagePicker().pickImage(source: source, maxWidth: maxWidth);
     if (image == null) return null;
 
     if (crop) {

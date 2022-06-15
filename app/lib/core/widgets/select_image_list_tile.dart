@@ -53,7 +53,7 @@ class _SelectImageListTileState extends State<SelectImageListTile> {
       onTap: () async {
         setState(() => isLoading = true);
         try {
-          var pngBytes = await ImageSelector.fromGallery(context,
+          var pngBytes = await ImageSelector.open(context,
               crop: widget.crop != null, cropOverlayType: widget.crop ?? OverlayType.none);
           if (pngBytes != null) {
             await widget.onImageSelected(pngBytes);

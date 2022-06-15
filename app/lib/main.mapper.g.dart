@@ -2757,6 +2757,7 @@ class ExpenseEntryMapper extends BaseMapper<ExpenseEntry> {
       currency: Mapper.i.$getOpt(map, 'currency') ?? Currency.euro,
       source: Mapper.i.$get(map, 'source'),
       target: Mapper.i.$get(map, 'target'),
+      photoUrl: Mapper.i.$getOpt(map, 'photoUrl'),
       createdAt: Mapper.i.$get(map, 'createdAt'),
       transactedAt: Mapper.i.$getOpt(map, 'transactedAt'));
 
@@ -2770,6 +2771,7 @@ class ExpenseEntryMapper extends BaseMapper<ExpenseEntry> {
         'currency': Mapper.i.$enc(e.currency, 'currency'),
         'source': Mapper.i.$enc(e.source, 'source'),
         'target': Mapper.i.$enc(e.target, 'target'),
+        'photoUrl': Mapper.i.$enc(e.photoUrl, 'photoUrl'),
         'createdAt': Mapper.i.$enc(e.createdAt, 'createdAt'),
         'transactedAt': Mapper.i.$enc(e.transactedAt, 'transactedAt'),
         'type': 'expense'
@@ -2777,7 +2779,7 @@ class ExpenseEntryMapper extends BaseMapper<ExpenseEntry> {
 
   @override
   String stringify(ExpenseEntry self) =>
-      'ExpenseEntry(id: ${Mapper.asString(self.id)}, createdAt: ${Mapper.asString(self.createdAt)}, transactedAt: ${Mapper.asString(self.transactedAt)}, title: ${Mapper.asString(self.title)}, amount: ${Mapper.asString(self.amount)}, currency: ${Mapper.asString(self.currency)}, source: ${Mapper.asString(self.source)}, target: ${Mapper.asString(self.target)})';
+      'ExpenseEntry(id: ${Mapper.asString(self.id)}, createdAt: ${Mapper.asString(self.createdAt)}, transactedAt: ${Mapper.asString(self.transactedAt)}, title: ${Mapper.asString(self.title)}, amount: ${Mapper.asString(self.amount)}, currency: ${Mapper.asString(self.currency)}, source: ${Mapper.asString(self.source)}, target: ${Mapper.asString(self.target)}, photoUrl: ${Mapper.asString(self.photoUrl)})';
   @override
   int hash(ExpenseEntry self) =>
       Mapper.hash(self.id) ^
@@ -2787,7 +2789,8 @@ class ExpenseEntryMapper extends BaseMapper<ExpenseEntry> {
       Mapper.hash(self.amount) ^
       Mapper.hash(self.currency) ^
       Mapper.hash(self.source) ^
-      Mapper.hash(self.target);
+      Mapper.hash(self.target) ^
+      Mapper.hash(self.photoUrl);
   @override
   bool equals(ExpenseEntry self, ExpenseEntry other) =>
       Mapper.isEqual(self.id, other.id) &&
@@ -2797,7 +2800,8 @@ class ExpenseEntryMapper extends BaseMapper<ExpenseEntry> {
       Mapper.isEqual(self.amount, other.amount) &&
       Mapper.isEqual(self.currency, other.currency) &&
       Mapper.isEqual(self.source, other.source) &&
-      Mapper.isEqual(self.target, other.target);
+      Mapper.isEqual(self.target, other.target) &&
+      Mapper.isEqual(self.photoUrl, other.photoUrl);
 
   @override
   Function get typeFactory => (f) => f<ExpenseEntry>();
@@ -2820,6 +2824,7 @@ abstract class ExpenseEntryCopyWith<$R> {
       Currency? currency,
       SplitSource? source,
       ExpenseTarget? target,
+      String? photoUrl,
       DateTime? createdAt,
       DateTime? transactedAt});
   $R apply(ExpenseEntry Function(ExpenseEntry) transform);
@@ -2840,6 +2845,7 @@ class _ExpenseEntryCopyWithImpl<$R> extends BaseCopyWith<ExpenseEntry, $R> imple
           Currency? currency,
           SplitSource? source,
           ExpenseTarget? target,
+          Object? photoUrl = $none,
           DateTime? createdAt,
           Object? transactedAt = $none}) =>
       $then(ExpenseEntry(
@@ -2849,6 +2855,7 @@ class _ExpenseEntryCopyWithImpl<$R> extends BaseCopyWith<ExpenseEntry, $R> imple
           currency: currency ?? $value.currency,
           source: source ?? $value.source,
           target: target ?? $value.target,
+          photoUrl: or(photoUrl, $value.photoUrl),
           createdAt: createdAt ?? $value.createdAt,
           transactedAt: or(transactedAt, $value.transactedAt)));
 }

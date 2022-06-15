@@ -42,7 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: GestureDetector(
                       onTap: () async {
                         var logic = ref.read(groupsLogicProvider);
-                        var pngBytes = await ImageSelector.fromGallery(context, cropOverlayType: OverlayType.circle);
+                        var pngBytes = await ImageSelector.open(context, cropOverlayType: OverlayType.circle);
                         if (pngBytes != null) {
                           logic.uploadProfileImage(pngBytes);
                         }

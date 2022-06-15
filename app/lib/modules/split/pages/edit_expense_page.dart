@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -5,6 +8,7 @@ import '../split.module.dart';
 import '../widgets/amount_section.dart';
 import '../widgets/date_section.dart';
 import '../widgets/edit_entry_page.dart';
+import '../widgets/photo_section.dart';
 import '../widgets/targets_section.dart';
 
 class EditExpensePage extends StatefulWidget {
@@ -29,6 +33,9 @@ class _EditExpensePageState extends State<EditExpensePage> {
   SplitSource? source;
   ExpenseTarget target = const ExpenseTarget.percent({});
 
+  Uint8List? photoBytes;
+  String? photoUrl;
+
   DateTime createdAt = DateTime.now();
   DateTime? transactedAt;
 
@@ -41,6 +48,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
       currency = widget.entry!.currency;
       source = widget.entry!.source;
       target = widget.entry!.target;
+      photoUrl = widget.entry!.photoUrl;
       createdAt = widget.entry!.createdAt;
       transactedAt = widget.entry!.transactedAt;
     }
@@ -60,19 +68,27 @@ class _EditExpensePageState extends State<EditExpensePage> {
         setState(() => title = value);
       },
       entryValid: isValid,
-      onSave: () {
+      onSave: () async {
         if (target.amounts.isEmpty) {
           target = ExpenseTarget.shares({
             for (var user in context.read(selectedGroupProvider)!.users.keys) user: 1,
           });
         }
+
+        var id = widget.entry?.id ?? generateRandomId(8);
+
+        if (photoBytes != null) {
+          photoUrl = await context.read(groupsLogicProvider).uploadFile('split/photos/$id.png', photoBytes!);
+        }
+
         Navigator.of(context).pop(ExpenseEntry(
-          id: widget.entry?.id ?? generateRandomId(8),
+          id: id,
           title: title!,
           amount: amount,
           currency: currency,
           source: source!,
           target: target,
+          photoUrl: photoUrl,
           createdAt: createdAt,
           transactedAt: transactedAt,
         ));
@@ -99,6 +115,26 @@ class _EditExpensePageState extends State<EditExpensePage> {
           },
           amount: amount,
           currency: currency,
+        ),
+        PhotoSection(
+          label: 'Take a photo',
+          photo: photoBytes != null
+              ? MemoryImage(photoBytes!) as ImageProvider
+              : photoUrl != null
+                  ? CachedNetworkImageProvider(photoUrl!)
+                  : null,
+          onPhotoAdded: (bytes) {
+            setState(() => photoBytes = bytes);
+          },
+          onDelete: () async {
+            if (photoUrl != null && widget.entry?.id != null) {
+              await context.read(groupsLogicProvider).deleteFile('split/photos/${widget.entry!.id}.png');
+            }
+            setState(() {
+              photoBytes = null;
+              photoUrl = null;
+            });
+          },
         ),
         DateSection(
           transactedAt: transactedAt,
