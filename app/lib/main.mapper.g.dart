@@ -73,6 +73,7 @@ var _mappers = <BaseMapper>{
   BalancesListParamsMapper._(),
   BalanceFocusParamsMapper._(),
   SplitStateMapper._(),
+  BillingRatesMapper._(),
   SplitTemplateMapper._(),
   BalanceEntryMapper._(),
   BillingEntryMapper._(),
@@ -2331,7 +2332,8 @@ class SplitStateMapper extends BaseMapper<SplitState> {
       pots: Mapper.i.$getOpt(map, 'pots') ?? const {},
       entries: Mapper.i.$getOpt(map, 'entries') ?? const {},
       showBilling: Mapper.i.$getOpt(map, 'showBilling') ?? false,
-      templates: Mapper.i.$getOpt(map, 'templates') ?? const []);
+      templates: Mapper.i.$getOpt(map, 'templates') ?? const [],
+      billingRates: Mapper.i.$getOpt(map, 'billingRates'));
 
   @override
   Function get encoder => (SplitState v) => encode(v);
@@ -2340,18 +2342,20 @@ class SplitStateMapper extends BaseMapper<SplitState> {
         'pots': Mapper.i.$enc(s.pots, 'pots'),
         'entries': Mapper.i.$enc(s.entries, 'entries'),
         'showBilling': Mapper.i.$enc(s.showBilling, 'showBilling'),
-        'templates': Mapper.i.$enc(s.templates, 'templates')
+        'templates': Mapper.i.$enc(s.templates, 'templates'),
+        'billingRates': Mapper.i.$enc(s.billingRates, 'billingRates')
       };
 
   @override
   String stringify(SplitState self) =>
-      'SplitState(pots: ${Mapper.asString(self.pots)}, entries: ${Mapper.asString(self.entries)}, templates: ${Mapper.asString(self.templates)}, showBilling: ${Mapper.asString(self.showBilling)}, balances: ${Mapper.asString(self.balances)}, billing: ${Mapper.asString(self.billing)})';
+      'SplitState(pots: ${Mapper.asString(self.pots)}, entries: ${Mapper.asString(self.entries)}, templates: ${Mapper.asString(self.templates)}, showBilling: ${Mapper.asString(self.showBilling)}, billingRates: ${Mapper.asString(self.billingRates)}, balances: ${Mapper.asString(self.balances)}, billing: ${Mapper.asString(self.billing)})';
   @override
   int hash(SplitState self) =>
       Mapper.hash(self.pots) ^
       Mapper.hash(self.entries) ^
       Mapper.hash(self.templates) ^
       Mapper.hash(self.showBilling) ^
+      Mapper.hash(self.billingRates) ^
       Mapper.hash(self.balances) ^
       Mapper.hash(self.billing);
   @override
@@ -2360,6 +2364,7 @@ class SplitStateMapper extends BaseMapper<SplitState> {
       Mapper.isEqual(self.entries, other.entries) &&
       Mapper.isEqual(self.templates, other.templates) &&
       Mapper.isEqual(self.showBilling, other.showBilling) &&
+      Mapper.isEqual(self.billingRates, other.billingRates) &&
       Mapper.isEqual(self.balances, other.balances) &&
       Mapper.isEqual(self.billing, other.billing);
 
@@ -2378,11 +2383,13 @@ abstract class SplitStateCopyWith<$R> {
   MapCopyWith<$R, String, SplitPot, SplitPotCopyWith<$R>> get pots;
   MapCopyWith<$R, String, SplitEntry, SplitEntryCopyWith<$R>> get entries;
   ListCopyWith<$R, SplitTemplate, SplitTemplateCopyWith<$R>> get templates;
+  BillingRatesCopyWith<$R>? get billingRates;
   $R call(
       {Map<String, SplitPot>? pots,
       Map<String, SplitEntry>? entries,
       bool? showBilling,
-      List<SplitTemplate>? templates});
+      List<SplitTemplate>? templates,
+      BillingRates? billingRates});
   $R apply(SplitState Function(SplitState) transform);
 }
 
@@ -2399,16 +2406,69 @@ class _SplitStateCopyWithImpl<$R> extends BaseCopyWith<SplitState, $R> implement
   ListCopyWith<$R, SplitTemplate, SplitTemplateCopyWith<$R>> get templates =>
       ListCopyWith($value.templates, (v, t) => SplitTemplateCopyWith(v, t), (v) => call(templates: v));
   @override
+  BillingRatesCopyWith<$R>? get billingRates =>
+      $value.billingRates != null ? BillingRatesCopyWith($value.billingRates!, (v) => call(billingRates: v)) : null;
+  @override
   $R call(
           {Map<String, SplitPot>? pots,
           Map<String, SplitEntry>? entries,
           bool? showBilling,
-          List<SplitTemplate>? templates}) =>
+          List<SplitTemplate>? templates,
+          Object? billingRates = $none}) =>
       $then(SplitState(
           pots: pots ?? $value.pots,
           entries: entries ?? $value.entries,
           showBilling: showBilling ?? $value.showBilling,
-          templates: templates ?? $value.templates));
+          templates: templates ?? $value.templates,
+          billingRates: or(billingRates, $value.billingRates)));
+}
+
+class BillingRatesMapper extends BaseMapper<BillingRates> {
+  BillingRatesMapper._();
+
+  @override
+  Function get decoder => decode;
+  BillingRates decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  BillingRates fromMap(Map<String, dynamic> map) =>
+      BillingRates(Mapper.i.$get(map, 'target'), Mapper.i.$get(map, 'rates'));
+
+  @override
+  Function get encoder => (BillingRates v) => encode(v);
+  dynamic encode(BillingRates v) => toMap(v);
+  Map<String, dynamic> toMap(BillingRates b) =>
+      {'target': Mapper.i.$enc(b.target, 'target'), 'rates': Mapper.i.$enc(b.rates, 'rates')};
+
+  @override
+  String stringify(BillingRates self) =>
+      'BillingRates(target: ${Mapper.asString(self.target)}, rates: ${Mapper.asString(self.rates)})';
+  @override
+  int hash(BillingRates self) => Mapper.hash(self.target) ^ Mapper.hash(self.rates);
+  @override
+  bool equals(BillingRates self, BillingRates other) =>
+      Mapper.isEqual(self.target, other.target) && Mapper.isEqual(self.rates, other.rates);
+
+  @override
+  Function get typeFactory => (f) => f<BillingRates>();
+}
+
+extension BillingRatesMapperExtension on BillingRates {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  BillingRatesCopyWith<BillingRates> get copyWith => BillingRatesCopyWith(this, $identity);
+}
+
+abstract class BillingRatesCopyWith<$R> {
+  factory BillingRatesCopyWith(BillingRates value, Then<BillingRates, $R> then) = _BillingRatesCopyWithImpl<$R>;
+  $R call({Currency? target, Map<Currency, double>? rates});
+  $R apply(BillingRates Function(BillingRates) transform);
+}
+
+class _BillingRatesCopyWithImpl<$R> extends BaseCopyWith<BillingRates, $R> implements BillingRatesCopyWith<$R> {
+  _BillingRatesCopyWithImpl(BillingRates value, Then<BillingRates, $R> then) : super(value, then);
+
+  @override
+  $R call({Currency? target, Map<Currency, double>? rates}) =>
+      $then(BillingRates(target ?? $value.target, rates ?? $value.rates));
 }
 
 class SplitTemplateMapper extends BaseMapper<SplitTemplate> {

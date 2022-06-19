@@ -46,8 +46,15 @@ class SplitState {
   final Map<String, SplitEntry> entries;
   final List<SplitTemplate> templates;
   final bool showBilling;
+  final BillingRates? billingRates;
 
-  SplitState({this.pots = const {}, this.entries = const {}, this.showBilling = false, this.templates = const []}) {
+  SplitState({
+    this.pots = const {},
+    this.entries = const {},
+    this.showBilling = false,
+    this.templates = const [],
+    this.billingRates,
+  }) {
     balances = calcBalances();
     billing = calcBilling();
   }
@@ -114,10 +121,20 @@ class SplitState {
     var allUsers = balances.keys.where((s) => s.isUser).map((s) => s.id).toList();
     var entries = <BillingEntry>[];
 
+    if (billingRates != null) {
+      usedCurrencies.removeAll(billingRates!.rates.keys);
+    }
+
     for (var currency in usedCurrencies) {
-      var currBalances = balances.entries
-          .map((e) => BalanceEntry(e.key, (e.value.amounts[currency] ?? 0) * (e.key.isUser ? 1 : -1)))
-          .toList();
+      var currBalances = balances.entries.map((e) {
+        var amount = e.value.amounts[currency] ?? 0;
+        if (billingRates != null && currency == billingRates!.target) {
+          for (var rate in billingRates!.rates.entries) {
+            amount += (e.value.amounts[rate.key] ?? 0) / rate.value;
+          }
+        }
+        return BalanceEntry(e.key, amount * (e.key.isUser ? 1 : -1));
+      }).toList();
 
       var balanceSum = currBalances.fold<double>(0.0, (sum, b) => sum + b.value);
       var targetBalance = balanceSum / allUsers.length;
@@ -141,8 +158,8 @@ class SplitState {
 
         if (-negLast.value >= posLast.value) {
           entries.add(BillingEntry(negLast.key, posLast.key, currency, posLast.value));
-          posLast.value = 0;
           negLast.value += posLast.value;
+          posLast.value = 0;
         } else {
           entries.add(BillingEntry(negLast.key, posLast.key, currency, -negLast.value));
           posLast.value += negLast.value;
@@ -160,6 +177,14 @@ class SplitState {
 
     return entries;
   }
+}
+
+@MappableClass()
+class BillingRates with Mappable {
+  final Currency target;
+  final Map<Currency, double> rates;
+
+  BillingRates(this.target, this.rates);
 }
 
 @MappableClass()

@@ -71,4 +71,10 @@ class SplitLogic {
       'templates': templates.where((t) => t != template).map(Mapper.toValue).toList(),
     });
   }
+
+  Future<void> setBillingRates(BillingRates? rates) async {
+    return doc.update({
+      'billingRates': Mapper.toValue(rates),
+    });
+  }
 }
