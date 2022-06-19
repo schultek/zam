@@ -17,20 +17,26 @@ class GlassContentElementDecorator implements ElementDecorator<ContentElement> {
   @override
   Widget decorateElement(BuildContext context, ContentElement element, Widget child) {
     if (child is ContentElementItems) {
-      return child.builder(context, child.itemsBuilder(context).map((c) => _defaultDecorator(element, c)).toList());
+      return child.builder(
+          context, child.itemsBuilder(context).map((c) => _defaultDecorator(element.size, c)).toList());
     } else if (child is ContentElementText) {
       return Material(color: Colors.transparent, child: child.builder(context));
     } else {
-      return _defaultDecorator(element, child);
+      return _defaultDecorator(element.size, child);
     }
   }
 
   @override
   Widget decoratePlaceholder(BuildContext context, ContentElement element) {
-    return _defaultDecorator(element);
+    return _defaultDecorator(element.size);
   }
 
-  Widget _defaultDecorator(ContentElement element, [Widget? child]) {
+  @override
+  Widget getPlaceholder(BuildContext context) {
+    return _defaultDecorator(ElementSize.square, null);
+  }
+
+  Widget _defaultDecorator(ElementSize size, [Widget? child]) {
     var w = ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: BackdropFilter(
@@ -45,7 +51,7 @@ class GlassContentElementDecorator implements ElementDecorator<ContentElement> {
         ),
       ),
     );
-    if (element.size == ElementSize.wide) {
+    if (size == ElementSize.wide) {
       return w;
     } else {
       return AspectRatio(

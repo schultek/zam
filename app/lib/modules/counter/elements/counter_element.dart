@@ -11,8 +11,7 @@ class CounterState {
 class CounterElement with ElementBuilderMixin<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
-    var params = module.getParams<CounterState?>() ??
-        CounterState(0, module.context.tr.counter);
+    var params = module.getParams<CounterState?>() ?? CounterState(0, module.context.tr.counter);
 
     return ContentElement(
       module: module,
@@ -24,15 +23,13 @@ class CounterElement with ElementBuilderMixin<ContentElement> {
             children: [
               Text(
                 params.label,
-                style: context.theme.textTheme.bodyText1!
-                    .apply(color: context.onSurfaceColor),
+                style: context.theme.textTheme.bodyText1!.apply(color: context.onSurfaceColor),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
               Text(
                 params.count.toString(),
-                style: context.theme.textTheme.headline3!
-                    .apply(color: context.onSurfaceColor),
+                style: context.theme.textTheme.headline3!.apply(color: context.onSurfaceColor),
                 textAlign: TextAlign.center,
               ),
             ],

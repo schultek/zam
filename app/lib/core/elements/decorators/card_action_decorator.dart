@@ -24,10 +24,15 @@ class CardActionDecorator implements ElementDecorator<ActionElement> {
 
   @override
   Widget decoratePlaceholder(BuildContext context, ActionElement element) {
-    return actionLayout(context, element, isPlaceholder: true);
+    return actionLayout(context, null);
   }
 
-  Widget actionLayout(BuildContext context, ActionElement element, {bool isPlaceholder = false}) {
+  @override
+  Widget getPlaceholder(BuildContext context) {
+    return actionLayout(context, null);
+  }
+
+  Widget actionLayout(BuildContext context, ActionElement? element) {
     return AspectRatio(
       aspectRatio: 1,
       child: ThemedSurface(
@@ -39,8 +44,8 @@ class CardActionDecorator implements ElementDecorator<ActionElement> {
           child: Material(
             textStyle: TextStyle(color: context.onSurfaceColor),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            color: fillColor.withOpacity(isPlaceholder ? 0.8 : 1),
-            child: isPlaceholder
+            color: fillColor.withOpacity(element == null ? 0.8 : 1),
+            child: element == null
                 ? Container()
                 : Column(
                     mainAxisSize: MainAxisSize.min,

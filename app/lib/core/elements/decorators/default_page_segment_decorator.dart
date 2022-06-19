@@ -10,7 +10,7 @@ class DefaultPageElementDecorator implements ElementDecorator<PageElement> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(blurRadius: 8, spreadRadius: -2, color: Colors.black.withOpacity(opacity * 0.5))],
+        boxShadow: [BoxShadow(blurRadius: 8, spreadRadius: -2, color: Colors.black.withOpacity(opacity * 0.2))],
       ),
       child: child,
     );
@@ -28,5 +28,15 @@ class DefaultPageElementDecorator implements ElementDecorator<PageElement> {
   @override
   Widget decoratePlaceholder(BuildContext context, PageElement element) {
     return Container();
+  }
+
+  @override
+  Widget getPlaceholder(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(blurRadius: 8, spreadRadius: -2, color: Colors.black.withOpacity(0))],
+      ),
+    );
   }
 }

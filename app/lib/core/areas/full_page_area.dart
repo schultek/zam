@@ -35,5 +35,5 @@ class FullPageAreaState extends AreaState<FullPageArea, PageElement>
   }
 
   @override
-  BoxConstraints constrainWidget(PageElement widget) => BoxConstraints.tight(areaSize);
+  BoxConstraints constrainWidget(PageElement? widget) => BoxConstraints.tight(areaSize);
 }

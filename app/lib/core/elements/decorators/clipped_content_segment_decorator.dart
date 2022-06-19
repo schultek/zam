@@ -32,16 +32,21 @@ class ClippedContentElementDecorator implements ElementDecorator<ContentElement>
     } else if (child is ContentElementText) {
       return Material(color: Colors.transparent, child: child.builder(context));
     } else {
-      return _defaultDecorator(element, child);
+      return _defaultDecorator(element.size, child);
     }
   }
 
   @override
   Widget decoratePlaceholder(BuildContext context, ContentElement element) {
-    return _defaultDecorator(element);
+    return _defaultDecorator(element.size);
   }
 
-  Widget _defaultDecorator(ContentElement element, [Widget? child]) {
+  @override
+  Widget getPlaceholder(BuildContext context) {
+    return _defaultDecorator(ElementSize.square, null);
+  }
+
+  Widget _defaultDecorator(ElementSize size, [Widget? child]) {
     var w = ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Material(
@@ -49,7 +54,7 @@ class ClippedContentElementDecorator implements ElementDecorator<ContentElement>
         child: child ?? Container(),
       ),
     );
-    if (element.size == ElementSize.wide) {
+    if (size == ElementSize.wide) {
       return w;
     } else {
       return AspectRatio(

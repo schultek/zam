@@ -41,7 +41,7 @@ class ActionRowAreaState extends AreaState<ActionRowArea, ActionElement>
   }
 
   @override
-  BoxConstraints constrainWidget(ActionElement widget) =>
+  BoxConstraints constrainWidget(ActionElement? widget) =>
       BoxConstraints(maxHeight: 100, maxWidth: areaSize.width / 3 - 5);
 
   @override

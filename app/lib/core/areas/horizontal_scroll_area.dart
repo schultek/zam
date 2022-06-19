@@ -51,7 +51,7 @@ class HorizontalScrollAreaState extends AreaState<HorizontalScrollArea, ContentE
   }
 
   @override
-  BoxConstraints constrainWidget(ContentElement widget) => const BoxConstraints(maxHeight: 160);
+  BoxConstraints constrainWidget(ContentElement? widget) => const BoxConstraints(maxHeight: 160);
 
   @override
   bool canInsertItem(item) => true;

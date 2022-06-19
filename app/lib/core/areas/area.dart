@@ -194,7 +194,7 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   EdgeInsets getPadding() => const EdgeInsets.all(10);
   Radius getRadius() => const Radius.circular(20);
 
-  BoxConstraints constrainWidget(T widget);
+  BoxConstraints constrainWidget(T? widget);
 
   void removeWidget(Key key) {
     setState(() {
@@ -227,7 +227,7 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
     });
   }
 
-  void callTyped(void Function<E extends ModuleElement>() fn) {
+  V callTyped<V>(V Function<E extends ModuleElement>() fn) {
     return fn<T>();
   }
 

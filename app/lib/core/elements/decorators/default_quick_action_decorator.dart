@@ -22,10 +22,19 @@ class DefaultActionDecorator implements ElementDecorator<ActionElement> {
     return actionLayout(context, element, isPlaceholder: true);
   }
 
-  Widget actionLayout(BuildContext context, ActionElement element, {bool isPlaceholder = false, double opacity = 0}) {
+  @override
+  Widget getPlaceholder(BuildContext context) {
+    return IntrinsicWidth(
+        child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: actionLayout(context, null, isPlaceholder: true),
+    ));
+  }
+
+  Widget actionLayout(BuildContext context, ActionElement? element, {bool isPlaceholder = false, double opacity = 0}) {
     var textColor = context.onSurfaceColor;
     var textStyle = context.theme.textTheme.bodyText1!.apply(fontSizeDelta: -3);
-    var text = element.textBuilder(context);
+    var text = element?.textBuilder(context) ?? 'xxxxxx';
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ThemedSurface(
@@ -46,11 +55,11 @@ class DefaultActionDecorator implements ElementDecorator<ActionElement> {
                       )
                   ],
                 ),
-                padding: element.icon != null ? const EdgeInsets.all(10) : EdgeInsets.zero,
+                padding: element?.icon != null ? const EdgeInsets.all(10) : EdgeInsets.zero,
                 margin: const EdgeInsets.only(bottom: 10),
-                child: element.icon != null
-                    ? Icon(element.icon, color: isPlaceholder ? Colors.transparent : context.onSurfaceColor)
-                    : element.iconWidget ?? Container(),
+                child: element?.icon != null
+                    ? Icon(element?.icon, color: isPlaceholder ? Colors.transparent : context.onSurfaceColor)
+                    : element?.iconWidget ?? Container(),
               ),
             ),
             SizedBox(

@@ -5,8 +5,8 @@ import '../../../providers/groups/selected_group_provider.dart';
 import '../../providers/editing_providers.dart';
 import '../../themes/themes.dart';
 import '../../widgets/layout_preview.dart';
+import 'edit_toggle.dart';
 import 'group_selector.dart';
-import 'layout_toggle.dart';
 
 class MainGroupHeader extends StatelessWidget {
   const MainGroupHeader({Key? key}) : super(key: key);
@@ -25,11 +25,11 @@ class MainGroupHeader extends StatelessWidget {
           var leading = [
             if (!isEditing) const GroupSelectorButton(),
             if (isEditing && isOrganizer) const GroupSettingsButton(),
-            if (isEditing) const SizedBox(width: 50),
+            if (isEditing && !isOrganizer) const SizedBox(width: 50),
           ];
 
           var trailing = [
-            if (!isEditing && !isOrganizer) const SizedBox(width: 50),
+            if (!isOrganizer) const SizedBox(width: 50),
             if (isOrganizer) EditToggles(isEditing: isEditing),
           ];
 

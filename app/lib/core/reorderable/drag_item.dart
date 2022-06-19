@@ -3,10 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../areas/areas.dart';
-import '../elements/elements.dart';
-import '../templates/templates.dart';
-import '../themes/themes.dart';
+import '../core.dart';
 import 'drag_provider.dart';
 import 'reorderable_item.dart';
 
@@ -25,7 +22,7 @@ class DragItemWidget<T extends ModuleElement> extends StatelessWidget {
       : super(key: key);
 
   double scaledHeight(Size size) => lerpDouble(
-        area.template.widgetSelector?.state?.startHeightFor(size) ?? size.height,
+        WidgetSelector.startHeightFor(size),
         size.height,
         scaleAnimation.value,
       )!;

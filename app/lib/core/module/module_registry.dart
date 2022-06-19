@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -42,30 +42,43 @@ class ModuleRegistry {
     return (builder as ElementBuilder<T>?)?.call(moduleContext);
   }
 
-  Future<List<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) async {
+  List<ElementResolver<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
     initModules();
 
     var moduleBlacklist = context.read(selectedGroupProvider)!.moduleBlacklist;
-    var widgets = await Future.wait([
-      for (var m in modules.entries)
-        if (!moduleBlacklist.contains(m.key))
-          for (var e in m.value.elements.entries)
-            if (e.value is ElementBuilder<T>)
-              _callOrCatch(
-                e.value as ElementBuilder<T>,
-                ModuleContext<T>(context, m.value, '${m.key}/${e.key}'),
-              ),
-    ]);
-    return widgets.whereNotNull().toList();
+    var widgets = <ElementResolver<T>>[];
+
+    for (var m in modules.entries) {
+      if (!moduleBlacklist.contains(m.key)) {
+        for (var e in m.value.elements.entries) {
+          if (e.value is ElementBuilder<T>) {
+            var widget = _callOrCatch(
+              e.value as ElementBuilder<T>,
+              ModuleContext<T>(context, m.value, '${m.key}/${e.key}'),
+            );
+            if (widget != null) {
+              widgets.add(ElementResolver(widget, m.value));
+            }
+          }
+        }
+      }
+    }
+    return widgets;
   }
 
-  Future<T?> _callOrCatch<T extends ModuleElement>(ElementBuilder<T> builder, ModuleContext module) async {
+  FutureOr<T?> _callOrCatch<T extends ModuleElement>(ElementBuilder<T> builder, ModuleContext module) {
     var future = builder(module);
-    try {
-      return await future;
-    } catch (e, st) {
-      FirebaseCrashlytics.instance.recordError(e, st, reason: 'Getting widget for module ${module.id}');
-      return null;
+    if (future is T?) {
+      return future;
+    } else {
+      return Future.sync(() async {
+        try {
+          return await future;
+        } catch (e, st) {
+          FirebaseCrashlytics.instance.recordError(e, st, reason: 'Getting widget for module ${module.id}');
+          return null;
+        }
+      });
     }
   }
 
@@ -111,4 +124,29 @@ class ModuleRegistry {
       }
     }
   }
+}
+
+class ElementResolver<T extends ModuleElement> with ChangeNotifier implements ValueListenable<ElementResolver<T>> {
+  final FutureOr<T?> _elementFuture;
+  final ModuleBuilder module;
+
+  bool isResolved = false;
+  T? result;
+
+  ElementResolver(this._elementFuture, this.module) {
+    assert(_elementFuture != null);
+    if (_elementFuture is T) {
+      isResolved = true;
+      result = _elementFuture as T;
+    } else {
+      (_elementFuture as Future<T?>).then((e) {
+        isResolved = true;
+        result = e;
+        notifyListeners();
+      });
+    }
+  }
+
+  @override
+  get value => this;
 }

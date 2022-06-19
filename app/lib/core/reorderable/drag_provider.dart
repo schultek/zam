@@ -10,6 +10,7 @@ import 'package:vibration/vibration.dart';
 
 import '../areas/areas.dart';
 import '../elements/elements.dart';
+import '../providers/editing_providers.dart';
 import '../providers/selected_area_provider.dart';
 import '../widgets/widget_selector.dart';
 import 'drag_item.dart';
@@ -54,8 +55,6 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
   bool isOverWidgetSelector = false;
   bool isDropAccepted = false;
 
-  WidgetSelectorState? get widgetSelector => area.mounted ? area.template.widgetSelector?.state : null;
-
   Offset? get dragOffset => read(dragOffsetProvider);
   set dragOffset(Offset? offset) => read(dragOffsetProvider.state).state = offset;
 
@@ -65,8 +64,16 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
   double get dragDecorationOpacity => read(dragDecorationOpacityProvider.state).state;
   set dragDecorationOpacity(double opacity) => read(dragDecorationOpacityProvider.state).state = opacity;
 
+  WidgetSelectorState? get widgetSelector {
+    var state = read(widgetSelectorProvider);
+    return state?.mounted ?? false ? state : null;
+  }
+
   Drag onStart(Offset position) {
-    if (widgetSelector == null) {
+    if (!read(isEditingProvider)) {
+      read(editProvider.notifier).toggleEdit();
+    }
+    if (area.context.read(selectedAreaProvider) != area.id) {
       area.context.read(selectedAreaProvider.notifier).selectWidgetAreaById(area.id);
     }
 
@@ -97,8 +104,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
     dragSize = Size(renderBox.size.width, renderBox.size.height);
 
-    var height =
-        isDropAccepted || widgetSelector == null ? dragSize!.height : widgetSelector!.startHeightFor(dragSize!);
+    var height = isDropAccepted ? dragSize!.height : WidgetSelector.startHeightFor(dragSize!);
     var width = height / dragSize!.height * dragSize!.width;
 
     dragOffset = renderBox.localToGlobal(Offset.zero) + Offset(width / 2, height / 2);
@@ -187,7 +193,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
     var dragScale = dragScaleAnimation?.value ?? (isDropAccepted ? 1 : 0);
     var targetScale = isDropAccepted ? 1 : 0;
 
-    var targetHeight = isDropAccepted ? size.height : widgetSelector!.startHeightFor(size);
+    var targetHeight = isDropAccepted ? size.height : WidgetSelector.startHeightFor(size);
     var targetWidth = targetHeight / size.height * size.width;
 
     var targetOffset = draggedItem.offset + Offset(targetWidth / 2, targetHeight / 2);

@@ -9,8 +9,8 @@ final isAreaSelectedProvider =
 
 class SelectArea extends StateNotifier<String?> {
   SelectArea(this.ref) : super(null) {
-    ref.listen<EditState>(editProvider, (_, editState) {
-      if (editState != EditState.widgetMode && state != null) {
+    ref.listen<bool>(editProvider, (_, editState) {
+      if (!editState && state != null) {
         _unselectArea();
       }
     });
@@ -19,7 +19,8 @@ class SelectArea extends StateNotifier<String?> {
   final Ref ref;
 
   void selectWidgetAreaById(String? id) async {
-    if (ref.read(editProvider) != EditState.widgetMode) return;
+    if (!ref.read(editProvider)) return;
+    if (super.state == id) return;
     super.state = id;
   }
 

@@ -8,14 +8,13 @@ import 'package:riverpod_context/riverpod_context.dart';
 import '../../providers/groups/logic_provider.dart';
 import '../../providers/groups/selected_group_provider.dart';
 import '../areas/areas.dart';
-import '../elements/elements.dart';
 import '../providers/editing_providers.dart';
 import '../providers/selected_area_provider.dart';
 import '../themes/themes.dart';
 import '../widgets/config_sheet.dart';
 import '../widgets/widget_selector.dart';
 import 'template_model.dart';
-import 'widgets/layout_toggle.dart';
+import 'widgets/edit_toggle.dart';
 import 'widgets/template_navigator.dart';
 
 class InheritedTemplate extends InheritedWidget {
@@ -55,8 +54,6 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
   static AnimationController? wiggleController;
   late AnimationController _wiggleController;
 
-  WidgetSelector? widgetSelector;
-
   List<Widget> getPageSettings();
 
   Future<void> updateModel(M model) async {
@@ -76,32 +73,6 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
     _wiggleController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
     wiggleController = _wiggleController;
     wiggle = _wiggleController.view;
-  }
-
-  @override
-  void didChangeDependencies() {
-    context.listen<String?>(selectedAreaProvider, (prevArea, area) async {
-      if (prevArea == area) return;
-
-      widgetSelector = null;
-
-      if (area != null) {
-        if (widgetAreas[area]?.mounted ?? false) {
-          var widgetArea = widgetAreas[area]!;
-          widgetArea.callTyped(<E extends ModuleElement>() async {
-            widgetSelector = await WidgetSelector.from<E>(
-              this,
-              widgetArea as AreaState<Area<E>, E>,
-            );
-            setState(() {});
-          });
-        }
-      } else {
-        setState(() {});
-      }
-    });
-
-    super.didChangeDependencies();
   }
 
   @override
@@ -147,17 +118,11 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
                   home: Stack(
                     children: [
                       MediaQuery(
-                        data: MediaQuery.of(context).addPadding(
-                            bottom: editState == EditState.layoutMode
-                                ? MediaQuery.of(context).size.height * 0.2
-                                : editState == EditState.widgetMode
-                                    ? widgetSelector?.sheetHeight ?? 0
-                                    : 0),
+                        data: MediaQuery.of(context).addPadding(bottom: editState ? WidgetSelector.sheetHeight : 0),
                         child: buildPages(context),
                       ),
                       Builder(builder: (context) {
-                        var isLayoutMode = context.watch(editProvider.select((e) => e == EditState.layoutMode));
-                        if (isLayoutMode) {
+                        if (context.watch(editProvider)) {
                           return Align(
                             alignment: Alignment.bottomCenter,
                             child: ConfigSheet<M>(),
@@ -166,11 +131,6 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
                           return Container();
                         }
                       }),
-                      if (widgetSelector != null)
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: widgetSelector,
-                        ),
                       Builder(
                         builder: (context) {
                           if (context.watch(isEditingProvider) && !context.watch(toggleVisibilityProvider)) {

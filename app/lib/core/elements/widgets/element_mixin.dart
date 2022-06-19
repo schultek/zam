@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../providers/groups/selected_group_provider.dart';
 import '../../areas/area.dart';
 import '../../providers/editing_providers.dart';
+import '../../providers/selected_area_provider.dart';
 import '../../reorderable/reorderable_item.dart';
 import '../../reorderable/reorderable_listener.dart';
 import '../../route/route.dart';
@@ -56,53 +58,56 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
           return Builder(builder: (context) {
             var editState = context.watch(editProvider);
 
-            if (editState == EditState.inactive) {
-              return ModuleRouteTransition<T>(child: child, element: element);
+            if (!editState) {
+              Widget widget = ModuleRouteTransition<T>(child: child, element: element);
+              if (context.read(isOrganizerProvider)) {
+                widget = ReorderableListener<T>(
+                  childKey: key,
+                  delay: const Duration(milliseconds: 800),
+                  child: widget,
+                );
+              }
+              return widget;
             } else {
-              var isLayoutMode = editState == EditState.layoutMode;
               return LayoutBuilder(
                 builder: (context, constraints) {
                   return Stack(clipBehavior: Clip.none, children: [
                     ConstrainedBox(
                       constraints: constraints,
                       child: Builder(builder: (context) {
-                        if (isLayoutMode) {
-                          return AbsorbPointer(child: child);
-                        } else {
-                          var animation = CurvedAnimation(parent: PhasedAnimation.of(context), curve: Curves.easeInOut);
-                          return AnimatedBuilder(
-                            animation: animation,
-                            builder: (context, child) => Transform.rotate(
-                              angle: (animation.value - 0.5) * 0.015,
-                              child: child,
-                            ),
-                            child: ReorderableListener<T>(
-                              childKey: key,
-                              delay: const Duration(milliseconds: 300),
-                              child: AbsorbPointer(child: child),
-                            ),
-                          );
-                        }
+                        var animation = CurvedAnimation(parent: PhasedAnimation.of(context), curve: Curves.easeInOut);
+                        return AnimatedBuilder(
+                          animation: animation,
+                          builder: (context, child) => Transform.rotate(
+                            angle: (animation.value - 0.5) * 0.015,
+                            child: child,
+                          ),
+                          child: ReorderableListener<T>(
+                            childKey: key,
+                            delay: const Duration(milliseconds: 300),
+                            child: AbsorbPointer(child: child),
+                          ),
+                        );
                       }),
                     ),
-                    if (!isLayoutMode)
-                      Positioned(
-                        top: -8,
-                        left: -8,
-                        child: ElementIconButton(
-                          icon: Icons.close,
-                          onPressed: () {
-                            var areaState = Area.of<T>(context)!;
-                            areaState.removeWidget(key);
-                          },
-                          color: context.theme.errorColor,
-                          iconColor: Colors.white,
-                        ),
+                    Positioned(
+                      top: -8,
+                      left: -8,
+                      child: ElementIconButton(
+                        icon: Icons.close,
+                        onPressed: () {
+                          var areaState = Area.of<T>(context)!;
+                          areaState.removeWidget(key);
+                          context.read(selectedAreaProvider.notifier).selectWidgetAreaById(areaState.id);
+                        },
+                        color: context.theme.errorColor,
+                        iconColor: Colors.white,
                       ),
+                    ),
                     if (settings != null || settingsAction != null)
                       Positioned(
                         top: -8,
-                        left: isLayoutMode ? -8 : 25,
+                        left: 25,
                         child: ElementSettingsButton(
                           module: element.module,
                           settings: settings,

@@ -5,18 +5,16 @@ import '../templates/template.dart';
 final toggleVisibilityProvider = StateProvider((ref) => true);
 final templateVisibilityProvider = StateProvider((ref) => true);
 
-final editProvider = StateNotifierProvider<EditNotifier, EditState>((ref) => EditNotifier(ref));
-final isEditingProvider = Provider((ref) => ref.watch(editProvider) != EditState.inactive);
+final editProvider = StateNotifierProvider<EditNotifier, bool>((ref) => EditNotifier(ref));
+final isEditingProvider = Provider((ref) => ref.watch(editProvider));
 
-enum EditState { inactive, widgetMode, layoutMode }
-
-class EditNotifier extends StateNotifier<EditState> {
-  EditNotifier(this.ref) : super(EditState.inactive);
+class EditNotifier extends StateNotifier<bool> {
+  EditNotifier(this.ref) : super(false);
 
   final Ref ref;
 
   void toggleEdit() {
-    if (state == EditState.inactive) {
+    if (!state) {
       _beginEdit();
     } else {
       _finishEdit();
@@ -24,7 +22,7 @@ class EditNotifier extends StateNotifier<EditState> {
   }
 
   void endEditing() {
-    if (state != EditState.inactive) {
+    if (state) {
       _finishEdit();
     }
   }
@@ -38,31 +36,20 @@ class EditNotifier extends StateNotifier<EditState> {
   }
 
   void _beginEdit() {
-    super.state = EditState.widgetMode;
+    super.state = true;
     _startWiggle();
   }
 
-  void toggleLayoutMode() {
-    if (state == EditState.inactive) return;
-    if (state == EditState.layoutMode) {
-      _startWiggle();
-      super.state = EditState.widgetMode;
-    } else {
-      _stopWiggle();
-      super.state = EditState.layoutMode;
-    }
-  }
-
   void _finishEdit() {
-    if (state == EditState.widgetMode) {
+    if (state) {
       _stopWiggle();
     }
 
-    super.state = EditState.inactive;
+    super.state = false;
   }
 
   @override
-  set state(EditState value) {
+  set state(bool value) {
     throw UnsupportedError('Do not set edit mode directly');
   }
 }

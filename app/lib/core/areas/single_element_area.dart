@@ -31,5 +31,5 @@ class SingleElementAreaState extends AreaState<SingleElementArea, ContentElement
   }
 
   @override
-  BoxConstraints constrainWidget(ContentElement widget) => BoxConstraints.loose(areaSize);
+  BoxConstraints constrainWidget(ContentElement? widget) => BoxConstraints.loose(areaSize);
 }

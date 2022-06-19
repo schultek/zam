@@ -7,9 +7,35 @@ import 'package:flare_flutter/flare_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:riverpod_context/riverpod_context.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../providers/editing_providers.dart';
 import '../../themes/themes.dart';
+
+class EditToggles extends StatelessWidget {
+  const EditToggles({this.isEditing = true, this.notifyVisibility = true, Key? key}) : super(key: key);
+
+  final bool notifyVisibility;
+  final bool isEditing;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget child = const ReorderToggle();
+
+    if (notifyVisibility) {
+      VisibilityDetectorController.instance.updateInterval = Duration.zero;
+      child = VisibilityDetector(
+        key: const ValueKey('edit-toggles'),
+        onVisibilityChanged: (visibilityInfo) {
+          context.read(toggleVisibilityProvider.notifier).state = visibilityInfo.visibleFraction > 0.1;
+        },
+        child: child,
+      );
+    }
+
+    return child;
+  }
+}
 
 class ReorderToggle extends StatefulWidget {
   const ReorderToggle({this.onPressed, Key? key}) : super(key: key);

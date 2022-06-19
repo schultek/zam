@@ -10,4 +10,6 @@ abstract class ElementDecorator<T extends ModuleElement> {
   Widget decoratePlaceholder(BuildContext context, T element);
 
   Widget decorateDragged(BuildContext context, T element, Widget child, double opacity);
+
+  Widget getPlaceholder(BuildContext context);
 }

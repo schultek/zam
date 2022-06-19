@@ -73,8 +73,8 @@ class BodyWidgetAreaState extends AreaState<MixedGridArea, ContentElement>
   }
 
   @override
-  BoxConstraints constrainWidget(ContentElement widget) {
-    if (widget.size == ElementSize.wide) {
+  BoxConstraints constrainWidget(ContentElement? widget) {
+    if (widget?.size == ElementSize.wide) {
       return BoxConstraints(maxWidth: areaSize.width - spacing);
     } else {
       return BoxConstraints(maxWidth: (areaSize.width - spacing * 2) / 2);
