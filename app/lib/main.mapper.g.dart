@@ -20,6 +20,7 @@ import 'core/templates/template_model.dart';
 import 'core/themes/theme_model.dart';
 import 'modules/announcement/announcement.module.dart';
 import 'modules/chat/chat.module.dart';
+import 'modules/counter/counter_module.dart';
 import 'modules/elimination/elimination.module.dart';
 import 'modules/labels/labels.module.dart';
 import 'modules/music/music.module.dart';
@@ -85,6 +86,7 @@ var _mappers = <BaseMapper>{
   TheButtonStateMapper._(),
   LaunchUrlParamsMapper._(),
   WebPageParamsMapper._(),
+  CounterStateMapper._(),
   UserDataMapper._(),
   UserMetadataMapper._(),
   UserInfoMapper._(),
@@ -3304,6 +3306,53 @@ class _WebPageParamsCopyWithImpl<$R> extends BaseCopyWith<WebPageParams, $R> imp
   @override
   $R call({Object? url = $none, bool? canNavigate}) =>
       $then(WebPageParams(url: or(url, $value.url), canNavigate: canNavigate ?? $value.canNavigate));
+}
+
+class CounterStateMapper extends BaseMapper<CounterState> {
+  CounterStateMapper._();
+
+  @override
+  Function get decoder => decode;
+  CounterState decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  CounterState fromMap(Map<String, dynamic> map) =>
+      CounterState(Mapper.i.$get(map, 'count'), Mapper.i.$get(map, 'label'));
+
+  @override
+  Function get encoder => (CounterState v) => encode(v);
+  dynamic encode(CounterState v) => toMap(v);
+  Map<String, dynamic> toMap(CounterState c) =>
+      {'count': Mapper.i.$enc(c.count, 'count'), 'label': Mapper.i.$enc(c.label, 'label')};
+
+  @override
+  String stringify(CounterState self) =>
+      'CounterState(count: ${Mapper.asString(self.count)}, label: ${Mapper.asString(self.label)})';
+  @override
+  int hash(CounterState self) => Mapper.hash(self.count) ^ Mapper.hash(self.label);
+  @override
+  bool equals(CounterState self, CounterState other) =>
+      Mapper.isEqual(self.count, other.count) && Mapper.isEqual(self.label, other.label);
+
+  @override
+  Function get typeFactory => (f) => f<CounterState>();
+}
+
+extension CounterStateMapperExtension on CounterState {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  CounterStateCopyWith<CounterState> get copyWith => CounterStateCopyWith(this, $identity);
+}
+
+abstract class CounterStateCopyWith<$R> {
+  factory CounterStateCopyWith(CounterState value, Then<CounterState, $R> then) = _CounterStateCopyWithImpl<$R>;
+  $R call({int? count, String? label});
+  $R apply(CounterState Function(CounterState) transform);
+}
+
+class _CounterStateCopyWithImpl<$R> extends BaseCopyWith<CounterState, $R> implements CounterStateCopyWith<$R> {
+  _CounterStateCopyWithImpl(CounterState value, Then<CounterState, $R> then) : super(value, then);
+
+  @override
+  $R call({int? count, String? label}) => $then(CounterState(count ?? $value.count, label ?? $value.label));
 }
 
 class UserDataMapper extends BaseMapper<UserData> {

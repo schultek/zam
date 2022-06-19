@@ -319,5 +319,9 @@
   "label": "Label",
   "allow_navigation": "Allow Navigation",
   "website": "Website",
-  "custom_image": "Custom Image"
+  "custom_image": "Custom Image",
+
+  "@COUNTER": {},
+
+  "counter": "Counter"
 }
