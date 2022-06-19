@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -28,13 +30,14 @@ class _SplitPageState extends State<SplitPage> with TickerProviderStateMixin {
   TabController? controller;
 
   void updateTabController(bool showBilling) {
-    if (controller?.length == (showBilling ? 3 : 2)) {
+    var len = showBilling ? 3 : 2;
+    if (controller?.length == len) {
       return;
     }
     setState(() {
       controller?.dispose();
       controller =
-          TabController(initialIndex: context.read(_splitTabIndexProvider), length: showBilling ? 3 : 2, vsync: this)
+          TabController(initialIndex: min(context.read(_splitTabIndexProvider), len - 1), length: len, vsync: this)
             ..addListener(() {
               context.read(_splitTabIndexProvider.notifier).state = controller!.index;
             });

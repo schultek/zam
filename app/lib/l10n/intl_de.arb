@@ -290,6 +290,11 @@
   "save_as_template": "Als Vorlage speichern",
   "select_template": "Vorlage auswählen",
   "created_at": "Erstellt am",
+  "depts": "Schulden",
+  "statistic": "Statistik",
+  "total": "Gesamt",
+  "set_exchange_rates": "Setze automatische Umrechnungskurse",
+  "costs": "Kosten",
 
   "@WEB": {},
 
@@ -298,5 +303,9 @@
   "label": "Text",
   "allow_navigation": "Navigation erlauben",
   "website": "Webseite",
-  "custom_image": "Individuelles Bild"
+  "custom_image": "Individuelles Bild",
+
+  "@COUNTER": {},
+
+  "counter": "Zähler"
 }
