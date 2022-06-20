@@ -2,7 +2,7 @@ name: jufa
 description: Jugend-Freizeit App
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.1.1+18
+version: 1.1.2+19
 
 environment:
   sdk: '>=2.16.0-0 <3.0.0'
