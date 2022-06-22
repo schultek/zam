@@ -42,6 +42,30 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
   }
 
   @override
+  void didUpdateWidget(covariant SwipeTemplate oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      updateActiveLayout(pageController.page);
+    });
+  }
+
+  void updateActiveLayout(int page) {
+    var isEditing = context.read(isEditingProvider);
+    if (page == 0) {
+      if (model.leftPage != null) {
+        model.activeLayout.value = model.leftPage!.layout.withId('left');
+      } else {
+        model.activeLayout.value = isEditing ? null : model.mainPage.layout.withId('main');
+      }
+    } else if (page == 1) {
+      model.activeLayout.value =
+          isEditing ? model.mainPage.layout.withId('main') : model.rightPage?.layout.withId('right');
+    } else {
+      model.activeLayout.value = model.rightPage?.layout.withId('right');
+    }
+  }
+
+  @override
   List<Widget> getPageSettings() {
     var pageIndex = pageController.page;
     if (pageIndex == 0) {
@@ -97,7 +121,7 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
             var isEditing = context.watch(isEditingProvider);
             return CustomPageView(
               controller: pageController,
-              onPageChanged: onTemplatePageChanged,
+              onPageChanged: updateActiveLayout,
               children: [
                 if (model.leftPage != null) //
                   KeepAlive(

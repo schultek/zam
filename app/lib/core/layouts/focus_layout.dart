@@ -37,6 +37,12 @@ class FocusLayoutModel extends LayoutModel {
   Widget builder(LayoutContext context) => FocusLayout(context, this);
 
   @override
+  String? getAreaIdToFocus() => 'focus';
+
+  @override
+  bool hasAreaId(String id) => ['focus', 'actions', 'infos', 'grid'].contains(id);
+
+  @override
   List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
     return [
       SwitchListTile(
@@ -150,7 +156,7 @@ class _FocusLayoutState extends State<FocusLayout> {
                         child: AspectRatio(
                           aspectRatio: 1,
                           child: SingleElementArea(
-                            id: widget.layoutContext.id + '_focus',
+                            id: widget.layoutContext.idFor('focus'),
                             decorator: widget.model.coverUrl != null
                                 ? const GlassContentElementDecorator()
                                 : const ClippedContentElementDecorator(),
@@ -169,7 +175,7 @@ class _FocusLayoutState extends State<FocusLayout> {
                                 boxShadow: const [BoxShadow(blurRadius: 10, spreadRadius: -4)]),
                             padding: const EdgeInsets.all(5),
                             child: ActionRowArea(
-                              widget.layoutContext.id + '_actions',
+                              widget.layoutContext.idFor('actions'),
                               decorator: const DefaultActionDecorator(ColorPreference(useHighlightColor: true)),
                             ),
                           ),
@@ -179,7 +185,7 @@ class _FocusLayoutState extends State<FocusLayout> {
                       Padding(
                         padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                         child: ActionRowArea(
-                          widget.layoutContext.id + '_infos',
+                          widget.layoutContext.idFor('infos'),
                           decorator: const CardActionDecorator(),
                         ),
                       )
@@ -191,7 +197,7 @@ class _FocusLayoutState extends State<FocusLayout> {
           SliverPadding(
             padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
             sliver: SliverToBoxAdapter(
-                child: MixedGridArea(id: widget.layoutContext.id + '_grid', scrollController: _scrollController)),
+                child: MixedGridArea(id: widget.layoutContext.idFor('grid'), scrollController: _scrollController)),
           ),
           SliverPadding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom)),
         ],

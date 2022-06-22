@@ -161,7 +161,7 @@ class _EditNotePageState extends State<EditNotePage> {
                     nav.pop();
                   }
                 },
-                icon: const Icon(Icons.info),
+                icon: const Icon(Icons.settings),
               ),
             ),
         ],

@@ -38,9 +38,7 @@ class EditToggles extends StatelessWidget {
 }
 
 class ReorderToggle extends StatefulWidget {
-  const ReorderToggle({this.onPressed, Key? key}) : super(key: key);
-
-  final void Function()? onPressed;
+  const ReorderToggle({Key? key}) : super(key: key);
 
   @override
   _ReorderToggleState createState() => _ReorderToggleState();
@@ -116,7 +114,6 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController, Tic
           ),
         ),
         onPressed: () {
-          widget.onPressed?.call();
           context.read(editProvider.notifier).toggleEdit();
         },
       ),

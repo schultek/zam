@@ -12,9 +12,9 @@ class PotIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     var pot = context.watch(splitPotProvider(id))!;
     if (pot.icon == null) {
-      return const Padding(
-        padding: EdgeInsets.all(3),
-        child: Icon(Icons.savings, size: 24),
+      return Padding(
+        padding: const EdgeInsets.all(3),
+        child: Icon(Icons.savings, size: 24, color: context.onSurfaceColor),
       );
     } else {
       return SizedBox(

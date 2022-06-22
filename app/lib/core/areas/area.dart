@@ -82,6 +82,9 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   GroupThemeData get theme => context.groupTheme;
   TemplateState get template => Template.of(context, listen: false);
 
+  bool get isActive => _isActive;
+  bool _isActive = true;
+
   @override
   bool get wantKeepAlive => false;
 
@@ -89,7 +92,7 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   bool get isLoading => _isLoading;
 
   bool get isEditing => context.watch(isEditingProvider);
-  bool get isSelected => context.watch(isAreaSelectedProvider(id));
+  bool get isSelected => isEditing && context.watch(isAreaSelectedProvider(id));
 
   @override
   void didChangeDependencies() {
@@ -101,11 +104,18 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   }
 
   @override
+  void activate() {
+    super.activate();
+    _isActive = true;
+  }
+
+  @override
   void deactivate() {
-    if (context.read(isAreaSelectedProvider(id))) {
-      var selectedAreaNotifier = context.read(selectedAreaProvider.notifier);
+    _isActive = false;
+    var areaNotifier = context.read(selectedAreaProvider.notifier);
+    if (areaNotifier.state == id) {
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        if (!mounted) selectedAreaNotifier.selectWidgetAreaById(null);
+        if (!mounted) areaNotifier.selectWidgetAreaById(null);
       });
     }
     super.deactivate();

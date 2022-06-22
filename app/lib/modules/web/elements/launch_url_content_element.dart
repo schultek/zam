@@ -86,14 +86,14 @@ class UrlShortcutCard extends StatelessWidget {
               if (params.icon != null)
                 Text(
                   params.icon!,
-                  style: const TextStyle(fontSize: 46),
+                  style: TextStyle(fontSize: 46, color: context.onSurfaceColor),
                 )
               else
-                const Icon(Icons.language, size: 50),
+                Icon(Icons.language, size: 50, color: context.onSurfaceColor),
               const SizedBox(height: 10),
               Text(
                 params.label ?? context.tr.launch_url,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23, color: context.onSurfaceColor),
                 overflow: TextOverflow.fade,
                 softWrap: true,
                 textAlign: TextAlign.center,

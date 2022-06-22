@@ -43,6 +43,12 @@ class DropsLayoutModel extends LayoutModel {
   Widget builder(LayoutContext context) => DropsLayout(context, this);
 
   @override
+  String? getAreaIdToFocus() => 'focus';
+
+  @override
+  bool hasAreaId(String id) => ['focus', ...drops.map((d) => d.id)].contains(id);
+
+  @override
   List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
     return [
       SwitchListTile(
@@ -169,7 +175,7 @@ class _DropsLayoutState extends State<DropsLayout> {
                           height: 200,
                           child: widget.model.wideFocus
                               ? SingleElementArea(
-                                  id: widget.layoutContext.id + '_focus',
+                                  id: widget.layoutContext.idFor('focus'),
                                   decorator: widget.model.coverUrl != null
                                       ? const GlassContentElementDecorator()
                                       : const ClippedContentElementDecorator(),
@@ -177,7 +183,7 @@ class _DropsLayoutState extends State<DropsLayout> {
                               : AspectRatio(
                                   aspectRatio: 1,
                                   child: SingleElementArea(
-                                    id: widget.layoutContext.id + '_focus',
+                                    id: widget.layoutContext.idFor('focus'),
                                     decorator: widget.model.coverUrl != null
                                         ? const GlassContentElementDecorator()
                                         : const ClippedContentElementDecorator(),
@@ -284,7 +290,7 @@ class _DropsLayoutState extends State<DropsLayout> {
                 sliver: SliverToBoxAdapter(
                   child: Opacity(
                     opacity: drop.isHidden ? 0.5 : 1,
-                    child: HorizontalScrollArea(widget.layoutContext.id + '_' + drop.id),
+                    child: HorizontalScrollArea(widget.layoutContext.idFor(drop.id)),
                   ),
                 ),
               ),

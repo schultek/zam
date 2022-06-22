@@ -6,7 +6,7 @@ class SwipeTemplateModel extends TemplateModel {
   final SwipeTemplatePage? leftPage;
   final SwipeTemplatePage? rightPage;
 
-  const SwipeTemplateModel({
+  SwipeTemplateModel({
     this.mainPage = const SwipeTemplatePage(layout: GridLayoutModel()),
     this.leftPage,
     this.rightPage,
@@ -17,6 +17,9 @@ class SwipeTemplateModel extends TemplateModel {
 
   @override
   Template<TemplateModel> builder() => SwipeTemplate(this);
+
+  @override
+  late final ValueNotifier<LayoutIdModel?> activeLayout = ValueNotifier(LayoutIdModel('main', mainPage.layout));
 
   @override
   Widget preview() => Row(

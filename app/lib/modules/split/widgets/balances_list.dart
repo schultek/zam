@@ -37,24 +37,34 @@ class BalancesList extends StatelessWidget {
           if (params?.showPots ?? true)
             for (var entry in potBalances)
               ListTile(
-                leading: const Padding(
-                  padding: EdgeInsets.all(3),
-                  child: Icon(Icons.savings),
+                leading: Padding(
+                  padding: const EdgeInsets.all(3),
+                  child: Icon(Icons.savings, color: context.onSurfaceColor),
                 ),
-                title: Text(context.watch(splitSourceLabelProvider(entry.key))),
+                title: Text(
+                  context.watch(splitSourceLabelProvider(entry.key)),
+                  style: TextStyle(color: context.onSurfaceColor),
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                ),
                 trailing: Text(
                   entry.value.toPrintString(),
-                  style: context.theme.textTheme.bodyMedium,
+                  style: context.theme.textTheme.bodyMedium!.copyWith(color: context.onSurfaceColor),
                 ),
                 minLeadingWidth: 20,
               ),
           for (var entry in userBalances)
             ListTile(
               leading: UserAvatar(id: entry.key.id, small: true),
-              title: Text(context.watch(splitSourceLabelProvider(entry.key))),
+              title: Text(
+                context.watch(splitSourceLabelProvider(entry.key)),
+                style: TextStyle(color: context.onSurfaceColor),
+                softWrap: false,
+                overflow: TextOverflow.fade,
+              ),
               trailing: Text(
                 entry.value.toPrintString(),
-                style: context.theme.textTheme.bodyMedium,
+                style: context.theme.textTheme.bodyMedium!.copyWith(color: context.onSurfaceColor),
               ),
               minLeadingWidth: 20,
             ),

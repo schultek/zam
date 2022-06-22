@@ -25,7 +25,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       id: '',
       name: groupName,
       users: {userId: GroupUser(role: UserRoles.organizer)},
-      template: const SwipeTemplateModel(),
+      template: SwipeTemplateModel(),
       theme: ThemeModel(schemeIndex: FlexScheme.blue.index),
       moduleBlacklist: ['music', 'polls'],
     );

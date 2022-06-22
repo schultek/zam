@@ -39,7 +39,7 @@ class GameTile extends StatelessWidget {
             ? constraints
             : BoxConstraints(maxWidth: min(300, area?.areaSize.width ?? 300) * 0.9),
         child: Material(
-          color: tileColor,
+          color: tileColor ?? Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           clipBehavior: Clip.antiAlias,
           child: InkWell(

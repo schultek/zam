@@ -16,6 +16,12 @@ class GridLayoutModel extends LayoutModel {
   Widget builder(LayoutContext context) => GridLayout(context);
 
   @override
+  String? getAreaIdToFocus() => 'grid';
+
+  @override
+  bool hasAreaId(String id) => id == 'grid';
+
+  @override
   PreviewPage preview({Widget? header}) => PreviewPage(
         layers: [
           PreviewLayer(
@@ -61,7 +67,7 @@ class _GridLayoutState extends State<GridLayout> {
           padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
           sliver: SliverToBoxAdapter(
             child: MixedGridArea(
-              id: widget.layoutContext.id + '_grid',
+              id: widget.layoutContext.idFor('grid'),
               scrollController: _scrollController,
             ),
           ),

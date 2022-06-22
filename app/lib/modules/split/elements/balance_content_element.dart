@@ -29,7 +29,7 @@ class BalanceContentElement with ElementBuilderMixin<ContentElement> {
                 child: Transform.scale(
                   scale: 1.6,
                   child: source == null
-                      ? const Icon(Icons.account_balance)
+                      ? Icon(Icons.account_balance, color: context.onSurfaceColor)
                       : source.isUser
                           ? UserAvatar(id: source.id)
                           : Center(child: PotIcon(id: source.id)),
@@ -42,7 +42,7 @@ class BalanceContentElement with ElementBuilderMixin<ContentElement> {
                     : '${context.watch(splitSourceLabelProvider(source))}\n'
                         '${context.watch(sourceBalanceProvider(source)).toPrintString()}',
                 textAlign: TextAlign.center,
-                style: context.theme.textTheme.titleLarge,
+                style: context.theme.textTheme.titleLarge!.copyWith(color: context.onSurfaceColor),
               ),
             ],
           ),

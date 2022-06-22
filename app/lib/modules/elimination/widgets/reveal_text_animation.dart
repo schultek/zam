@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod_context/riverpod_context.dart';
 
 import '../elimination.module.dart';
 
@@ -13,7 +15,7 @@ class RevealTextAnimation extends StatefulWidget {
   _RevealTextAnimationState createState() => _RevealTextAnimationState();
 }
 
-class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerProviderStateMixin {
+class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerProviderStateMixin, GestureArenaMember {
   late List<int> range;
   late AnimationController controller;
   late List<Tween<double>> tweens;
@@ -21,6 +23,7 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
   late int lenOff;
 
   Timer? delayTimer;
+  GestureArenaEntry? revealEntry;
 
   static const obscureChars = '¿ɫɤɷʓʘʨʧʦʥʤΦΧΨΩΣϔϞϢϪϰϼϠϑϐξ';
 
@@ -41,7 +44,7 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
   }
 
   void initTweens() {
-    var rand = Random();
+    var rand = Random(widget.text.hashCode ^ context.read(userIdProvider)!.hashCode);
     var lenDelt = min(12, widget.text.length);
     var lenHalf = (lenDelt / 2).floor();
     lenOff = ((rand.nextInt(lenDelt + 1) - lenHalf) / 2).floor();
@@ -59,20 +62,35 @@ class _RevealTextAnimationState extends State<RevealTextAnimation> with TickerPr
   }
 
   @override
+  void acceptGesture(int pointer) {
+    revealEntry?.resolve(GestureDisposition.accepted);
+    delayTimer?.cancel();
+    revealEntry = null;
+    controller.forward();
+  }
+
+  @override
+  void rejectGesture(int pointer) {
+    revealEntry?.resolve(GestureDisposition.rejected);
+    delayTimer?.cancel();
+    revealEntry = null;
+    controller.reverse();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTapDown: (details) {
+    return Listener(
+      onPointerDown: (details) {
+        revealEntry = GestureBinding.instance!.gestureArena.add(details.pointer, this);
         delayTimer = Timer(const Duration(milliseconds: 400), () {
-          controller.forward();
+          acceptGesture(details.pointer);
         });
       },
-      onTapUp: (details) {
-        delayTimer?.cancel();
-        controller.reverse();
+      onPointerUp: (details) {
+        rejectGesture(details.pointer);
       },
-      onTapCancel: () {
-        delayTimer?.cancel();
-        controller.reverse();
+      onPointerCancel: (details) {
+        rejectGesture(details.pointer);
       },
       child: AbsorbPointer(
         child: Column(
