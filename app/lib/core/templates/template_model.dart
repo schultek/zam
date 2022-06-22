@@ -35,7 +35,7 @@ class LayoutIdModel {
 
   bool hasAreaId(String id) {
     var parts = id.split('_');
-    return parts.length == 2 && parts[0] == id && layout.hasAreaId(parts[1]);
+    return parts.length == 2 && parts[0] == this.id && layout.hasAreaId(parts[1]);
   }
 }
 

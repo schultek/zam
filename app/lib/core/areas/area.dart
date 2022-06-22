@@ -115,7 +115,7 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
     var areaNotifier = context.read(selectedAreaProvider.notifier);
     if (areaNotifier.state == id) {
       WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        if (!mounted) areaNotifier.selectWidgetAreaById(null);
+        if (!mounted && areaNotifier.state == id) areaNotifier.selectWidgetAreaById(null);
       });
     }
     super.deactivate();
