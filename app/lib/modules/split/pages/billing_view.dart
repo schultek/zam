@@ -17,8 +17,8 @@ class BillingView extends StatelessWidget {
     var billing = split.billing;
     var stats = split.stats;
     var spendings = split.stats.userSpendings.entries.toList()
-      ..sort((a, b) => b.value.amounts.entries
-          .map((e) => e.value.compareTo(a.value.amounts[e.key] ?? 0))
+      ..sort((a, b) => b.value.totalAmounts.entries
+          .map((e) => e.value.compareTo(a.value.totalAmounts[e.key] ?? 0))
           .fold(0, (sum, e) => sum + e));
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -69,13 +69,24 @@ class BillingView extends StatelessWidget {
               ),
             ),
             for (var spending in spendings)
-              ListTile(
+              ExpansionTile(
                 leading: UserAvatar(id: spending.key, small: true),
                 title: Text(context.watch(splitSourceLabelProvider(SplitSource.user(spending.key)))),
                 trailing: Text(
                   spending.value.toPrintString(),
                   style: context.theme.textTheme.bodyMedium,
                 ),
+                children: [
+                  for (var spending in spending.value.spendings)
+                    ListTile(
+                      dense: true,
+                      title: Text(spending.title),
+                      trailing: Text(
+                        '${spending.amount.toStringAsFixed(2)}${spending.currency.symbol}',
+                        style: context.theme.textTheme.bodyMedium,
+                      ),
+                    ),
+                ],
               ),
           ],
         ),

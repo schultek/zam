@@ -52,7 +52,8 @@ class _SplitPageState extends State<SplitPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    var showBilling = context.watch(splitProvider.select((split) => split.value?.showBilling ?? false));
+    var showBilling = context.read(isOrganizerProvider) ||
+        context.watch(splitProvider.select((split) => split.value?.showBilling ?? false));
     updateTabController(showBilling);
     return Scaffold(
       appBar: AppBar(

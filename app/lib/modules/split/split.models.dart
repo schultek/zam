@@ -184,7 +184,13 @@ class SplitState {
     var entries = [...this.entries.values]..sort();
 
     var totalSpendings = <Currency, double>{};
-    var userSpendings = <String, Map<Currency, double>>{};
+    var userSpendings = <String, SplitSpendings>{};
+
+    void addSpending(String id, String title, Currency currency, double amount) {
+      var spending = userSpendings[id] ??= SplitSpendings({}, []);
+      spending.totalAmounts[currency] = (spending.totalAmounts[currency] ?? 0) + amount;
+      spending.spendings.add(SplitSpending(title, currency, amount));
+    }
 
     for (var entry in entries) {
       if (entry is ExpenseEntry) {
@@ -201,34 +207,52 @@ class SplitState {
         var target = entry.target;
         if (target.type == ExpenseTargetType.percent) {
           for (var e in target.amounts.entries) {
-            var spending = (userSpendings[e.key] ??= {})[currency] ??= 0;
-            userSpendings[e.key]![currency] = spending + (entry.amount * e.value / 100);
+            addSpending(e.key, entry.title, currency, amount * e.value / 100);
           }
         } else if (target.type == ExpenseTargetType.shares) {
           var sumShares = target.amounts.values.reduce((a, b) => a + b);
           for (var e in target.amounts.entries) {
-            var spending = (userSpendings[e.key] ??= {})[currency] ??= 0;
-            userSpendings[e.key]![currency] = spending + (entry.amount * e.value / sumShares);
+            addSpending(e.key, entry.title, currency, amount * e.value / sumShares);
           }
         } else if (target.type == ExpenseTargetType.amount) {
           for (var e in target.amounts.entries) {
-            var spending = (userSpendings[e.key] ??= {})[currency] ??= 0;
-            userSpendings[e.key]![currency] = spending + entry.amount;
+            addSpending(e.key, entry.title, currency, amount);
           }
         }
       }
     }
 
-    return BillingStats(SplitBalance(totalSpendings), userSpendings.map((e, v) => MapEntry(e, SplitBalance(v))));
+    return BillingStats(SplitBalance(totalSpendings), userSpendings);
   }
 }
 
 @MappableClass()
 class BillingStats with Mappable {
   final SplitBalance totalSpendings;
-  final Map<String, SplitBalance> userSpendings;
+  final Map<String, SplitSpendings> userSpendings;
 
   BillingStats(this.totalSpendings, this.userSpendings);
+}
+
+@MappableClass()
+class SplitSpendings with Mappable {
+  Map<Currency, double> totalAmounts;
+  List<SplitSpending> spendings;
+
+  SplitSpendings(this.totalAmounts, this.spendings);
+
+  String toPrintString() {
+    return SplitBalance(totalAmounts).toPrintString();
+  }
+}
+
+@MappableClass()
+class SplitSpending with Mappable {
+  final String title;
+  final Currency currency;
+  final double amount;
+
+  SplitSpending(this.title, this.currency, this.amount);
 }
 
 @MappableClass()
