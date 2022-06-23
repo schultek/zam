@@ -154,7 +154,7 @@
     }
   },
   "users_subtitle": "Öffnet eine Liste aller Nutzer*innen der Gruppe",
-  "users_text": "Das Nutzermodul zeigt alle Teilnehmer einer Freizeit mit Nickname und Profilbild, sofern diese vom Nutzer vergeben wurden. \nZudem sind die Rollen der Nutzer sichtbar, diese sind entweder 'Organisator' oder 'Teilnehmer'. Der Organisator hat innerhalb des Moduls die Möglichkeit, Nutzer zu löschen und deren Rolle zu ändern. Durch Klicken auf '+' können weitere Nutzer hinzugefügt werden, außerdem kann ein Link geteilt werden, der Nutzern ermöglicht, mithilfe von einem Klick der Freizeit beizutreten.",
+  "users_text": "Das Nutzermodul zeigt alle Teilnehmer einer Freizeit mit Nickname und Profilbild, sofern diese vom Nutzer vergeben wurden. \n\nZudem sind die Rollen der Nutzer sichtbar, diese sind entweder 'Organisator' oder 'Teilnehmer'. Der Organisator hat innerhalb des Moduls die Möglichkeit, Nutzer zu löschen und deren Rolle zu ändern. \n\nDurch Klicken auf '+' können weitere Nutzer hinzugefügt werden, außerdem kann ein Link geteilt werden, der Nutzern ermöglicht, mithilfe von einem Klick der Freizeit beizutreten.",
 
   "@NOTES": {},
 
@@ -179,16 +179,16 @@
   "notes_text": "Das Notizenmodul dient dazu, alles zu notieren, was auf einer Freizeit wichtig ist. \n\nEs können verschiedene Notizen erstellt werden, der Text darin bearbeitet werden und Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein.",
   "note": "Notiz",
   "note_subtitle": "Öffnet eine ausgewählte Notiz",
-  "note_text": "Das Notizmodul zeigt eine einzelne, ausgewählte Notiz, sodass diese von allen Nutzer*innen direkt lesbar ist. Wie auch bei dem Notizenmodul kann die Notiz bearbeitet, gelöscht und von verschiedenen Nutzern je nach Berechtigung bearbeitet werden.",
+  "note_text": "Das Notizmodul zeigt eine einzelne, ausgewählte Notiz, sodass diese von allen Nutzer*innen direkt lesbar ist. \n\nWie auch bei dem Notizenmodul kann die Notiz von verschiedenen Nutzern je nach Berechtigung bearbeitet und gelöscht werden. \n\nErst wenn eine Notiz in diesem Modul erstellt wurde, ist das Notizmodul für alle Nutzer sichtbar.",
   "notes_grid": "Notizengrid",
   "notes_grid_subtitle": "Darstellung des Notizenmoduls als Grid",
-  "notes_grid_text": "Zeigt das Notizenmodul mit drei existierenden Notizen. \n\nBeim Klicken auf das Modul kann man die Notizen öffnen, bearbeiten, löschen und Berechtigungen für einzelne Notizen vergeben, wie auch beim gewöhnlichen Notizenmodul.",
+  "notes_grid_text": "Zeigt das Notizenmodul mit allen existierenden Notizen. \n\nBeim Klicken auf das Modul kann man die Notizen öffnen, bearbeiten, löschen und Berechtigungen für einzelne Notizen vergeben, wie auch beim gewöhnlichen Notizenmodul.\n\nBei Klick auf die Einstellungen des Moduls kann ausgewählt werden, ob das '+' zum Hinzufügen neuer Notizen sowie Ordner innerhalb der Notizen angezeigt werden sollen.",
   "notes_list": "Notizenliste",
   "notes_list_subtitle": "Darstellung des Notizenmoduls als Liste",
-  "notes_list_text": "Zeigt die existierenden Notizen in Listenform. \n\nBeim Klicken auf das Modul kann man die Notizen öffnen, bearbeiten, löschen und Berechtigungen für einzelne Notizen vergeben, wie auch beim gewöhnlichen Notizenmodul.",
+  "notes_list_text": "Zeigt die existierenden Notizen in Listenform. \n\nBeim Klicken auf das Modul kann man die Notizen öffnen, bearbeiten, löschen und Berechtigungen für einzelne Notizen vergeben, wie auch beim gewöhnlichen Notizenmodul. \n\nBei Klick auf die Einstellungen des Moduls kann ausgewählt werden, ob das '+' zum Hinzufügen neuer Notizen sowie Ordner innerhalb der Notizen angezeigt werden sollen.",
   "notes_list_page": "Notizenseite",
   "notes_list_page_subtitle": "Zeigt eine Liste aller Notizen an",
-  "notes_list_page_text": "Das Notizenmodul dient dazu, alles zu notieren, was auf einer Freizeit wichtig ist. \n\nEs können verschiedene Notizen erstellt werden, der Text darin bearbeitet werden und Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein. Auf der Notizenseite werden alle Notizen als Liste dargestellt.",
+  "notes_list_page_text": "Das Notizenmodul dient dazu, alles zu notieren, was auf einer Freizeit wichtig ist. \n\nEs können verschiedene Notizen erstellt werden, der Text darin bearbeitet werden und Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein. Auf der Notizenseite werden alle Notizen als Liste dargestellt.\n\nBei Klick auf die Einstellungen des Moduls kann ausgewählt werden, ob das '+' zum Hinzufügen neuer Notizen sowie Ordner innerhalb der Notizen angezeigt werden sollen.",
   "add_note_action": "Notiz hinzufügen",
   "add_note_action_subtitle": "Fügt eine neue Notiz über einen Quick-Action-Button hinzu",
   "add_note_action_text": "Die Quick-Action-Version des Notizenmoduls ermöglicht es, mit einem Klick eine neue Notiz hinzuzufügen. Der Text in der Notiz kann bearbeitet und angepasst werden und es können Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein.",
@@ -205,13 +205,15 @@
   "resend_notification_desc": "Sendet eine erneute Benachrichtigung/nan alle Teilnehmer*innen",
   "confirm_resend": "Möchtest du alle Teilnehmer*innen erneut benachrichtigen?",
   "announcements_subtitle": "Öffnet das Mitteilungsmodul",
-  "announcements_text": "Mithilfe des Mitteilungsmoduls können für alle Nutzer*innen sichtbare Mitteilungen erstellt werden. Diese werden als Push-Nachricht an alle Teilnehmer*innen gesendet. \n\nEine Mitteilung kann einen Titel und einen Text haben, die farblich angepasst werden können.\n\nDurch Aktivierung des Häkchens 'Verwerfbar' können Nutzer*innen die Mitteilung nach dem Lesen für sich ausblenden.",
+  "announcements_text": "Mithilfe des Mitteilungsmoduls können für alle Nutzer*innen sichtbare Mitteilungen erstellt werden. Diese werden als Push-Nachricht an alle Teilnehmer*innen gesendet. \n\nEine Mitteilung kann einen Titel und einen Text haben, die farblich angepasst werden können.\n\nDurch Aktivierung des Häkchens 'Verwerfbar' können Nutzer*innen die Mitteilung nach dem Lesen für sich ausblenden.\n\nErst wenn Inhalt in die Mitteliung eingetragen wurde, ist diese für alle Nutzer*innen sichtbar.",
 
   "@LABEL": {},
 
   "labels": "Beschriftung",
   "add_label": "Label hinzufügen",
   "centered": "Zentriert",
+  "labels_subtitle": "Einfügen der Überschrift eines Bereiches",
+  "labels_text": "Das Labels-Modul ermöglicht es, Überschriften für bestimmte Bereiche des Screens einzufügen.\n\nÜber das Einstellungssymbol des Moduls kann der Text geändert werden und die Überschrift zentriert ausgerichtet werden.",
 
   "@CHAT": {},
 
@@ -223,6 +225,8 @@
   "new_channel": "Neuer Channel",
   "set_closed": "Auf 'Geschlossen' setzen",
   "add_channel": "Channel hinzufügen",
+  "channels_subtitle": "Öffnet den Chat mit Nutzer*innen der Gruppe",
+  "channels_text": "Im Chatmodul können verschiedene Channels eröffnet und benannt werden, z.B. zu unterschiedlichen Themen während einer Freizeit.\n\nÜber das 'i' kann festgelegt werden, welche Nutzer*innen Teil des Channels sind und diesen somit sehen und darin Nachrichten schreiben können. Zudem kann dort ein Channel gelöscht werden.",
 
   "@SPLIT": {},
 
@@ -265,6 +269,23 @@
   "total": "Gesamt",
   "set_exchange_rates": "Setze automatische Umrechnungskurse",
   "costs": "Kosten",
+  "split_subtitle": "Öffnet die Kostenabrechnung für eine Freizeit",
+  "split_text": "Mit dem Splitmodul können unter 'Bilanzen' neue Ausgaben, Zahlungen und Geldwechsel (bei Währungsänderung) eingetragen werden. Die Nutzer*innen sehen, wie viel Geld sie anderen Personen gerade schulden.\n\nUnter 'Neuer Topf' können Gruppenkassen erstellt werden, in die z.B. bei einem Urlaub von allen Nutzer*innen ein Betrag eingezahlt werden kann und aus denen dann Ausgaben getätigt werden können.\n\nBei Klick auf 'Abrechnung einblenden' wird sichtbar, wer wem aktuell wie viel Geld schuldet. Dort kann auch angepasst werden, welcher Kurz bei einer Währungsumrechnung genutzt wurde.\n\nUnter Ausgaben ist eine Liste aller bisherigen Zahlungen innerhalb der Gruppe zu sehen.",
+  "balance_content_element": "Bilanzen",
+  "balance_content_element_subtitle": "Zeigt für jeden Nutzer die aktuellen Bilanzen",
+  "balance_content_element_text": "Das Bilanzenmodul zeigt das Profilbild und den Namen der Nutzer*in und die aktuellen Bilanzen der Person. Durch Klick auf das Modul gelangt man in das Split-Modul, wo die Finanzen weiter angepasst werden können.",
+  "split_balance_list": "Bilanzenliste",
+  "split_balance_list_subtitle": "Zeigt für alle Nutzer*innen die aktuellen Bilanzen",
+  "split_balance_list_text": "Die Bilanzenliste zeigt alle Bilanzen innerhalb der Gruppe sowie den Inhalt von Gruppenkassen.\n\nDurch Klicken auf das Modul gelangt man in das Split-Modul, wo die Finanzen weiter angepasst werden können.",
+  "balance_action_element": "Bilanzen",
+  "balance_action_element_subtitle": "Zeigt die Bilanzen von Nutzer*innen",
+  "balance_action_element_text": "Das Bilanzenmodul zeigt das Profilbild und den Namen der Nutzer*in und die aktuellen Bilanzen der Person.\n\nDurck Klick auf das Modul gelangt man in das Split-Modul, wo die Finanzen weiter angepasst werden können.\n\nUnter den Einstellungen ist es möglich, sich die Bilanzen anderer Nutzer*innen anzeigen zu lassen.",
+  "split_new_expense_action_subtitle": "Öffnet ein Fenster zum Hinzufügen einer neuen Ausgabe",
+  "split_new_expense_action_text": "Durch die Quick-Action zum Split-Modul können Nutzer*innen mit einem Klick neue Ausgaben hinzufügen.\n\nDabei können sie eingeben, wer wieviel für wen gezahlt hat, außerdem kann ein Foto eingestellt werden, z.B. von einer Rechnung."
+  "split_new_payment_action_subtitle": "Öffnet ein Fenster zum Hinzufügen einer Zahlung",
+  "split_new_payment_action_text": "Durch die Quick-Action zum Split-Modul können Nutzer*innen mit einem Klick neue Zahlungen hinzufügen.\n\nDabei können sie eingeben, wer an wen wie viel gezahlt hat."
+  "split_new_exchange_action_subtitle": "Öffnet ein Fenster zum Hinzufügen eines neuen Geldwechsels", 
+  "split_new_exchange_action_text": "Durch die Quick-Action zum Split-Modul können Nutzer*innen mit einem Klick neue Geldwechsel (bei Währungsänderung) hinzufügen.\n\nDabei können sie eingeben, wer welche Währungen getauscht hat.", 
 
   "@WEB": {},
 
