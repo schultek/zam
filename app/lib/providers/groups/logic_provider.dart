@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/core.dart';
-import '../../core/providers/editing_providers.dart';
+import '../../core/editing/editing_providers.dart';
 import '../../helpers/extensions.dart';
 import '../auth/claims_provider.dart';
 import '../auth/user_provider.dart';

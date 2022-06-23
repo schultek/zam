@@ -2,6 +2,21 @@ part of notes_module;
 
 class SingleNoteContentElement with ElementBuilder<ContentElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.note;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.note_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.note_text);
+  }
+
+  @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     if (module.hasParams) {
       var noteOrFolder = module.getParams<String>();

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/groups/selected_group_provider.dart';
-import '../../providers/editing_providers.dart';
+import '../../editing/editing_providers.dart';
 import '../../themes/themes.dart';
 import '../../widgets/layout_preview.dart';
 import 'edit_toggle.dart';

@@ -9,7 +9,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../providers/editing_providers.dart';
+import '../../editing/editing_providers.dart';
 import '../../themes/themes.dart';
 
 class EditToggles extends StatelessWidget {

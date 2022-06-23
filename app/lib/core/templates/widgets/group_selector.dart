@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../editing/editing_providers.dart';
 import '../../pages/groups_page.dart';
 import '../../pages/settings_page.dart';
-import '../../providers/editing_providers.dart';
 import '../../themes/themes.dart';
 
 class GroupSelectorButton extends StatelessWidget {

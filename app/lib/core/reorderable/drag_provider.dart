@@ -9,10 +9,10 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'package:vibration/vibration.dart';
 
 import '../areas/areas.dart';
+import '../editing/editing_providers.dart';
+import '../editing/selected_area_provider.dart';
+import '../editing/widgets/widget_selector.dart';
 import '../elements/elements.dart';
-import '../providers/editing_providers.dart';
-import '../providers/selected_area_provider.dart';
-import '../widgets/widget_selector.dart';
 import 'drag_item.dart';
 import 'items_provider.dart';
 import 'reorderable_item.dart';

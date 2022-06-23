@@ -5,14 +5,14 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../providers/groups/selected_group_provider.dart';
 import '../../areas/area.dart';
-import '../../providers/editing_providers.dart';
-import '../../providers/selected_area_provider.dart';
+import '../../editing/editing_providers.dart';
+import '../../editing/selected_area_provider.dart';
+import '../../editing/widgets/widget_selector.dart';
 import '../../reorderable/reorderable_item.dart';
 import '../../reorderable/reorderable_listener.dart';
 import '../../route/route.dart';
 import '../../templates/template.dart';
 import '../../themes/themes.dart';
-import '../../widgets/widget_selector.dart';
 import '../decorators/element_decorator.dart';
 import '../module_element.dart';
 import 'element_icon_button.dart';
