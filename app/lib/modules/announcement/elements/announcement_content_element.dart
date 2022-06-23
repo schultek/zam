@@ -2,6 +2,21 @@ part of announcement_module;
 
 class AnnouncementContentElement with ElementBuilder<ContentElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.announcements;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.announcements_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.announcements_text);
+  }
+
+  @override
   FutureOr<ContentElement?> build(ModuleContext module) async {
     if (module.hasParams) {
       var announcementId = module.getParams<String>();

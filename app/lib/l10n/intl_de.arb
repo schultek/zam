@@ -124,8 +124,10 @@
   "background_color": "Hintergrundfarbe",
   "new_announcement": "Neue Mitteilung",
   "resend_notification": "Erneut benachrichtigen",
-  "resend_notification_desc": "Sendet eine erneute Benachrichtigung/nan alle Teilnehmer",
-  "confirm_resend": "Möchtest du alle Teilnehmer erneut benachrichtigen?",
+  "resend_notification_desc": "Sendet eine erneute Benachrichtigung/nan alle Teilnehmer*innen",
+  "confirm_resend": "Möchtest du alle Teilnehmer*innen erneut benachrichtigen?",
+  "announcements_subtitle": "Öffnet das Mitteilungsmodul",
+  "announcements_text": "Mithilfe des Mitteilungsmoduls können für alle Nutzer*innen sichtbare Mitteilungen erstellt werden. Diese werden als Push-Nachricht an alle Teilnehmer*innen gesendet. \n\nEine Mitteilung kann einen Titel und einen Text haben, die farblich angepasst werden können. Durch Aktivierung des Häkchens 'Verwerfbar' können Nutzer*innen die Mitteilung nach dem Lesen für sich ausblenden.",
 
   "@CHAT": {},
 
@@ -234,12 +236,11 @@
   "good_morning": "Guten Morgen",
   "good_evening": "Guten Abend",
   "cut_picture": "Foto zuschneiden",
-  "profile_title": "Profil",
-  "profile_subtitle": "Öffnet das persönliche Profil des Nutzers",
-  "profile_text": "Das Profilmodul zeigt das persönliche Nutzer-\u200bProfil. \n\nEin Nutzer kann sich hier einen Nickname aussuchen und ein Profilbild hinzufügen. Nickname und Profilbild sind für andere Nutzer innerhalb anderer Module sichtbar.",
+  "profile_subtitle": "Öffnet das persönliche Profil der Nutzer*innen",
+  "profile_text": "Das Profilmodul zeigt das persönliche Nutzer-\u200BProfil.\n\nNutzer*innen können sich einen Nickname aussuchen und ein Profilbild hinzufügen. Nickname und Profilbild sind für andere Nutzer*innen innerhalb anderer Module sichtbar.",
   "profile_image_title": "Profilbild",
-  "profile_image_subtitle": "Zeigt das Profilbild und den Nickname des Nutzers",
-  "profile_image_text": "Das Profilbildmodul ist eine andere Darstellung des Profils. Der Nutzer sieht sein Profilbild sowie eine tageszeitabhängige Begrüßung und seinen Nickname. Optional kann über das Einstellungssymbol des Moduls die Begrüßung und/oder der Nickname verborgen werden. \nDurch Klicken auf das Profilbild gelangt der Nutzer auf sein persönliches Profil, wo Nickname und Profilbild geändert werden können.",
+  "profile_image_subtitle": "Zeigt das Profilbild und den Nickname der Nutzer*innen",
+  "profile_image_text": "Das Profilbildmodul ist eine andere Darstellung des Profils. Nutzer*innen sehen ihr Profilbild sowie eine tageszeitabhängige Begrüßung und ihren Nickname. Optional kann über das Einstellungssymbol des Moduls die Begrüßung und/oder der Nickname verborgen werden. \n\nDurch Klicken auf das Profilbild gelangen die Nutzer*innen auf ihr persönliches Profil, wo Nickname und Profilbild geändert werden können.",
 
   "@THEBUTTON": {},
 
@@ -280,6 +281,8 @@
       "name": {}
     }
   },
+  "users_subtitle": "Öffnet eine Liste aller Nutzer der Gruppe",
+  "users_text": "Das Nutzermodul zeigt alle Teilnehmer einer Freizeit mit Nickname und Profilbild, sofern diese vom Nutzer vergeben wurden. \nZudem sind die Rollen der Nutzer sichtbar, diese sind entweder 'Organisator' oder 'Teilnehmer'. Der Organisator hat innerhalb des Moduls die Möglichkeit, Nutzer zu löschen und deren Rolle zu ändern. Durch Klicken auf '+' können weitere Nutzer hinzugefügt werden, außerdem kann ein Link geteilt werden, der Nutzern ermöglicht, mithilfe von einem Klick der Freizeit beizutreten.",
 
   "@SPLIT": {},
 
