@@ -1,6 +1,6 @@
 part of notes_module;
 
-class NotesContentElement with ElementBuilderMixin<ContentElement> {
+class NotesContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     return ContentElement(

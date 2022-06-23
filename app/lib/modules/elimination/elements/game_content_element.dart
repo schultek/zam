@@ -1,6 +1,6 @@
 part of elimination_module;
 
-class GameContentElement with ElementBuilderMixin<ContentElement> {
+class GameContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     if (module.hasParams) {

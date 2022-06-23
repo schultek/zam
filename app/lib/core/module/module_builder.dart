@@ -4,6 +4,7 @@ import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
 import '../elements/elements.dart';
+import '../themes/themes.dart';
 import 'module_context.dart';
 
 abstract class ModuleBuilder {
@@ -33,10 +34,28 @@ class ModuleMessage {
   ModuleMessage(this.moduleId);
 }
 
-typedef ElementBuilder<T extends ModuleElement> = FutureOr<T?> Function(ModuleContext module);
+abstract class ElementBuilder<T extends ModuleElement> {
+  String getTitle(BuildContext context) => 'Some Module';
+  String getSubtitle(BuildContext context) => 'A short description what it does.';
 
-mixin ElementBuilderMixin<T extends ModuleElement> {
+  Widget buildDescription(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Some detailed text about this module that can have more information and be a longer block of text.\n\n'
+            'Maybe also show some examples or mockups of certain aspects of this module. '
+            'I dont know, I\'m just trying to fill in some text. '
+            'At this point I can write anything it does not matter.',
+            style: TextStyle(color: context.onSurfaceColor),
+            textAlign: TextAlign.justify,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            'We could also explain some of the settings on how the element can be further customized once placed on the page.',
+            style: TextStyle(color: context.onSurfaceColor),
+          ),
+        ],
+      );
+
   FutureOr<T?> build(ModuleContext module);
-
-  FutureOr<T?> call(ModuleContext module) => build(module);
 }

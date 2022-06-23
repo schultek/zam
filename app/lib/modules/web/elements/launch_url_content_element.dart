@@ -1,6 +1,6 @@
 part of web_module;
 
-class LaunchUrlContentElement with ElementBuilderMixin<ContentElement> {
+class LaunchUrlContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) async {
     var params = module.getParams<LaunchUrlParams?>() ?? LaunchUrlParams();

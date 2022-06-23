@@ -1,6 +1,6 @@
 part of elimination_module;
 
-class GamesActionElement with ElementBuilderMixin<ActionElement> {
+class GamesActionElement with ElementBuilder<ActionElement> {
   @override
   FutureOr<ActionElement?> build(ModuleContext module) {
     return ActionElement(

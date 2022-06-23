@@ -1,6 +1,6 @@
 part of notes_module;
 
-class NotesListPageElement with ElementBuilderMixin<PageElement> {
+class NotesListPageElement with ElementBuilder<PageElement> {
   @override
   FutureOr<PageElement?> build(ModuleContext module) async {
     var notes = await module.context.read(notesProvider.future);

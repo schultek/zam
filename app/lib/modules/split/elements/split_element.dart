@@ -1,6 +1,6 @@
 part of split_module;
 
-class SplitElement with ElementBuilderMixin<ContentElement> {
+class SplitElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     return ContentElement(

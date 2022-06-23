@@ -1,6 +1,6 @@
 part of notes_module;
 
-class AddNoteActionElement with ElementBuilderMixin<ActionElement> {
+class AddNoteActionElement with ElementBuilder<ActionElement> {
   @override
   FutureOr<ActionElement?> build(ModuleContext module) {
     return ActionElement(

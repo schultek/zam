@@ -8,7 +8,7 @@ class CounterState {
   CounterState(this.count, this.label);
 }
 
-class CounterElement with ElementBuilderMixin<ContentElement> {
+class CounterElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var params = module.getParams<CounterState?>() ?? CounterState(0, module.context.tr.counter);

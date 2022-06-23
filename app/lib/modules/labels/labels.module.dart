@@ -28,7 +28,7 @@ class LabelParams {
   const LabelParams({this.label, this.centered = false});
 }
 
-class TextLabel with ElementBuilderMixin<ContentElement> {
+class TextLabel with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var params = module.getParams<LabelParams?>() ?? const LabelParams();

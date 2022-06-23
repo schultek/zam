@@ -35,11 +35,11 @@ class EliminationGameModule extends ModuleBuilder {
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
-        'game': GameContentElement(),
-        'new_game': NewGameActionElement(),
-        'games_action': GamesActionElement(),
         'games': GamesContentElement(),
+        'game': GameContentElement(),
         'games_list': GamesListContentElement(),
+        'games_action': GamesActionElement(),
+        'new_game': NewGameActionElement(),
       };
 
   @override

@@ -1,6 +1,6 @@
 part of split_module;
 
-class BalancesListContentSegment with ElementBuilderMixin<ContentElement> {
+class BalancesListContentSegment with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) async {
     var split = await module.context.read(splitProvider.future);

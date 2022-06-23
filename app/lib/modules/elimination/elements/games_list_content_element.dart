@@ -1,6 +1,6 @@
 part of elimination_module;
 
-class GamesListContentElement with ElementBuilderMixin<ContentElement> {
+class GamesListContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) async {
     var games = await module.context.read(gamesProvider.future);

@@ -34,8 +34,8 @@ class WebModule extends ModuleBuilder {
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'launch_url': LaunchUrlContentElement(),
         'web_page': WebPageElement(),
         'launch_url_action': LaunchUrlActionElement(),
-        'launch_url': LaunchUrlContentElement(),
       };
 }

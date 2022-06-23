@@ -1,6 +1,6 @@
 part of profile_module;
 
-class ProfileUserActionElement with ElementBuilderMixin<ActionElement> {
+class ProfileUserActionElement with ElementBuilder<ActionElement> {
   @override
   FutureOr<ActionElement?> build(ModuleContext module) {
     return ActionElement.builder(

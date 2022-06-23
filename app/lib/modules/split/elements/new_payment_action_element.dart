@@ -1,6 +1,6 @@
 part of split_module;
 
-class NewPaymentActionElement with ElementBuilderMixin<ActionElement> {
+class NewPaymentActionElement with ElementBuilder<ActionElement> {
   @override
   FutureOr<ActionElement?> build(ModuleContext module) {
     return ActionElement(

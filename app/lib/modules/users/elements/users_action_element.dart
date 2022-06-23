@@ -1,6 +1,6 @@
 part of users_module;
 
-class UsersActionElement with ElementBuilderMixin<ActionElement> {
+class UsersActionElement with ElementBuilder<ActionElement> {
   @override
   FutureOr<ActionElement?> build(ModuleContext module) {
     return ActionElement(

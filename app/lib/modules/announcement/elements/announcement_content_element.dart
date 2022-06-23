@@ -1,6 +1,6 @@
 part of announcement_module;
 
-class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
+class AnnouncementContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) async {
     if (module.hasParams) {

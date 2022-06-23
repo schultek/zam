@@ -10,7 +10,7 @@ class LaunchUrlParams {
   LaunchUrlParams({this.url, this.label, this.icon, this.imageUrl});
 }
 
-class LaunchUrlActionElement with ElementBuilderMixin<ActionElement> {
+class LaunchUrlActionElement with ElementBuilder<ActionElement> {
   @override
   FutureOr<ActionElement?> build(ModuleContext module) async {
     var params = module.getParams<LaunchUrlParams?>() ?? LaunchUrlParams();

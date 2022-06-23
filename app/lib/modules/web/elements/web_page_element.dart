@@ -8,7 +8,7 @@ class WebPageParams {
   const WebPageParams({this.url, this.canNavigate = true});
 }
 
-class WebPageElement with ElementBuilderMixin<PageElement> {
+class WebPageElement with ElementBuilder<PageElement> {
   @override
   FutureOr<PageElement?> build(ModuleContext module) {
     var params = module.getParams<WebPageParams?>() ?? const WebPageParams();

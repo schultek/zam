@@ -8,7 +8,7 @@ class ProfileImageElementParams {
   ProfileImageElementParams({this.showName = true, this.showGreeting = true});
 }
 
-class ProfileImageElement with ElementBuilderMixin<ContentElement> {
+class ProfileImageElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var params = module.getParams<ProfileImageElementParams?>() ?? ProfileImageElementParams();

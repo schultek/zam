@@ -1,6 +1,6 @@
 part of thebutton_module;
 
-class TheButtonElement with ElementBuilderMixin<ContentElement> {
+class TheButtonElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var buttonHelpKey = GlobalKey();

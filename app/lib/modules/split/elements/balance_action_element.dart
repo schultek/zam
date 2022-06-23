@@ -1,6 +1,6 @@
 part of split_module;
 
-class BalanceActionElement with ElementBuilderMixin<ActionElement> {
+class BalanceActionElement with ElementBuilder<ActionElement> {
   @override
   FutureOr<ActionElement?> build(ModuleContext module) async {
     var split = await module.context.read(splitProvider.future);

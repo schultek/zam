@@ -37,9 +37,10 @@ class ModuleRegistry {
     var moduleContext = ModuleContext<T>(context, module, id);
 
     var builder = modules[moduleId]?.elements[moduleContext.elementId];
-    assert(builder is ElementBuilder<T>?,
+    if (builder == null) return null;
+    assert(builder is ElementBuilder<T>,
         'Expected ElementBuilder<$T> for module ${moduleContext.moduleId}/${moduleContext.elementId}.');
-    return (builder as ElementBuilder<T>?)?.call(moduleContext);
+    return (builder as ElementBuilder<T>).build(moduleContext);
   }
 
   List<ElementResolver<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
@@ -67,7 +68,7 @@ class ModuleRegistry {
   }
 
   FutureOr<T?> _callOrCatch<T extends ModuleElement>(ElementBuilder<T> builder, ModuleContext module) {
-    var future = builder(module);
+    var future = builder.build(module);
     if (future is T?) {
       return future;
     } else {

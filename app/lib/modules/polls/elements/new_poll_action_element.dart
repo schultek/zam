@@ -1,6 +1,6 @@
 part of polls_module;
 
-class NewPollActionElement with ElementBuilderMixin<ActionElement> {
+class NewPollActionElement with ElementBuilder<ActionElement> {
   @override
   FutureOr<ActionElement?> build(ModuleContext module) {
     return ActionElement(

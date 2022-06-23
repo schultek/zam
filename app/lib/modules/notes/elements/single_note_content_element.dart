@@ -1,6 +1,6 @@
 part of notes_module;
 
-class SingleNoteContentElement with ElementBuilderMixin<ContentElement> {
+class SingleNoteContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     if (module.hasParams) {

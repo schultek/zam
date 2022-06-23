@@ -13,7 +13,7 @@ class PlayerParams {
   });
 }
 
-class PlayerContentElement with ElementBuilderMixin<ContentElement> {
+class PlayerContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext<ModuleElement> module) {
     var params = module.getParams<PlayerParams?>() ?? PlayerParams();

@@ -1,6 +1,6 @@
 part of profile_module;
 
-class ProfileElement with ElementBuilderMixin<ContentElement> {
+class ProfileElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     return ContentElement(

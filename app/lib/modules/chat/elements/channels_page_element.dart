@@ -1,6 +1,6 @@
 part of chat_module;
 
-class ChannelsPageElement with ElementBuilderMixin<PageElement> {
+class ChannelsPageElement with ElementBuilder<PageElement> {
   @override
   FutureOr<PageElement?> build(ModuleContext module) {
     return PageElement(

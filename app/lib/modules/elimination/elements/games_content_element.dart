@@ -1,6 +1,6 @@
 part of elimination_module;
 
-class GamesContentElement with ElementBuilderMixin<ContentElement> {
+class GamesContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     return ContentElement(

@@ -1,6 +1,6 @@
 part of polls_module;
 
-class PollContentElement with ElementBuilderMixin<ContentElement> {
+class PollContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     if (module.hasParams) {

@@ -41,13 +41,13 @@ class NotesModule extends ModuleBuilder {
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
-        'notes_action': NotesActionElement(),
-        'add_note_action': AddNoteActionElement(),
         'notes': NotesContentElement(),
         'note': SingleNoteContentElement(),
         'notes_grid': NotesGridContentElement(),
         'notes_list': NotesListContentElement(),
         'notes_list_page': NotesListPageElement(),
+        'notes_action': NotesActionElement(),
+        'add_note_action': AddNoteActionElement(),
       };
 
   @override

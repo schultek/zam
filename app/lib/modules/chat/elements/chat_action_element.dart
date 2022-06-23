@@ -1,6 +1,6 @@
 part of chat_module;
 
-class ChatActionElement with ElementBuilderMixin<ActionElement> {
+class ChatActionElement with ElementBuilder<ActionElement> {
   @override
   FutureOr<ActionElement?> build(ModuleContext module) {
     return ActionElement(

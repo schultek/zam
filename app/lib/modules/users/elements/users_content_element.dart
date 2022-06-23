@@ -1,6 +1,6 @@
 part of users_module;
 
-class UsersContentElement with ElementBuilderMixin<ContentElement> {
+class UsersContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     return ContentElement(
