@@ -204,6 +204,10 @@
   "show_add_tile": "Plus-Kachel anzeigen",
   "open_notes": "Notizen öffnen",
   "saved": "Gespeichert",
+  "notes_action_title": 
+  "add_notes_action_title":
+  
+
 
   "@PHOTOS": {},
 
@@ -212,7 +216,6 @@
   "elements": "Elemente",
   "sign_in_google": "Mit Google einloggen",
   "sign_in_google_desc": "Um das geteilte Album zu nutzen musst du dich mit deinem Google Account einloggen.",
-
   "@POLLS": {},
 
   "polls": "Umfragen",
@@ -228,6 +231,13 @@
   "good_morning": "Guten Morgen",
   "good_evening": "Guten Abend",
   "cut_picture": "Foto zuschneiden",
+  "profile_title": "Profil",
+  "profile_subtitle": "Öffnet das persönliche Profil des Nutzers",
+  "profile_text": "Das Profilmodul zeigt das persönliche Nutzerprofil. \nEin Nutzer kann sich hier einen Nickname aussuchen und ein Profilbild hinzufügen. Nickname und Profilbild sind für andere Nutzer innerhalb anderer Module sichtbar.",
+  "profile_image_title": "Profilbild",
+  "profile_image_subtitle": "Zeigt das Profilbild und den Nickname des Nutzers",
+  "profile_image_text": "Das Profilbildmodul ist eine andere Darstellung des Profils. Der Nutzer sieht sein Profilbild sowie eine tageszeitabhängige Begrüßung und seinen Nickname. Optional kann über das Einstellungssymbol des Moduls die Begrüßung und/oder der Nickname verborgen werden. \nDurch Klicken auf das Profilbild gelangt der Nutzer auf sein persönliches Profil, wo Nickname und Profilbild geändert werden können.",
+
 
   "@THEBUTTON": {},
 
