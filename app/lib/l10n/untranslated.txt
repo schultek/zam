@@ -1,1 +1,10 @@
-{}
+{
+  "en": [
+    "profile_title",
+    "profile_subtitle",
+    "profile_text",
+    "profile_image_title",
+    "profile_image_subtitle",
+    "profile_image_text"
+  ]
+}

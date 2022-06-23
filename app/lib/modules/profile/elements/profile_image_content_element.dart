@@ -10,6 +10,21 @@ class ProfileImageElementParams {
 
 class ProfileImageElement with ElementBuilder<ContentElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.profile_image_title;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.profile_image_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.profile_image_text);
+  }
+
+  @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var params = module.getParams<ProfileImageElementParams?>() ?? ProfileImageElementParams();
     return ContentElement(

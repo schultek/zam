@@ -105,7 +105,7 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
   }
 
   void loadWidgets() {
-    widgets = registry.getWidgetsOf<T>(widget.areaState.context);
+    widgets = registry.getElementsOf<T>(widget.areaState.context);
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       var endScroll = _scrollController.position.maxScrollExtent;
       if (endScroll != 0) {
@@ -145,13 +145,14 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
       return;
     }
 
-    var index = widgets.indexWhere((r) => r.result == toRemove);
+    var resolver = widgets.firstWhere((r) => r.result == toRemove);
+    var index = widgets.indexOf(resolver);
     var newWidget = await registry.getWidget<T>(widget.areaState.context, toRemove.module.copyId());
 
     setState(() {
       widgets = [
         ...widgets.take(index),
-        ElementResolver(newWidget!, toRemove.module.parent),
+        ElementResolver(newWidget!, resolver.element, resolver.module),
         ...widgets.skip(index + 1)
       ];
     });
@@ -296,11 +297,11 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        Text('Some Module',
+                                                        Text(group[index].value.element.getTitle(context),
                                                             style: context.theme.textTheme.titleLarge!
                                                                 .copyWith(color: context.onSurfaceColor)),
                                                         const SizedBox(height: 10),
-                                                        Text('A short description what it does.',
+                                                        Text(group[index].value.element.getSubtitle(context),
                                                             style: TextStyle(color: context.onSurfaceColor)),
                                                       ],
                                                     ),
@@ -378,21 +379,10 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
                                                       borderRadius: const BorderRadius.all(Radius.circular(8)),
                                                     ),
                                                     padding: const EdgeInsets.all(WidgetSelector.itemPadding),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                            'Some detailed text about this module that can have more information and be a longer block of text.\n\n'
-                                                            'Maybe also show some examples or mockups of certain aspects of this module. '
-                                                            'I dont know, I\'m just trying to fill in some text. '
-                                                            'At this point I can write anything it does not matter.',
-                                                            style: TextStyle(color: context.onSurfaceColor),
-                                                            textAlign: TextAlign.justify),
-                                                        const SizedBox(height: 10),
-                                                        Text(
-                                                            'We could also explain some of the settings on how the element can be further customized once placed on the page.',
-                                                            style: TextStyle(color: context.onSurfaceColor)),
-                                                      ],
+                                                    child: DefaultTextStyle(
+                                                      style: TextStyle(color: context.onSurfaceColor),
+                                                      textAlign: TextAlign.justify,
+                                                      child: group[index].value.element.buildDescription(context),
                                                     ),
                                                   ),
                                                 ),

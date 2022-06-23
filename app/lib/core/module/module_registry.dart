@@ -43,7 +43,7 @@ class ModuleRegistry {
     return (builder as ElementBuilder<T>).build(moduleContext);
   }
 
-  List<ElementResolver<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
+  List<ElementResolver<T>> getElementsOf<T extends ModuleElement>(BuildContext context) {
     initModules();
 
     var moduleBlacklist = context.read(selectedGroupProvider)!.moduleBlacklist;
@@ -58,7 +58,7 @@ class ModuleRegistry {
               ModuleContext<T>(context, m.value, '${m.key}/${e.key}'),
             );
             if (widget != null) {
-              widgets.add(ElementResolver(widget, m.value));
+              widgets.add(ElementResolver(widget, e.value as ElementBuilder<T>, m.value));
             }
           }
         }
@@ -129,12 +129,13 @@ class ModuleRegistry {
 
 class ElementResolver<T extends ModuleElement> with ChangeNotifier implements ValueListenable<ElementResolver<T>> {
   final FutureOr<T?> _elementFuture;
+  final ElementBuilder<T> element;
   final ModuleBuilder module;
 
   bool isResolved = false;
   T? result;
 
-  ElementResolver(this._elementFuture, this.module) {
+  ElementResolver(this._elementFuture, this.element, this.module) {
     assert(_elementFuture != null);
     if (_elementFuture is T) {
       isResolved = true;

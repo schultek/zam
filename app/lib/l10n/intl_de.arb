@@ -2,7 +2,7 @@
   "@@locale": "de",
   "jufa": "JUFA",
 
-  "GENERAL": {},
+  "@GENERAL": {},
 
   "error": "Fehler",
   "title": "Titel",
@@ -43,6 +43,12 @@
   "login_to_become_organizer": "Mit deiner Telefonnummer anmelden um ein Gruppen-Organisator*in zu werden.",
   "login_to_become_admin": "Mit deiner Telefonnummer anmelden um ein Admin zu werden.",
   "login_to_join_group":  "Anmelden um {isOrganizer, select, true{Organisator*in bei {group} zu werden.} false{{group} beizutreten.}}",
+  "@login_to_join_group": {
+    "placeholders": {
+      "group": {},
+      "isOrganizer": {}
+    }
+  },
   "the_group": "der Gruppe",
 
   "@PHONE_LOGIN": {},
@@ -204,10 +210,6 @@
   "show_add_tile": "Plus-Kachel anzeigen",
   "open_notes": "Notizen öffnen",
   "saved": "Gespeichert",
-  "notes_action_title": 
-  "add_notes_action_title":
-  
-
 
   "@PHOTOS": {},
 
@@ -216,6 +218,7 @@
   "elements": "Elemente",
   "sign_in_google": "Mit Google einloggen",
   "sign_in_google_desc": "Um das geteilte Album zu nutzen musst du dich mit deinem Google Account einloggen.",
+
   "@POLLS": {},
 
   "polls": "Umfragen",
@@ -233,11 +236,10 @@
   "cut_picture": "Foto zuschneiden",
   "profile_title": "Profil",
   "profile_subtitle": "Öffnet das persönliche Profil des Nutzers",
-  "profile_text": "Das Profilmodul zeigt das persönliche Nutzerprofil. \nEin Nutzer kann sich hier einen Nickname aussuchen und ein Profilbild hinzufügen. Nickname und Profilbild sind für andere Nutzer innerhalb anderer Module sichtbar.",
+  "profile_text": "Das Profilmodul zeigt das persönliche Nutzer-\u200bProfil. \n\nEin Nutzer kann sich hier einen Nickname aussuchen und ein Profilbild hinzufügen. Nickname und Profilbild sind für andere Nutzer innerhalb anderer Module sichtbar.",
   "profile_image_title": "Profilbild",
   "profile_image_subtitle": "Zeigt das Profilbild und den Nickname des Nutzers",
   "profile_image_text": "Das Profilbildmodul ist eine andere Darstellung des Profils. Der Nutzer sieht sein Profilbild sowie eine tageszeitabhängige Begrüßung und seinen Nickname. Optional kann über das Einstellungssymbol des Moduls die Begrüßung und/oder der Nickname verborgen werden. \nDurch Klicken auf das Profilbild gelangt der Nutzer auf sein persönliches Profil, wo Nickname und Profilbild geändert werden können.",
-
 
   "@THEBUTTON": {},
 
@@ -246,6 +248,11 @@
   "reset_health": "Gesundheit zurücksetzen",
   "reset_leaderboard": "Bestenliste zurücksetzen",
   "confirm_reset": "Möchtest du die\n{isHealth, select, true{Gesundheit} false{Bestenliste}} zurücksetzen?",
+  "@confirm_reset": {
+    "placeholders": {
+      "isHealth": {}
+    }
+  },
   "the_button_tagline": "Ein soziales Spiel bei dem der Button am Leben gehalten werden muss.",
   "leaderboard": "Bestenliste",
   "alive_period": "Lebenszeit",
@@ -262,7 +269,17 @@
   "invite_participant": "Teilnehmer einladen",
   "invite_organizer": "Organisator einladen",
   "click_link_to_join": "Klicke auf den Link um {name} beizutreten",
+  "@click_link_to_join": {
+    "placeholders": {
+      "name": {}
+    }
+  },
   "click_link_to_organize": "Klicke auf den Link um Organisator für {name} zu werden",
+  "@click_link_to_organize": {
+    "placeholders": {
+      "name": {}
+    }
+  },
 
   "@SPLIT": {},
 
