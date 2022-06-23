@@ -153,7 +153,7 @@
       "name": {}
     }
   },
-  "users_subtitle": "Öffnet eine Liste aller Nutzer der Gruppe",
+  "users_subtitle": "Öffnet eine Liste aller Nutzer*innen der Gruppe",
   "users_text": "Das Nutzermodul zeigt alle Teilnehmer einer Freizeit mit Nickname und Profilbild, sofern diese vom Nutzer vergeben wurden. \nZudem sind die Rollen der Nutzer sichtbar, diese sind entweder 'Organisator' oder 'Teilnehmer'. Der Organisator hat innerhalb des Moduls die Möglichkeit, Nutzer zu löschen und deren Rolle zu ändern. Durch Klicken auf '+' können weitere Nutzer hinzugefügt werden, außerdem kann ein Link geteilt werden, der Nutzern ermöglicht, mithilfe von einem Klick der Freizeit beizutreten.",
 
   "@NOTES": {},
@@ -175,6 +175,23 @@
   "show_add_tile": "Plus-Kachel anzeigen",
   "open_notes": "Notizen öffnen",
   "saved": "Gespeichert",
+  "notes_subtitle": "Öffnet eine neue Notiz",
+  "notes_text": "Das Notizenmodul dient dazu, alles zu notieren, was auf einer Freizeit wichtig ist. \n\nEs können verschiedene Notizen erstellt werden, der Text darin bearbeitet werden und Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein.",
+  "note": "Notiz",
+  "note_subtitle": "Öffnet eine ausgewählte Notiz",
+  "note_text": "Das Notizmodul zeigt eine einzelne, ausgewählte Notiz, sodass diese von allen Nutzer*innen direkt lesbar ist. Wie auch bei dem Notizenmodul kann die Notiz bearbeitet, gelöscht und von verschiedenen Nutzern je nach Berechtigung bearbeitet werden.",
+  "notes_grid": "Notizengrid",
+  "notes_grid_subtitle": "Darstellung des Notizenmoduls als Grid",
+  "notes_grid_text": "Zeigt das Notizenmodul mit drei existierenden Notizen. \n\nBeim Klicken auf das Modul kann man die Notizen öffnen, bearbeiten, löschen und Berechtigungen für einzelne Notizen vergeben, wie auch beim gewöhnlichen Notizenmodul.",
+  "notes_list": "Notizenliste",
+  "notes_list_subtitle": "Darstellung des Notizenmoduls als Liste",
+  "notes_list_text": "Zeigt die existierenden Notizen in Listenform. \n\nBeim Klicken auf das Modul kann man die Notizen öffnen, bearbeiten, löschen und Berechtigungen für einzelne Notizen vergeben, wie auch beim gewöhnlichen Notizenmodul.",
+  "notes_list_page": "Notizenseite",
+  "notes_list_page_subtitle": "Zeigt eine Liste aller Notizen an",
+  "notes_list_page_text": "Das Notizenmodul dient dazu, alles zu notieren, was auf einer Freizeit wichtig ist. \n\nEs können verschiedene Notizen erstellt werden, der Text darin bearbeitet werden und Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein. Auf der Notizenseite werden alle Notizen als Liste dargestellt.",
+  "add_note_action": "Notiz hinzufügen",
+  "add_note_action_subtitle": "Fügt eine neue Notiz über einen Quick-Action-Button hinzu",
+  "add_note_action_text": "Die Quick-Action-Version des Notizenmoduls ermöglicht es, mit einem Klick eine neue Notiz hinzuzufügen. Der Text in der Notiz kann bearbeitet und angepasst werden und es können Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein.",
 
   "@ANNOUNCEMENTS": {},
 
