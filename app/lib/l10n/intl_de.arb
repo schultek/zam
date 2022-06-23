@@ -115,119 +115,7 @@
   "confirm_delete_section": "Möchtest du diesen Abschnitt löschen?",
   "invert_header_color": "Header Farbe invertieren",
 
-  "@ANNOUNCEMENTS": {},
-
-  "announcements": "Mitteilungen",
-  "create_announcement": "Mitteilung erstellen",
-  "dismissible": "Verwerfbar",
-  "text_color": "Textfarbe",
-  "background_color": "Hintergrundfarbe",
-  "new_announcement": "Neue Mitteilung",
-  "resend_notification": "Erneut benachrichtigen",
-  "resend_notification_desc": "Sendet eine erneute Benachrichtigung/nan alle Teilnehmer*innen",
-  "confirm_resend": "Möchtest du alle Teilnehmer*innen erneut benachrichtigen?",
-  "announcements_subtitle": "Öffnet das Mitteilungsmodul",
-  "announcements_text": "Mithilfe des Mitteilungsmoduls können für alle Nutzer*innen sichtbare Mitteilungen erstellt werden. Diese werden als Push-Nachricht an alle Teilnehmer*innen gesendet. \n\nEine Mitteilung kann einen Titel und einen Text haben, die farblich angepasst werden können.\n\nDurch Aktivierung des Häkchens 'Verwerfbar' können Nutzer*innen die Mitteilung nach dem Lesen für sich ausblenden.",
-
-  "@CHAT": {},
-
-  "chat": "Chat",
-  "channels": "Channels",
-  "add_members": "Mitglieder hinzufügen",
-  "channel_details": "Channel Details",
-  "members": "Mitglieder",
-  "new_channel": "Neuer Channel",
-  "set_closed": "Auf 'Geschlossen' setzen",
-  "add_channel": "Channel hinzufügen",
-
-  "@ELIMINATION": {},
-
-  "elimination": "Eliminierung",
-  "games": "Spiele",
-  "new_game": "Neues Spiel",
-  "select_game": "Spiel auswählen",
-  "open_games": "Spiele öffnen",
-  "eliminate": "Eliminiere",
-  "hold_to_reveal": "Halte zum Aufdecken",
-  "immortal": "Unsterblich",
-  "alive": "Lebendig",
-  "select_target": "Zielperson auswählen",
-  "add_description": "Füge eine Beschreibung hinzu",
-  "how_happen": "Wie ist es passiert?",
-  "select_player": "Spieler auswählen",
-  "player_status": "Spieler Status",
-  "eliminated": "Eliminiert",
-  "target_player": "Zielperson",
-  "add_elimination": "Eliminierung hinzufügen",
-  "allow_loops": "Schleifen erlauben",
-  "create_game": "Spiel erstellen",
-  "how_to_play": "Spielanleitung",
-  "game_instructions": "'Eliminiere' deine Zielperson durch den vereinbarten Weg im echten Leben. Füge die Eliminierung der Liste hinzu und erhalte eine neue Zielperson, bis nur noch ein Spieler übrig ist.",
-
-  "@LABEL": {},
-
-  "labels": "Beschriftung",
-  "add_label": "Label hinzufügen",
-  "centered": "Zentriert",
-
-  "@MUSIC": {},
-
-  "music": "Musik",
-  "play": "Abspielen",
-  "add_to_queue": "Zur Warteschlange hinzufügen",
-  "add_to_playlist": "Zur Playlist hinzufügen",
-  "remove_from_playlist": "Von Playlist entfernen",
-  "connect_to_device": "Mit Gerät verbinden",
-  "select_playlist": "Playlist auswählen",
-  "search_track": "Lied suchen",
-  "search_for_songs": "Suche nach Liedern",
-  "playlist": "Playlist",
-  "create_shared_playlist": "Geteilte Playlist erstellen",
-  "login_spotify": "Login mit Spotify",
-  "signed_in": "Angemeldet",
-  "signed_out": "Abgemeldet",
-  "allow_user_accounts": "Nutzer-Accounts erlauben",
-  "allow_users_spotify_login": "Erlaube Nutzern sich mit ihrem Spotify-Account anzumelden",
-  "show_player_controls": "Wiedergabe-Steuerung anzeigen",
-  "allow_control_playback": "Erlaube Nutzern die Wiedergabe zu steuern",
-  "show_playlist_controls": "Playlist-Steuerung anzeigen",
-  "allow_modify_playlist": "Erlaube Nutzer*innen die geteilte Playlist zu bearbeiten",
-
-  "@NOTES": {},
-
-  "notes": "Notizen",
-  "new_note": "Neue Notiz",
-  "single_note": "Hervorgehobene\nNotiz oder Ordner",
-  "select_note_or_folder": "Notiz oder Ordner auswählen",
-  "untitled": "Ohne Titel",
-  "untitled_note": "Unbenannte Notiz",
-  "folder": "Ordner",
-  "no_folder": "Kein Ordner",
-  "author": "Autor",
-  "editors": "Editoren",
-  "change_folder": "Ordner wechseln",
-  "create_new_folder": "Neuen Ordner erstellen",
-  "add_editors": "Editoren hinzufügen",
-  "show_folders": "Ordner anzeigen",
-  "show_add_tile": "Plus-Kachel anzeigen",
-  "open_notes": "Notizen öffnen",
-  "saved": "Gespeichert",
-
-  "@PHOTOS": {},
-
-  "photos": "Fotos",
-  "select_album": "Album auswählen",
-  "elements": "Elemente",
-  "sign_in_google": "Mit Google einloggen",
-  "sign_in_google_desc": "Um das geteilte Album zu nutzen musst du dich mit deinem Google Account einloggen.",
-
-  "@POLLS": {},
-
-  "polls": "Umfragen",
-  "new_poll": "Neue Umfrage",
-  "create_poll": "Umfrage erstellen",
-  "poll": "Umfrage",
-  "new_poll_create": "Neue Umfrage\n(Tippe zum erstellen)",
+  "@@================== MODULES ==================@@": {},
 
   "@PROFILE": {},
 
@@ -242,23 +130,6 @@
   "profile_image_subtitle": "Zeigt das Profilbild und den Nickname der Nutzer*innen",
   "profile_image_text": "Das Profilbildmodul ist eine andere Darstellung des Profils. Nutzer*innen sehen ihr Profilbild sowie eine tageszeitabhängige Begrüßung und ihren Nickname. \n\nOptional kann über das Einstellungssymbol des Moduls der Nickname und/oder die Begrüßung verborgen werden. \n\nDurch Klicken auf das Profilbild gelangen die Nutzer*innen auf ihr persönliches Profil, wo Nickname und Profilbild geändert werden können.",
   "profile_user_action_text": "Das Profilbildmodul ist eine andere Darstellung des Profils.\n\nNutzer*innen sehen ihr Profilbild sowie ihren Nickname. Durch Klicken auf das Modul können Nutzer*innen auf ihr Profil gelangen und dort Profilbild und Nickname ändern.",
-
-  "@THEBUTTON": {},
-
-  "the_button": "Der Button",
-  "show_level_in_avatars": "Level in Avataren zeigen",
-  "reset_health": "Gesundheit zurücksetzen",
-  "reset_leaderboard": "Bestenliste zurücksetzen",
-  "confirm_reset": "Möchtest du die\n{isHealth, select, true{Gesundheit} false{Bestenliste}} zurücksetzen?",
-  "@confirm_reset": {
-    "placeholders": {
-      "isHealth": {}
-    }
-  },
-  "the_button_tagline": "Ein soziales Spiel bei dem der Button am Leben gehalten werden muss.",
-  "leaderboard": "Bestenliste",
-  "alive_period": "Lebenszeit",
-  "the_button_description": "Ziel des Spiels ist es den Button nicht sterben zu lassen. Der Button wird langsam an Gesundheit verlieren bis er stirbt. Du kannst den Button jederzeit heilen wenn er noch am Leben ist durch Antippen für 2 Sekunden. Aber sobald er tot ist, kann er nicht wiederbelebt werden, also bleib wachsam.\n\nDie Gesundheit des Buttons ist synchronisiert über alle Spieler, somit ist es eine gemeinsame Anstrengung ihn am Leben zu erhalten.\n\nWenn du den Button vor seinem Ableben rettest wirst du sein aktuelles Level erhalten. Je niedriger die Gesundheit desto höher das Level was du erhälst. Aber warte nicht zu lange, jemand anderes könnte den Button retten bevor du die Chance hast.",
 
   "@USERS": {},
 
@@ -284,6 +155,57 @@
   },
   "users_subtitle": "Öffnet eine Liste aller Nutzer der Gruppe",
   "users_text": "Das Nutzermodul zeigt alle Teilnehmer einer Freizeit mit Nickname und Profilbild, sofern diese vom Nutzer vergeben wurden. \nZudem sind die Rollen der Nutzer sichtbar, diese sind entweder 'Organisator' oder 'Teilnehmer'. Der Organisator hat innerhalb des Moduls die Möglichkeit, Nutzer zu löschen und deren Rolle zu ändern. Durch Klicken auf '+' können weitere Nutzer hinzugefügt werden, außerdem kann ein Link geteilt werden, der Nutzern ermöglicht, mithilfe von einem Klick der Freizeit beizutreten.",
+
+  "@NOTES": {},
+
+  "notes": "Notizen",
+  "new_note": "Neue Notiz",
+  "single_note": "Hervorgehobene\nNotiz oder Ordner",
+  "select_note_or_folder": "Notiz oder Ordner auswählen",
+  "untitled": "Ohne Titel",
+  "untitled_note": "Unbenannte Notiz",
+  "folder": "Ordner",
+  "no_folder": "Kein Ordner",
+  "author": "Autor",
+  "editors": "Editoren",
+  "change_folder": "Ordner wechseln",
+  "create_new_folder": "Neuen Ordner erstellen",
+  "add_editors": "Editoren hinzufügen",
+  "show_folders": "Ordner anzeigen",
+  "show_add_tile": "Plus-Kachel anzeigen",
+  "open_notes": "Notizen öffnen",
+  "saved": "Gespeichert",
+
+  "@ANNOUNCEMENTS": {},
+
+  "announcements": "Mitteilungen",
+  "create_announcement": "Mitteilung erstellen",
+  "dismissible": "Verwerfbar",
+  "text_color": "Textfarbe",
+  "background_color": "Hintergrundfarbe",
+  "new_announcement": "Neue Mitteilung",
+  "resend_notification": "Erneut benachrichtigen",
+  "resend_notification_desc": "Sendet eine erneute Benachrichtigung/nan alle Teilnehmer*innen",
+  "confirm_resend": "Möchtest du alle Teilnehmer*innen erneut benachrichtigen?",
+  "announcements_subtitle": "Öffnet das Mitteilungsmodul",
+  "announcements_text": "Mithilfe des Mitteilungsmoduls können für alle Nutzer*innen sichtbare Mitteilungen erstellt werden. Diese werden als Push-Nachricht an alle Teilnehmer*innen gesendet. \n\nEine Mitteilung kann einen Titel und einen Text haben, die farblich angepasst werden können.\n\nDurch Aktivierung des Häkchens 'Verwerfbar' können Nutzer*innen die Mitteilung nach dem Lesen für sich ausblenden.",
+
+  "@LABEL": {},
+
+  "labels": "Beschriftung",
+  "add_label": "Label hinzufügen",
+  "centered": "Zentriert",
+
+  "@CHAT": {},
+
+  "chat": "Chat",
+  "channels": "Channels",
+  "add_members": "Mitglieder hinzufügen",
+  "channel_details": "Channel Details",
+  "members": "Mitglieder",
+  "new_channel": "Neuer Channel",
+  "set_closed": "Auf 'Geschlossen' setzen",
+  "add_channel": "Channel hinzufügen",
 
   "@SPLIT": {},
 
@@ -336,7 +258,79 @@
   "website": "Webseite",
   "custom_image": "Individuelles Bild",
 
+  "@MUSIC": {},
+
+  "music": "Musik",
+  "play": "Abspielen",
+  "add_to_queue": "Zur Warteschlange hinzufügen",
+  "add_to_playlist": "Zur Playlist hinzufügen",
+  "remove_from_playlist": "Von Playlist entfernen",
+  "connect_to_device": "Mit Gerät verbinden",
+  "select_playlist": "Playlist auswählen",
+  "search_track": "Lied suchen",
+  "search_for_songs": "Suche nach Liedern",
+  "playlist": "Playlist",
+  "create_shared_playlist": "Geteilte Playlist erstellen",
+  "login_spotify": "Login mit Spotify",
+  "signed_in": "Angemeldet",
+  "signed_out": "Abgemeldet",
+  "allow_user_accounts": "Nutzer-Accounts erlauben",
+  "allow_users_spotify_login": "Erlaube Nutzern sich mit ihrem Spotify-Account anzumelden",
+  "show_player_controls": "Wiedergabe-Steuerung anzeigen",
+  "allow_control_playback": "Erlaube Nutzern die Wiedergabe zu steuern",
+  "show_playlist_controls": "Playlist-Steuerung anzeigen",
+  "allow_modify_playlist": "Erlaube Nutzer*innen die geteilte Playlist zu bearbeiten",
+
+  "@POLLS": {},
+
+  "polls": "Umfragen",
+  "new_poll": "Neue Umfrage",
+  "create_poll": "Umfrage erstellen",
+  "poll": "Umfrage",
+  "new_poll_create": "Neue Umfrage\n(Tippe zum erstellen)",
+
   "@COUNTER": {},
 
-  "counter": "Zähler"
+  "counter": "Zähler",
+
+  "@THEBUTTON": {},
+
+  "the_button": "Der Button",
+  "show_level_in_avatars": "Level in Avataren zeigen",
+  "reset_health": "Gesundheit zurücksetzen",
+  "reset_leaderboard": "Bestenliste zurücksetzen",
+  "confirm_reset": "Möchtest du die\n{isHealth, select, true{Gesundheit} false{Bestenliste}} zurücksetzen?",
+  "@confirm_reset": {
+    "placeholders": {
+      "isHealth": {}
+    }
+  },
+  "the_button_tagline": "Ein soziales Spiel bei dem der Button am Leben gehalten werden muss.",
+  "leaderboard": "Bestenliste",
+  "alive_period": "Lebenszeit",
+  "the_button_description": "Ziel des Spiels ist es den Button nicht sterben zu lassen. Der Button wird langsam an Gesundheit verlieren bis er stirbt. Du kannst den Button jederzeit heilen wenn er noch am Leben ist durch Antippen für 2 Sekunden. Aber sobald er tot ist, kann er nicht wiederbelebt werden, also bleib wachsam.\n\nDie Gesundheit des Buttons ist synchronisiert über alle Spieler, somit ist es eine gemeinsame Anstrengung ihn am Leben zu erhalten.\n\nWenn du den Button vor seinem Ableben rettest wirst du sein aktuelles Level erhalten. Je niedriger die Gesundheit desto höher das Level was du erhälst. Aber warte nicht zu lange, jemand anderes könnte den Button retten bevor du die Chance hast.",
+
+  "@ELIMINATION": {},
+
+  "elimination": "Eliminierung",
+  "games": "Spiele",
+  "new_game": "Neues Spiel",
+  "select_game": "Spiel auswählen",
+  "open_games": "Spiele öffnen",
+  "eliminate": "Eliminiere",
+  "hold_to_reveal": "Halte zum Aufdecken",
+  "immortal": "Unsterblich",
+  "alive": "Lebendig",
+  "select_target": "Zielperson auswählen",
+  "add_description": "Füge eine Beschreibung hinzu",
+  "how_happen": "Wie ist es passiert?",
+  "select_player": "Spieler auswählen",
+  "player_status": "Spieler Status",
+  "eliminated": "Eliminiert",
+  "target_player": "Zielperson",
+  "add_elimination": "Eliminierung hinzufügen",
+  "allow_loops": "Schleifen erlauben",
+  "create_game": "Spiel erstellen",
+  "how_to_play": "Spielanleitung",
+  "game_instructions": "'Eliminiere' deine Zielperson durch den vereinbarten Weg im echten Leben. Füge die Eliminierung der Liste hinzu und erhalte eine neue Zielperson, bis nur noch ein Spieler übrig ist."
 }

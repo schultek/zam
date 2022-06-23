@@ -1,13 +1,14 @@
 {
   "en": [
-    "announcements_subtitle",
-    "announcements_text",
     "profile_subtitle",
     "profile_text",
     "profile_image_title",
     "profile_image_subtitle",
     "profile_image_text",
+    "profile_user_action_text",
     "users_subtitle",
-    "users_text"
+    "users_text",
+    "announcements_subtitle",
+    "announcements_text"
   ]
 }
