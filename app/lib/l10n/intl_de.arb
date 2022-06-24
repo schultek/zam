@@ -124,12 +124,12 @@
   "good_morning": "Guten Morgen",
   "good_evening": "Guten Abend",
   "cut_picture": "Foto zuschneiden",
-  "profile_subtitle": "Öffnet das persönliche Profil der Nutzer*innen",
-  "profile_text": "Das Profilmodul zeigt das persönliche Nutzer-\u200BProfil.\n\nNutzer*innen können sich einen Nickname aussuchen und ein Profilbild hinzufügen. Nickname und Profilbild sind für andere Nutzer*innen innerhalb anderer Module sichtbar.",
+  "profile_subtitle": "Öffnet das persönliche Nutzerprofil",
+  "profile_text": "Dieses Modul zeigt das persönliche Nutzer-\u200BProfil.\n\nNutzer*innen können sich einen Nickname aussuchen und ein Profilbild hinzufügen. Nickname und Profilbild sind für andere Nutzer*innen innerhalb anderer Module sichtbar.",
   "profile_image_title": "Profilbild",
-  "profile_image_subtitle": "Zeigt das Profilbild und den Nickname der Nutzer*innen",
-  "profile_image_text": "Das Profilbildmodul ist eine andere Darstellung des Profils. Nutzer*innen sehen ihr Profilbild sowie eine tageszeitabhängige Begrüßung und ihren Nickname. \n\nOptional kann über das Einstellungssymbol des Moduls der Nickname und/oder die Begrüßung verborgen werden. \n\nDurch Klicken auf das Profilbild gelangen die Nutzer*innen auf ihr persönliches Profil, wo Nickname und Profilbild geändert werden können.",
-  "profile_user_action_text": "Das Profilbildmodul ist eine andere Darstellung des Profils.\n\nNutzer*innen sehen ihr Profilbild sowie ihren Nickname. Durch Klicken auf das Modul können Nutzer*innen auf ihr Profil gelangen und dort Profilbild und Nickname ändern.",
+  "profile_image_subtitle": "Zeigt das Profilbild und den Nickname",
+  "profile_image_text": "Nutzer*innen sehen ihr Profilbild sowie eine tageszeitabhängige Begrüßung und ihren Nickname. \n\nOptional kann über das Einstellungssymbol des Moduls der Nickname und/oder die Begrüßung verborgen werden. \n\nDurch Klicken auf das Profilbild gelangen die Nutzer*innen auf ihr persönliches Profil, wo Nickname und Profilbild geändert werden können.",
+  "profile_user_action_text": "Nutzer*innen sehen ihr Profilbild sowie ihren Nickname. Durch Klicken auf das Modul können Nutzer*innen auf ihr Profil gelangen und dort Profilbild und Nickname ändern.",
 
   "@USERS": {},
 
@@ -154,7 +154,7 @@
     }
   },
   "users_subtitle": "Öffnet eine Liste aller Nutzer*innen der Gruppe",
-  "users_text": "Das Nutzermodul zeigt alle Teilnehmer einer Freizeit mit Nickname und Profilbild, sofern diese vom Nutzer vergeben wurden. \n\nZudem sind die Rollen der Nutzer sichtbar, diese sind entweder 'Organisator' oder 'Teilnehmer'. Der Organisator hat innerhalb des Moduls die Möglichkeit, Nutzer zu löschen und deren Rolle zu ändern. \n\nDurch Klicken auf '+' können weitere Nutzer hinzugefügt werden, außerdem kann ein Link geteilt werden, der Nutzern ermöglicht, mithilfe von einem Klick der Freizeit beizutreten.",
+  "users_text": "Dieses Modul zeigt alle Teilnehmer*innen der Gruppe mit Nickname und Profilbild, sofern diese vom Nutzer vergeben wurden. \n\nZudem sind die Rollen der Nutzer*innen sichtbar, diese sind entweder 'Organisator' oder 'Teilnehmer'. Organisator*innen hat innerhalb des Moduls die Möglichkeit, Nutzer zu löschen und deren Rolle zu ändern. \n\nDurch Klicken auf '+' können weitere Nutzer hinzugefügt werden, außerdem kann ein Link geteilt werden, der Nutzern ermöglicht, mithilfe von einem Klick der Freizeit beizutreten.",
 
   "@NOTES": {},
 
