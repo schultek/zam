@@ -15,6 +15,21 @@ class PlayerParams {
 
 class PlayerContentElement with ElementBuilder<ContentElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.player;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.player_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.player_text);
+  }
+
+  @override
   FutureOr<ContentElement?> build(ModuleContext<ModuleElement> module) {
     var params = module.getParams<PlayerParams?>() ?? PlayerParams();
 

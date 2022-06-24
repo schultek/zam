@@ -12,6 +12,21 @@ class LaunchUrlParams {
 
 class LaunchUrlActionElement with ElementBuilder<ActionElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.launch_url;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.launch_url_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.launch_url_text);
+  }
+
+  @override
   FutureOr<ActionElement?> build(ModuleContext module) async {
     var params = module.getParams<LaunchUrlParams?>() ?? LaunchUrlParams();
 

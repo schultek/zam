@@ -10,6 +10,21 @@ class CounterState {
 
 class CounterElement with ElementBuilder<ContentElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.counter;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.counter_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.counter_text);
+  }
+
+  @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var params = module.getParams<CounterState?>() ?? CounterState(0, module.context.tr.counter);
 

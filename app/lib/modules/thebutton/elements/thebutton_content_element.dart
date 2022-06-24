@@ -2,6 +2,21 @@ part of thebutton_module;
 
 class TheButtonElement with ElementBuilder<ContentElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.the_button;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.the_button_tagline;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.the_button_description);
+  }
+
+  @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var buttonHelpKey = GlobalKey();
     return ContentElement(

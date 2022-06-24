@@ -10,6 +10,21 @@ class WebPageParams {
 
 class WebPageElement with ElementBuilder<PageElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.web_page;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.web_page_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.web_page_text);
+  }
+
+  @override
   FutureOr<PageElement?> build(ModuleContext module) {
     var params = module.getParams<WebPageParams?>() ?? const WebPageParams();
     var webViewKey = GlobalObjectKey<_WebViewPageState>('webview-${module.keyId}');
