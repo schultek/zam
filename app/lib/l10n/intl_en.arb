@@ -118,6 +118,13 @@
   "good_morning": "Good morning",
   "good_evening": "Good evening",
   "cut_picture": "Cut the picture",
+  "profile_subtitle": "Opens personal user profile",
+  "profile_text": "The profile module shows the personal profile of the users.\n\nUsers can choose a nickname and add a profile picture. Nickname and profile picture are visible for other users in the different modules.",
+  "profile_image_title": "Profile picture",
+  "profile_image_subtitle": "Shows profile picture and nickname of users",
+  "profile_image_text": "The profile picture module is another depiction of the profile module.\n\nUsers see their profile picture as well as a greeting and their nickname.\n\nOptionally it is possible to hide the nickname and/or the greeting over the settings option of the module.\n\nBy clicking on the profile picture users are able to access their personal profile where they can change nickname and profile picture.",
+  "profile_user_action_text": "The profile picture module is another depiction of the profile module.\n\nUsers see their profile picture and nickname. By clicking on the module users are able to access their personal profile and change profile picture and nickname.",
+
 
   "@USERS": {},
 
@@ -131,6 +138,9 @@
   "invite_organizer": "Invite Organizer",
   "click_link_to_join": "Click on this link to join {name}",
   "click_link_to_organize": "Click on this link to become an organizer of {name}",
+  "users_subtitle": "Opens a list of all users in a group",
+  "users_text": "The user module shows all users of a trip with their nickname and profile picture, if they decided to enter them.\n\nAdditionally, it is possible to see the roles of different users, they can either be 'organizer' or 'participant'. Within the module, the organizer can delete users and change their roles.\n\nBy clicking on '+'new users can be added, additionally a link can be shared to invite users directly to join the trip.",
+
 
   "@NOTES": {},
 
@@ -151,6 +161,24 @@
   "show_add_tile": "Show Add Tile",
   "open_notes": "Open Notes",
   "saved": "Saved",
+  "notes_subtitle": "Opens a new note",
+  "notes_text": "The notes module can be used to note down everything necessary during a trip!\n\nNotes can be written and changed, also additional features such as checkboxes can be used.\n\nFor each note it is possible to see who can edit the note over the button 'i', additionally it can be deleted there. A note can be part of a folder.",
+  "note": "note",
+  "note_subtitle": "Opens a selected note",
+  "note_text": "The note module opens a single selected note to make it directly accessible for all users\n\nAs for every note, different users can, dependent on their rights, edit and delete a note.\n\nThe module is only visible for users if a note was already written.",
+  "notes_grid": "Notes grid",
+  "notes_grid_subtitle": "Depiction of the notes module as a grid",
+  "notes_grid_text": "Shows the notes module with all existing notes.\n\nBeim Klicken auf das Modul kann man die Notizen öffnen, bearbeiten, löschen und Berechtigungen für einzelne Notizen vergeben, wie auch beim gewöhnlichen Notizenmodul.\n\nBei Klick auf die Einstellungen des Moduls kann ausgewählt werden, ob das '+' zum Hinzufügen neuer Notizen sowie Ordner innerhalb der Notizen angezeigt werden sollen.",
+  "notes_list": "Notizenliste",
+  "notes_list_subtitle": "Darstellung des Notizenmoduls als Liste",
+  "notes_list_text": "Zeigt die existierenden Notizen in Listenform. \n\nBeim Klicken auf das Modul kann man die Notizen öffnen, bearbeiten, löschen und Berechtigungen für einzelne Notizen vergeben, wie auch beim gewöhnlichen Notizenmodul. \n\nBei Klick auf die Einstellungen des Moduls kann ausgewählt werden, ob das '+' zum Hinzufügen neuer Notizen sowie Ordner innerhalb der Notizen angezeigt werden sollen.",
+  "notes_list_page": "Notizenseite",
+  "notes_list_page_subtitle": "Zeigt eine Liste aller Notizen an",
+  "notes_list_page_text": "Das Notizenmodul dient dazu, alles zu notieren, was auf einer Freizeit wichtig ist. \n\nEs können verschiedene Notizen erstellt werden, der Text darin bearbeitet werden und Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein. Auf der Notizenseite werden alle Notizen als Liste dargestellt.\n\nBei Klick auf die Einstellungen des Moduls kann ausgewählt werden, ob das '+' zum Hinzufügen neuer Notizen sowie Ordner innerhalb der Notizen angezeigt werden sollen.",
+  "add_note_action": "Notiz hinzufügen",
+  "add_note_action_subtitle": "Fügt eine neue Notiz über einen Quick-Action-Button hinzu",
+  "add_note_action_text": "Die Quick-Action-Version des Notizenmoduls ermöglicht es, mit einem Klick eine neue Notiz hinzuzufügen. Der Text in der Notiz kann bearbeitet und angepasst werden und es können Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein.",
+
 
   "@ANNOUNCEMENTS": {},
 

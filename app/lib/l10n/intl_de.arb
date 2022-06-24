@@ -295,6 +295,11 @@
   "allow_navigation": "Navigation erlauben",
   "website": "Webseite",
   "custom_image": "Individuelles Bild",
+  "launch_url_subtitle": "Öffnet eine eingegebene Website",
+  "launch_url_text": "Beim Klick auf das Modul 'URL öffnen' können Nutzer*innen eine zuvor festgelegte Website, z.B. von einem Kochrezept, öffnen.\n\nDas Modul ist erst für Nutzer*innen sichtbar, wenn eine URL unter den Einstellungen festgelegt wurde. Zudem können dort Texte, Icons oder Bilder zum Anzeigefeld des Moduls hinzugefügt werden.",
+  "web_page": "Webpage",
+  "web_page_subtitle": "Zeigt eine vorher festgelegte Website",
+  "web_page_text": "Organisator*innen können eine Website festlegen, die immer angezeigt wird, wenn Nutzer*innen auf die Seite gelangen, z.B. ein Kochrezept.\n\nIn den Einstellungen kann festgelegt werden, ob Nutzer*innen die Seite nur ansehen oder auch darauf navigieren dürfen."
 
   "@MUSIC": {},
 
@@ -318,6 +323,9 @@
   "allow_control_playback": "Erlaube Nutzern die Wiedergabe zu steuern",
   "show_playlist_controls": "Playlist-Steuerung anzeigen",
   "allow_modify_playlist": "Erlaube Nutzer*innen die geteilte Playlist zu bearbeiten",
+  "player": "Player",
+  "player_subtitle": "Verbindet Jufa mit Spotify",
+  "player_text": "Durch das Player-Modul kann sich ein*e Nutzer*in in der Gruppe mit ihrem Spotify-Account bei Spotify anmelden.\n\nÜber jedes Gerät anderer Nutzer*innen kann nun die gleiche Musik gesteuert werden. Nutzer*innen können Lieder überspringen, pausieren oder in die Warteschleife einfügen.",
 
   "@POLLS": {},
 
@@ -330,6 +338,8 @@
   "@COUNTER": {},
 
   "counter": "Zähler",
+  "counter_subtitle": "Zählt durch Klicken von 0 bis wohin du willst",
+  "counter_text": "Mit dem Zähler können ganz einfach Dinge gezählt werden, z.B. wie viele Stunden ihr auf eurer Freizeit schon in der Sonne lagt oder wie viele Kuchen ihr vernascht habt.",
 
   "@THEBUTTON": {},
 
@@ -347,6 +357,7 @@
   "leaderboard": "Bestenliste",
   "alive_period": "Lebenszeit",
   "the_button_description": "Ziel des Spiels ist es den Button nicht sterben zu lassen. Der Button wird langsam an Gesundheit verlieren bis er stirbt. Du kannst den Button jederzeit heilen wenn er noch am Leben ist durch Antippen für 2 Sekunden. Aber sobald er tot ist, kann er nicht wiederbelebt werden, also bleib wachsam.\n\nDie Gesundheit des Buttons ist synchronisiert über alle Spieler, somit ist es eine gemeinsame Anstrengung ihn am Leben zu erhalten.\n\nWenn du den Button vor seinem Ableben rettest wirst du sein aktuelles Level erhalten. Je niedriger die Gesundheit desto höher das Level was du erhälst. Aber warte nicht zu lange, jemand anderes könnte den Button retten bevor du die Chance hast.",
+
 
   "@ELIMINATION": {},
 
@@ -371,4 +382,11 @@
   "create_game": "Spiel erstellen",
   "how_to_play": "Spielanleitung",
   "game_instructions": "'Eliminiere' deine Zielperson durch den vereinbarten Weg im echten Leben. Füge die Eliminierung der Liste hinzu und erhalte eine neue Zielperson, bis nur noch ein Spieler übrig ist."
+  "games_subtitle": "Zeigt alle laufenden und beendeten Eliminierungsspiele",
+  "games_text": "Das Spiel 'Eliminierung' ist ein Gruppenspiel. Zu Anfang des Spieles wird jedem/jeder Nutzer*in ein Name aus der Gruppe zugelost. Der/die Nutzer*in hat nun die Aufgabe, die Person mit dem Namen zu 'eliminieren'.\n\nWie man jemanden eliminieren kann, wird vorher festgelegt - z.B. kann es als 'Eliminierung' gelten, sich mit der anderen Person ohne Zeugen in einem Raum zu befinden (hier darf man aber gerne kreativ sein!).\n\nWurde eine Person eliminert, scheidet sie aus und die andere Person erhält den Namen, der der eliminierten Person zu Beginn zugelost worden war. Das Spiel ist beendet, wenn nur noch ein Teilnehmer übrig ist.", 
+  "new_game_subtitle": "Zeigt ein laufendes Eliminierungsspiel",
+  "new_game_text": "Durch dieses Modul kann ein neues Spiel des Eliminierungsspiels gestartet und für alle Nutzer*innen angezeigt werden.\n\nDas Spiel ist erst füir Nutzer*innen sichtbar, wenn es gestartet wurde.",
+  "games_list": "Spielliste",
+  "games_list_subtitle": "Zeigt eine Liste aller laufenden und beendeten Eliminierungsspiele",
+  "games_list_text": "Die Spielliste ist eine andere Anzeigeform des Eliminierungsspiels.\n\nDurch Klicken auf eines der Spiele sehen Nutzer*innen den aktuellen Spielstatus und ob sie noch 'lebendig' sind, oder schon 'eliminiert' wurden.",
 }
