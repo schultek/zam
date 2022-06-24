@@ -8,6 +8,7 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../modules/modules.dart';
 import '../../core.dart';
+import '../../reorderable/drag_item.dart';
 import '../../widgets/child_builder.dart';
 import 'config_sheet.dart';
 import 'expand_shadow_painter.dart';
@@ -161,9 +162,11 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
 
   void onNullElementResolved(ElementResolver<T> element) {
     WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-      setState(() {
-        widgets = [...widgets]..remove(element);
-      });
+      if (mounted) {
+        setState(() {
+          widgets = [...widgets]..remove(element);
+        });
+      }
     });
   }
 
@@ -215,58 +218,61 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
       return groups;
     });
 
-    return InheritedTemplate(
-      state: widget.templateState,
-      child: InheritedArea(
-        state: widget.areaState,
-        child: GroupTheme(
-          theme: widget.areaState.theme,
-          child: Container(
-            decoration: BoxDecoration(
-              color: widget.areaState.context.surfaceColor,
-            ),
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: WidgetSelector.dragHandleHeight + WidgetSelector.itemPadding,
-                  ),
-                  child: CustomScrollView(
-                    scrollDirection: Axis.horizontal,
-                    physics: const BouncingScrollPhysics(),
-                    controller: _scrollController,
-                    cacheExtent: double.infinity,
-                    slivers: [
-                      for (var group in groups) _groupSliver(group),
-                      const SliverToBoxAdapter(
-                        child: SizedBox(width: WidgetSelector.itemPadding * 2),
-                      ),
-                    ],
-                  ),
-                ),
-                if (toDeleteElement != null)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: context.theme.colorScheme.error.withOpacity(0.2),
+    return InheritedDragState(
+      state: ElementDragState.selectable,
+      child: InheritedTemplate(
+        state: widget.templateState,
+        child: InheritedArea(
+          state: widget.areaState,
+          child: GroupTheme(
+            theme: widget.areaState.theme,
+            child: Container(
+              decoration: BoxDecoration(
+                color: widget.areaState.context.surfaceColor,
+              ),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: WidgetSelector.dragHandleHeight + WidgetSelector.itemPadding,
                     ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(WidgetSelector.itemPadding * 2) +
-                            const EdgeInsets.only(top: WidgetSelector.headerHeight + WidgetSelector.dragHandleHeight),
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: WidgetSelector.maxItemWidth),
-                          child: FittedBox(
-                            fit: BoxFit.contain,
-                            child: ConstrainedBox(
-                              constraints: widget.areaState.constrainWidget(toDeleteElement!),
-                              child: toDeleteElement!,
+                    child: CustomScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      controller: _scrollController,
+                      cacheExtent: double.infinity,
+                      slivers: [
+                        for (var group in groups) _groupSliver(group),
+                        const SliverToBoxAdapter(
+                          child: SizedBox(width: WidgetSelector.itemPadding * 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (toDeleteElement != null)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: context.theme.colorScheme.error.withOpacity(0.2),
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(WidgetSelector.itemPadding * 2) +
+                              const EdgeInsets.only(top: WidgetSelector.headerHeight + WidgetSelector.dragHandleHeight),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: WidgetSelector.maxItemWidth),
+                            child: FittedBox(
+                              fit: BoxFit.contain,
+                              child: ConstrainedBox(
+                                constraints: widget.areaState.constrainWidget(toDeleteElement!),
+                                child: toDeleteElement!,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

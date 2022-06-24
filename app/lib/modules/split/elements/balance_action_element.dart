@@ -2,6 +2,21 @@ part of split_module;
 
 class BalanceActionElement with ElementBuilder<ActionElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.balance_action_element;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.balance_action_element_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.balance_action_element_text);
+  }
+
+  @override
   FutureOr<ActionElement?> build(ModuleContext module) async {
     var split = await module.context.read(splitProvider.future);
     if (split == null) {

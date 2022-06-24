@@ -27,10 +27,11 @@ class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
 
   @override
   Widget build(BuildContext context) {
+    var template = Template.of(context, listen: false);
+
     area = null;
     var areaId = context.watch(selectedAreaProvider);
     if (areaId != null) {
-      var template = Template.of(context, listen: false);
       var candidate = template.widgetAreas[areaId];
       if (candidate != null && candidate.mounted && candidate.isActive) {
         area = template.widgetAreas[areaId]!;
@@ -41,12 +42,15 @@ class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
     if (area != null) {
       widgetSelector = area!.callTyped(<E extends ModuleElement>() {
         return WidgetSelector<E>(
-          Template.of(context, listen: false),
+          template,
           area as AreaState<Area<E>, E>,
           key: GlobalObjectKey(area!),
         );
       });
     }
+
+    context.watch(activeLayoutProvider);
+    var settings = template.getPageSettings();
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -76,7 +80,7 @@ class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
               overrides: [
                 sheetExpandedProvider.overrideWithValue(expand),
               ],
-              child: _dragSheet(scrollController, contentHeight, widgetSelector),
+              child: _dragSheet(scrollController, contentHeight, widgetSelector, settings),
             );
           },
         );
@@ -84,7 +88,12 @@ class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
     );
   }
 
-  Widget _dragSheet(ScrollController scrollController, double contentHeight, Widget? widgetSelector) {
+  Widget _dragSheet(
+    ScrollController scrollController,
+    double contentHeight,
+    Widget? widgetSelector,
+    List<Widget> settings,
+  ) {
     return ThemedSurface(
       preference: const ColorPreference(deltaElevation: 0),
       builder: (context, color) => Container(
@@ -106,7 +115,7 @@ class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
             ),
             child: Stack(
               children: [
-                _configPanel(scrollController, contentHeight, widgetSelector),
+                _configPanel(scrollController, contentHeight, widgetSelector, settings),
                 Positioned(
                   left: 0,
                   right: 0,
@@ -126,35 +135,29 @@ class _ConfigSheetState<T extends TemplateModel> extends State<ConfigSheet<T>> {
     ScrollController scrollController,
     double contentHeight,
     Widget? widgetSelector,
+    List<Widget> settings,
   ) {
     return Container(
       color: widgetsTab && area != null ? area!.context.surfaceColor : context.surfaceColor,
-      child: Builder(builder: (context) {
-        context.watch(activeLayoutProvider);
-
-        var template = Template.of(context, listen: false);
-        var settings = template.getPageSettings();
-
-        return ListView(
-          controller: scrollController,
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.zero,
-          children: [
-            if (widgetSelector != null)
-              Offstage(
-                offstage: !widgetsTab,
-                child: SizedBox(
-                  height: max(WidgetSelector.sheetHeight, contentHeight),
-                  child: widgetSelector,
-                ),
+      child: ListView(
+        controller: scrollController,
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.zero,
+        children: [
+          if (widgetSelector != null)
+            Offstage(
+              offstage: !widgetsTab,
+              child: SizedBox(
+                height: max(WidgetSelector.sheetHeight, contentHeight),
+                child: widgetSelector,
               ),
-            if (area == null || !widgetsTab) ...[
-              const SizedBox(height: WidgetSelector.dragHandleHeight),
-              ...settings,
-            ],
+            ),
+          if (area == null || !widgetsTab) ...[
+            const SizedBox(height: WidgetSelector.dragHandleHeight),
+            ...settings,
           ],
-        );
-      }),
+        ],
+      ),
     );
   }
 

@@ -38,7 +38,7 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
   @override
   void initState() {
     super.initState();
-    pageController = CustomPageController(initialPage: widget.model.leftPage != null ? 1 : 0);
+    pageController = CustomPageController();
   }
 
   @override
@@ -50,17 +50,11 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
   }
 
   void updateActiveLayout(int page) {
-    var isEditing = context.read(isEditingProvider);
-    if (page == 0) {
-      if (model.leftPage != null) {
-        model.activeLayout.value = model.leftPage!.layout.withId('left');
-      } else {
-        model.activeLayout.value = isEditing ? null : model.mainPage.layout.withId('main');
-      }
+    if (page == -1) {
+      model.activeLayout.value = model.leftPage?.layout.withId('left');
+    } else if (page == 0) {
+      model.activeLayout.value = model.mainPage.layout.withId('main');
     } else if (page == 1) {
-      model.activeLayout.value =
-          isEditing ? model.mainPage.layout.withId('main') : model.rightPage?.layout.withId('right');
-    } else {
       model.activeLayout.value = model.rightPage?.layout.withId('right');
     }
   }
@@ -68,7 +62,7 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
   @override
   List<Widget> getPageSettings() {
     var pageIndex = pageController.page;
-    if (pageIndex == 0) {
+    if (pageIndex == -1) {
       if (model.leftPage != null) {
         return model.leftPage!.getSettings(
           model,
@@ -82,7 +76,7 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
           pageController.animateToPageDelta,
         );
       }
-    } else if (pageIndex == 1) {
+    } else if (pageIndex == 0) {
       return model.mainPage.getSettings(
         model,
         (page) => updateModel(model.copyWith(mainPage: page)),
@@ -111,8 +105,8 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
       body: Builder(
         builder: (context) => NestedWillPopScope(
           onWillPop: () async {
-            if (!Navigator.of(context).canPop() && pageController.page != (model.leftPage == null ? 0 : 1)) {
-              pageController.animateToPage(model.leftPage == null ? 0 : 1);
+            if (!Navigator.of(context).canPop() && pageController.page != 0) {
+              pageController.animateToPage(0);
               return false;
             }
             return true;
@@ -122,6 +116,7 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
             return CustomPageView(
               controller: pageController,
               onPageChanged: updateActiveLayout,
+              anchor: mainKey,
               children: [
                 if (model.leftPage != null) //
                   KeepAlive(

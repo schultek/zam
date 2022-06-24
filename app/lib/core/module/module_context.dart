@@ -37,6 +37,10 @@ class ModuleContext<T extends ModuleElement> {
     Area.of<T>(context)!.updateWidgetsInGroup();
   }
 
+  Future<void> reload() {
+    return Future.microtask(Area.of<T>(context)!.reload);
+  }
+
   String copyId() {
     return _parsedId.copyWith(uniqueId: generateRandomId(4)).toString();
   }

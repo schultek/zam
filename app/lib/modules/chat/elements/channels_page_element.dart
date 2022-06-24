@@ -2,6 +2,21 @@ part of chat_module;
 
 class ChannelsPageElement with ElementBuilder<PageElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.channels;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.channels_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.channels_text);
+  }
+
+  @override
   FutureOr<PageElement?> build(ModuleContext module) {
     return PageElement(
       module: module,

@@ -69,10 +69,12 @@ class SingleNoteContentElement with ElementBuilder<ContentElement> {
         return ContentElement(
           module: module,
           builder: (context) => NeedsSetupCard(
-              child: SimpleCard(
-            title: context.tr.single_note,
-            icon: Icons.note_add,
-          )),
+            setupHint: 'Einrichtung nötig. Wähle eine Notiz aus.',
+            child: SimpleCard(
+              title: context.tr.single_note,
+              icon: Icons.note_add,
+            ),
+          ),
           settingsAction: (context) async {
             var id = await Navigator.of(context).push<String>(
               MaterialPageRoute(builder: (context) => const SelectNotePage()),

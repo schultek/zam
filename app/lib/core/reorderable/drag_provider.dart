@@ -85,8 +85,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
     var draggedItem = read(reorderableItemProvider).items[key]!.item;
 
-    read(dragWidgetProvider.state).state =
-        draggedItem.widget.builder(draggedItem.context, ReorderableState.dragging, draggedItem.widget.child);
+    read(dragWidgetProvider.state).state = draggedItem.buildChild(ReorderableState.dragging);
     moduleElement = draggedItem.context.findAncestorWidgetOfExactType<T>();
 
     dragDecorationOpacity = 1;

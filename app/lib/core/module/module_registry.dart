@@ -27,7 +27,7 @@ class ModuleRegistry {
     isInitialized = true;
   }
 
-  FutureOr<T?> getWidget<T extends ModuleElement>(BuildContext context, String id) async {
+  FutureOr<T?> getWidget<T extends ModuleElement>(BuildContext context, String id) {
     initModules();
 
     var moduleId = ModuleContext.getModuleId(id);

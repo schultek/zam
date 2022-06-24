@@ -18,6 +18,7 @@ import 'pages/edit_note_page.dart';
 import 'pages/notes_page.dart';
 import 'pages/select_note_page.dart';
 import 'widgets/folder_card.dart';
+import 'widgets/note_card.dart';
 import 'widgets/note_preview.dart';
 import 'widgets/notes_list.dart';
 

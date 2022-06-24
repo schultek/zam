@@ -1,12 +1,13 @@
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/material.dart';
 
+import '../../main.mapper.g.dart';
 import '../layouts/layout_model.dart';
 import 'swipe/swipe_template.dart';
 import 'template.dart';
 
 @MappableClass(discriminatorKey: 'type')
-abstract class TemplateModel {
+abstract class TemplateModel with Mappable {
   const TemplateModel();
 
   String get name;

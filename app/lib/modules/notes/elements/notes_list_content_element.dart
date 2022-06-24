@@ -18,6 +18,10 @@ class NotesListContentElement with ElementBuilder<ContentElement> {
 
   @override
   FutureOr<ContentElement?> build(ModuleContext module) async {
+    module.context.listen(notesProvider, (_, __) {
+      module.reload();
+    });
+
     var notes = await module.context.read(notesProvider.future);
     var params = module.hasParams ? module.getParams<NotesListParams>() : NotesListParams();
 
@@ -29,6 +33,106 @@ class NotesListContentElement with ElementBuilder<ContentElement> {
         settings: NotesSettingsBuilder(module, params),
       );
     }
+
+    if (module.context.read(isOrganizerProvider)) {
+      return ContentElement(
+        module: module,
+        size: ElementSize.wide,
+        builder: (context) => NeedsSetupCard(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 20),
+            child: ListView(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: const BouncingScrollPhysics(),
+              children: <Widget>[
+                ListTile(
+                  title: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: 100,
+                      height: 14,
+                      color: context.onSurfaceColor.withOpacity(0.2),
+                    ),
+                  ),
+                  subtitle: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: 200,
+                      height: 12,
+                      color: context.onSurfaceColor.withOpacity(0.2),
+                    ),
+                  ),
+                  leading: Icon(Icons.sticky_note_2_outlined, color: context.onSurfaceHighlightColor),
+                  minLeadingWidth: 20,
+                  onTap: () {
+                    //Navigator.of(context).push(EditNotePage.route(note));
+                  },
+                ),
+                ListTile(
+                  title: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: 80,
+                      height: 14,
+                      color: context.onSurfaceColor.withOpacity(0.2),
+                    ),
+                  ),
+                  subtitle: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: 210,
+                      height: 12,
+                      color: context.onSurfaceColor.withOpacity(0.2),
+                    ),
+                  ),
+                  leading: Icon(Icons.sticky_note_2_outlined, color: context.onSurfaceHighlightColor),
+                  minLeadingWidth: 20,
+                  onTap: () {
+                    //Navigator.of(context).push(EditNotePage.route(note));
+                  },
+                ),
+                ListTile(
+                  title: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: 110,
+                      height: 14,
+                      color: context.onSurfaceColor.withOpacity(0.2),
+                    ),
+                  ),
+                  subtitle: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      width: 190,
+                      height: 12,
+                      color: context.onSurfaceColor.withOpacity(0.2),
+                    ),
+                  ),
+                  leading: Icon(Icons.sticky_note_2_outlined, color: context.onSurfaceHighlightColor),
+                  minLeadingWidth: 20,
+                  onTap: () {
+                    //Navigator.of(context).push(EditNotePage.route(note));
+                  },
+                ),
+                if (params.showAdd)
+                  ListTile(
+                    title: Text(context.tr.add),
+                    leading: Icon(Icons.add, color: context.onSurfaceHighlightColor),
+                    minLeadingWidth: 20,
+                    onTap: () {
+                      var note = context.read(notesLogicProvider).createEmptyNote(folder: params.folder);
+                      Navigator.of(context).push(EditNotePage.route(note));
+                    },
+                  ),
+              ].intersperse(const Divider(height: 0)).toList(),
+            ),
+          ),
+        ),
+        settings: NotesSettingsBuilder(module, params),
+      );
+    }
+
     return null;
   }
 }

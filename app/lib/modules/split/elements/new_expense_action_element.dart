@@ -2,6 +2,21 @@ part of split_module;
 
 class NewExpenseActionElement with ElementBuilder<ActionElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.new_expense;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.split_new_expense_action_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.split_new_expense_action_text);
+  }
+
+  @override
   FutureOr<ActionElement?> build(ModuleContext module) {
     return ActionElement(
       module: module,

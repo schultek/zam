@@ -30,6 +30,21 @@ class LabelParams {
 
 class TextLabel with ElementBuilder<ContentElement> {
   @override
+  String getTitle(BuildContext context) {
+    return context.tr.labels;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.labels_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.labels_text);
+  }
+
+  @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var params = module.getParams<LabelParams?>() ?? const LabelParams();
 

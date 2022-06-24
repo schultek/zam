@@ -1,16 +1,31 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../modules/chat/chat.module.dart';
 
-final activeLayoutProvider = Provider((ref) {
-  var layoutNotifier = ref.watch(_activeLayoutNotifierProvider);
-  return layoutNotifier?.value;
+final activeLayoutProvider = StateNotifierProvider<LayoutNotifier, LayoutIdModel?>((ref) {
+  var group = ref.watch(selectedGroupProvider);
+  var notifier = group?.template.activeLayout;
+  return LayoutNotifier(notifier);
 });
 
-final _activeLayoutNotifierProvider = ChangeNotifierProvider((ref) {
-  var group = ref.watch(selectedGroupProvider);
-  return group?.template.activeLayout;
-});
+class LayoutNotifier extends StateNotifier<LayoutIdModel?> {
+  LayoutNotifier(this.notifier) : super(notifier?.value) {
+    notifier?.addListener(onLayoutChanged);
+  }
+
+  final ValueNotifier<LayoutIdModel?>? notifier;
+
+  void onLayoutChanged() {
+    state = notifier?.value;
+  }
+
+  @override
+  void dispose() {
+    notifier?.removeListener(onLayoutChanged);
+    super.dispose();
+  }
+}
 
 final selectedAreaProvider = StateNotifierProvider<SelectArea, String?>((ref) => SelectArea(ref));
 

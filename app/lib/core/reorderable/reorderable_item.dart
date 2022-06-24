@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../elements/module_element.dart';
 import 'drag_provider.dart';
 import 'items_provider.dart';
 
@@ -11,12 +12,14 @@ typedef ReorderableBuilder = Widget Function(BuildContext context, ReorderableSt
 
 class ReorderableItem extends StatefulWidget {
   const ReorderableItem({
-    required Key key,
+    required this.itemKey,
     required this.builder,
     required this.decorationBuilder,
     required this.child,
+    Key? key,
   }) : super(key: key);
 
+  final ModuleElementKey itemKey;
   final Widget child;
   final ReorderableBuilder builder;
   final DecorationBuilder decorationBuilder;
@@ -28,7 +31,7 @@ class ReorderableItem extends StatefulWidget {
 class ReorderableItemState extends State<ReorderableItem> {
   late ReorderableItemLogic logic;
 
-  Key get key => widget.key!;
+  Key get key => widget.itemKey;
 
   @override
   void initState() {
@@ -53,6 +56,10 @@ class ReorderableItemState extends State<ReorderableItem> {
     super.dispose();
   }
 
+  Widget buildChild(ReorderableState state) {
+    return widget.builder(context, state, widget.child);
+  }
+
   @override
   Widget build(BuildContext context) {
     logic.update(this);
@@ -67,9 +74,9 @@ class ReorderableItemState extends State<ReorderableItem> {
       child: isDragging
           ? SizedBox.fromSize(
               size: context.read(dragSizeProvider.state).state,
-              child: widget.builder(context, ReorderableState.placeholder, widget.child),
+              child: buildChild(ReorderableState.placeholder),
             )
-          : widget.builder(context, ReorderableState.normal, widget.child),
+          : buildChild(ReorderableState.normal),
     );
   }
 }

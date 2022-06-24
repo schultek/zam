@@ -3,10 +3,24 @@ import 'package:flutter/material.dart';
 import '../module/module_context.dart';
 import 'widgets/element_settings_dialog.dart';
 
+class ModuleElementKey extends GlobalObjectKey {
+  const ModuleElementKey._(String value) : super(value);
+
+  factory ModuleElementKey(String value) {
+    return _keyMap[value] ??= ModuleElementKey._(value);
+  }
+
+  static final _keyMap = <String, ModuleElementKey>{};
+
+  ModuleElementKey copy(String suffix) {
+    return ModuleElementKey('$value-$suffix');
+  }
+}
+
 abstract class ModuleElement extends StatelessWidget {
   ModuleElement({required this.module, this.settings, this.settingsAction})
       : assert(settings == null || settingsAction == null),
-        super(key: ValueKey(module.keyId));
+        super(key: ModuleElementKey(module.keyId));
 
   String get id => module.id;
 
@@ -15,9 +29,25 @@ abstract class ModuleElement extends StatelessWidget {
   final SettingsAction? settingsAction;
 
   @override
-  Key get key => super.key!;
+  ModuleElementKey get key => super.key! as ModuleElementKey;
 
   void onRemoved(BuildContext context) {}
+
+  static ModuleElement? of(BuildContext context) {
+    if (context is _ModuleElement) {
+      return context.widget;
+    } else {
+      ModuleElement? element;
+      context.visitAncestorElements((e) {
+        if (e is _ModuleElement) {
+          element = e.widget;
+          return false;
+        }
+        return true;
+      });
+      return element;
+    }
+  }
 
   static void openSettings(BuildContext context) {
     if (context is _ModuleElement) {

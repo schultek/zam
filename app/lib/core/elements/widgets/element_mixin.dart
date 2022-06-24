@@ -33,7 +33,7 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
   Widget build(BuildContext context) {
     if (WidgetSelector.existsIn(context)) {
       return ReorderableItem(
-        key: key,
+        itemKey: key,
         builder: (context, state, child) {
           if (state == ReorderableState.placeholder) {
             return decorator(context).decoratePlaceholder(context, element);
@@ -44,13 +44,18 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
         decorationBuilder: _decorationBuilder,
         child: ReorderableListener<T>(
           delay: const Duration(milliseconds: 200),
-          child: AbsorbPointer(child: Builder(builder: buildElement)),
+          child: AbsorbPointer(
+            child: Builder(
+              key: key.copy('element'),
+              builder: buildElement,
+            ),
+          ),
         ),
       );
     }
 
     return ReorderableItem(
-      key: key,
+      itemKey: key,
       builder: (context, state, child) {
         if (state == ReorderableState.placeholder) {
           return decorator(context).decoratePlaceholder(context, element);
@@ -62,7 +67,6 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
               Widget widget = ModuleRouteTransition<T>(child: child, element: element);
               if (context.read(isOrganizerProvider)) {
                 widget = ReorderableListener<T>(
-                  childKey: key,
                   delay: const Duration(milliseconds: 800),
                   child: widget,
                 );
@@ -83,7 +87,6 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
                             child: child,
                           ),
                           child: ReorderableListener<T>(
-                            childKey: key,
                             delay: const Duration(milliseconds: 300),
                             child: AbsorbPointer(child: child),
                           ),
@@ -124,7 +127,10 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
         }
       },
       decorationBuilder: _decorationBuilder,
-      child: Builder(builder: buildElement),
+      child: Builder(
+        key: key.copy('element'),
+        builder: buildElement,
+      ),
     );
   }
 }

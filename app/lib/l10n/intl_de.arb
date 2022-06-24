@@ -281,9 +281,9 @@
   "balance_action_element_subtitle": "Zeigt die Bilanzen von Nutzer*innen",
   "balance_action_element_text": "Das Bilanzenmodul zeigt das Profilbild und den Namen der Nutzer*in und die aktuellen Bilanzen der Person.\n\nDurck Klick auf das Modul gelangt man in das Split-Modul, wo die Finanzen weiter angepasst werden können.\n\nUnter den Einstellungen ist es möglich, sich die Bilanzen anderer Nutzer*innen anzeigen zu lassen.",
   "split_new_expense_action_subtitle": "Öffnet ein Fenster zum Hinzufügen einer neuen Ausgabe",
-  "split_new_expense_action_text": "Durch die Quick-Action zum Split-Modul können Nutzer*innen mit einem Klick neue Ausgaben hinzufügen.\n\nDabei können sie eingeben, wer wieviel für wen gezahlt hat, außerdem kann ein Foto eingestellt werden, z.B. von einer Rechnung."
+  "split_new_expense_action_text": "Durch die Quick-Action zum Split-Modul können Nutzer*innen mit einem Klick neue Ausgaben hinzufügen.\n\nDabei können sie eingeben, wer wieviel für wen gezahlt hat, außerdem kann ein Foto eingestellt werden, z.B. von einer Rechnung.",
   "split_new_payment_action_subtitle": "Öffnet ein Fenster zum Hinzufügen einer Zahlung",
-  "split_new_payment_action_text": "Durch die Quick-Action zum Split-Modul können Nutzer*innen mit einem Klick neue Zahlungen hinzufügen.\n\nDabei können sie eingeben, wer an wen wie viel gezahlt hat."
+  "split_new_payment_action_text": "Durch die Quick-Action zum Split-Modul können Nutzer*innen mit einem Klick neue Zahlungen hinzufügen.\n\nDabei können sie eingeben, wer an wen wie viel gezahlt hat.",
   "split_new_exchange_action_subtitle": "Öffnet ein Fenster zum Hinzufügen eines neuen Geldwechsels", 
   "split_new_exchange_action_text": "Durch die Quick-Action zum Split-Modul können Nutzer*innen mit einem Klick neue Geldwechsel (bei Währungsänderung) hinzufügen.\n\nDabei können sie eingeben, wer welche Währungen getauscht hat.", 
 

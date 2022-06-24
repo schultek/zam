@@ -26,6 +26,27 @@
     "add_note_action_subtitle",
     "add_note_action_text",
     "announcements_subtitle",
-    "announcements_text"
+    "announcements_text",
+    "labels_subtitle",
+    "labels_text",
+    "channels_subtitle",
+    "channels_text",
+    "split_subtitle",
+    "split_text",
+    "balance_content_element",
+    "balance_content_element_subtitle",
+    "balance_content_element_text",
+    "split_balance_list",
+    "split_balance_list_subtitle",
+    "split_balance_list_text",
+    "balance_action_element",
+    "balance_action_element_subtitle",
+    "balance_action_element_text",
+    "split_new_expense_action_subtitle",
+    "split_new_expense_action_text",
+    "split_new_payment_action_subtitle",
+    "split_new_payment_action_text",
+    "split_new_exchange_action_subtitle",
+    "split_new_exchange_action_text"
   ]
 }
