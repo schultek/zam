@@ -45,28 +45,29 @@ class BalanceActionElement with ElementBuilder<ActionElement> {
                 '${context.watch(sourceBalanceProvider(source)).toPrintString()}';
       },
       onNavigate: (context) => const SplitPage(),
-      settings: (context) => [
-        SwitchListTile(
-          title: Text(context.tr.current_user),
-          value: params.currentUser,
-          onChanged: (value) {
-            module.updateParams(params.copyWith(currentUser: value));
-          },
-        ),
-        ListTile(
-          enabled: !params.currentUser,
-          title: Text(context.tr.from),
-          subtitle: Text(params.source != null
-              ? module.context.read(splitSourceLabelProvider(params.source!))
-              : context.tr.tap_to_add),
-          onTap: () async {
-            var source = await SelectSourceDialog.show(context, params.source);
-            if (source != null) {
-              module.updateParams(params.copyWith(source: source));
-            }
-          },
-        )
-      ],
+      settings: DialogElementSettings(
+          builder: (context) => [
+                SwitchListTile(
+                  title: Text(context.tr.current_user),
+                  value: params.currentUser,
+                  onChanged: (value) {
+                    module.updateParams(params.copyWith(currentUser: value));
+                  },
+                ),
+                ListTile(
+                  enabled: !params.currentUser,
+                  title: Text(context.tr.from),
+                  subtitle: Text(params.source != null
+                      ? module.context.read(splitSourceLabelProvider(params.source!))
+                      : context.tr.tap_to_add),
+                  onTap: () async {
+                    var source = await SelectSourceDialog.show(context, params.source);
+                    if (source != null) {
+                      module.updateParams(params.copyWith(source: source));
+                    }
+                  },
+                )
+              ]),
     );
   }
 }

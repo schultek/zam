@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
@@ -425,16 +426,29 @@ class WidgetSelectorState<T extends ModuleElement> extends State<WidgetSelector<
                                     valueListenable: group[index].value,
                                     builder: (BuildContext context, ElementResolver<T> element, _) {
                                       if (element.result == null) {
-                                        if (element.isResolved) {
-                                          onNullElementResolved(element);
-                                        }
-                                        return ConstrainedBox(
-                                          constraints: widget.areaState.constrainWidget(null),
+                                        assert((() {
+                                          if (element.isResolved) {
+                                            FlutterError.presentError(
+                                              FlutterErrorDetails(
+                                                exception:
+                                                    'Elements should not resolve to null when shown in the widget selector.',
+                                                library: 'jufa',
+                                                informationCollector: () => [
+                                                  StringProperty('Module', element.module.getName(context)),
+                                                  StringProperty('Element', element.element.getTitle(context)),
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                          return true;
+                                        })());
+                                        return widget.areaState.safeConstrainChild(
+                                          element: null,
                                           child: widget.areaState.elementDecorator.getPlaceholder(context),
                                         );
                                       }
-                                      return ConstrainedBox(
-                                        constraints: widget.areaState.constrainWidget(element.result!),
+                                      return widget.areaState.safeConstrainChild(
+                                        element: element.result!,
                                         child: element.result!,
                                       );
                                     },

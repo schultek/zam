@@ -6,6 +6,7 @@ import '../../../helpers/extensions.dart';
 import '../../../main.mapper.g.dart';
 import '../../../widgets/nested_will_pop_scope.dart';
 import '../../editing/editing_providers.dart';
+import '../../editing/selected_area_provider.dart';
 import '../../layouts/layouts.dart';
 import '../../templates/templates.dart';
 import '../../themes/themes.dart';
@@ -39,6 +40,9 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
   void initState() {
     super.initState();
     pageController = CustomPageController();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      context.read(activeLayoutProvider.notifier).state = model.mainPage.layout.withId('main');
+    });
   }
 
   @override
@@ -51,11 +55,11 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
 
   void updateActiveLayout(int page) {
     if (page == -1) {
-      model.activeLayout.value = model.leftPage?.layout.withId('left');
+      context.read(activeLayoutProvider.notifier).state = model.leftPage?.layout.withId('left');
     } else if (page == 0) {
-      model.activeLayout.value = model.mainPage.layout.withId('main');
+      context.read(activeLayoutProvider.notifier).state = model.mainPage.layout.withId('main');
     } else if (page == 1) {
-      model.activeLayout.value = model.rightPage?.layout.withId('right');
+      context.read(activeLayoutProvider.notifier).state = model.rightPage?.layout.withId('right');
     }
   }
 

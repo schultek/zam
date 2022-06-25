@@ -55,34 +55,33 @@ class SingleNoteContentElement with ElementBuilder<ContentElement> {
             );
           },
         ),
-        settingsAction: (context) async {
+        settings: ActionElementSettings(action: (context) async {
           var id = await Navigator.of(context).push<String>(
             MaterialPageRoute(builder: (context) => const SelectNotePage()),
           );
           if (id != null) {
             module.updateParams(id);
           }
-        },
+        }),
       );
     } else {
       if (module.context.read(isOrganizerProvider)) {
         return ContentElement(
           module: module,
-          builder: (context) => NeedsSetupCard(
-            setupHint: 'Einrichtung nötig. Wähle eine Notiz aus.',
-            child: SimpleCard(
-              title: context.tr.single_note,
-              icon: Icons.note_add,
-            ),
+          builder: (context) => SimpleCard(
+            title: context.tr.single_note,
+            icon: Icons.note_add,
           ),
-          settingsAction: (context) async {
-            var id = await Navigator.of(context).push<String>(
-              MaterialPageRoute(builder: (context) => const SelectNotePage()),
-            );
-            if (id != null) {
-              module.updateParams(id);
-            }
-          },
+          settings: SetupActionElementSettings(
+              hint: 'Wähle eine Notiz aus.',
+              action: (context) async {
+                var id = await Navigator.of(context).push<String>(
+                  MaterialPageRoute(builder: (context) => const SelectNotePage()),
+                );
+                if (id != null) {
+                  module.updateParams(id);
+                }
+              }),
         );
       } else {
         return null;

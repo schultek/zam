@@ -19,9 +19,6 @@ class SwipeTemplateModel extends TemplateModel {
   Template<TemplateModel> builder() => SwipeTemplate(this);
 
   @override
-  late final ValueNotifier<LayoutIdModel?> activeLayout = ValueNotifier(LayoutIdModel('main', mainPage.layout));
-
-  @override
   Widget preview() => Row(
         children: [
           const FullPageLayoutModel().preview().apply(scale: 0.8),

@@ -20,22 +20,19 @@ class ContentElement extends ModuleElement with ElementMixin<ContentElement> {
     this.onTap,
     this.size = ElementSize.square,
     this.whenRemoved,
-    SettingsBuilder? settings,
-    SettingsAction? settingsAction,
-  }) : super(module: module, settings: settings, settingsAction: settingsAction);
+    ElementSettings? settings,
+  }) : super(module: module, settings: settings);
 
   factory ContentElement.text({
     required ModuleContext module,
     required WidgetBuilder builder,
-    SettingsBuilder? settings,
-    SettingsAction? settingsAction,
+    ElementSettings? settings,
   }) {
     return ContentElement(
       module: module,
       builder: (context) => ContentElementText(builder),
       size: ElementSize.wide,
       settings: settings,
-      settingsAction: settingsAction,
     );
   }
 
@@ -43,7 +40,7 @@ class ContentElement extends ModuleElement with ElementMixin<ContentElement> {
     required ModuleContext module,
     required ItemsBuilder itemsBuilder,
     required ItemsLayoutBuilder builder,
-    SettingsBuilder? settings,
+    ElementSettings? settings,
   }) {
     return ContentElement(
       module: module,
@@ -57,7 +54,7 @@ class ContentElement extends ModuleElement with ElementMixin<ContentElement> {
     required ModuleContext module,
     required List<Widget> Function(BuildContext context) builder,
     required double spacing,
-    SettingsBuilder? settings,
+    ElementSettings? settings,
   }) {
     return ContentElement.items(
       module: module,
@@ -84,7 +81,7 @@ class ContentElement extends ModuleElement with ElementMixin<ContentElement> {
     required ModuleContext module,
     required List<Widget> Function(BuildContext context) builder,
     required double spacing,
-    SettingsBuilder? settings,
+    ElementSettings? settings,
   }) {
     return ContentElement.items(
       module: module,
@@ -126,7 +123,12 @@ class ContentElement extends ModuleElement with ElementMixin<ContentElement> {
 
   @override
   Widget buildElement(BuildContext context) {
-    var child = decorator(context).decorateElement(context, this, builder(context));
+    return builder(context);
+  }
+
+  @override
+  Widget decorateElement(BuildContext context, Widget child) {
+    child = super.decorateElement(context, child);
     if (onTap != null || onNavigate != null) {
       child = GestureDetector(
         onTap: () {
@@ -139,6 +141,24 @@ class ContentElement extends ModuleElement with ElementMixin<ContentElement> {
       );
     }
     return child;
+  }
+
+  @override
+  Widget wrapElement(Widget Function(Widget) wrapper, Widget child) {
+    if (child is ContentElementItems) {
+      return ContentElementItems(
+        child.builder,
+        (context) => child.itemsBuilder(context).map(wrapper).toList(),
+        key: child.key,
+      );
+    } else if (child is ContentElementText) {
+      return ContentElementText(
+        (context) => wrapper(child.builder(context)),
+        key: child.key,
+      );
+    } else {
+      return super.wrapElement(wrapper, child);
+    }
   }
 }
 

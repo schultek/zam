@@ -11,13 +11,13 @@ class SettingsDialogController {
 
   _ModuleElementSettingsDialogState? _state;
 
-  SettingsBuilder _settings;
-  SettingsBuilder get settings => _settings;
+  DialogElementSettings _settings;
+  DialogElementSettings get settings => _settings;
 
   ModuleContext _module;
   ModuleContext get module => _module;
 
-  void update(ModuleContext module, SettingsBuilder settings) {
+  void update(ModuleContext module, DialogElementSettings settings) {
     _module = module;
     _settings = settings;
     _state?.update();
@@ -73,7 +73,7 @@ class _ModuleElementSettingsDialogState extends State<ModuleElementSettingsDialo
       title: Text(widget.controller.module.parent.getName(context)),
       content: SettingsSection(
         margin: EdgeInsets.zero,
-        children: widget.controller.settings(context),
+        children: widget.controller.settings.builder(context),
         backgroundOpacity: 0.3,
       ),
       actions: [

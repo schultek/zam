@@ -23,12 +23,12 @@ class GameContentElement with ElementBuilder<ContentElement> {
       return ContentElement(
         module: module,
         builder: (context) => EliminationGameCard(gameId),
-        settingsAction: (context) async {
+        settings: ActionElementSettings(action: (context) async {
           var gameId = await Navigator.of(context).push(SelectGamePage.route());
           if (gameId != null) {
             module.updateParams(gameId);
           }
-        },
+        }),
       );
     } else {
       if (!module.context.read(isOrganizerProvider)) {
@@ -36,13 +36,15 @@ class GameContentElement with ElementBuilder<ContentElement> {
       }
       return ContentElement(
         module: module,
-        builder: (context) => NeedsSetupCard(child: SimpleCard(title: context.tr.new_game, icon: Icons.casino)),
-        settingsAction: (context) async {
-          var gameId = await Navigator.of(context).push(SelectGamePage.route());
-          if (gameId != null) {
-            module.updateParams(gameId);
-          }
-        },
+        builder: (context) => SimpleCard(title: context.tr.new_game, icon: Icons.casino),
+        settings: SetupActionElementSettings(
+            hint: 'Create new game',
+            action: (context) async {
+              var gameId = await Navigator.of(context).push(SelectGamePage.route());
+              if (gameId != null) {
+                module.updateParams(gameId);
+              }
+            }),
       );
     }
   }

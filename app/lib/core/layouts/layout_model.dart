@@ -12,7 +12,7 @@ import 'grid_layout.dart';
 
 @MappableClass(discriminatorKey: 'type')
 abstract class LayoutModel {
-  const LayoutModel({requ});
+  const LayoutModel();
 
   String get name;
   Widget builder(LayoutContext context);

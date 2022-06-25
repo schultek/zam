@@ -12,15 +12,14 @@ class PageElement extends ModuleElement with ElementMixin<PageElement> {
     required ModuleContext module,
     required this.builder,
     this.keepAlive = true,
-    SettingsBuilder? settings,
-    SettingsAction? settingsAction,
-  }) : super(module: module, settings: settings, settingsAction: settingsAction);
+    ElementSettings? settings,
+  }) : super(module: module, settings: settings);
 
   @override
   PageElement get element => this;
 
   @override
   Widget buildElement(BuildContext context) {
-    return decorator(context).decorateElement(context, this, builder(context));
+    return builder(context);
   }
 }

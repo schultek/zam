@@ -15,18 +15,20 @@ class ModuleElementKey extends GlobalObjectKey {
   ModuleElementKey copy(String suffix) {
     return ModuleElementKey('$value-$suffix');
   }
+
+  @override
+  String toString() {
+    return '[ModuleElementKey $value]';
+  }
 }
 
 abstract class ModuleElement extends StatelessWidget {
-  ModuleElement({required this.module, this.settings, this.settingsAction})
-      : assert(settings == null || settingsAction == null),
-        super(key: ModuleElementKey(module.keyId));
+  ModuleElement({required this.module, this.settings}) : super(key: ModuleElementKey(module.keyId));
 
   String get id => module.id;
 
   final ModuleContext module;
-  final SettingsBuilder? settings;
-  final SettingsAction? settingsAction;
+  final ElementSettings? settings;
 
   @override
   ModuleElementKey get key => super.key! as ModuleElementKey;
@@ -79,8 +81,9 @@ class _ModuleElement extends StatelessElement {
   void update(covariant StatelessWidget newWidget) {
     super.update(newWidget);
     if (controller != null) {
-      if (widget.settings != null) {
-        controller!.update(widget.module, widget.settings!);
+      var settings = widget.settings;
+      if (settings is DialogElementSettings) {
+        controller!.update(widget.module, settings);
       } else {
         controller!.close();
       }
@@ -88,12 +91,13 @@ class _ModuleElement extends StatelessElement {
   }
 
   Future<void> openSettings() async {
-    if (widget.settings != null) {
-      controller = SettingsDialogController(widget.module, widget.settings!);
+    var settings = widget.settings;
+    if (settings is DialogElementSettings) {
+      controller = SettingsDialogController(widget.module, settings);
       await ModuleElementSettingsDialog.show(this, controller!);
       controller = null;
-    } else {
-      widget.settingsAction!.call(this);
+    } else if (settings is ActionElementSettings) {
+      settings.action(this);
     }
   }
 }
@@ -102,3 +106,45 @@ typedef SettingsAction = void Function(BuildContext context);
 typedef SettingsBuilder = List<Widget> Function(BuildContext context);
 
 enum ElementSize { square, wide }
+
+class ElementSettings {
+  bool get showButton => this is! SetupElementSettings;
+}
+
+class DialogElementSettings extends ElementSettings {
+  final SettingsBuilder builder;
+
+  DialogElementSettings({required this.builder});
+}
+
+class ActionElementSettings extends ElementSettings {
+  final SettingsAction action;
+
+  ActionElementSettings({required this.action});
+}
+
+abstract class SetupElementSettings extends ElementSettings {
+  final String hint;
+
+  SetupElementSettings({required this.hint});
+}
+
+class SetupActionElementSettings extends SetupElementSettings implements ActionElementSettings {
+  @override
+  final SettingsAction action;
+
+  SetupActionElementSettings({
+    required String hint,
+    required this.action,
+  }) : super(hint: hint);
+}
+
+class SetupDialogElementSettings extends SetupElementSettings implements DialogElementSettings {
+  @override
+  final SettingsBuilder builder;
+
+  SetupDialogElementSettings({
+    required String hint,
+    required this.builder,
+  }) : super(hint: hint);
+}

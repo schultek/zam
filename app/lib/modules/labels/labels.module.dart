@@ -24,9 +24,13 @@ class LabelModule extends ModuleBuilder {
 class LabelParams {
   final String? label;
   final bool centered;
+  final LabelColor color;
 
-  const LabelParams({this.label, this.centered = false});
+  const LabelParams({this.label, this.centered = false, this.color = LabelColor.text});
 }
+
+@MappableEnum()
+enum LabelColor { text, primary, secondary }
 
 class TextLabel with ElementBuilder<ContentElement> {
   @override
@@ -48,32 +52,86 @@ class TextLabel with ElementBuilder<ContentElement> {
   FutureOr<ContentElement?> build(ModuleContext module) {
     var params = module.getParams<LabelParams?>() ?? const LabelParams();
 
-    if (params.label == null && !module.context.read(isOrganizerProvider)) {
-      return null;
+    if (params.label != null || module.context.read(isOrganizerProvider)) {
+      return ContentElement.text(
+        module: module,
+        builder: (_) => LabelWidget(
+          label: params.label,
+          color: params.color,
+          align: params.centered ? TextAlign.center : null,
+        ),
+        settings: DialogElementSettings(builder: LabelSettingsBuilder(params, module)),
+      );
     }
 
-    return ContentElement.text(
-      module: module,
-      builder: (_) => LabelWidget(
-        label: params.label,
-        align: params.centered ? TextAlign.center : null,
+    return null;
+  }
+}
+
+class LabelSettingsBuilder {
+  LabelParams params;
+  ModuleContext module;
+
+  LabelSettingsBuilder(this.params, this.module);
+
+  List<Widget> call(BuildContext context) {
+    Widget colorItem(LabelColor color) {
+      var c = color == LabelColor.text
+          ? context.onSurfaceColor
+          : color == LabelColor.primary
+              ? context.theme.colorScheme.primary
+              : context.theme.colorScheme.secondary;
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 14,
+            height: 14,
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              color: c,
+            ),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            color.name.toUpperCase(),
+            style: context.theme.textTheme.bodySmall,
+          ),
+        ],
+      );
+    }
+
+    return [
+      InputListTile(
+        label: context.tr.label,
+        value: params.label,
+        onChanged: (value) {
+          module.updateParams(params.copyWith(label: value));
+        },
       ),
-      settings: (context) => [
-        InputListTile(
-          label: context.tr.label,
-          value: params.label,
-          onChanged: (value) {
-            module.updateParams(params.copyWith(label: value));
-          },
+      SwitchListTile(
+        title: Text(context.tr.centered),
+        value: params.centered,
+        onChanged: (value) {
+          module.updateParams(params.copyWith(centered: value));
+        },
+      ),
+      PopupMenuButton<LabelColor>(
+        itemBuilder: (context) => [
+          for (var color in LabelColor.values)
+            PopupMenuItem(
+              value: color,
+              child: colorItem(color),
+            ),
+        ],
+        onSelected: (value) {
+          module.updateParams(params.copyWith(color: value));
+        },
+        child: ListTile(
+          title: Text(context.tr.text_color),
+          trailing: colorItem(params.color),
         ),
-        SwitchListTile(
-          title: Text(context.tr.centered),
-          value: params.centered,
-          onChanged: (value) {
-            module.updateParams(params.copyWith(centered: value));
-          },
-        ),
-      ],
-    );
+      ),
+    ];
   }
 }

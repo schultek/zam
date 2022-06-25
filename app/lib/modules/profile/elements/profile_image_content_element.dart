@@ -31,24 +31,25 @@ class ProfileImageElement with ElementBuilder<ContentElement> {
       module: module,
       builder: (context) => ProfileImageWidget(params),
       onNavigate: (context) => const ProfilePage(),
-      settings: (context) => [
-        SwitchListTile(
-          value: params.showName,
-          title: const Text('Show Name'),
-          onChanged: (value) async {
-            module.updateParams(params.copyWith(showName: value));
-          },
-        ),
-        SwitchListTile(
-          value: params.showGreeting,
-          title: const Text('Show Greeting'),
-          onChanged: params.showName
-              ? (value) async {
-                  module.updateParams(params.copyWith(showGreeting: value));
-                }
-              : null,
-        ),
-      ],
+      settings: DialogElementSettings(
+          builder: (context) => [
+                SwitchListTile(
+                  value: params.showName,
+                  title: const Text('Show Name'),
+                  onChanged: (value) async {
+                    module.updateParams(params.copyWith(showName: value));
+                  },
+                ),
+                SwitchListTile(
+                  value: params.showGreeting,
+                  title: const Text('Show Greeting'),
+                  onChanged: params.showName
+                      ? (value) async {
+                          module.updateParams(params.copyWith(showGreeting: value));
+                        }
+                      : null,
+                ),
+              ]),
     );
   }
 }

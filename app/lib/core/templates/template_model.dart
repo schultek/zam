@@ -17,8 +17,6 @@ abstract class TemplateModel with Mappable {
 
   List<Widget> settings(BuildContext context) => [];
 
-  ValueNotifier<LayoutIdModel?> get activeLayout;
-
   static List<TemplateModel> get all => [
         SwipeTemplateModel(),
       ];

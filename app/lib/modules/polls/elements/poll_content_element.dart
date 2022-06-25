@@ -22,17 +22,18 @@ class PollContentElement with ElementBuilder<ContentElement> {
           title: context.tr.new_poll_create,
           icon: Icons.add,
         ),
-        settings: (context) => [
-          ListTile(
-            title: Text(context.tr.new_poll_create),
-            onTap: () async {
-              var pollId = await Navigator.of(context).push(CreatePollPage.route());
-              if (pollId != null) {
-                module.updateParams(pollId);
-              }
-            },
-          ),
-        ],
+        settings: DialogElementSettings(
+            builder: (context) => [
+                  ListTile(
+                    title: Text(context.tr.new_poll_create),
+                    onTap: () async {
+                      var pollId = await Navigator.of(context).push(CreatePollPage.route());
+                      if (pollId != null) {
+                        module.updateParams(pollId);
+                      }
+                    },
+                  ),
+                ]),
       );
     }
   }

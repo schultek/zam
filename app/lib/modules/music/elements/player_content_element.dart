@@ -31,95 +31,56 @@ class PlayerContentElement with ElementBuilder<ContentElement> {
 
   @override
   FutureOr<ContentElement?> build(ModuleContext<ModuleElement> module) {
+    module.context.listen(spotifyIsSignedInProvider, (_, __) {
+      module.reload();
+    });
+
     var params = module.getParams<PlayerParams?>() ?? PlayerParams();
 
     var isSignedIn = module.context.read(spotifyIsSignedInProvider).value ?? false;
-    if (!params.allowUserAccount && !isSignedIn && !module.context.read(isOrganizerProvider)) {
-      return null;
+
+    if (isSignedIn) {
+      return ContentElement(
+        module: module,
+        builder: (context) => SpotifyPlayerCard(
+          showPlayerControls: params.showPlayerControls,
+          showPlaylistControls: params.showPlaylistControls,
+        ),
+        settings: DialogElementSettings(builder: MusicPlayerSettingsBuilder(params, module, this)),
+      );
     }
 
-    return ContentElement(
-      module: module,
-      builder: (context) {
-        var signedInValue = context.watch(spotifyIsSignedInProvider);
-
-        return signedInValue.when(
-          data: (signedIn) {
-            if (!signedIn) {
-              if (params.allowUserAccount) {
-                return GestureDetector(
-                  onTap: () {
-                    signInToSpotify(context);
-                  },
-                  child: SimpleCard(
-                    title: context.tr.login_spotify,
-                    icon: Icons.music_note,
-                  ),
-                );
-              } else {
-                return const NeedsSetupCard(
-                  child: SimpleCard(
-                    title: 'Spotify',
-                    icon: Icons.music_note,
-                  ),
-                );
-              }
-            } else {
-              return SpotifyPlayerCard(
-                showPlayerControls: params.showPlayerControls,
-                showPlaylistControls: params.showPlaylistControls,
-              );
-            }
-          },
-          loading: () => const LoadingShimmer(),
-          error: (e, st) => Text('${context.tr.error}: $e'),
-        );
-      },
-      settings: (context) => [
-        SwitchListTile(
-          title: Text(context.tr.allow_user_accounts),
-          subtitle: Text(context.tr.allow_users_spotify_login),
-          value: params.allowUserAccount,
-          onChanged: (value) {
-            module.updateParams(params.copyWith(allowUserAccount: value));
-          },
-        ),
-        ListTile(
-          title: Text(context.tr.login_spotify),
-          subtitle: Text(context.watch(spotifyIsSignedInProvider).when(
-              data: (d) => d ? context.tr.signed_in : context.tr.signed_out,
-              loading: () => context.tr.loading,
-              error: (e, _) => '${context.tr.error}: $e')),
-          trailing: context.read(spotifyIsSignedInProvider).value == true
-              ? IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () {
-                    context.read(musicLogicProvider).signOut();
-                  },
-                )
-              : null,
+    if (params.allowUserAccount) {
+      return ContentElement(
+        module: module,
+        builder: (context) => GestureDetector(
           onTap: () {
             signInToSpotify(context);
           },
+          child: SimpleCard(
+            title: context.tr.login_spotify,
+            icon: Icons.music_note,
+          ),
         ),
-        SwitchListTile(
-          title: Text(context.tr.show_player_controls),
-          subtitle: Text(context.tr.allow_control_playback),
-          value: params.showPlayerControls,
-          onChanged: (value) {
-            module.updateParams(params.copyWith(showPlayerControls: value));
-          },
+        settings: DialogElementSettings(builder: MusicPlayerSettingsBuilder(params, module, this)),
+      );
+    }
+
+    if (module.context.read(isOrganizerProvider)) {
+      return ContentElement(
+        module: module,
+        builder: (context) => const SimpleCard(
+          title: 'Spotify',
+          icon: Icons.music_note,
         ),
-        SwitchListTile(
-          title: Text(context.tr.show_playlist_controls),
-          subtitle: Text(context.tr.allow_modify_playlist),
-          value: params.showPlaylistControls,
-          onChanged: (value) {
-            module.updateParams(params.copyWith(showPlaylistControls: value));
-          },
+        settings: SetupActionElementSettings(
+          hint: 'Login to Spotify',
+          action: signInToSpotify,
         ),
-      ],
-    );
+      );
+    }
+
+    return null;
   }
 
   Future<void> signInToSpotify(BuildContext context) {
@@ -155,5 +116,60 @@ class PlayerContentElement with ElementBuilder<ContentElement> {
       ),
     );
     return response;
+  }
+}
+
+class MusicPlayerSettingsBuilder {
+  MusicPlayerSettingsBuilder(this.params, this.module, this.element);
+
+  final PlayerParams params;
+  final ModuleContext module;
+  final PlayerContentElement element;
+
+  List<Widget> call(BuildContext context) {
+    return [
+      SwitchListTile(
+        title: Text(context.tr.allow_user_accounts),
+        subtitle: Text(context.tr.allow_users_spotify_login),
+        value: params.allowUserAccount,
+        onChanged: (value) {
+          module.updateParams(params.copyWith(allowUserAccount: value));
+        },
+      ),
+      ListTile(
+        title: Text(context.tr.login_spotify),
+        subtitle: Text(context.watch(spotifyIsSignedInProvider).when(
+            data: (d) => d ? context.tr.signed_in : context.tr.signed_out,
+            loading: () => context.tr.loading,
+            error: (e, _) => '${context.tr.error}: $e')),
+        trailing: context.read(spotifyIsSignedInProvider).value == true
+            ? IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: () {
+                  context.read(musicLogicProvider).signOut();
+                },
+              )
+            : null,
+        onTap: () {
+          element.signInToSpotify(context);
+        },
+      ),
+      SwitchListTile(
+        title: Text(context.tr.show_player_controls),
+        subtitle: Text(context.tr.allow_control_playback),
+        value: params.showPlayerControls,
+        onChanged: (value) {
+          module.updateParams(params.copyWith(showPlayerControls: value));
+        },
+      ),
+      SwitchListTile(
+        title: Text(context.tr.show_playlist_controls),
+        subtitle: Text(context.tr.allow_modify_playlist),
+        value: params.showPlaylistControls,
+        onChanged: (value) {
+          module.updateParams(params.copyWith(showPlaylistControls: value));
+        },
+      ),
+    ];
   }
 }

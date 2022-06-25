@@ -39,7 +39,7 @@ class NotesListPageElement with ElementBuilder<PageElement> {
           }
           return NotesList(showTitle: true, params: params);
         },
-        settings: NotesSettingsBuilder(module, params),
+        settings: DialogElementSettings(builder: NotesSettingsBuilder(module, params)),
       );
     }
     return null;

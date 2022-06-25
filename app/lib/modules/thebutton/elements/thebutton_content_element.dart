@@ -47,7 +47,7 @@ class TheButtonElement with ElementBuilder<ContentElement> {
           );
         });
       },
-      settings: (context) {
+      settings: DialogElementSettings(builder: (context) {
         var isExpanded = false;
         return [
           StatefulBuilder(builder: (context, setState) {
@@ -95,7 +95,7 @@ class TheButtonElement with ElementBuilder<ContentElement> {
             },
           ),
         ];
-      },
+      }),
     );
   }
 }

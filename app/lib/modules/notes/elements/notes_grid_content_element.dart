@@ -30,7 +30,7 @@ class NotesGridContentElement with ElementBuilder<ContentElement> {
         module: module,
         spacing: 20,
         builder: NotesCardsBuilder(false, params),
-        settings: NotesSettingsBuilder(module, params),
+        settings: DialogElementSettings(builder: NotesSettingsBuilder(module, params)),
       );
     }
 
@@ -39,9 +39,9 @@ class NotesGridContentElement with ElementBuilder<ContentElement> {
         module: module,
         spacing: 20,
         builder: (context) => [
-          NeedsSetupCard(child: NoteMockCard(params)),
-          NeedsSetupCard(child: NoteMockCard(params)),
-          NeedsSetupCard(child: NoteMockCard(params)),
+          NoteMockCard(params),
+          NoteMockCard(params),
+          NoteMockCard(params),
           if (params.showAdd)
             Opacity(
               opacity: 0.4,
@@ -63,7 +63,12 @@ class NotesGridContentElement with ElementBuilder<ContentElement> {
               ),
             ),
         ],
-        settings: NotesSettingsBuilder(module, params),
+        settings: SetupActionElementSettings(
+            hint: 'Create a first note',
+            action: (context) {
+              var note = context.read(notesLogicProvider).createEmptyNote(folder: params.folder);
+              Navigator.of(context).push(EditNotePage.route(note));
+            }),
       );
     }
 

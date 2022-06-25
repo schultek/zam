@@ -54,15 +54,16 @@ class CounterElement with ElementBuilder<ContentElement> {
       onTap: (context) {
         module.updateParams(params.copyWith(count: params.count + 1));
       },
-      settings: (context) => [
-        InputListTile(
-          label: context.tr.label,
-          value: params.label,
-          onChanged: (value) {
-            module.updateParams(params.copyWith(label: value));
-          },
-        ),
-      ],
+      settings: DialogElementSettings(
+          builder: (context) => [
+                InputListTile(
+                  label: context.tr.label,
+                  value: params.label,
+                  onChanged: (value) {
+                    module.updateParams(params.copyWith(label: value));
+                  },
+                ),
+              ]),
     );
   }
 }

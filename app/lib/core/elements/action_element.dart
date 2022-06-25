@@ -19,10 +19,9 @@ class ActionElement extends ModuleElement with ElementMixin<ActionElement> {
     required String text,
     this.onTap,
     this.onNavigate,
-    SettingsBuilder? settings,
-    SettingsAction? settingsAction,
+    ElementSettings? settings,
   })  : textBuilder = ((_) => text),
-        super(module: module, settings: settings, settingsAction: settingsAction);
+        super(module: module, settings: settings);
 
   ActionElement.builder({
     required ModuleContext module,
@@ -31,19 +30,23 @@ class ActionElement extends ModuleElement with ElementMixin<ActionElement> {
     required String Function(BuildContext) text,
     this.onTap,
     this.onNavigate,
-    SettingsBuilder? settings,
-    SettingsAction? settingsAction,
+    ElementSettings? settings,
   })  : textBuilder = text,
-        super(module: module, settings: settings, settingsAction: settingsAction);
+        super(module: module, settings: settings);
 
   @override
   ActionElement get element => this;
 
   @override
   Widget buildElement(BuildContext context) {
-    var child = decorator(context).decorateElement(context, this, Container());
+    return Container();
+  }
+
+  @override
+  Widget decorateElement(BuildContext context, Widget child) {
+    child = super.decorateElement(context, child);
     if (onTap != null || onNavigate != null) {
-      child = GestureDetector(
+      return GestureDetector(
         onTap: () {
           onTap?.call(context);
           if (onNavigate != null) {

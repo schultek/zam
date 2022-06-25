@@ -74,10 +74,11 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
 
   final _areaKey = GlobalKey();
 
-  late RenderBox _areaRenderBox;
+  RenderBox? _areaRenderBox;
 
-  Size get areaSize => _areaRenderBox.size;
-  Offset get areaOffset => _areaRenderBox.localToGlobal(Offset.zero);
+  bool get hasSize => _areaRenderBox != null;
+  Size get areaSize => _areaRenderBox!.size;
+  Offset get areaOffset => _areaRenderBox!.localToGlobal(Offset.zero);
 
   GroupThemeData get theme => context.groupTheme;
   TemplateState get template => Template.of(context, listen: false);
@@ -100,7 +101,9 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
     if (_isInitialized) return;
     _isInitialized = true;
     reload();
-    context.listen(areaModulesProvider(id), (_, __) => reload());
+    context.listen(areaModulesProvider(id), (_, __) {
+      Future.microtask(reload);
+    });
   }
 
   @override
@@ -112,20 +115,19 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   @override
   void deactivate() {
     _isActive = false;
-    var areaNotifier = context.read(selectedAreaProvider.notifier);
-    if (areaNotifier.state == id) {
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        if (!mounted && areaNotifier.state == id) areaNotifier.selectWidgetAreaById(null);
-      });
-    }
     super.deactivate();
   }
 
   Future<void> reload() async {
-    var widgets = await _getWidgetsForArea();
-    initArea(widgets);
-    _isLoading = false;
-    if (mounted) setState(() {});
+    if (!mounted || !isActive) return;
+    setState(() {});
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      if (!mounted || !isActive) return;
+      var widgets = await _getWidgetsForArea();
+      initArea(widgets);
+      _isLoading = false;
+      if (mounted) setState(() {});
+    });
   }
 
   Future<List<T>> _getWidgetsForArea() async {
@@ -299,4 +301,28 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   bool hasKey(Key key);
 
   ElementDecorator<T> get elementDecorator;
+
+  Widget safeConstrainChild({T? element, required Widget child}) {
+    if (hasSize) {
+      return ConstrainedBox(
+        constraints: constrainWidget(element),
+        child: child,
+      );
+    } else {
+      var completer = Completer();
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        completer.complete();
+      });
+      return FutureBuilder(
+        future: completer.future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return safeConstrainChild(element: element, child: child);
+          } else {
+            return const SizedBox(width: 10, height: 10);
+          }
+        },
+      );
+    }
+  }
 }

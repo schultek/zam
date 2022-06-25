@@ -12,7 +12,6 @@ import 'package:shared/api/modules/announcement.dart';
 
 import '../../helpers/theme.dart';
 import '../../providers/general/l10n_provider.dart';
-import '../../widgets/needs_setup_card.dart';
 import '../module.dart';
 import 'pages/announcement_create_page.dart';
 import 'widgets/announcement_card.dart';
