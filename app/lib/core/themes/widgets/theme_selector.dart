@@ -34,14 +34,13 @@ class _ThemeSelectorState extends State<ThemeSelector> {
   }
 
   @override
-  void didChangeDependencies() {
-    // Index got updated in popup and deps changed, animate it to new index.
+  void didUpdateWidget(ThemeSelector oldWidget) {
     if (widget.schemeIndex != schemeIndex) {
       schemeIndex = widget.schemeIndex;
       scrollController.animateTo(_kWidthOfScrollItem * schemeIndex,
           duration: const Duration(milliseconds: 350), curve: Curves.easeOutCubic);
     }
-    super.didChangeDependencies();
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -53,6 +52,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
         children: <Widget>[
           Expanded(
             child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               controller: scrollController,
               physics: const ClampingScrollPhysics(),
               scrollDirection: Axis.horizontal,

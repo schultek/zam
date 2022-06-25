@@ -18,7 +18,6 @@ import '../../screens/signin/phone_signin_screen.dart';
 import '../../widgets/ju_background.dart';
 import '../models/models.dart';
 import '../themes/themes.dart';
-import 'settings_page.dart';
 
 class SelectGroupPage extends StatelessWidget {
   const SelectGroupPage({Key? key}) : super(key: key);
@@ -247,26 +246,11 @@ class SelectGroupPage extends StatelessWidget {
           child: Material(
             color: context.surfaceColor.withOpacity(0.3),
             child: InkWell(
-              child: Stack(
-                children: [
-                  Center(
-                    child: Text(
-                      group.name,
-                      style: context.theme.textTheme.headline4!.copyWith(color: context.onSurfaceColor),
-                    ),
-                  ),
-                  if (isSelected && context.watch(isOrganizerProvider))
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: IconButton(
-                        icon: Icon(Icons.settings, color: context.onSurfaceColor),
-                        onPressed: () {
-                          Navigator.push(context, SettingsPage.route());
-                        },
-                      ),
-                    ),
-                ],
+              child: Center(
+                child: Text(
+                  group.name,
+                  style: context.theme.textTheme.headline4!.copyWith(color: context.onSurfaceColor),
+                ),
               ),
               onTap: () {
                 if (isSelected) {

@@ -24,8 +24,7 @@ class MainGroupHeader extends StatelessWidget {
 
           var leading = [
             if (!isEditing) const GroupSelectorButton(),
-            if (isEditing && isOrganizer) const GroupSettingsButton(),
-            if (isEditing && !isOrganizer) const SizedBox(width: 50),
+            if (isEditing) const SizedBox(width: 50),
           ];
 
           var trailing = [

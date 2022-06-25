@@ -12,7 +12,6 @@ final isAreaSelectedProvider =
 class SelectArea extends StateNotifier<String?> {
   SelectArea(this.ref) : super(null) {
     ref.listen<LayoutIdModel?>(activeLayoutProvider, (_, next) {
-      print("GOT LAYOUT ${next?.id}");
       if (next == null) {
         selectWidgetAreaById(null);
       } else if (state == null || !next.hasAreaId(state!)) {
@@ -24,7 +23,6 @@ class SelectArea extends StateNotifier<String?> {
   final Ref ref;
 
   void selectWidgetAreaById(String? id) async {
-    print("SELECT AREA $id");
     if (super.state == id) return;
     super.state = id;
   }

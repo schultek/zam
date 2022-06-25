@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../core/elements/widgets/needs_setup_card.dart';
 import '../module.dart';
 import 'builders/notes_cards_builder.dart';
 import 'builders/notes_settings_builder.dart';
