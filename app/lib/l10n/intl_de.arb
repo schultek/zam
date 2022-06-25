@@ -125,11 +125,11 @@
   "good_evening": "Guten Abend",
   "cut_picture": "Foto zuschneiden",
   "profile_subtitle": "Öffnet das persönliche Nutzerprofil",
-  "profile_text": "Dieses Modul zeigt das persönliche Nutzer-\u200BProfil.\n\nNutzer*innen können sich einen Nickname aussuchen und ein Profilbild hinzufügen. Nickname und Profilbild sind für andere Nutzer*innen innerhalb anderer Module sichtbar.",
+  "profile_text": "Hier könnt ihr eure persönlichen Profile ansehen.\n\nMit eurem selbst vergebenen Nickname und Profilbild werdet ihr für andere Nutzer*innen in den weiteren Modulen angezeigt.",
   "profile_image_title": "Profilbild",
   "profile_image_subtitle": "Zeigt das Profilbild und den Nickname",
-  "profile_image_text": "Nutzer*innen sehen ihr Profilbild sowie eine tageszeitabhängige Begrüßung und ihren Nickname. \n\nOptional kann über das Einstellungssymbol des Moduls der Nickname und/oder die Begrüßung verborgen werden. \n\nDurch Klicken auf das Profilbild gelangen die Nutzer*innen auf ihr persönliches Profil, wo Nickname und Profilbild geändert werden können.",
-  "profile_user_action_text": "Nutzer*innen sehen ihr Profilbild sowie ihren Nickname. Durch Klicken auf das Modul können Nutzer*innen auf ihr Profil gelangen und dort Profilbild und Nickname ändern.",
+  "profile_image_text": "Hier seht ihr euer Profilbild, euren Nickname und eine Begrüßung.\n\nWenn du möchtest, kannst du als Organisator der Gruppe über das Einstellungssymbol Nickname und/oder Begrüßung verbergen.\n\nDurch Klicken auf das Profilbild gelangt ihr auf euer persönliches Profil, wo Nickname und Profilbild geändert werden können.",
+  "profile_user_action_text": "Hier seht ihr euer Profilbild und euren Nickname. Durch Klicken auf das Modul könnt ihr auf euer Profil gelangen und dort Profilbild und Nickname ändern.",
 
   "@USERS": {},
 
@@ -153,8 +153,8 @@
       "name": {}
     }
   },
-  "users_subtitle": "Öffnet eine Liste aller Nutzer*innen der Gruppe",
-  "users_text": "Dieses Modul zeigt alle Teilnehmer*innen der Gruppe mit Nickname und Profilbild, sofern diese vom Nutzer vergeben wurden.\n\nZudem sind die Rollen der Nutzer*innen sichtbar, diese sind entweder 'Organisator' oder 'Teilnehmer'. Organisator*innen haben innerhalb des Moduls die Möglichkeit, Nutzer*innen zu löschen oder deren Rolle zu ändern.\n\nDurch Klicken auf '+' können weitere Nutzer*innen hinzugefügt werden. Außerdem kann ein Link geteilt werden, der Nutzer*innen ermöglicht, mithilfe von einem Klick der Gruppe beizutreten.",
+  "users_subtitle": "Seht euch hier eine Liste aller Nutzer*innen der Gruppe an!",
+  "users_text": "Dieses Modul zeigt alle Nutzer*innen der Gruppe mit Nickname und Profilbild, wenn sie schon vergeben wurden.\n\nZusätzlich sind die Rollen der Nutzer*innen sichtbar ('Organisator' oder 'Teilnehmer'). Du als Organisator*in hast innerhalb des Moduls die Möglichkeit, Nutzer*innen zu löschen und deren Rolle zu ändern.\n\nDurch Klicken auf '+' kannst du weitere Nutzer*innen hinzufügen, außerdem kannst du einen Link teilen, über den Nutzer*innen direkt der Freizeit beitreten können.",
 
   "@NOTES": {},
 
@@ -176,7 +176,7 @@
   "open_notes": "Notizen öffnen",
   "saved": "Gespeichert",
   "notes_subtitle": "Öffnet die Notizen",
-  "notes_text": "Dieses Modul dient dazu, alles zu notieren, was wichtig ist. \n\nEs können verschiedene Notizen erstellt werden, der Text darin bearbeitet werden und Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nFür jede Notiz kann über den Button 'i' eingesehen werden, welche Nutzer*innen die Notiz bearbeiten dürfen, außerdem kann sie dort gelöscht werden. Eine Notiz kann Teil eines Ordners sein.",
+  "notes_text": "Dieses Modul dient dazu, alles zu notieren, was wichtig ist. \n\nEs können verschiedene Notizen erstellt werden, der Text darin bearbeitet werden und Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nIn den Einstellungen einer Notiz kannst du einsehen, wer die Notiz bearbeiten darf oder kannst sie löschen. Eine Notiz kann Teil eines Ordners sein.",
   "note": "Notiz",
   "note_subtitle": "Öffnet eine ausgewählte Notiz",
   "note_text": "Das Notizmodul zeigt eine einzelne, ausgewählte Notiz, sodass diese von allen Nutzer*innen direkt lesbar ist. \n\nWie auch bei dem Notizenmodul kann die Notiz von verschiedenen Nutzern je nach Berechtigung bearbeitet und gelöscht werden. \n\nErst wenn eine Notiz in diesem Modul erstellt wurde, ist das Notizmodul für alle Nutzer sichtbar.",
