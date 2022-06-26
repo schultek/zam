@@ -122,8 +122,8 @@
   "profile_text": "The profile module shows the personal profile of the users.\n\nUsers can choose a nickname and add a profile picture. Nickname and profile picture are visible for other users in the different modules.",
   "profile_image_title": "Profile picture",
   "profile_image_subtitle": "Shows profile picture and nickname of users",
-  "profile_image_text": "The profile picture module is another depiction of the profile module.\n\nUsers see their profile picture as well as a greeting and their nickname.\n\nOptionally it is possible to hide the nickname and/or the greeting over the settings option of the module.\n\nBy clicking on the profile picture users are able to access their personal profile where they can change nickname and profile picture.",
-  "profile_user_action_text": "The profile picture module is another depiction of the profile module.\n\nUsers see their profile picture and nickname. By clicking on the module users are able to access their personal profile and change profile picture and nickname.",
+  "profile_image_text": "Users see their profile picture as well as a greeting and their nickname.\n\nOptionally it is possible to hide the nickname and/or the greeting over the settings option of the module.\n\nBy clicking on the profile picture users are able to access their personal profile where they can change nickname and profile picture.",
+  "profile_user_action_text": "Users see their profile picture and nickname.\n\nBy clicking on the module users are able to access their personal profile and change profile picture and nickname.",
 
 
   "@USERS": {},
@@ -191,12 +191,18 @@
   "resend_notification": "Resend Notification",
   "resend_notification_desc": "Send a push notification to all members",
   "confirm_resend": "Do you want to send a push notification to all members?",
+  "announcements_subtitle": "Opens the announcement module",
+  "announcements_text": "With announcements the organizer can send a push-up notification to all users.\n\nAnnouncements can have a title and a text in various different styles.\n\nActivation of the setting 'disposible' enables the users to personally hide the anouncement after they read it.\n\nThe announcement is only visible after the organizer entered content.",
+
 
   "@LABEL": {},
 
   "labels": "Labels",
   "add_label": "Add Label",
   "centered": "Centered",
+  "labels_subtitle": "Setting a label for an area",
+  "labels_text": "With labels it is possible to give an area a headline.\n\nUnder settings it is possible to change the label or place it in the center.",
+
 
   "@CHAT": {},
 
@@ -208,6 +214,9 @@
   "new_channel": "New channel",
   "set_closed": "Set to 'Closed'",
   "add_channel": "Add channel",
+  "channels_subtitle": "Opens a chat with users from the group",
+  "channels_text": "In the chat, different channels can be created and named, for example regarding different topics during a trip.\n\nUnder 'i' it can be determined which users are part of a channel and can therefore read and write messages there. Additionally, a channel can get deleted there.",
+
 
   "@SPLIT": {},
 
@@ -250,6 +259,24 @@
   "total": "Total",
   "set_exchange_rates": "Set automatic exchange rates",
   "costs": "Costs",
+  "split_subtitle": "Opens a groups finances",
+  "split_text": "Under 'balances', new payments, expenses and exchanges (in case of currency change) can be entered. Users see how much money they owe another user.\n\nUnder 'new pot', group pots can be opened. People from the group can give an amount of money to the pot and expenses can then be paid from the pot.\n\nBy clicking on 'show billing' it can be seen who owes how much money. It can also be determined which course to use for a currency exchange.",
+  "balance_content_element": "Balances",
+  "balance_content_element_subtitle": "Shows balances for each user",
+  "balance_content_element_text": "The module shows name and profile picture as well as the balances of the user.\n\nBy clicking on the module, the split module opens where the balances can be adjusted.",
+  "split_balance_list": "Balance list",
+  "split_balance_list_subtitle": "Shows all users and their balances",
+  "split_balance_list_text": "The module shows all balances for the individual users and pots.\n\nBy clicking on the module, the split module opens where the balances can be adjusted.",
+  "balance_action_element": "Balances",
+  "balance_action_element_subtitle": "Shows all users and their balances",
+  "balance_action_element_text": "The module shows name and profile picture as well as the balances of the user.\n\nBy clicking on the module, the split module opens where the balances can be adjusted.\n\nUnder settings it is possible to see balances of other users.",
+  "split_new_expense_action_subtitle": "Opens the split module to enter a new expense",
+  "split_new_expense_action_text": "With the quick action module users can add expenses with one click.\n\nThey can enter who paid how much and additionally add a picture, for example of a bill.",
+  "split_new_payment_action_subtitle": "Opens the split module to enter a new payment",
+  "split_new_payment_action_text": "With the quick action module users can add payments with one click.\n\nThey can enter who paid how much.",
+  "split_new_exchange_action_subtitle": "Opens the split module to enter a new exchange", 
+  "split_new_exchange_action_text": "With the quick action module users can add exchanges (in case of currency exchange) with one click.\n\nThey can enter who changed how much into which currency.", 
+
 
   "@WEB": {},
 
@@ -259,6 +286,7 @@
   "allow_navigation": "Allow Navigation",
   "website": "Website",
   "custom_image": "Custom Image",
+  
 
   "@MUSIC": {},
 
