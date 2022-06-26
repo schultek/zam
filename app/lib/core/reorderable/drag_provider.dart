@@ -9,10 +9,10 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'package:vibration/vibration.dart';
 
 import '../areas/areas.dart';
+import '../editing/editing_providers.dart';
+import '../editing/selected_area_provider.dart';
+import '../editing/widgets/widget_selector.dart';
 import '../elements/elements.dart';
-import '../providers/editing_providers.dart';
-import '../providers/selected_area_provider.dart';
-import '../widgets/widget_selector.dart';
 import 'drag_item.dart';
 import 'items_provider.dart';
 import 'reorderable_item.dart';
@@ -85,8 +85,7 @@ class ReorderableDrag<T extends ModuleElement> with Drag {
 
     var draggedItem = read(reorderableItemProvider).items[key]!.item;
 
-    read(dragWidgetProvider.state).state =
-        draggedItem.widget.builder(draggedItem.context, ReorderableState.dragging, draggedItem.widget.child);
+    read(dragWidgetProvider.state).state = draggedItem.buildChild(ReorderableState.dragging);
     moduleElement = draggedItem.context.findAncestorWidgetOfExactType<T>();
 
     dragDecorationOpacity = 1;

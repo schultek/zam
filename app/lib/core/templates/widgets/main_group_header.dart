@@ -2,11 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../providers/groups/selected_group_provider.dart';
-import '../../providers/editing_providers.dart';
+import '../../editing/editing_providers.dart';
 import '../../themes/themes.dart';
 import '../../widgets/layout_preview.dart';
 import 'edit_toggle.dart';
 import 'group_selector.dart';
+
+class InvertGroupHeader extends InheritedWidget {
+  const InvertGroupHeader({
+    this.invert = true,
+    Key? key,
+    required Widget child,
+  }) : super(key: key, child: child);
+
+  final bool invert;
+
+  static InvertGroupHeader? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<InvertGroupHeader>();
+  }
+
+  @override
+  bool updateShouldNotify(InvertGroupHeader oldWidget) {
+    return oldWidget.invert != invert;
+  }
+}
 
 class MainGroupHeader extends StatelessWidget {
   const MainGroupHeader({Key? key}) : super(key: key);
@@ -14,7 +33,7 @@ class MainGroupHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 10, right: 10, bottom: 10),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
       child: Consumer(
         builder: (context, ref, _) {
           var group = ref.watch(selectedGroupProvider)!;
@@ -24,14 +43,15 @@ class MainGroupHeader extends StatelessWidget {
 
           var leading = [
             if (!isEditing) const GroupSelectorButton(),
-            if (isEditing && isOrganizer) const GroupSettingsButton(),
-            if (isEditing && !isOrganizer) const SizedBox(width: 50),
+            if (isEditing) const GroupSelectorButton(active: false),
           ];
 
           var trailing = [
-            if (!isOrganizer) const SizedBox(width: 50),
+            if (!isOrganizer) const SizedBox(width: 40),
             if (isOrganizer) EditToggles(isEditing: isEditing),
           ];
+
+          var invert = InvertGroupHeader.of(context)?.invert ?? false;
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -41,7 +61,8 @@ class MainGroupHeader extends StatelessWidget {
                 child: Text(
                   group.name,
                   textAlign: TextAlign.center,
-                  style: context.theme.textTheme.headline5!.apply(color: context.onSurfaceColor),
+                  style: context.theme.textTheme.headline5!
+                      .apply(color: invert ? context.surfaceColor : context.onSurfaceColor),
                 ),
               ),
               ...trailing,

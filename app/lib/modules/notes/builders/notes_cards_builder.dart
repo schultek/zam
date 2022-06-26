@@ -43,11 +43,13 @@ class NotesCardsBuilder {
         NoteCard(
           needsSurface: needsSurface,
           child: Center(
-            child: Icon(
-              Icons.add,
-              size: 60,
-              color: context.onSurfaceHighlightColor,
-            ),
+            child: Builder(builder: (context) {
+              return Icon(
+                Icons.add,
+                size: 60,
+                color: context.onSurfaceHighlightColor,
+              );
+            }),
           ),
           onTap: () {
             var note = context.read(notesLogicProvider).createEmptyNote(folder: params?.folder);

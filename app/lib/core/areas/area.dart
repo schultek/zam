@@ -9,10 +9,10 @@ import 'package:riverpod_context/riverpod_context.dart';
 import '../../modules/modules.dart';
 import '../../providers/groups/logic_provider.dart';
 import '../../providers/groups/selected_group_provider.dart';
+import '../editing/editing_providers.dart';
+import '../editing/selected_area_provider.dart';
 import '../elements/elements.dart';
 import '../module/module_context.dart';
-import '../providers/editing_providers.dart';
-import '../providers/selected_area_provider.dart';
 import '../reorderable/items_provider.dart';
 import '../templates/templates.dart';
 import '../themes/themes.dart';
@@ -74,13 +74,17 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
 
   final _areaKey = GlobalKey();
 
-  late RenderBox _areaRenderBox;
+  RenderBox? _areaRenderBox;
 
-  Size get areaSize => _areaRenderBox.size;
-  Offset get areaOffset => _areaRenderBox.localToGlobal(Offset.zero);
+  bool get hasSize => _areaRenderBox != null;
+  Size get areaSize => _areaRenderBox!.size;
+  Offset get areaOffset => _areaRenderBox!.localToGlobal(Offset.zero);
 
   GroupThemeData get theme => context.groupTheme;
   TemplateState get template => Template.of(context, listen: false);
+
+  bool get isActive => _isActive;
+  bool _isActive = true;
 
   @override
   bool get wantKeepAlive => false;
@@ -89,7 +93,7 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   bool get isLoading => _isLoading;
 
   bool get isEditing => context.watch(isEditingProvider);
-  bool get isSelected => context.watch(isAreaSelectedProvider(id));
+  bool get isSelected => isEditing && context.watch(isAreaSelectedProvider(id));
 
   @override
   void didChangeDependencies() {
@@ -97,25 +101,33 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
     if (_isInitialized) return;
     _isInitialized = true;
     reload();
-    context.listen(areaModulesProvider(id), (_, __) => reload());
+    context.listen(areaModulesProvider(id), (_, __) {
+      Future.microtask(reload);
+    });
+  }
+
+  @override
+  void activate() {
+    super.activate();
+    _isActive = true;
   }
 
   @override
   void deactivate() {
-    if (context.read(isAreaSelectedProvider(id))) {
-      var selectedAreaNotifier = context.read(selectedAreaProvider.notifier);
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-        if (!mounted) selectedAreaNotifier.selectWidgetAreaById(null);
-      });
-    }
+    _isActive = false;
     super.deactivate();
   }
 
   Future<void> reload() async {
-    var widgets = await _getWidgetsForArea();
-    initArea(widgets);
-    _isLoading = false;
-    if (mounted) setState(() {});
+    if (!mounted || !isActive) return;
+    setState(() {});
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+      if (!mounted || !isActive) return;
+      var widgets = await _getWidgetsForArea();
+      initArea(widgets);
+      _isLoading = false;
+      if (mounted) setState(() {});
+    });
   }
 
   Future<List<T>> _getWidgetsForArea() async {
@@ -289,4 +301,28 @@ abstract class AreaState<U extends Area<T>, T extends ModuleElement> extends Sta
   bool hasKey(Key key);
 
   ElementDecorator<T> get elementDecorator;
+
+  Widget safeConstrainChild({T? element, required Widget child}) {
+    if (hasSize) {
+      return ConstrainedBox(
+        constraints: constrainWidget(element),
+        child: child,
+      );
+    } else {
+      var completer = Completer();
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+        completer.complete();
+      });
+      return FutureBuilder(
+        future: completer.future,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return safeConstrainChild(element: element, child: child);
+          } else {
+            return const SizedBox(width: 10, height: 10);
+          }
+        },
+      );
+    }
+  }
 }

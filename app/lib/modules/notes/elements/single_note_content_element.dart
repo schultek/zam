@@ -1,6 +1,21 @@
 part of notes_module;
 
-class SingleNoteContentElement with ElementBuilderMixin<ContentElement> {
+class SingleNoteContentElement with ElementBuilder<ContentElement> {
+  @override
+  String getTitle(BuildContext context) {
+    return context.tr.note;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.note_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.note_text);
+  }
+
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     if (module.hasParams) {
@@ -40,32 +55,33 @@ class SingleNoteContentElement with ElementBuilderMixin<ContentElement> {
             );
           },
         ),
-        settingsAction: (context) async {
+        settings: ActionElementSettings(action: (context) async {
           var id = await Navigator.of(context).push<String>(
             MaterialPageRoute(builder: (context) => const SelectNotePage()),
           );
           if (id != null) {
             module.updateParams(id);
           }
-        },
+        }),
       );
     } else {
       if (module.context.read(isOrganizerProvider)) {
         return ContentElement(
           module: module,
-          builder: (context) => NeedsSetupCard(
-              child: SimpleCard(
+          builder: (context) => SimpleCard(
             title: context.tr.single_note,
             icon: Icons.note_add,
-          )),
-          settingsAction: (context) async {
-            var id = await Navigator.of(context).push<String>(
-              MaterialPageRoute(builder: (context) => const SelectNotePage()),
-            );
-            if (id != null) {
-              module.updateParams(id);
-            }
-          },
+          ),
+          settings: SetupActionElementSettings(
+              hint: module.context.tr.select_a_note,
+              action: (context) async {
+                var id = await Navigator.of(context).push<String>(
+                  MaterialPageRoute(builder: (context) => const SelectNotePage()),
+                );
+                if (id != null) {
+                  module.updateParams(id);
+                }
+              }),
         );
       } else {
         return null;

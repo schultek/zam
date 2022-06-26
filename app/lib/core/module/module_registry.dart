@@ -27,7 +27,7 @@ class ModuleRegistry {
     isInitialized = true;
   }
 
-  FutureOr<T?> getWidget<T extends ModuleElement>(BuildContext context, String id) async {
+  FutureOr<T?> getWidget<T extends ModuleElement>(BuildContext context, String id) {
     initModules();
 
     var moduleId = ModuleContext.getModuleId(id);
@@ -37,12 +37,13 @@ class ModuleRegistry {
     var moduleContext = ModuleContext<T>(context, module, id);
 
     var builder = modules[moduleId]?.elements[moduleContext.elementId];
-    assert(builder is ElementBuilder<T>?,
+    if (builder == null) return null;
+    assert(builder is ElementBuilder<T>,
         'Expected ElementBuilder<$T> for module ${moduleContext.moduleId}/${moduleContext.elementId}.');
-    return (builder as ElementBuilder<T>?)?.call(moduleContext);
+    return (builder as ElementBuilder<T>).build(moduleContext);
   }
 
-  List<ElementResolver<T>> getWidgetsOf<T extends ModuleElement>(BuildContext context) {
+  List<ElementResolver<T>> getElementsOf<T extends ModuleElement>(BuildContext context) {
     initModules();
 
     var moduleBlacklist = context.read(selectedGroupProvider)!.moduleBlacklist;
@@ -57,7 +58,7 @@ class ModuleRegistry {
               ModuleContext<T>(context, m.value, '${m.key}/${e.key}'),
             );
             if (widget != null) {
-              widgets.add(ElementResolver(widget, m.value));
+              widgets.add(ElementResolver(widget, e.value as ElementBuilder<T>, m.value));
             }
           }
         }
@@ -67,7 +68,7 @@ class ModuleRegistry {
   }
 
   FutureOr<T?> _callOrCatch<T extends ModuleElement>(ElementBuilder<T> builder, ModuleContext module) {
-    var future = builder(module);
+    var future = builder.build(module);
     if (future is T?) {
       return future;
     } else {
@@ -128,12 +129,13 @@ class ModuleRegistry {
 
 class ElementResolver<T extends ModuleElement> with ChangeNotifier implements ValueListenable<ElementResolver<T>> {
   final FutureOr<T?> _elementFuture;
+  final ElementBuilder<T> element;
   final ModuleBuilder module;
 
   bool isResolved = false;
   T? result;
 
-  ElementResolver(this._elementFuture, this.module) {
+  ElementResolver(this._elementFuture, this.element, this.module) {
     assert(_elementFuture != null);
     if (_elementFuture is T) {
       isResolved = true;

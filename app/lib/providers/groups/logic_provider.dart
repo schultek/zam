@@ -5,7 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/core.dart';
-import '../../core/providers/editing_providers.dart';
+import '../../core/editing/editing_providers.dart';
+import '../../core/editing/widgets/ju_logo.dart';
+import '../../helpers/capture_widget.dart';
 import '../../helpers/extensions.dart';
 import '../auth/claims_provider.dart';
 import '../auth/user_provider.dart';
@@ -40,10 +42,18 @@ class GroupsLogic {
     });
   }
 
-  Future<void> setGroupPicture(Uint8List bytes) async {
+  Future<String> setGroupPicture(Uint8List bytes) async {
     var link = await uploadFile('picture.png', bytes);
-    return FirebaseFirestore.instance.collection('groups').doc(_groupId).update({
+    await FirebaseFirestore.instance.collection('groups').doc(_groupId).update({
       'pictureUrl': link,
+    });
+    return link;
+  }
+
+  Future<void> deleteGroupPicture() async {
+    await deleteFile('picture.png');
+    return FirebaseFirestore.instance.collection('groups').doc(_groupId).update({
+      'pictureUrl': FieldValue.delete(),
     });
   }
 
@@ -107,5 +117,22 @@ class GroupsLogic {
   Future<void> deleteFile(String path) {
     var ref = FirebaseStorage.instance.ref('groups/$_groupId/$path');
     return ref.delete();
+  }
+
+  Future<void> updateLogo(Group group) async {
+    if (group.id != _groupId) return;
+    if (group.pictureUrl == null) {
+      var bytes = await CaptureWidget.offStage(
+        JuLogo(size: 100, name: group.name, theme: group.theme),
+      );
+      var link = await uploadFile('picture.png', bytes);
+      await FirebaseFirestore.instance.collection('groups').doc(_groupId).update({
+        'logoUrl': link,
+      });
+    } else {
+      await FirebaseFirestore.instance.collection('groups').doc(_groupId).update({
+        'logoUrl': group.pictureUrl,
+      });
+    }
   }
 }

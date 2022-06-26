@@ -9,8 +9,9 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:riverpod_context/riverpod_context.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-import '../../providers/editing_providers.dart';
+import '../../editing/editing_providers.dart';
 import '../../themes/themes.dart';
+import 'main_group_header.dart';
 
 class EditToggles extends StatelessWidget {
   const EditToggles({this.isEditing = true, this.notifyVisibility = true, Key? key}) : super(key: key);
@@ -38,9 +39,7 @@ class EditToggles extends StatelessWidget {
 }
 
 class ReorderToggle extends StatefulWidget {
-  const ReorderToggle({this.onPressed, Key? key}) : super(key: key);
-
-  final void Function()? onPressed;
+  const ReorderToggle({Key? key}) : super(key: key);
 
   @override
   _ReorderToggleState createState() => _ReorderToggleState();
@@ -89,14 +88,18 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController, Tic
       }
     });
 
+    var invert = InvertGroupHeader.of(context)?.invert ?? false;
+    var color = invert ? context.surfaceColor : context.onSurfaceColor;
+
     Widget child = SizedBox(
-      width: 50,
+      width: 40,
       child: IconButton(
+        padding: const EdgeInsets.all(4),
         icon: ShaderMask(
           blendMode: BlendMode.srcIn,
           shaderCallback: (Rect bounds) {
             return LinearGradient(
-              colors: <Color>[context.onSurfaceColor, context.onSurfaceColor],
+              colors: <Color>[color, color],
             ).createShader(bounds);
           },
           child: AnimatedBuilder(
@@ -116,7 +119,6 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController, Tic
           ),
         ),
         onPressed: () {
-          widget.onPressed?.call();
           context.read(editProvider.notifier).toggleEdit();
         },
       ),

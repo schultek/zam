@@ -15,17 +15,17 @@ import 'web/web_module.dart';
 import 'counter/counter_module.dart';
 
 final registry = ModuleRegistry([
-  ChatModule.new,
-  MusicModule.new,
-  NotesModule.new,
-  UsersModule.new,
-  TheButtonModule.new,
-  AnnouncementModule.new,
-  EliminationGameModule.new,
   ProfileModule.new,
+  UsersModule.new,
+  NotesModule.new,
+  AnnouncementModule.new,
   LabelModule.new,
-  PollsModule.new,
+  ChatModule.new,
   SplitModule.new,
   WebModule.new,
+  MusicModule.new,
+  PollsModule.new,
   CounterModule.new,
+  TheButtonModule.new,
+  EliminationGameModule.new,
 ]);

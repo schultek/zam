@@ -53,5 +53,3 @@ class EditNotifier extends StateNotifier<bool> {
     throw UnsupportedError('Do not set edit mode directly');
   }
 }
-
-final currentPageProvider = StateProvider((ref) => 0);

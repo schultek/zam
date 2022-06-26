@@ -1,20 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../providers/groups/selected_group_provider.dart';
+import '../../editing/editing_providers.dart';
+import '../../editing/widgets/ju_logo.dart';
 import '../../pages/groups_page.dart';
-import '../../pages/settings_page.dart';
-import '../../providers/editing_providers.dart';
 import '../../themes/themes.dart';
+import 'main_group_header.dart';
 
 class GroupSelectorButton extends StatelessWidget {
-  const GroupSelectorButton({Key? key}) : super(key: key);
+  const GroupSelectorButton({this.active = true, Key? key}) : super(key: key);
+
+  final bool active;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 50,
-      child: InkResponse(
-        child: Icon(Icons.menu_open, color: context.onSurfaceColor),
+    var group = context.watch(selectedGroupProvider);
+
+    var invert = InvertGroupHeader.of(context)?.invert ?? false;
+    var color = invert ? context.surfaceColor : context.onSurfaceColor;
+
+    Widget child = Container(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(6)),
+        boxShadow: [BoxShadow(blurRadius: 8, color: color.withOpacity(0.4))],
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(6)),
+        child: JuLogo(
+          name: group?.name,
+          theme: group?.theme,
+          size: 40,
+        ),
+      ),
+    );
+
+    if (active) {
+      child = InkResponse(
+        child: child,
         onTap: () {
           if (context.read(isEditingProvider)) {
             context.read(editProvider.notifier).toggleEdit();
@@ -24,24 +47,17 @@ class GroupSelectorButton extends StatelessWidget {
             builder: (context) => const SelectGroupPage(),
           ));
         },
-      ),
-    );
-  }
-}
+      );
+    } else {
+      child = Opacity(
+        opacity: 0.4,
+        child: child,
+      );
+    }
 
-class GroupSettingsButton extends StatelessWidget {
-  const GroupSettingsButton({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
     return SizedBox(
-      width: 50,
-      child: InkResponse(
-        child: Icon(Icons.settings, color: context.onSurfaceColor, size: 20),
-        onTap: () {
-          Navigator.push(context, SettingsPage.route());
-        },
-      ),
+      width: 40,
+      child: Center(child: child),
     );
   }
 }

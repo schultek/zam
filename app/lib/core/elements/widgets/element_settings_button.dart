@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../../module/module_context.dart';
 import '../../themes/themes.dart';
 import '../module_element.dart';
 import 'element_icon_button.dart';
 
 class ElementSettingsButton extends StatelessWidget {
-  const ElementSettingsButton({required this.module, this.settings, this.settingsAction, Key? key})
-      : assert(settings != null || settingsAction != null),
-        super(key: key);
-
-  final ModuleContext module;
-  final SettingsBuilder? settings;
-  final SettingsAction? settingsAction;
+  const ElementSettingsButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

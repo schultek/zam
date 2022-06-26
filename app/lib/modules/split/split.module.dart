@@ -39,14 +39,14 @@ class SplitModule extends ModuleBuilder {
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
+        'split': SplitElement(),
+        'balance_content_element': BalanceContentElement(),
+        'split_balance_list': BalancesListContentSegment(),
+        'split_action': SplitActionElement(),
+        'balance_action_element': BalanceActionElement(),
         'split_new_expense_action': NewExpenseActionElement(),
         'split_new_payment_action': NewPaymentActionElement(),
         'split_new_exchange_action': NewExchangeActionElement(),
-        'split_action': SplitActionElement(),
-        'split_balance_list': BalancesListContentSegment(),
-        'balance_action_element': BalanceActionElement(),
-        'balance_content_element': BalanceContentElement(),
-        'split': SplitElement(),
       };
 
   @override

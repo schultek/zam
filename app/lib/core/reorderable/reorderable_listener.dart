@@ -9,13 +9,11 @@ import 'reorderable_item.dart';
 
 class ReorderableListener<T extends ModuleElement> extends StatelessWidget {
   const ReorderableListener({
-    Key? key,
-    this.childKey,
     required this.child,
     this.delay = kLongPressTimeout,
+    Key? key,
   }) : super(key: key);
 
-  final Key? childKey;
   final Widget child;
   final Duration delay;
 

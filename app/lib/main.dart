@@ -5,6 +5,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
@@ -15,6 +16,7 @@ import 'providers/general/l10n_provider.dart';
 import 'providers/general/loading_provider.dart';
 import 'providers/groups/selected_group_provider.dart';
 import 'providers/links/links_provider.dart';
+import 'providers/links/shortcuts_provider.dart';
 import 'screens/group/group_screen.dart';
 import 'screens/loading/loading_link_screen.dart';
 import 'screens/loading/loading_screen.dart';
@@ -22,6 +24,8 @@ import 'screens/signin/signin_screen.dart';
 import 'widgets/nested_will_pop_scope.dart';
 
 void main() {
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runZonedGuarded<Future<void>>(() async {
     runApp(const ProviderScope(child: InheritedConsumer(child: JufaApp())));
   }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
@@ -37,6 +41,12 @@ class JufaApp extends StatefulWidget {
 class _JufaAppState extends State<JufaApp> {
   var navigatorKey = GlobalKey<NavigatorState>();
   bool updateNavigatorKey = false;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read(shortcutsProvider).checkIsLaunchedFromShortcut();
+  }
 
   @override
   void reassemble() {

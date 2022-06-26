@@ -8,7 +8,22 @@ class CounterState {
   CounterState(this.count, this.label);
 }
 
-class CounterElement with ElementBuilderMixin<ContentElement> {
+class CounterElement with ElementBuilder<ContentElement> {
+  @override
+  String getTitle(BuildContext context) {
+    return context.tr.counter;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.counter_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.counter_text);
+  }
+
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     var params = module.getParams<CounterState?>() ?? CounterState(0, module.context.tr.counter);
@@ -39,15 +54,16 @@ class CounterElement with ElementBuilderMixin<ContentElement> {
       onTap: (context) {
         module.updateParams(params.copyWith(count: params.count + 1));
       },
-      settings: (context) => [
-        InputListTile(
-          label: context.tr.label,
-          value: params.label,
-          onChanged: (value) {
-            module.updateParams(params.copyWith(label: value));
-          },
-        ),
-      ],
+      settings: DialogElementSettings(
+          builder: (context) => [
+                InputListTile(
+                  label: context.tr.label,
+                  value: params.label,
+                  onChanged: (value) {
+                    module.updateParams(params.copyWith(label: value));
+                  },
+                ),
+              ]),
     );
   }
 }

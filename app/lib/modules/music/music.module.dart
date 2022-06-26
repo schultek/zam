@@ -12,7 +12,6 @@ import 'package:riverpod_context/riverpod_context.dart';
 import 'package:spotify/spotify.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../widgets/needs_setup_card.dart';
 import '../module.dart';
 import 'widgets/spotify_player.dart';
 

@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomPageController {
-  CustomPageController({this.initialPage});
-
-  final int? initialPage;
+  CustomPageController();
 
   _CustomPageViewState? _state;
 
-  int get page {
-    if (_state?.controller.hasClients ?? false) {
-      return _state?.controller.page?.round() ?? initialPage ?? 0;
-    } else {
-      return initialPage ?? 0;
-    }
-  }
+  int get page => _state?.page ?? 0;
 
   void animateToPage(int page,
       {Duration duration = const Duration(milliseconds: 300), Curve curve = Curves.easeInOut}) {
-    _state?.controller.animateToPage(page, duration: duration, curve: curve);
+    _state?.controller.animateToPage(page + _state!.anchorIndex, duration: duration, curve: curve);
   }
 
   void animateToPageDelta(int pageDelta) {
@@ -26,11 +18,13 @@ class CustomPageController {
 }
 
 class CustomPageView extends StatefulWidget {
-  const CustomPageView({this.controller, required this.children, this.onPageChanged, Key? key}) : super(key: key);
+  const CustomPageView({this.controller, required this.children, this.onPageChanged, this.anchor, Key? key})
+      : super(key: key);
 
   final CustomPageController? controller;
   final void Function(int)? onPageChanged;
   final List<Widget> children;
+  final Key? anchor;
 
   @override
   State<CustomPageView> createState() => _CustomPageViewState();
@@ -38,12 +32,25 @@ class CustomPageView extends StatefulWidget {
 
 class _CustomPageViewState extends State<CustomPageView> {
   late PageController controller;
+  late int anchorIndex;
+  int? _cachedPage;
+
+  int get page {
+    if (_cachedPage != null) {
+      return _cachedPage!;
+    }
+    if (controller.hasClients && controller.position.hasPixels && controller.position.hasContentDimensions) {
+      return controller.page!.round() - anchorIndex;
+    }
+    return 0;
+  }
 
   @override
   void initState() {
     super.initState();
     widget.controller?._state = this;
-    controller = PageController(initialPage: widget.controller?.initialPage ?? 0);
+    updateAnchorIndex();
+    controller = PageController(initialPage: anchorIndex);
   }
 
   @override
@@ -56,17 +63,27 @@ class _CustomPageViewState extends State<CustomPageView> {
   void didUpdateWidget(covariant CustomPageView oldWidget) {
     widget.controller?._state = this;
 
-    var oldIndex = controller.page?.round() ?? 0;
-    var oldKey = oldWidget.children[oldIndex].key;
-
-    if (oldKey != null) {
-      var newIndex = widget.children.indexWhere((c) => c.key == oldKey);
-      if (newIndex != -1 && newIndex != oldIndex) {
-        controller.jumpToPage(newIndex);
-      }
+    var oldAnchorIndex = anchorIndex;
+    var oldPage = page;
+    updateAnchorIndex();
+    if (oldAnchorIndex != anchorIndex) {
+      controller.jumpToPage(oldPage + anchorIndex);
+      _cachedPage = oldPage;
     }
 
     super.didUpdateWidget(oldWidget);
+  }
+
+  updateAnchorIndex() {
+    var index = 0;
+    for (var i = 0; i < widget.children.length; i++) {
+      var child = widget.children[i];
+      if (child.key == widget.anchor) {
+        index = i;
+        break;
+      }
+    }
+    anchorIndex = index;
   }
 
   @override
@@ -74,7 +91,10 @@ class _CustomPageViewState extends State<CustomPageView> {
     return PageView(
       physics: const BouncingScrollPhysics(),
       controller: controller,
-      onPageChanged: widget.onPageChanged,
+      onPageChanged: (page) {
+        _cachedPage = null;
+        widget.onPageChanged?.call(page - anchorIndex);
+      },
       children: widget.children,
     );
   }

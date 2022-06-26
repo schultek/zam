@@ -39,6 +39,7 @@ class _PhotoSectionState extends State<PhotoSection> {
                       builder: (context) {
                         return AlertDialog(
                           clipBehavior: Clip.antiAlias,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                           contentPadding: EdgeInsets.zero,
                           content: Image(image: widget.photo!),
                         );
@@ -49,7 +50,13 @@ class _PhotoSectionState extends State<PhotoSection> {
                     aspectRatio: 1,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(6)),
-                      child: Image(image: widget.photo!, fit: BoxFit.cover),
+                      child: Stack(
+                        fit: StackFit.passthrough,
+                        children: [
+                          Image(image: widget.photo!, fit: BoxFit.cover),
+                          const Center(child: Icon(Icons.open_in_full)),
+                        ],
+                      ),
                     ),
                   ),
                 ),

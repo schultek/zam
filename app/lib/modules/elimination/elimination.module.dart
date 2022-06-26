@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../widgets/needs_setup_card.dart';
 import '../module.dart';
 import 'builders/games_list_builder.dart';
 import 'pages/create_game_page.dart';
@@ -35,11 +34,11 @@ class EliminationGameModule extends ModuleBuilder {
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
-        'game': GameContentElement(),
-        'new_game': NewGameActionElement(),
-        'games_action': GamesActionElement(),
         'games': GamesContentElement(),
+        'game': GameContentElement(),
         'games_list': GamesListContentElement(),
+        'games_action': GamesActionElement(),
+        'new_game': NewGameActionElement(),
       };
 
   @override

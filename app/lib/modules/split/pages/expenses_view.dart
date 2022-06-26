@@ -18,6 +18,7 @@ class ExpensesView extends StatelessWidget {
     var entries = ([...split.entries.values]..sort()).reversed;
     return ThemedSurface(
       builder: (context, color) => ListView(
+        key: const PageStorageKey<String>('expenses'),
         padding: const EdgeInsets.symmetric(vertical: 16),
         children: [
           for (var entry in entries)

@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../widgets/needs_setup_card.dart';
 import '../module.dart';
 import 'builders/notes_cards_builder.dart';
 import 'builders/notes_settings_builder.dart';
@@ -18,6 +17,7 @@ import 'pages/edit_note_page.dart';
 import 'pages/notes_page.dart';
 import 'pages/select_note_page.dart';
 import 'widgets/folder_card.dart';
+import 'widgets/note_card.dart';
 import 'widgets/note_preview.dart';
 import 'widgets/notes_list.dart';
 
@@ -41,13 +41,13 @@ class NotesModule extends ModuleBuilder {
 
   @override
   Map<String, ElementBuilder<ModuleElement>> get elements => {
-        'notes_action': NotesActionElement(),
-        'add_note_action': AddNoteActionElement(),
         'notes': NotesContentElement(),
         'note': SingleNoteContentElement(),
         'notes_grid': NotesGridContentElement(),
         'notes_list': NotesListContentElement(),
         'notes_list_page': NotesListPageElement(),
+        'notes_action': NotesActionElement(),
+        'add_note_action': AddNoteActionElement(),
       };
 
   @override

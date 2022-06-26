@@ -1,6 +1,21 @@
 part of notes_module;
 
-class NotesContentElement with ElementBuilderMixin<ContentElement> {
+class NotesContentElement with ElementBuilder<ContentElement> {
+  @override
+  String getTitle(BuildContext context) {
+    return context.tr.notes;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.notes_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.notes_text);
+  }
+
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     return ContentElement(

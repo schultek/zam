@@ -21,6 +21,12 @@ class FullPageLayoutModel extends LayoutModel {
   Widget builder(LayoutContext context) => FullPageLayout(context, this);
 
   @override
+  String? getAreaIdToFocus() => 'page';
+
+  @override
+  bool hasAreaId(String id) => id == 'page';
+
+  @override
   List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
     return [
       SwitchListTile(
@@ -76,13 +82,13 @@ class FullPageLayout extends StatelessWidget {
         children: [
           layoutContext.header!,
           Expanded(
-            child: FullPageArea(id: layoutContext.id + '_page'),
+            child: FullPageArea(id: layoutContext.idFor('page')),
           )
         ],
       );
     } else {
       child = SafeArea(
-        child: FullPageArea(id: layoutContext.id + '_page'),
+        child: FullPageArea(id: layoutContext.idFor('page')),
       );
     }
 

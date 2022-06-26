@@ -8,119 +8,92 @@ class WebPageParams {
   const WebPageParams({this.url, this.canNavigate = true});
 }
 
-class WebPageElement with ElementBuilderMixin<PageElement> {
+class WebPageElement with ElementBuilder<PageElement> {
+  @override
+  String getTitle(BuildContext context) {
+    return context.tr.web_page;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.web_page_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.web_page_text);
+  }
+
   @override
   FutureOr<PageElement?> build(ModuleContext module) {
     var params = module.getParams<WebPageParams?>() ?? const WebPageParams();
-    var webViewKey = GlobalObjectKey<_WebViewPageState>('webview-${module.keyId}');
+    var webViewKey = GlobalObjectKey<WebViewPageState>('webview-${module.keyId}');
 
-    return PageElement(
-      module: module,
-      builder: (context) => WebViewPage(
-        key: webViewKey,
-        url: params.url,
-        canNavigate: params.canNavigate,
-      ),
-      settings: (context) => [
-        InputListTile(
-          label: 'Url',
-          value: params.url,
-          trailing: webViewKey.currentState?.controller != null
-              ? IconButton(
-                  icon: const Icon(Icons.explore),
-                  onPressed: () async {
-                    var url = await webViewKey.currentState?.controller?.currentUrl();
-                    if (url != null) {
-                      module.updateParams(params.copyWith(url: url));
-                    }
-                  },
-                )
-              : null,
-          onChanged: (value) {
-            if (!value.startsWith(RegExp('https?://'))) {
-              value = 'https://$value';
-            }
-            module.updateParams(params.copyWith(url: value));
-          },
-          keyboardType: TextInputType.url,
+    if (params.url != null) {
+      return PageElement(
+        module: module,
+        builder: (context) => WebViewPage(
+          key: webViewKey,
+          url: params.url!,
+          canNavigate: params.canNavigate,
         ),
-        SwitchListTile(
-          title: Text(context.tr.allow_navigation),
-          value: params.canNavigate,
-          onChanged: (value) {
-            module.updateParams(params.copyWith(canNavigate: value));
-          },
-        ),
-      ],
-    );
-  }
-}
-
-class WebViewPage extends StatefulWidget {
-  const WebViewPage({this.url, this.canNavigate = true, Key? key}) : super(key: key);
-
-  final String? url;
-  final bool canNavigate;
-
-  @override
-  State<WebViewPage> createState() => _WebViewPageState();
-}
-
-class _WebViewPageState extends State<WebViewPage> {
-  WebViewController? controller;
-
-  @override
-  void didUpdateWidget(covariant WebViewPage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.url != null && widget.url != oldWidget.url) {
-      controller?.loadUrl(widget.url!);
+        settings: DialogElementSettings(builder: WebPageSettingsBuilder(params, module, webViewKey)),
+      );
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    if (WidgetSelector.existsIn(context)) {
-      return ThemedSurface(
-        builder: (context, color) => Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            color: color,
-          ),
-          alignment: Alignment.center,
-          child: Icon(Icons.language, size: MediaQuery.of(context).size.width / 2),
+    if (module.context.read(isOrganizerProvider)) {
+      return PageElement(
+        module: module,
+        builder: (context) => SimpleCard(title: context.tr.website, icon: Icons.language),
+        settings: SetupDialogElementSettings(
+          hint: module.context.tr.set_a_url,
+          builder: WebPageSettingsBuilder(params, module, webViewKey),
         ),
       );
     }
-    if (widget.url == null) {
-      return NeedsSetupCard(child: SimpleCard(title: context.tr.website, icon: Icons.language));
-    }
-    return NestedWillPopScope(
-      onWillPop: () async {
-        if (controller == null) {
-          return true;
-        } else {
-          if (await controller!.canGoBack()) {
-            await controller!.goBack();
-            return false;
-          } else {
-            return true;
+
+    return null;
+  }
+}
+
+class WebPageSettingsBuilder {
+  final WebPageParams params;
+  final ModuleContext module;
+  final GlobalKey<WebViewPageState> webViewKey;
+
+  WebPageSettingsBuilder(this.params, this.module, this.webViewKey);
+
+  List<Widget> call(BuildContext context) {
+    return [
+      InputListTile(
+        label: 'Url',
+        value: params.url,
+        trailing: webViewKey.currentState?.controller != null
+            ? IconButton(
+                icon: const Icon(Icons.explore),
+                onPressed: () async {
+                  var url = await webViewKey.currentState?.controller?.currentUrl();
+                  if (url != null) {
+                    module.updateParams(params.copyWith(url: url));
+                  }
+                },
+              )
+            : null,
+        onChanged: (value) {
+          if (!value.startsWith(RegExp('https?://'))) {
+            value = 'https://$value';
           }
-        }
-      },
-      child: WebView(
-        key: const ValueKey('webview'),
-        onWebViewCreated: (controller) {
-          this.controller = controller;
+          module.updateParams(params.copyWith(url: value));
         },
-        initialUrl: widget.url,
-        backgroundColor: context.surfaceColor,
-        javascriptMode: JavascriptMode.unrestricted,
-        gestureRecognizers: {Factory(() => VerticalDragGestureRecognizer())},
-        gestureNavigationEnabled: true,
-        navigationDelegate: (request) {
-          return widget.canNavigate ? NavigationDecision.navigate : NavigationDecision.prevent;
+        keyboardType: TextInputType.url,
+      ),
+      SwitchListTile(
+        title: Text(context.tr.allow_navigation),
+        value: params.canNavigate,
+        onChanged: (value) {
+          module.updateParams(params.copyWith(canNavigate: value));
         },
       ),
-    );
+    ];
   }
 }

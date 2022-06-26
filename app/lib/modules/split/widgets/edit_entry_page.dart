@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../split.module.dart';
 
-class EditEntryPage<T extends SplitEntry> extends StatelessWidget {
+class EditEntryPage<T extends SplitEntry> extends StatefulWidget {
   const EditEntryPage({
     required this.pageTitle,
     this.entry,
@@ -20,14 +22,21 @@ class EditEntryPage<T extends SplitEntry> extends StatelessWidget {
   final String? title;
   final ValueChanged<String> onTitleChanged;
   final bool entryValid;
-  final VoidCallback onSave;
+  final FutureOr<void> Function() onSave;
   final List<Widget> children;
+
+  @override
+  State<EditEntryPage<T>> createState() => _EditEntryPageState<T>();
+}
+
+class _EditEntryPageState<T extends SplitEntry> extends State<EditEntryPage<T>> {
+  bool isSaving = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(pageTitle),
+        title: Text(widget.pageTitle),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: ThemedSurface(
@@ -35,8 +44,8 @@ class EditEntryPage<T extends SplitEntry> extends StatelessWidget {
             builder: (context, _) => Padding(
               padding: const EdgeInsets.only(left: 16, bottom: 8, right: 16),
               child: TextFormField(
-                initialValue: title,
-                autofocus: title == null || title!.isEmpty,
+                initialValue: widget.title,
+                autofocus: widget.title == null || widget.title!.isEmpty,
                 decoration: InputDecoration(
                   hintText: context.tr.title,
                   hintStyle: TextStyle(color: context.onSurfaceColor.withOpacity(0.5)),
@@ -45,7 +54,7 @@ class EditEntryPage<T extends SplitEntry> extends StatelessWidget {
                 ),
                 cursorColor: context.onSurfaceHighlightColor,
                 style: context.theme.textTheme.bodyLarge!.copyWith(fontSize: 22, color: context.onSurfaceColor),
-                onChanged: onTitleChanged,
+                onChanged: widget.onTitleChanged,
               ),
             ),
           ),
@@ -54,19 +63,41 @@ class EditEntryPage<T extends SplitEntry> extends StatelessWidget {
           ThemedSurface(
             preference: ColorPreference(useHighlightColor: !context.groupTheme.dark),
             builder: (context, _) => TextButton(
-              onPressed: entryValid ? onSave : null,
-              child: Text(
-                context.tr.save,
-                style: TextStyle(color: context.onSurfaceHighlightColor.withOpacity(entryValid ? 1 : 0.5)),
-              ),
+              onPressed: widget.entryValid
+                  ? () async {
+                      setState(() => isSaving = true);
+                      try {
+                        await widget.onSave();
+                      } finally {
+                        setState(() => isSaving = false);
+                      }
+                    }
+                  : null,
+              child: isSaving
+                  ? Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Center(
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation(context.onSurfaceHighlightColor),
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      ),
+                    )
+                  : Text(
+                      context.tr.save,
+                      style: TextStyle(color: context.onSurfaceHighlightColor.withOpacity(widget.entryValid ? 1 : 0.5)),
+                    ),
             ),
           ),
         ],
       ),
       body: ListView(
         children: [
-          ...children,
-          if (entry != null && context.watch(isOrganizerProvider))
+          ...widget.children,
+          if (widget.entry != null && context.watch(isOrganizerProvider))
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Center(
@@ -85,7 +116,7 @@ class EditEntryPage<T extends SplitEntry> extends StatelessWidget {
                     );
                     if (shouldDelete) {
                       Navigator.of(context).pop();
-                      context.read(splitLogicProvider).deleteEntry(entry!.id);
+                      context.read(splitLogicProvider).deleteEntry(widget.entry!.id);
                     }
                   },
                 ),

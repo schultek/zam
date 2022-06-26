@@ -5,38 +5,79 @@ import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../../providers/groups/selected_group_provider.dart';
 import '../../areas/area.dart';
-import '../../providers/editing_providers.dart';
-import '../../providers/selected_area_provider.dart';
+import '../../editing/editing_providers.dart';
+import '../../editing/selected_area_provider.dart';
+import '../../editing/widgets/needs_setup_card.dart';
+import '../../editing/widgets/widget_selector.dart';
 import '../../reorderable/reorderable_item.dart';
 import '../../reorderable/reorderable_listener.dart';
 import '../../route/route.dart';
 import '../../templates/template.dart';
 import '../../themes/themes.dart';
-import '../../widgets/widget_selector.dart';
 import '../decorators/element_decorator.dart';
 import '../module_element.dart';
 import 'element_icon_button.dart';
 import 'element_settings_button.dart';
 
 mixin ElementMixin<T extends ModuleElement> on ModuleElement {
-  ElementDecorator<T> decorator(BuildContext context) => Area.of<T>(context)!.elementDecorator;
+  ElementDecorator<T> _decorator(BuildContext context) => Area.of<T>(context)!.elementDecorator;
 
   T get element;
 
+  @protected
   Widget buildElement(BuildContext context);
 
+  @protected
+  @mustCallSuper
+  Widget decorateElement(BuildContext context, Widget child) {
+    return _decorator(context).decorateElement(context, this as T, child);
+  }
+
   Widget _decorationBuilder(BuildContext context, Widget child, double opacity) {
-    return decorator(context).decorateDragged(context, element, child, opacity);
+    return _decorator(context).decorateDragged(context, element, child, opacity);
+  }
+
+  Widget _wrapSettings(Widget w) {
+    if (settings is SetupElementSettings) {
+      return NeedsSetupCard(
+        key: key.copy('setup'),
+        setupHint: (settings as SetupElementSettings).hint,
+        child: w,
+      );
+    } else {
+      return w;
+    }
+  }
+
+  Widget wrapElement(Widget Function(Widget) wrapper, Widget child) {
+    return wrapper(child);
+  }
+
+  WidgetBuilder _wrap(WidgetBuilder builder, Widget Function(BuildContext, WidgetBuilder) wrapper) {
+    return (context) => wrapper(context, builder);
   }
 
   @override
   Widget build(BuildContext context) {
+    WidgetBuilder childBuilder = buildElement;
+
+    if (settings is SetupElementSettings) {
+      childBuilder = _wrap(childBuilder, (c, b) => wrapElement((child) => Opacity(opacity: 0.4, child: child), b(c)));
+    }
+
+    childBuilder = _wrap(childBuilder, (c, b) => decorateElement(c, b(c)));
+
+    var child = KeyedSubtree(
+      key: key.copy('element'),
+      child: Builder(builder: childBuilder),
+    );
+
     if (WidgetSelector.existsIn(context)) {
       return ReorderableItem(
-        key: key,
+        itemKey: key,
         builder: (context, state, child) {
           if (state == ReorderableState.placeholder) {
-            return decorator(context).decoratePlaceholder(context, element);
+            return _decorator(context).decoratePlaceholder(context, element);
           } else {
             return child;
           }
@@ -44,16 +85,18 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
         decorationBuilder: _decorationBuilder,
         child: ReorderableListener<T>(
           delay: const Duration(milliseconds: 200),
-          child: AbsorbPointer(child: Builder(builder: buildElement)),
+          child: AbsorbPointer(
+            child: _wrapSettings(child),
+          ),
         ),
       );
     }
 
     return ReorderableItem(
-      key: key,
+      itemKey: key,
       builder: (context, state, child) {
         if (state == ReorderableState.placeholder) {
-          return decorator(context).decoratePlaceholder(context, element);
+          return _decorator(context).decoratePlaceholder(context, element);
         } else if (state == ReorderableState.normal) {
           return Builder(builder: (context) {
             var editState = context.watch(editProvider);
@@ -62,19 +105,18 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
               Widget widget = ModuleRouteTransition<T>(child: child, element: element);
               if (context.read(isOrganizerProvider)) {
                 widget = ReorderableListener<T>(
-                  childKey: key,
                   delay: const Duration(milliseconds: 800),
                   child: widget,
                 );
               }
-              return widget;
+              return _wrapSettings(widget);
             } else {
               return LayoutBuilder(
                 builder: (context, constraints) {
                   return Stack(clipBehavior: Clip.none, children: [
                     ConstrainedBox(
                       constraints: constraints,
-                      child: Builder(builder: (context) {
+                      child: _wrapSettings(Builder(builder: (context) {
                         var animation = CurvedAnimation(parent: PhasedAnimation.of(context), curve: Curves.easeInOut);
                         return AnimatedBuilder(
                           animation: animation,
@@ -83,12 +125,11 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
                             child: child,
                           ),
                           child: ReorderableListener<T>(
-                            childKey: key,
                             delay: const Duration(milliseconds: 300),
                             child: AbsorbPointer(child: child),
                           ),
                         );
-                      }),
+                      })),
                     ),
                     Positioned(
                       top: -8,
@@ -104,15 +145,11 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
                         iconColor: Colors.white,
                       ),
                     ),
-                    if (settings != null || settingsAction != null)
-                      Positioned(
+                    if (settings != null && settings!.showButton)
+                      const Positioned(
                         top: -8,
                         left: 25,
-                        child: ElementSettingsButton(
-                          module: element.module,
-                          settings: settings,
-                          settingsAction: settingsAction,
-                        ),
+                        child: ElementSettingsButton(),
                       ),
                   ]);
                 },
@@ -120,11 +157,11 @@ mixin ElementMixin<T extends ModuleElement> on ModuleElement {
             }
           });
         } else {
-          return AbsorbPointer(child: child);
+          return AbsorbPointer(child: _wrapSettings(child));
         }
       },
       decorationBuilder: _decorationBuilder,
-      child: Builder(builder: buildElement),
+      child: child,
     );
   }
 }

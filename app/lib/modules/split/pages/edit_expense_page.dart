@@ -61,7 +61,7 @@ class _EditExpensePageState extends State<EditExpensePage> {
   @override
   Widget build(BuildContext context) {
     return EditEntryPage<ExpenseEntry>(
-      pageTitle: widget.entry != null ? context.tr.edit_exchange : context.tr.new_exchange,
+      pageTitle: widget.entry != null ? context.tr.edit_expense : context.tr.new_expense,
       entry: widget.entry,
       title: title,
       onTitleChanged: (value) {

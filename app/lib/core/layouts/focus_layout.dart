@@ -10,6 +10,7 @@ import '../../main.mapper.g.dart';
 import '../../providers/groups/logic_provider.dart';
 import '../areas/areas.dart';
 import '../elements/elements.dart';
+import '../templates/widgets/main_group_header.dart';
 import '../themes/themes.dart';
 import '../widgets/layout_preview.dart';
 import '../widgets/select_image_list_tile.dart';
@@ -35,6 +36,12 @@ class FocusLayoutModel extends LayoutModel {
 
   @override
   Widget builder(LayoutContext context) => FocusLayout(context, this);
+
+  @override
+  String? getAreaIdToFocus() => 'focus';
+
+  @override
+  bool hasAreaId(String id) => ['focus', 'actions', 'infos', 'grid'].contains(id);
 
   @override
   List<Widget> settings(BuildContext context, void Function(LayoutModel) update) {
@@ -138,10 +145,12 @@ class _FocusLayoutState extends State<FocusLayout> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (widget.layoutContext.header != null) //
-                      if (widget.model.invertHeader)
-                        ThemedSurface(builder: (_, __) => widget.layoutContext.header!)
-                      else
-                        widget.layoutContext.header!
+                      ThemedSurface(
+                        builder: (_, __) => InvertGroupHeader(
+                          invert: widget.model.invertHeader,
+                          child: widget.layoutContext.header!,
+                        ),
+                      )
                     else
                       SizedBox(height: MediaQuery.of(context).padding.top + 20),
                     SizedBox(
@@ -150,7 +159,7 @@ class _FocusLayoutState extends State<FocusLayout> {
                         child: AspectRatio(
                           aspectRatio: 1,
                           child: SingleElementArea(
-                            id: widget.layoutContext.id + '_focus',
+                            id: widget.layoutContext.idFor('focus'),
                             decorator: widget.model.coverUrl != null
                                 ? const GlassContentElementDecorator()
                                 : const ClippedContentElementDecorator(),
@@ -169,7 +178,7 @@ class _FocusLayoutState extends State<FocusLayout> {
                                 boxShadow: const [BoxShadow(blurRadius: 10, spreadRadius: -4)]),
                             padding: const EdgeInsets.all(5),
                             child: ActionRowArea(
-                              widget.layoutContext.id + '_actions',
+                              widget.layoutContext.idFor('actions'),
                               decorator: const DefaultActionDecorator(ColorPreference(useHighlightColor: true)),
                             ),
                           ),
@@ -179,7 +188,7 @@ class _FocusLayoutState extends State<FocusLayout> {
                       Padding(
                         padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
                         child: ActionRowArea(
-                          widget.layoutContext.id + '_infos',
+                          widget.layoutContext.idFor('infos'),
                           decorator: const CardActionDecorator(),
                         ),
                       )
@@ -191,7 +200,7 @@ class _FocusLayoutState extends State<FocusLayout> {
           SliverPadding(
             padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
             sliver: SliverToBoxAdapter(
-                child: MixedGridArea(id: widget.layoutContext.id + '_grid', scrollController: _scrollController)),
+                child: MixedGridArea(id: widget.layoutContext.idFor('grid'), scrollController: _scrollController)),
           ),
           SliverPadding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom)),
         ],

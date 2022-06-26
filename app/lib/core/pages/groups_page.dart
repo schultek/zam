@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +14,13 @@ import '../../providers/auth/logic_provider.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/groups/groups_provider.dart';
 import '../../providers/groups/selected_group_provider.dart';
+import '../../providers/links/shortcuts_provider.dart';
 import '../../screens/admin/admin_panel_screen.dart';
 import '../../screens/create_group/create_group_screen.dart';
 import '../../screens/signin/phone_signin_screen.dart';
-import '../../widgets/ju_background.dart';
+import '../editing/widgets/ju_logo.dart';
 import '../models/models.dart';
 import '../themes/themes.dart';
-import 'settings_page.dart';
 
 class SelectGroupPage extends StatelessWidget {
   const SelectGroupPage({Key? key}) : super(key: key);
@@ -108,32 +110,46 @@ class SelectGroupPage extends StatelessWidget {
       ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: ThemedSurface(
-          builder: (context, color) => JuBackground(
-            child: Container(
-              decoration: BoxDecoration(
-                color: context.surfaceColor.withOpacity(0.2),
-              ),
-              height: 100,
-              child: Material(
-                color: context.surfaceColor.withOpacity(0.3),
-                child: InkWell(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.add),
-                      const SizedBox(width: 10),
-                      Text(
-                        context.tr.create_new_group,
-                        style: context.theme.textTheme.headline5!.copyWith(color: context.onSurfaceColor),
+          builder: (context, color) => Material(
+            color: context.surfaceColor,
+            child: InkWell(
+              child: SizedBox(
+                height: 80,
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: Stack(
+                        children: [
+                          const JuLogo(size: 80),
+                          Positioned.fill(
+                            child: Container(
+                              color: context.surfaceColor.withOpacity(0.6),
+                              child: const Center(
+                                child: Icon(Icons.add_rounded, size: 60),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true)
-                        .push(MaterialPageRoute(builder: (context) => const CreateGroupScreen()));
-                  },
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          context.tr.create_new_group,
+                          style: context.theme.textTheme.headline6!.copyWith(color: context.onSurfaceColor),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              onTap: () {
+                Navigator.of(context, rootNavigator: true)
+                    .push(MaterialPageRoute(builder: (context) => const CreateGroupScreen()));
+              },
             ),
           ),
         ),
@@ -236,46 +252,76 @@ class SelectGroupPage extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: ThemedSurface(
-        builder: (context, color) => Container(
-          decoration: BoxDecoration(
-            color: context.surfaceColor,
-            image: group.pictureUrl != null
-                ? DecorationImage(image: CachedNetworkImageProvider(group.pictureUrl!), fit: BoxFit.cover)
-                : null,
-          ),
-          height: isSelected ? 200 : 140,
-          child: Material(
-            color: context.surfaceColor.withOpacity(0.3),
-            child: InkWell(
-              child: Stack(
+        builder: (context, color) => Material(
+          color: context.surfaceColor,
+          child: InkWell(
+            child: SizedBox(
+              height: 80,
+              child: Row(
                 children: [
-                  Center(
-                    child: Text(
-                      group.name,
-                      style: context.theme.textTheme.headline4!.copyWith(color: context.onSurfaceColor),
-                    ),
+                  SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: group.pictureUrl != null
+                        ? CachedNetworkImage(
+                            imageUrl: group.pictureUrl!,
+                            fit: BoxFit.cover,
+                            width: 80,
+                            height: 80,
+                          )
+                        : JuLogo(
+                            size: 80,
+                            name: group.name,
+                            theme: group.theme,
+                          ),
                   ),
-                  if (isSelected && context.watch(isOrganizerProvider))
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: IconButton(
-                        icon: Icon(Icons.settings, color: context.onSurfaceColor),
-                        onPressed: () {
-                          Navigator.push(context, SettingsPage.route());
-                        },
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            group.name,
+                            style: context.theme.textTheme.headline5!.copyWith(color: context.onSurfaceColor),
+                          ),
+                          Text(
+                            '${group.users.length} ${context.tr.users}',
+                            style: context.theme.textTheme.bodySmall!.copyWith(color: context.onSurfaceColor),
+                          ),
+                        ],
                       ),
                     ),
+                  ),
+                  if (Platform.isAndroid)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: IconButton(
+                        icon: Icon(Icons.add_to_home_screen, color: context.onSurfaceColor),
+                        onPressed: () {
+                          context.read(shortcutsProvider).pinShortcut(
+                                id: group.id,
+                                name: group.name,
+                                theme: group.theme,
+                                widget: ClipRRect(
+                                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                  child: JuLogo(size: 40, name: group.name, theme: group.theme),
+                                ),
+                              );
+                        },
+                      ),
+                    )
                 ],
               ),
-              onTap: () {
-                if (isSelected) {
-                  Navigator.pop(context);
-                } else {
-                  context.read(selectedGroupIdProvider.notifier).state = group.id;
-                }
-              },
             ),
+            onTap: () {
+              if (isSelected) {
+                Navigator.pop(context);
+              } else {
+                context.read(selectedGroupIdProvider.notifier).state = group.id;
+              }
+            },
           ),
         ),
       ),

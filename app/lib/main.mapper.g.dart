@@ -30,6 +30,7 @@ import 'modules/profile/profile.module.dart';
 import 'modules/split/split.module.dart';
 import 'modules/thebutton/thebutton.module.dart';
 import 'modules/web/web_module.dart';
+import 'providers/links/shortcuts_provider.dart';
 import 'screens/admin/providers/admin_groups_provider.dart';
 import 'screens/admin/providers/admin_users_provider.dart';
 
@@ -37,15 +38,16 @@ import 'screens/admin/providers/admin_users_provider.dart';
 
 var _mappers = <BaseMapper>{
   // class mappers
+  LaunchThemeMapper._(),
   ModuleMessageMapper._(),
   ModuleIdMapper._(),
+  ThemeModelMapper._(),
   GroupMapper._(),
   GroupUserMapper._(),
   SwipeTemplateModelMapper._(),
   TemplateModelMapper._(),
   SwipeTemplatePageMapper._(),
   TemplatePageMapper._(),
-  ThemeModelMapper._(),
   AnnouncementMapper._(),
   ChannelInfoMapper._(),
   ChatMessageMapper._(),
@@ -73,6 +75,7 @@ var _mappers = <BaseMapper>{
   BalancesListParamsMapper._(),
   BalanceFocusParamsMapper._(),
   SplitStateMapper._(),
+  BillingStatsMapper._(),
   BillingRatesMapper._(),
   SplitTemplateMapper._(),
   BalanceEntryMapper._(),
@@ -88,6 +91,7 @@ var _mappers = <BaseMapper>{
   LaunchUrlParamsMapper._(),
   WebPageParamsMapper._(),
   CounterStateMapper._(),
+  LayoutModelMapper._(),
   UserDataMapper._(),
   UserMetadataMapper._(),
   UserInfoMapper._(),
@@ -98,11 +102,11 @@ var _mappers = <BaseMapper>{
   UserFilterMapper._(),
   DropModelMapper._(),
   DropsLayoutModelMapper._(),
-  LayoutModelMapper._(),
   FocusLayoutModelMapper._(),
   FullPageLayoutModelMapper._(),
   GridLayoutModelMapper._(),
   // enum mappers
+  LabelColorMapper._(),
   CurrencyMapper._(),
   SplitSourceTypeMapper._(),
   ExpenseTargetTypeMapper._(),
@@ -112,6 +116,55 @@ var _mappers = <BaseMapper>{
 };
 
 // === GENERATED CLASS MAPPERS AND EXTENSIONS ===
+
+class LaunchThemeMapper extends BaseMapper<LaunchTheme> {
+  LaunchThemeMapper._();
+
+  @override
+  Function get decoder => decode;
+  LaunchTheme decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  LaunchTheme fromMap(Map<String, dynamic> map) => LaunchTheme(Mapper.i.$get(map, 'name'), Mapper.i.$get(map, 'theme'));
+
+  @override
+  Function get encoder => (LaunchTheme v) => encode(v);
+  dynamic encode(LaunchTheme v) => toMap(v);
+  Map<String, dynamic> toMap(LaunchTheme l) =>
+      {'name': Mapper.i.$enc(l.name, 'name'), 'theme': Mapper.i.$enc(l.theme, 'theme')};
+
+  @override
+  String stringify(LaunchTheme self) =>
+      'LaunchTheme(name: ${Mapper.asString(self.name)}, theme: ${Mapper.asString(self.theme)})';
+  @override
+  int hash(LaunchTheme self) => Mapper.hash(self.name) ^ Mapper.hash(self.theme);
+  @override
+  bool equals(LaunchTheme self, LaunchTheme other) =>
+      Mapper.isEqual(self.name, other.name) && Mapper.isEqual(self.theme, other.theme);
+
+  @override
+  Function get typeFactory => (f) => f<LaunchTheme>();
+}
+
+extension LaunchThemeMapperExtension on LaunchTheme {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  LaunchThemeCopyWith<LaunchTheme> get copyWith => LaunchThemeCopyWith(this, $identity);
+}
+
+abstract class LaunchThemeCopyWith<$R> {
+  factory LaunchThemeCopyWith(LaunchTheme value, Then<LaunchTheme, $R> then) = _LaunchThemeCopyWithImpl<$R>;
+  ThemeModelCopyWith<$R> get theme;
+  $R call({String? name, ThemeModel? theme});
+  $R apply(LaunchTheme Function(LaunchTheme) transform);
+}
+
+class _LaunchThemeCopyWithImpl<$R> extends BaseCopyWith<LaunchTheme, $R> implements LaunchThemeCopyWith<$R> {
+  _LaunchThemeCopyWithImpl(LaunchTheme value, Then<LaunchTheme, $R> then) : super(value, then);
+
+  @override
+  ThemeModelCopyWith<$R> get theme => ThemeModelCopyWith($value.theme, (v) => call(theme: v));
+  @override
+  $R call({String? name, ThemeModel? theme}) => $then(LaunchTheme(name ?? $value.name, theme ?? $value.theme));
+}
 
 class ModuleMessageMapper extends BaseMapper<ModuleMessage> {
   ModuleMessageMapper._();
@@ -215,6 +268,54 @@ class _ModuleIdCopyWithImpl<$R> extends BaseCopyWith<ModuleId, $R> implements Mo
       or(params, $value.params)));
 }
 
+class ThemeModelMapper extends BaseMapper<ThemeModel> {
+  ThemeModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  ThemeModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ThemeModel fromMap(Map<String, dynamic> map) =>
+      ThemeModel(schemeIndex: Mapper.i.$get(map, 'schemeIndex'), dark: Mapper.i.$getOpt(map, 'dark') ?? false);
+
+  @override
+  Function get encoder => (ThemeModel v) => encode(v);
+  dynamic encode(ThemeModel v) => toMap(v);
+  Map<String, dynamic> toMap(ThemeModel t) =>
+      {'schemeIndex': Mapper.i.$enc(t.schemeIndex, 'schemeIndex'), 'dark': Mapper.i.$enc(t.dark, 'dark')};
+
+  @override
+  String stringify(ThemeModel self) =>
+      'ThemeModel(schemeIndex: ${Mapper.asString(self.schemeIndex)}, dark: ${Mapper.asString(self.dark)})';
+  @override
+  int hash(ThemeModel self) => Mapper.hash(self.schemeIndex) ^ Mapper.hash(self.dark);
+  @override
+  bool equals(ThemeModel self, ThemeModel other) =>
+      Mapper.isEqual(self.schemeIndex, other.schemeIndex) && Mapper.isEqual(self.dark, other.dark);
+
+  @override
+  Function get typeFactory => (f) => f<ThemeModel>();
+}
+
+extension ThemeModelMapperExtension on ThemeModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  ThemeModelCopyWith<ThemeModel> get copyWith => ThemeModelCopyWith(this, $identity);
+}
+
+abstract class ThemeModelCopyWith<$R> {
+  factory ThemeModelCopyWith(ThemeModel value, Then<ThemeModel, $R> then) = _ThemeModelCopyWithImpl<$R>;
+  $R call({int? schemeIndex, bool? dark});
+  $R apply(ThemeModel Function(ThemeModel) transform);
+}
+
+class _ThemeModelCopyWithImpl<$R> extends BaseCopyWith<ThemeModel, $R> implements ThemeModelCopyWith<$R> {
+  _ThemeModelCopyWithImpl(ThemeModel value, Then<ThemeModel, $R> then) : super(value, then);
+
+  @override
+  $R call({int? schemeIndex, bool? dark}) =>
+      $then(ThemeModel(schemeIndex: schemeIndex ?? $value.schemeIndex, dark: dark ?? $value.dark));
+}
+
 class GroupMapper extends BaseMapper<Group> {
   GroupMapper._();
 
@@ -225,6 +326,7 @@ class GroupMapper extends BaseMapper<Group> {
       id: Mapper.i.$get(map, 'id'),
       name: Mapper.i.$get(map, 'name'),
       pictureUrl: Mapper.i.$getOpt(map, 'pictureUrl'),
+      logoUrl: Mapper.i.$getOpt(map, 'logoUrl'),
       template: Mapper.i.$get(map, 'template'),
       theme: Mapper.i.$get(map, 'theme'),
       users: Mapper.i.$getOpt(map, 'users') ?? const {},
@@ -238,6 +340,7 @@ class GroupMapper extends BaseMapper<Group> {
         'id': Mapper.i.$enc(g.id, 'id'),
         'name': Mapper.i.$enc(g.name, 'name'),
         'pictureUrl': Mapper.i.$enc(g.pictureUrl, 'pictureUrl'),
+        'logoUrl': Mapper.i.$enc(g.logoUrl, 'logoUrl'),
         'template': Mapper.i.$enc(g.template, 'template'),
         'theme': Mapper.i.$enc(g.theme, 'theme'),
         'users': Mapper.i.$enc(g.users, 'users'),
@@ -247,12 +350,13 @@ class GroupMapper extends BaseMapper<Group> {
 
   @override
   String stringify(Group self) =>
-      'Group(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, template: ${Mapper.asString(self.template)}, theme: ${Mapper.asString(self.theme)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)}, moduleBlacklist: ${Mapper.asString(self.moduleBlacklist)})';
+      'Group(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, logoUrl: ${Mapper.asString(self.logoUrl)}, template: ${Mapper.asString(self.template)}, theme: ${Mapper.asString(self.theme)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)}, moduleBlacklist: ${Mapper.asString(self.moduleBlacklist)})';
   @override
   int hash(Group self) =>
       Mapper.hash(self.name) ^
       Mapper.hash(self.id) ^
       Mapper.hash(self.pictureUrl) ^
+      Mapper.hash(self.logoUrl) ^
       Mapper.hash(self.template) ^
       Mapper.hash(self.theme) ^
       Mapper.hash(self.users) ^
@@ -263,6 +367,7 @@ class GroupMapper extends BaseMapper<Group> {
       Mapper.isEqual(self.name, other.name) &&
       Mapper.isEqual(self.id, other.id) &&
       Mapper.isEqual(self.pictureUrl, other.pictureUrl) &&
+      Mapper.isEqual(self.logoUrl, other.logoUrl) &&
       Mapper.isEqual(self.template, other.template) &&
       Mapper.isEqual(self.theme, other.theme) &&
       Mapper.isEqual(self.users, other.users) &&
@@ -287,6 +392,7 @@ abstract class GroupCopyWith<$R> {
       {String? id,
       String? name,
       String? pictureUrl,
+      String? logoUrl,
       TemplateModel? template,
       ThemeModel? theme,
       Map<String, GroupUser>? users,
@@ -308,6 +414,7 @@ class _GroupCopyWithImpl<$R> extends BaseCopyWith<Group, $R> implements GroupCop
           {String? id,
           String? name,
           Object? pictureUrl = $none,
+          Object? logoUrl = $none,
           TemplateModel? template,
           ThemeModel? theme,
           Map<String, GroupUser>? users,
@@ -317,6 +424,7 @@ class _GroupCopyWithImpl<$R> extends BaseCopyWith<Group, $R> implements GroupCop
           id: id ?? $value.id,
           name: name ?? $value.name,
           pictureUrl: or(pictureUrl, $value.pictureUrl),
+          logoUrl: or(logoUrl, $value.logoUrl),
           template: template ?? $value.template,
           theme: theme ?? $value.theme,
           users: users ?? $value.users,
@@ -598,54 +706,6 @@ class _TemplatePageCopyWithImpl<$R> extends BaseCopyWith<TemplatePage, $R> imple
 
   @override
   $R call() => $then(TemplatePage());
-}
-
-class ThemeModelMapper extends BaseMapper<ThemeModel> {
-  ThemeModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  ThemeModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  ThemeModel fromMap(Map<String, dynamic> map) =>
-      ThemeModel(schemeIndex: Mapper.i.$get(map, 'schemeIndex'), dark: Mapper.i.$getOpt(map, 'dark') ?? false);
-
-  @override
-  Function get encoder => (ThemeModel v) => encode(v);
-  dynamic encode(ThemeModel v) => toMap(v);
-  Map<String, dynamic> toMap(ThemeModel t) =>
-      {'schemeIndex': Mapper.i.$enc(t.schemeIndex, 'schemeIndex'), 'dark': Mapper.i.$enc(t.dark, 'dark')};
-
-  @override
-  String stringify(ThemeModel self) =>
-      'ThemeModel(schemeIndex: ${Mapper.asString(self.schemeIndex)}, dark: ${Mapper.asString(self.dark)})';
-  @override
-  int hash(ThemeModel self) => Mapper.hash(self.schemeIndex) ^ Mapper.hash(self.dark);
-  @override
-  bool equals(ThemeModel self, ThemeModel other) =>
-      Mapper.isEqual(self.schemeIndex, other.schemeIndex) && Mapper.isEqual(self.dark, other.dark);
-
-  @override
-  Function get typeFactory => (f) => f<ThemeModel>();
-}
-
-extension ThemeModelMapperExtension on ThemeModel {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  ThemeModelCopyWith<ThemeModel> get copyWith => ThemeModelCopyWith(this, $identity);
-}
-
-abstract class ThemeModelCopyWith<$R> {
-  factory ThemeModelCopyWith(ThemeModel value, Then<ThemeModel, $R> then) = _ThemeModelCopyWithImpl<$R>;
-  $R call({int? schemeIndex, bool? dark});
-  $R apply(ThemeModel Function(ThemeModel) transform);
-}
-
-class _ThemeModelCopyWithImpl<$R> extends BaseCopyWith<ThemeModel, $R> implements ThemeModelCopyWith<$R> {
-  _ThemeModelCopyWithImpl(ThemeModel value, Then<ThemeModel, $R> then) : super(value, then);
-
-  @override
-  $R call({int? schemeIndex, bool? dark}) =>
-      $then(ThemeModel(schemeIndex: schemeIndex ?? $value.schemeIndex, dark: dark ?? $value.dark));
 }
 
 class AnnouncementMapper extends BaseMapper<Announcement> {
@@ -1216,23 +1276,30 @@ class LabelParamsMapper extends BaseMapper<LabelParams> {
   @override
   Function get decoder => decode;
   LabelParams decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  LabelParams fromMap(Map<String, dynamic> map) =>
-      LabelParams(label: Mapper.i.$getOpt(map, 'label'), centered: Mapper.i.$getOpt(map, 'centered') ?? false);
+  LabelParams fromMap(Map<String, dynamic> map) => LabelParams(
+      label: Mapper.i.$getOpt(map, 'label'),
+      centered: Mapper.i.$getOpt(map, 'centered') ?? false,
+      color: Mapper.i.$getOpt(map, 'color') ?? LabelColor.text);
 
   @override
   Function get encoder => (LabelParams v) => encode(v);
   dynamic encode(LabelParams v) => toMap(v);
-  Map<String, dynamic> toMap(LabelParams l) =>
-      {'label': Mapper.i.$enc(l.label, 'label'), 'centered': Mapper.i.$enc(l.centered, 'centered')};
+  Map<String, dynamic> toMap(LabelParams l) => {
+        'label': Mapper.i.$enc(l.label, 'label'),
+        'centered': Mapper.i.$enc(l.centered, 'centered'),
+        'color': Mapper.i.$enc(l.color, 'color')
+      };
 
   @override
   String stringify(LabelParams self) =>
-      'LabelParams(label: ${Mapper.asString(self.label)}, centered: ${Mapper.asString(self.centered)})';
+      'LabelParams(label: ${Mapper.asString(self.label)}, centered: ${Mapper.asString(self.centered)}, color: ${Mapper.asString(self.color)})';
   @override
-  int hash(LabelParams self) => Mapper.hash(self.label) ^ Mapper.hash(self.centered);
+  int hash(LabelParams self) => Mapper.hash(self.label) ^ Mapper.hash(self.centered) ^ Mapper.hash(self.color);
   @override
   bool equals(LabelParams self, LabelParams other) =>
-      Mapper.isEqual(self.label, other.label) && Mapper.isEqual(self.centered, other.centered);
+      Mapper.isEqual(self.label, other.label) &&
+      Mapper.isEqual(self.centered, other.centered) &&
+      Mapper.isEqual(self.color, other.color);
 
   @override
   Function get typeFactory => (f) => f<LabelParams>();
@@ -1246,7 +1313,7 @@ extension LabelParamsMapperExtension on LabelParams {
 
 abstract class LabelParamsCopyWith<$R> {
   factory LabelParamsCopyWith(LabelParams value, Then<LabelParams, $R> then) = _LabelParamsCopyWithImpl<$R>;
-  $R call({String? label, bool? centered});
+  $R call({String? label, bool? centered, LabelColor? color});
   $R apply(LabelParams Function(LabelParams) transform);
 }
 
@@ -1254,8 +1321,8 @@ class _LabelParamsCopyWithImpl<$R> extends BaseCopyWith<LabelParams, $R> impleme
   _LabelParamsCopyWithImpl(LabelParams value, Then<LabelParams, $R> then) : super(value, then);
 
   @override
-  $R call({Object? label = $none, bool? centered}) =>
-      $then(LabelParams(label: or(label, $value.label), centered: centered ?? $value.centered));
+  $R call({Object? label = $none, bool? centered, LabelColor? color}) => $then(
+      LabelParams(label: or(label, $value.label), centered: centered ?? $value.centered, color: color ?? $value.color));
 }
 
 class PlayerParamsMapper extends BaseMapper<PlayerParams> {
@@ -2348,7 +2415,7 @@ class SplitStateMapper extends BaseMapper<SplitState> {
 
   @override
   String stringify(SplitState self) =>
-      'SplitState(pots: ${Mapper.asString(self.pots)}, entries: ${Mapper.asString(self.entries)}, templates: ${Mapper.asString(self.templates)}, showBilling: ${Mapper.asString(self.showBilling)}, billingRates: ${Mapper.asString(self.billingRates)}, balances: ${Mapper.asString(self.balances)}, billing: ${Mapper.asString(self.billing)})';
+      'SplitState(pots: ${Mapper.asString(self.pots)}, entries: ${Mapper.asString(self.entries)}, templates: ${Mapper.asString(self.templates)}, showBilling: ${Mapper.asString(self.showBilling)}, billingRates: ${Mapper.asString(self.billingRates)}, balances: ${Mapper.asString(self.balances)}, billing: ${Mapper.asString(self.billing)}, stats: ${Mapper.asString(self.stats)})';
   @override
   int hash(SplitState self) =>
       Mapper.hash(self.pots) ^
@@ -2357,7 +2424,8 @@ class SplitStateMapper extends BaseMapper<SplitState> {
       Mapper.hash(self.showBilling) ^
       Mapper.hash(self.billingRates) ^
       Mapper.hash(self.balances) ^
-      Mapper.hash(self.billing);
+      Mapper.hash(self.billing) ^
+      Mapper.hash(self.stats);
   @override
   bool equals(SplitState self, SplitState other) =>
       Mapper.isEqual(self.pots, other.pots) &&
@@ -2366,7 +2434,8 @@ class SplitStateMapper extends BaseMapper<SplitState> {
       Mapper.isEqual(self.showBilling, other.showBilling) &&
       Mapper.isEqual(self.billingRates, other.billingRates) &&
       Mapper.isEqual(self.balances, other.balances) &&
-      Mapper.isEqual(self.billing, other.billing);
+      Mapper.isEqual(self.billing, other.billing) &&
+      Mapper.isEqual(self.stats, other.stats);
 
   @override
   Function get typeFactory => (f) => f<SplitState>();
@@ -2421,6 +2490,57 @@ class _SplitStateCopyWithImpl<$R> extends BaseCopyWith<SplitState, $R> implement
           showBilling: showBilling ?? $value.showBilling,
           templates: templates ?? $value.templates,
           billingRates: or(billingRates, $value.billingRates)));
+}
+
+class BillingStatsMapper extends BaseMapper<BillingStats> {
+  BillingStatsMapper._();
+
+  @override
+  Function get decoder => decode;
+  BillingStats decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  BillingStats fromMap(Map<String, dynamic> map) =>
+      BillingStats(Mapper.i.$get(map, 'totalSpendings'), Mapper.i.$get(map, 'userSpendings'));
+
+  @override
+  Function get encoder => (BillingStats v) => encode(v);
+  dynamic encode(BillingStats v) => toMap(v);
+  Map<String, dynamic> toMap(BillingStats b) => {
+        'totalSpendings': Mapper.i.$enc(b.totalSpendings, 'totalSpendings'),
+        'userSpendings': Mapper.i.$enc(b.userSpendings, 'userSpendings')
+      };
+
+  @override
+  String stringify(BillingStats self) =>
+      'BillingStats(totalSpendings: ${Mapper.asString(self.totalSpendings)}, userSpendings: ${Mapper.asString(self.userSpendings)})';
+  @override
+  int hash(BillingStats self) => Mapper.hash(self.totalSpendings) ^ Mapper.hash(self.userSpendings);
+  @override
+  bool equals(BillingStats self, BillingStats other) =>
+      Mapper.isEqual(self.totalSpendings, other.totalSpendings) &&
+      Mapper.isEqual(self.userSpendings, other.userSpendings);
+
+  @override
+  Function get typeFactory => (f) => f<BillingStats>();
+}
+
+extension BillingStatsMapperExtension on BillingStats {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  BillingStatsCopyWith<BillingStats> get copyWith => BillingStatsCopyWith(this, $identity);
+}
+
+abstract class BillingStatsCopyWith<$R> {
+  factory BillingStatsCopyWith(BillingStats value, Then<BillingStats, $R> then) = _BillingStatsCopyWithImpl<$R>;
+  $R call({SplitBalance? totalSpendings, Map<String, SplitBalance>? userSpendings});
+  $R apply(BillingStats Function(BillingStats) transform);
+}
+
+class _BillingStatsCopyWithImpl<$R> extends BaseCopyWith<BillingStats, $R> implements BillingStatsCopyWith<$R> {
+  _BillingStatsCopyWithImpl(BillingStats value, Then<BillingStats, $R> then) : super(value, then);
+
+  @override
+  $R call({SplitBalance? totalSpendings, Map<String, SplitBalance>? userSpendings}) =>
+      $then(BillingStats(totalSpendings ?? $value.totalSpendings, userSpendings ?? $value.userSpendings));
 }
 
 class BillingRatesMapper extends BaseMapper<BillingRates> {
@@ -3415,6 +3535,62 @@ class _CounterStateCopyWithImpl<$R> extends BaseCopyWith<CounterState, $R> imple
   $R call({int? count, String? label}) => $then(CounterState(count ?? $value.count, label ?? $value.label));
 }
 
+class LayoutModelMapper extends BaseMapper<LayoutModel> {
+  LayoutModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  LayoutModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) {
+        switch (map['type']) {
+          case 'drops':
+            return DropsLayoutModelMapper._().decode(map);
+          case 'focus':
+            return FocusLayoutModelMapper._().decode(map);
+          case 'grid':
+            return GridLayoutModelMapper._().decode(map);
+          case 'page':
+            return FullPageLayoutModelMapper._().decode(map);
+          default:
+            return fromMap(map);
+        }
+      });
+  LayoutModel fromMap(Map<String, dynamic> map) =>
+      throw MapperException.missingSubclass('LayoutModel', 'type', '${map['type']}');
+
+  @override
+  Function get encoder => (LayoutModel v) => encode(v);
+  dynamic encode(LayoutModel v) {
+    if (v is DropsLayoutModel) {
+      return DropsLayoutModelMapper._().encode(v);
+    } else if (v is FocusLayoutModel) {
+      return FocusLayoutModelMapper._().encode(v);
+    } else if (v is FullPageLayoutModel) {
+      return FullPageLayoutModelMapper._().encode(v);
+    } else if (v is GridLayoutModel) {
+      return GridLayoutModelMapper._().encode(v);
+    } else {
+      return toMap(v);
+    }
+  }
+
+  Map<String, dynamic> toMap(LayoutModel l) => {};
+
+  @override
+  String stringify(LayoutModel self) => 'LayoutModel()';
+  @override
+  int hash(LayoutModel self) => 0;
+  @override
+  bool equals(LayoutModel self, LayoutModel other) => true;
+
+  @override
+  Function get typeFactory => (f) => f<LayoutModel>();
+}
+
+extension LayoutModelMapperExtension on LayoutModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+}
+
 class UserDataMapper extends BaseMapper<UserData> {
   UserDataMapper._();
 
@@ -4108,62 +4284,6 @@ class _DropsLayoutModelCopyWithImpl<$R> extends BaseCopyWith<DropsLayoutModel, $
       drops: drops ?? $value.drops, wideFocus: wideFocus ?? $value.wideFocus, coverUrl: or(coverUrl, $value.coverUrl)));
 }
 
-class LayoutModelMapper extends BaseMapper<LayoutModel> {
-  LayoutModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  LayoutModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) {
-        switch (map['type']) {
-          case 'drops':
-            return DropsLayoutModelMapper._().decode(map);
-          case 'focus':
-            return FocusLayoutModelMapper._().decode(map);
-          case 'grid':
-            return GridLayoutModelMapper._().decode(map);
-          case 'page':
-            return FullPageLayoutModelMapper._().decode(map);
-          default:
-            return fromMap(map);
-        }
-      });
-  LayoutModel fromMap(Map<String, dynamic> map) =>
-      throw MapperException.missingSubclass('LayoutModel', 'type', '${map['type']}');
-
-  @override
-  Function get encoder => (LayoutModel v) => encode(v);
-  dynamic encode(LayoutModel v) {
-    if (v is DropsLayoutModel) {
-      return DropsLayoutModelMapper._().encode(v);
-    } else if (v is FocusLayoutModel) {
-      return FocusLayoutModelMapper._().encode(v);
-    } else if (v is FullPageLayoutModel) {
-      return FullPageLayoutModelMapper._().encode(v);
-    } else if (v is GridLayoutModel) {
-      return GridLayoutModelMapper._().encode(v);
-    } else {
-      return toMap(v);
-    }
-  }
-
-  Map<String, dynamic> toMap(LayoutModel l) => {};
-
-  @override
-  String stringify(LayoutModel self) => 'LayoutModel()';
-  @override
-  int hash(LayoutModel self) => 0;
-  @override
-  bool equals(LayoutModel self, LayoutModel other) => true;
-
-  @override
-  Function get typeFactory => (f) => f<LayoutModel>();
-}
-
-extension LayoutModelMapperExtension on LayoutModel {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-}
-
 class FocusLayoutModelMapper extends BaseMapper<FocusLayoutModel> {
   FocusLayoutModelMapper._();
 
@@ -4328,6 +4448,42 @@ class _GridLayoutModelCopyWithImpl<$R> extends BaseCopyWith<GridLayoutModel, $R>
 }
 
 // === GENERATED ENUM MAPPERS AND EXTENSIONS ===
+
+class LabelColorMapper extends EnumMapper<LabelColor> {
+  LabelColorMapper._();
+
+  @override
+  LabelColor decode(dynamic value) {
+    switch (value) {
+      case 'text':
+        return LabelColor.text;
+      case 'primary':
+        return LabelColor.primary;
+      case 'secondary':
+        return LabelColor.secondary;
+      default:
+        throw MapperException.unknownEnumValue(value);
+    }
+  }
+
+  @override
+  dynamic encode(LabelColor value) {
+    switch (value) {
+      case LabelColor.text:
+        return 'text';
+      case LabelColor.primary:
+        return 'primary';
+      case LabelColor.secondary:
+        return 'secondary';
+    }
+  }
+}
+
+extension LabelColorMapperExtension on LabelColor {
+  dynamic toValue() => Mapper.toValue(this);
+  @Deprecated('Use \'toValue\' instead')
+  String toStringValue() => Mapper.toValue(this) as String;
+}
 
 class CurrencyMapper extends EnumMapper<Currency> {
   CurrencyMapper._();

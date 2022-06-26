@@ -5,8 +5,9 @@ import 'package:riverpod_context/riverpod_context.dart';
 import '../../../helpers/extensions.dart';
 import '../../../main.mapper.g.dart';
 import '../../../widgets/nested_will_pop_scope.dart';
+import '../../editing/editing_providers.dart';
+import '../../editing/selected_area_provider.dart';
 import '../../layouts/layouts.dart';
-import '../../providers/editing_providers.dart';
 import '../../templates/templates.dart';
 import '../../themes/themes.dart';
 import '../../widgets/layout_preview.dart';
@@ -38,13 +39,34 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
   @override
   void initState() {
     super.initState();
-    pageController = CustomPageController(initialPage: widget.model.leftPage != null ? 1 : 0);
+    pageController = CustomPageController();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      context.read(activeLayoutProvider.notifier).state = model.mainPage.layout.withId('main');
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant SwipeTemplate oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      updateActiveLayout(pageController.page);
+    });
+  }
+
+  void updateActiveLayout(int page) {
+    if (page == -1) {
+      context.read(activeLayoutProvider.notifier).state = model.leftPage?.layout.withId('left');
+    } else if (page == 0) {
+      context.read(activeLayoutProvider.notifier).state = model.mainPage.layout.withId('main');
+    } else if (page == 1) {
+      context.read(activeLayoutProvider.notifier).state = model.rightPage?.layout.withId('right');
+    }
   }
 
   @override
   List<Widget> getPageSettings() {
     var pageIndex = pageController.page;
-    if (pageIndex == 0) {
+    if (pageIndex == -1) {
       if (model.leftPage != null) {
         return model.leftPage!.getSettings(
           model,
@@ -58,7 +80,7 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
           pageController.animateToPageDelta,
         );
       }
-    } else if (pageIndex == 1) {
+    } else if (pageIndex == 0) {
       return model.mainPage.getSettings(
         model,
         (page) => updateModel(model.copyWith(mainPage: page)),
@@ -87,8 +109,8 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
       body: Builder(
         builder: (context) => NestedWillPopScope(
           onWillPop: () async {
-            if (!Navigator.of(context).canPop() && pageController.page != (model.leftPage == null ? 0 : 1)) {
-              pageController.animateToPage(model.leftPage == null ? 0 : 1);
+            if (!Navigator.of(context).canPop() && pageController.page != 0) {
+              pageController.animateToPage(0);
               return false;
             }
             return true;
@@ -97,7 +119,8 @@ class SwipeTemplateState extends TemplateState<SwipeTemplate, SwipeTemplateModel
             var isEditing = context.watch(isEditingProvider);
             return CustomPageView(
               controller: pageController,
-              onPageChanged: onTemplatePageChanged,
+              onPageChanged: updateActiveLayout,
+              anchor: mainKey,
               children: [
                 if (model.leftPage != null) //
                   KeepAlive(

@@ -41,7 +41,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
     var visibleHeight = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).viewInsets.bottom;
-    print(visibleHeight);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(context.tr.create_announcement),
@@ -68,7 +68,6 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
           GroupTheme(
             theme: widget.parentArea.theme,
             child: Builder(builder: (context) {
-              print(MediaQuery.of(context));
               return Container(
                 color: context.surfaceColor,
                 padding: const EdgeInsets.all(20),

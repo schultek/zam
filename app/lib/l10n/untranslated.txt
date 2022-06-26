@@ -1,1 +1,21 @@
-{}
+{
+  "en": [
+    "launch_url_subtitle",
+    "launch_url_text",
+    "web_page",
+    "web_page_subtitle",
+    "web_page_text",
+    "player",
+    "player_subtitle",
+    "player_text",
+    "counter_subtitle",
+    "counter_text",
+    "games_subtitle",
+    "games_text",
+    "new_game_subtitle",
+    "new_game_text",
+    "games_list",
+    "games_list_subtitle",
+    "games_list_text"
+  ]
+}

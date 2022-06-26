@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'editing_providers.dart';
+import '../../modules/chat/chat.module.dart';
+
+final activeLayoutProvider = StateProvider<LayoutIdModel?>((ref) => null);
 
 final selectedAreaProvider = StateNotifierProvider<SelectArea, String?>((ref) => SelectArea(ref));
 
@@ -9,27 +11,27 @@ final isAreaSelectedProvider =
 
 class SelectArea extends StateNotifier<String?> {
   SelectArea(this.ref) : super(null) {
-    ref.listen<bool>(editProvider, (_, editState) {
-      if (!editState && state != null) {
-        _unselectArea();
+    ref.listen<LayoutIdModel?>(activeLayoutProvider, (_, next) {
+      if (next == null) {
+        selectWidgetAreaById(null);
+      } else if (state == null || !next.hasAreaId(state!)) {
+        selectWidgetAreaById(next.getAreaIdToFocus());
       }
-    });
+    }, fireImmediately: true);
   }
 
   final Ref ref;
 
   void selectWidgetAreaById(String? id) async {
-    if (!ref.read(editProvider)) return;
     if (super.state == id) return;
     super.state = id;
-  }
-
-  void _unselectArea() {
-    super.state = null;
   }
 
   @override
   set state(String? value) {
     throw UnsupportedError('Do not set selected area directly');
   }
+
+  @override
+  String? get state => super.state;
 }

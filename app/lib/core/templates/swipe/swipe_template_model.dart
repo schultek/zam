@@ -6,7 +6,7 @@ class SwipeTemplateModel extends TemplateModel {
   final SwipeTemplatePage? leftPage;
   final SwipeTemplatePage? rightPage;
 
-  const SwipeTemplateModel({
+  SwipeTemplateModel({
     this.mainPage = const SwipeTemplatePage(layout: GridLayoutModel()),
     this.leftPage,
     this.rightPage,

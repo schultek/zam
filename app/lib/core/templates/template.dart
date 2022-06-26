@@ -8,11 +8,10 @@ import 'package:riverpod_context/riverpod_context.dart';
 import '../../providers/groups/logic_provider.dart';
 import '../../providers/groups/selected_group_provider.dart';
 import '../areas/areas.dart';
-import '../providers/editing_providers.dart';
-import '../providers/selected_area_provider.dart';
+import '../editing/editing_providers.dart';
+import '../editing/widgets/config_sheet.dart';
+import '../editing/widgets/widget_selector.dart';
 import '../themes/themes.dart';
-import '../widgets/config_sheet.dart';
-import '../widgets/widget_selector.dart';
 import 'template_model.dart';
 import 'widgets/edit_toggle.dart';
 import 'widgets/template_navigator.dart';
@@ -58,13 +57,6 @@ abstract class TemplateState<T extends Template<M>, M extends TemplateModel> ext
 
   Future<void> updateModel(M model) async {
     await context.read(groupsLogicProvider).updateTemplateModel(model);
-  }
-
-  void onTemplatePageChanged(int index) async {
-    if (context.read(isEditingProvider)) {
-      context.read(selectedAreaProvider.notifier).selectWidgetAreaById(null);
-    }
-    context.read(currentPageProvider.notifier).state = index;
   }
 
   @override

@@ -1,6 +1,21 @@
 part of announcement_module;
 
-class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
+class AnnouncementContentElement with ElementBuilder<ContentElement> {
+  @override
+  String getTitle(BuildContext context) {
+    return context.tr.announcements;
+  }
+
+  @override
+  String getSubtitle(BuildContext context) {
+    return context.tr.announcements_subtitle;
+  }
+
+  @override
+  Widget buildDescription(BuildContext context) {
+    return Text(context.tr.announcements_text);
+  }
+
   @override
   FutureOr<ContentElement?> build(ModuleContext module) async {
     if (module.hasParams) {
@@ -31,18 +46,19 @@ class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
             );
           },
         ),
-        settings: (context) => [
-          ListTile(
-            title: Text(context.tr.resend_notification),
-            subtitle: Text(context.tr.resend_notification_desc),
-            onTap: () async {
-              var send = await SettingsDialog.confirm(context, text: context.tr.confirm_resend);
-              if (send) {
-                await context.read(announcementLogicProvider).resendNotification(announcementId);
-              }
-            },
-          ),
-        ],
+        settings: DialogElementSettings(
+            builder: (context) => [
+                  ListTile(
+                    title: Text(context.tr.resend_notification),
+                    subtitle: Text(context.tr.resend_notification_desc),
+                    onTap: () async {
+                      var send = await SettingsDialog.confirm(context, text: context.tr.confirm_resend);
+                      if (send) {
+                        await context.read(announcementLogicProvider).resendNotification(announcementId);
+                      }
+                    },
+                  ),
+                ]),
       );
     } else {
       if (module.context.read(isOrganizerProvider)) {
@@ -51,23 +67,23 @@ class AnnouncementContentElement with ElementBuilderMixin<ContentElement> {
           size: ElementSize.wide,
           builder: (context) => AspectRatio(
             aspectRatio: 2.1,
-            child: NeedsSetupCard(
-              child: SimpleCard(
-                title: context.tr.new_announcement,
-                icon: Icons.add_comment,
-              ),
+            child: SimpleCard(
+              title: context.tr.new_announcement,
+              icon: Icons.add_comment,
             ),
           ),
-          settingsAction: (context) async {
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => AnnouncementPage(
-                  parentArea: Area.of<ContentElement>(module.context)!,
-                  onCreate: (id) => module.updateParams(id),
-                ),
-              ),
-            );
-          },
+          settings: SetupActionElementSettings(
+              hint: module.context.tr.create_an_announcement,
+              action: (context) async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AnnouncementPage(
+                      parentArea: Area.of<ContentElement>(module.context)!,
+                      onCreate: (id) => module.updateParams(id),
+                    ),
+                  ),
+                );
+              }),
         );
       } else {
         return null;

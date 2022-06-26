@@ -37,7 +37,7 @@ class NotesList extends StatelessWidget {
             ),
           for (var note in folders[null] ?? <Note>[])
             ListTile(
-              title: Text(note.title ?? context.tr.untitled),
+              title: Text(note.title ?? context.tr.untitled, style: TextStyle(color: context.onSurfaceColor)),
               subtitle: (() {
                 var text = (note.content.isEmpty ? Document() : Document.fromJson(note.content))
                     .toPlainText()
@@ -47,6 +47,7 @@ class NotesList extends StatelessWidget {
                     ? Text(
                         text,
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: context.onSurfaceColor),
                       )
                     : null;
               })(),

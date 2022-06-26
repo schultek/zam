@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../theme_context.dart';
 
-const double _kWidthOfScrollItem = 67.2;
+const double _kWidthOfScrollItem = 66;
 
 class ThemeSelector extends StatefulWidget {
   const ThemeSelector({Key? key, required this.schemeIndex, required this.onChange}) : super(key: key);
@@ -34,25 +34,25 @@ class _ThemeSelectorState extends State<ThemeSelector> {
   }
 
   @override
-  void didChangeDependencies() {
-    // Index got updated in popup and deps changed, animate it to new index.
+  void didUpdateWidget(ThemeSelector oldWidget) {
     if (widget.schemeIndex != schemeIndex) {
       schemeIndex = widget.schemeIndex;
       scrollController.animateTo(_kWidthOfScrollItem * schemeIndex,
           duration: const Duration(milliseconds: 350), curve: Curves.easeOutCubic);
     }
-    super.didChangeDependencies();
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
     final bool isLight = context.theme.brightness == Brightness.light;
     return SizedBox(
-      height: 76,
+      height: 66,
       child: Row(
         children: <Widget>[
           Expanded(
             child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               controller: scrollController,
               physics: const ClampingScrollPhysics(),
               scrollDirection: Axis.horizontal,
@@ -62,12 +62,12 @@ class _ThemeSelectorState extends State<ThemeSelector> {
                   optionButtonBorderRadius: 12,
                   height: 30,
                   width: 30,
-                  padding: const EdgeInsets.all(0.3),
+                  padding: EdgeInsets.zero,
                   optionButtonMargin: EdgeInsets.zero,
                   borderRadius: 0,
                   unselectedBorder: BorderSide.none,
                   selectedBorder: BorderSide(
-                    color: context.theme.primaryColorLight,
+                    color: context.onSurfaceColor,
                     width: 4,
                   ),
                   onSelect: () {
@@ -77,7 +77,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
                     widget.onChange(index);
                   },
                   selected: schemeIndex == index,
-                  backgroundColor: context.theme.colorScheme.surface,
+                  backgroundColor: Colors.transparent, //context.theme.colorScheme.surface,
                   flexSchemeColor: isLight ? FlexColor.schemesList[index].light : FlexColor.schemesList[index].dark,
                 );
               },

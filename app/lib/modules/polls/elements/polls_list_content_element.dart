@@ -1,6 +1,6 @@
 part of polls_module;
 
-class PollsListContentElement with ElementBuilderMixin<ContentElement> {
+class PollsListContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) async {
     var polls = await module.context.read(pollsProvider.future);

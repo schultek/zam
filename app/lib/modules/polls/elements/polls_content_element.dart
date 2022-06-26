@@ -1,6 +1,6 @@
 part of polls_module;
 
-class PollsContentElement with ElementBuilderMixin<ContentElement> {
+class PollsContentElement with ElementBuilder<ContentElement> {
   @override
   FutureOr<ContentElement?> build(ModuleContext module) {
     return ContentElement(
