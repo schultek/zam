@@ -6,6 +6,7 @@ import '../../editing/editing_providers.dart';
 import '../../editing/widgets/ju_logo.dart';
 import '../../pages/groups_page.dart';
 import '../../themes/themes.dart';
+import 'main_group_header.dart';
 
 class GroupSelectorButton extends StatelessWidget {
   const GroupSelectorButton({this.active = true, Key? key}) : super(key: key);
@@ -16,10 +17,13 @@ class GroupSelectorButton extends StatelessWidget {
   Widget build(BuildContext context) {
     var group = context.watch(selectedGroupProvider);
 
+    var invert = InvertGroupHeader.of(context)?.invert ?? false;
+    var color = invert ? context.surfaceColor : context.onSurfaceColor;
+
     Widget child = Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(6)),
-        boxShadow: [BoxShadow(blurRadius: 8, color: context.onSurfaceColor.withOpacity(0.4))],
+        boxShadow: [BoxShadow(blurRadius: 8, color: color.withOpacity(0.4))],
       ),
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(6)),

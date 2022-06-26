@@ -8,6 +8,25 @@ import '../../widgets/layout_preview.dart';
 import 'edit_toggle.dart';
 import 'group_selector.dart';
 
+class InvertGroupHeader extends InheritedWidget {
+  const InvertGroupHeader({
+    this.invert = true,
+    Key? key,
+    required Widget child,
+  }) : super(key: key, child: child);
+
+  final bool invert;
+
+  static InvertGroupHeader? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<InvertGroupHeader>();
+  }
+
+  @override
+  bool updateShouldNotify(InvertGroupHeader oldWidget) {
+    return oldWidget.invert != invert;
+  }
+}
+
 class MainGroupHeader extends StatelessWidget {
   const MainGroupHeader({Key? key}) : super(key: key);
 
@@ -32,6 +51,8 @@ class MainGroupHeader extends StatelessWidget {
             if (isOrganizer) EditToggles(isEditing: isEditing),
           ];
 
+          var invert = InvertGroupHeader.of(context)?.invert ?? false;
+
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -40,7 +61,8 @@ class MainGroupHeader extends StatelessWidget {
                 child: Text(
                   group.name,
                   textAlign: TextAlign.center,
-                  style: context.theme.textTheme.headline5!.apply(color: context.onSurfaceColor),
+                  style: context.theme.textTheme.headline5!
+                      .apply(color: invert ? context.surfaceColor : context.onSurfaceColor),
                 ),
               ),
               ...trailing,

@@ -10,6 +10,7 @@ import '../../main.mapper.g.dart';
 import '../../providers/groups/logic_provider.dart';
 import '../areas/areas.dart';
 import '../elements/elements.dart';
+import '../templates/widgets/main_group_header.dart';
 import '../themes/themes.dart';
 import '../widgets/layout_preview.dart';
 import '../widgets/select_image_list_tile.dart';
@@ -144,10 +145,12 @@ class _FocusLayoutState extends State<FocusLayout> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (widget.layoutContext.header != null) //
-                      if (widget.model.invertHeader)
-                        ThemedSurface(builder: (_, __) => widget.layoutContext.header!)
-                      else
-                        widget.layoutContext.header!
+                      ThemedSurface(
+                        builder: (_, __) => InvertGroupHeader(
+                          invert: widget.model.invertHeader,
+                          child: widget.layoutContext.header!,
+                        ),
+                      )
                     else
                       SizedBox(height: MediaQuery.of(context).padding.top + 20),
                     SizedBox(

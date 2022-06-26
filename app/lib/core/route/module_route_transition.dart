@@ -32,6 +32,7 @@ class _ModuleRouteTransitionState<T extends ModuleElement> extends State<ModuleR
   final containerKey = GlobalKey();
 
   Rect get moduleRect => containerKey.globalPaintBounds;
+  Size? moduleSize;
 
   bool isHidden = false;
 
@@ -46,10 +47,14 @@ class _ModuleRouteTransitionState<T extends ModuleElement> extends State<ModuleR
       state: this,
       child: Container(
         key: containerKey,
-        child: Opacity(
-          opacity: isHidden ? 0 : 1,
-          child: widget.child,
-        ),
+        child: isHidden
+            ? SizedBox.fromSize(size: moduleSize)
+            : MeasureSize(
+                onChange: (Size size) {
+                  moduleSize = size;
+                },
+                child: widget.child,
+              ),
       ),
     );
   }

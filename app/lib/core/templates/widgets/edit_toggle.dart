@@ -11,6 +11,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../editing/editing_providers.dart';
 import '../../themes/themes.dart';
+import 'main_group_header.dart';
 
 class EditToggles extends StatelessWidget {
   const EditToggles({this.isEditing = true, this.notifyVisibility = true, Key? key}) : super(key: key);
@@ -87,6 +88,9 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController, Tic
       }
     });
 
+    var invert = InvertGroupHeader.of(context)?.invert ?? false;
+    var color = invert ? context.surfaceColor : context.onSurfaceColor;
+
     Widget child = SizedBox(
       width: 40,
       child: IconButton(
@@ -95,7 +99,7 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController, Tic
           blendMode: BlendMode.srcIn,
           shaderCallback: (Rect bounds) {
             return LinearGradient(
-              colors: <Color>[context.onSurfaceColor, context.onSurfaceColor],
+              colors: <Color>[color, color],
             ).createShader(bounds);
           },
           child: AnimatedBuilder(
