@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/themes/themes.dart';
 import '../helpers/theme.dart';
 
 class JuBackground extends StatelessWidget {
@@ -7,19 +8,25 @@ class JuBackground extends StatelessWidget {
     Key? key,
     this.child,
     this.transform = 1,
-    this.colorA = juOrange,
-    this.colorB = juGreen,
-    this.colorC = juBlue,
+    this.theme,
   }) : super(key: key);
 
   final Widget? child;
   final double transform;
-  final Color colorA, colorB, colorC;
+  final ThemeModel? theme;
 
   @override
   Widget build(BuildContext context) {
+    var colorScheme = theme == null ? null : GroupThemeData.fromModel(theme!).themeData.colorScheme;
+
     return CustomPaint(
-      painter: JuBackgroundPainter(transform, colorA: colorA, colorB: colorB, colorC: colorC),
+      painter: JuBackgroundPainter(
+        transform,
+        colorA: colorScheme?.secondary ?? juOrange,
+        colorB: colorScheme?.primary ?? juGreen,
+        // ignore: deprecated_member_use
+        colorC: colorScheme?.secondaryVariant ?? juBlue,
+      ),
       child: child,
     );
   }

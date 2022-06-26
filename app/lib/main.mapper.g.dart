@@ -30,6 +30,7 @@ import 'modules/profile/profile.module.dart';
 import 'modules/split/split.module.dart';
 import 'modules/thebutton/thebutton.module.dart';
 import 'modules/web/web_module.dart';
+import 'providers/links/shortcuts_provider.dart';
 import 'screens/admin/providers/admin_groups_provider.dart';
 import 'screens/admin/providers/admin_users_provider.dart';
 
@@ -37,15 +38,16 @@ import 'screens/admin/providers/admin_users_provider.dart';
 
 var _mappers = <BaseMapper>{
   // class mappers
+  LaunchThemeMapper._(),
   ModuleMessageMapper._(),
   ModuleIdMapper._(),
+  ThemeModelMapper._(),
   GroupMapper._(),
   GroupUserMapper._(),
   SwipeTemplateModelMapper._(),
   TemplateModelMapper._(),
   SwipeTemplatePageMapper._(),
   TemplatePageMapper._(),
-  ThemeModelMapper._(),
   AnnouncementMapper._(),
   ChannelInfoMapper._(),
   ChatMessageMapper._(),
@@ -114,6 +116,55 @@ var _mappers = <BaseMapper>{
 };
 
 // === GENERATED CLASS MAPPERS AND EXTENSIONS ===
+
+class LaunchThemeMapper extends BaseMapper<LaunchTheme> {
+  LaunchThemeMapper._();
+
+  @override
+  Function get decoder => decode;
+  LaunchTheme decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  LaunchTheme fromMap(Map<String, dynamic> map) => LaunchTheme(Mapper.i.$get(map, 'name'), Mapper.i.$get(map, 'theme'));
+
+  @override
+  Function get encoder => (LaunchTheme v) => encode(v);
+  dynamic encode(LaunchTheme v) => toMap(v);
+  Map<String, dynamic> toMap(LaunchTheme l) =>
+      {'name': Mapper.i.$enc(l.name, 'name'), 'theme': Mapper.i.$enc(l.theme, 'theme')};
+
+  @override
+  String stringify(LaunchTheme self) =>
+      'LaunchTheme(name: ${Mapper.asString(self.name)}, theme: ${Mapper.asString(self.theme)})';
+  @override
+  int hash(LaunchTheme self) => Mapper.hash(self.name) ^ Mapper.hash(self.theme);
+  @override
+  bool equals(LaunchTheme self, LaunchTheme other) =>
+      Mapper.isEqual(self.name, other.name) && Mapper.isEqual(self.theme, other.theme);
+
+  @override
+  Function get typeFactory => (f) => f<LaunchTheme>();
+}
+
+extension LaunchThemeMapperExtension on LaunchTheme {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  LaunchThemeCopyWith<LaunchTheme> get copyWith => LaunchThemeCopyWith(this, $identity);
+}
+
+abstract class LaunchThemeCopyWith<$R> {
+  factory LaunchThemeCopyWith(LaunchTheme value, Then<LaunchTheme, $R> then) = _LaunchThemeCopyWithImpl<$R>;
+  ThemeModelCopyWith<$R> get theme;
+  $R call({String? name, ThemeModel? theme});
+  $R apply(LaunchTheme Function(LaunchTheme) transform);
+}
+
+class _LaunchThemeCopyWithImpl<$R> extends BaseCopyWith<LaunchTheme, $R> implements LaunchThemeCopyWith<$R> {
+  _LaunchThemeCopyWithImpl(LaunchTheme value, Then<LaunchTheme, $R> then) : super(value, then);
+
+  @override
+  ThemeModelCopyWith<$R> get theme => ThemeModelCopyWith($value.theme, (v) => call(theme: v));
+  @override
+  $R call({String? name, ThemeModel? theme}) => $then(LaunchTheme(name ?? $value.name, theme ?? $value.theme));
+}
 
 class ModuleMessageMapper extends BaseMapper<ModuleMessage> {
   ModuleMessageMapper._();
@@ -215,6 +266,54 @@ class _ModuleIdCopyWithImpl<$R> extends BaseCopyWith<ModuleId, $R> implements Mo
       elementId ?? $value.elementId,
       uniqueId ?? $value.uniqueId,
       or(params, $value.params)));
+}
+
+class ThemeModelMapper extends BaseMapper<ThemeModel> {
+  ThemeModelMapper._();
+
+  @override
+  Function get decoder => decode;
+  ThemeModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  ThemeModel fromMap(Map<String, dynamic> map) =>
+      ThemeModel(schemeIndex: Mapper.i.$get(map, 'schemeIndex'), dark: Mapper.i.$getOpt(map, 'dark') ?? false);
+
+  @override
+  Function get encoder => (ThemeModel v) => encode(v);
+  dynamic encode(ThemeModel v) => toMap(v);
+  Map<String, dynamic> toMap(ThemeModel t) =>
+      {'schemeIndex': Mapper.i.$enc(t.schemeIndex, 'schemeIndex'), 'dark': Mapper.i.$enc(t.dark, 'dark')};
+
+  @override
+  String stringify(ThemeModel self) =>
+      'ThemeModel(schemeIndex: ${Mapper.asString(self.schemeIndex)}, dark: ${Mapper.asString(self.dark)})';
+  @override
+  int hash(ThemeModel self) => Mapper.hash(self.schemeIndex) ^ Mapper.hash(self.dark);
+  @override
+  bool equals(ThemeModel self, ThemeModel other) =>
+      Mapper.isEqual(self.schemeIndex, other.schemeIndex) && Mapper.isEqual(self.dark, other.dark);
+
+  @override
+  Function get typeFactory => (f) => f<ThemeModel>();
+}
+
+extension ThemeModelMapperExtension on ThemeModel {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  ThemeModelCopyWith<ThemeModel> get copyWith => ThemeModelCopyWith(this, $identity);
+}
+
+abstract class ThemeModelCopyWith<$R> {
+  factory ThemeModelCopyWith(ThemeModel value, Then<ThemeModel, $R> then) = _ThemeModelCopyWithImpl<$R>;
+  $R call({int? schemeIndex, bool? dark});
+  $R apply(ThemeModel Function(ThemeModel) transform);
+}
+
+class _ThemeModelCopyWithImpl<$R> extends BaseCopyWith<ThemeModel, $R> implements ThemeModelCopyWith<$R> {
+  _ThemeModelCopyWithImpl(ThemeModel value, Then<ThemeModel, $R> then) : super(value, then);
+
+  @override
+  $R call({int? schemeIndex, bool? dark}) =>
+      $then(ThemeModel(schemeIndex: schemeIndex ?? $value.schemeIndex, dark: dark ?? $value.dark));
 }
 
 class GroupMapper extends BaseMapper<Group> {
@@ -607,54 +706,6 @@ class _TemplatePageCopyWithImpl<$R> extends BaseCopyWith<TemplatePage, $R> imple
 
   @override
   $R call() => $then(TemplatePage());
-}
-
-class ThemeModelMapper extends BaseMapper<ThemeModel> {
-  ThemeModelMapper._();
-
-  @override
-  Function get decoder => decode;
-  ThemeModel decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
-  ThemeModel fromMap(Map<String, dynamic> map) =>
-      ThemeModel(schemeIndex: Mapper.i.$get(map, 'schemeIndex'), dark: Mapper.i.$getOpt(map, 'dark') ?? false);
-
-  @override
-  Function get encoder => (ThemeModel v) => encode(v);
-  dynamic encode(ThemeModel v) => toMap(v);
-  Map<String, dynamic> toMap(ThemeModel t) =>
-      {'schemeIndex': Mapper.i.$enc(t.schemeIndex, 'schemeIndex'), 'dark': Mapper.i.$enc(t.dark, 'dark')};
-
-  @override
-  String stringify(ThemeModel self) =>
-      'ThemeModel(schemeIndex: ${Mapper.asString(self.schemeIndex)}, dark: ${Mapper.asString(self.dark)})';
-  @override
-  int hash(ThemeModel self) => Mapper.hash(self.schemeIndex) ^ Mapper.hash(self.dark);
-  @override
-  bool equals(ThemeModel self, ThemeModel other) =>
-      Mapper.isEqual(self.schemeIndex, other.schemeIndex) && Mapper.isEqual(self.dark, other.dark);
-
-  @override
-  Function get typeFactory => (f) => f<ThemeModel>();
-}
-
-extension ThemeModelMapperExtension on ThemeModel {
-  String toJson() => Mapper.toJson(this);
-  Map<String, dynamic> toMap() => Mapper.toMap(this);
-  ThemeModelCopyWith<ThemeModel> get copyWith => ThemeModelCopyWith(this, $identity);
-}
-
-abstract class ThemeModelCopyWith<$R> {
-  factory ThemeModelCopyWith(ThemeModel value, Then<ThemeModel, $R> then) = _ThemeModelCopyWithImpl<$R>;
-  $R call({int? schemeIndex, bool? dark});
-  $R apply(ThemeModel Function(ThemeModel) transform);
-}
-
-class _ThemeModelCopyWithImpl<$R> extends BaseCopyWith<ThemeModel, $R> implements ThemeModelCopyWith<$R> {
-  _ThemeModelCopyWithImpl(ThemeModel value, Then<ThemeModel, $R> then) : super(value, then);
-
-  @override
-  $R call({int? schemeIndex, bool? dark}) =>
-      $then(ThemeModel(schemeIndex: schemeIndex ?? $value.schemeIndex, dark: dark ?? $value.dark));
 }
 
 class AnnouncementMapper extends BaseMapper<Announcement> {

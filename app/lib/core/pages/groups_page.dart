@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import '../../providers/auth/logic_provider.dart';
 import '../../providers/auth/user_provider.dart';
 import '../../providers/groups/groups_provider.dart';
 import '../../providers/groups/selected_group_provider.dart';
+import '../../providers/links/shortcuts_provider.dart';
 import '../../screens/admin/admin_panel_screen.dart';
 import '../../screens/create_group/create_group_screen.dart';
 import '../../screens/signin/phone_signin_screen.dart';
@@ -291,6 +294,24 @@ class SelectGroupPage extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (Platform.isAndroid)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: IconButton(
+                        icon: Icon(Icons.add_to_home_screen, color: context.onSurfaceColor),
+                        onPressed: () {
+                          context.read(shortcutsProvider).pinShortcut(
+                                id: group.id,
+                                name: group.name,
+                                theme: group.theme,
+                                widget: ClipRRect(
+                                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                  child: JuLogo(size: 40, name: group.name, theme: group.theme),
+                                ),
+                              );
+                        },
+                      ),
+                    )
                 ],
               ),
             ),

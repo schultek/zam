@@ -8,13 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/module/module_builder.dart';
 import '../../main.mapper.g.dart';
 import '../../modules/modules.dart';
+import '../firebase/firebase_provider.dart';
 import '../groups/logic_provider.dart';
 
 final notificationsProvider = Provider((ref) => NotificationLogic(ref));
 
 class NotificationLogic {
-  final _firebaseMessaging = FirebaseMessaging.instance;
-
   bool _isSetup = false;
 
   final Ref ref;
@@ -23,10 +22,12 @@ class NotificationLogic {
   Future<void> setup() async {
     if (_isSetup) return;
 
-    var settings = await _firebaseMessaging.getNotificationSettings();
+    await ref.read(firebaseProvider.future);
+
+    var settings = await FirebaseMessaging.instance.getNotificationSettings();
 
     if (settings.authorizationStatus == AuthorizationStatus.notDetermined) {
-      settings = await _firebaseMessaging.requestPermission(provisional: false);
+      settings = await FirebaseMessaging.instance.requestPermission(provisional: false);
     }
 
     if (settings.authorizationStatus == AuthorizationStatus.denied) {
@@ -66,11 +67,11 @@ class NotificationLogic {
 
     AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceived);
 
-    if (!_firebaseMessaging.isAutoInitEnabled) {
-      await _firebaseMessaging.setAutoInitEnabled(true);
+    if (!FirebaseMessaging.instance.isAutoInitEnabled) {
+      await FirebaseMessaging.instance.setAutoInitEnabled(true);
     }
 
-    var token = await _firebaseMessaging.getToken();
+    var token = await FirebaseMessaging.instance.getToken();
     await ref.read(groupsLogicProvider).setPushToken(token);
 
     FirebaseMessaging.onMessage.listen((message) async {

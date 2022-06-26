@@ -144,7 +144,7 @@ final linkApiProvider = Provider((ref) => ref.watch(apiProvider).links);
 
 final linkLogicProvider = Provider((ref) => LinkLogic(ref));
 
-const _appLogoUrl =
+const appLogoUrl =
     'https://firebasestorage.googleapis.com/v0/b/jufa20.appspot.com/o/180.png?alt=media&token=06c67193-0f25-40d4-9c55-53e36de402c2';
 
 class LinkLogic {
@@ -158,7 +158,7 @@ class LinkLogic {
       meta: SocialMetaTagParameters(
         title: context.tr.become_organizer,
         description: context.tr.become_organizer_desc,
-        imageUrl: Uri.parse(_appLogoUrl),
+        imageUrl: Uri.parse(appLogoUrl),
       ),
     );
   }
@@ -170,7 +170,7 @@ class LinkLogic {
       meta: SocialMetaTagParameters(
         title: context.tr.become_admin,
         description: context.tr.become_admin_desc,
-        imageUrl: Uri.parse(_appLogoUrl),
+        imageUrl: Uri.parse(appLogoUrl),
       ),
     );
   }
@@ -183,7 +183,7 @@ class LinkLogic {
       meta: SocialMetaTagParameters(
         title: '${group.name}${role == UserRoles.organizer ? ' - ${context.tr.become_organizer}' : ''}',
         description: context.tr.join_the_group,
-        imageUrl: Uri.parse(group.logoUrl ?? group.pictureUrl ?? _appLogoUrl),
+        imageUrl: Uri.parse(group.logoUrl ?? group.pictureUrl ?? appLogoUrl),
       ),
     );
   }
