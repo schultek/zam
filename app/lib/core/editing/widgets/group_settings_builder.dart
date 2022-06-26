@@ -10,16 +10,14 @@ import '../../../providers/groups/logic_provider.dart';
 import '../../../providers/groups/selected_group_provider.dart';
 import '../../core.dart';
 import '../../widgets/input_list_tile.dart';
-import '../../widgets/layout_preview.dart';
 import '../../widgets/select_image_list_tile.dart';
-import '../../widgets/template_preview_switcher.dart';
 import 'ju_logo.dart';
 
 class GroupSettingsBuilder {
   List<Widget> build(BuildContext context) {
     var group = context.watch(selectedGroupProvider)!;
 
-    var templateSettings = group.template.settings(context);
+    //var templateSettings = group.template.settings(context);
     var moduleSettings = registry.getSettings(context);
 
     return [
@@ -68,32 +66,32 @@ class GroupSettingsBuilder {
           maxWidth: 100,
         ),
       ]),
-      SettingsSection(
-        title: context.tr.template,
-        children: [
-          Builder(builder: (context) {
-            return Row(
-              children: [
-                Expanded(
-                  child: ListTile(
-                    title: Text(group.template.name),
-                    subtitle: Text(context.tr.tap_to_change),
-                    onTap: () async {
-                      var newTemplate = await TemplatePreviewSwitcherDialog.show(context, group.template);
-
-                      if (newTemplate != null) {
-                        context.read(groupsLogicProvider).updateTemplateModel(newTemplate);
-                      }
-                    },
-                  ),
-                ),
-                PreviewBox(preview: group.template.preview())
-              ],
-            );
-          }),
-          ...templateSettings
-        ],
-      ),
+      // SettingsSection(
+      //   title: context.tr.template,
+      //   children: [
+      //     Builder(builder: (context) {
+      //       return Row(
+      //         children: [
+      //           Expanded(
+      //             child: ListTile(
+      //               title: Text(group.template.name),
+      //               subtitle: Text(context.tr.tap_to_change),
+      //               onTap: () async {
+      //                 var newTemplate = await TemplatePreviewSwitcherDialog.show(context, group.template);
+      //
+      //                 if (newTemplate != null) {
+      //                   context.read(groupsLogicProvider).updateTemplateModel(newTemplate);
+      //                 }
+      //               },
+      //             ),
+      //           ),
+      //           PreviewBox(preview: group.template.preview())
+      //         ],
+      //       );
+      //     }),
+      //     ...templateSettings
+      //   ],
+      // ),
       SettingsSection(title: context.tr.theme, children: [
         ThemeSelector(
           schemeIndex: group.theme.schemeIndex,

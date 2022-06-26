@@ -72,12 +72,20 @@ class _TemplatePreviewSwitcherDialogState extends State<TemplatePreviewSwitcherD
 enum SwitcherStyle { card, dialog }
 
 class TemplateSwitcher extends StatefulWidget {
-  const TemplateSwitcher({this.initialTemplate, required this.onTemplateChanged, required this.style, Key? key})
-      : super(key: key);
+  const TemplateSwitcher({
+    this.initialTemplate,
+    required this.onTemplateChanged,
+    required this.style,
+    this.height = 200,
+    this.showName = true,
+    Key? key,
+  }) : super(key: key);
 
   final TemplateModel? initialTemplate;
   final Function(TemplateModel template) onTemplateChanged;
   final SwitcherStyle style;
+  final double height;
+  final bool showName;
 
   @override
   State<TemplateSwitcher> createState() => _TemplateSwitcherState();
@@ -102,7 +110,7 @@ class _TemplateSwitcherState extends State<TemplateSwitcher> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 200,
-      height: 200,
+      height: widget.height,
       child: Stack(
         children: [
           PageView(
@@ -143,13 +151,15 @@ class _TemplateSwitcherState extends State<TemplateSwitcher> {
                               color: context.onSurfaceColor.withOpacity(0.3),
                             )
                           : null,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          template.name,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                      child: widget.showName
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                template.name,
+                                textAlign: TextAlign.center,
+                              ),
+                            )
+                          : const SizedBox(height: 10),
                     ),
                   ],
                 ),

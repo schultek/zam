@@ -14,7 +14,7 @@ class MainGroupHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 10, right: 10, bottom: 10),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20, left: 20, right: 20, bottom: 10),
       child: Consumer(
         builder: (context, ref, _) {
           var group = ref.watch(selectedGroupProvider)!;
@@ -24,11 +24,11 @@ class MainGroupHeader extends StatelessWidget {
 
           var leading = [
             if (!isEditing) const GroupSelectorButton(),
-            if (isEditing) const SizedBox(width: 50),
+            if (isEditing) const GroupSelectorButton(active: false),
           ];
 
           var trailing = [
-            if (!isOrganizer) const SizedBox(width: 50),
+            if (!isOrganizer) const SizedBox(width: 40),
             if (isOrganizer) EditToggles(isEditing: isEditing),
           ];
 

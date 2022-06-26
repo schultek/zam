@@ -6,18 +6,19 @@ import '../../core.dart';
 class JuLogo extends StatelessWidget {
   const JuLogo({
     required this.size,
-    this.name = 'JUFA',
+    this.name,
     this.theme,
     Key? key,
   }) : super(key: key);
 
   final double size;
-  final String name;
+  final String? name;
   final ThemeModel? theme;
 
   @override
   Widget build(BuildContext context) {
     var colorScheme = theme == null ? null : GroupThemeData.fromModel(theme!).themeData.colorScheme;
+    var tag = name != null && name!.isNotEmpty ? name!.substring(0, 1).toUpperCase() : 'J';
 
     return SizedBox(
       width: size,
@@ -31,7 +32,7 @@ class JuLogo extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            name.substring(0, 1).toUpperCase(),
+            tag,
             style: TextStyle(
               fontFamily: 'BiffBamBoom',
               color: Colors.white,

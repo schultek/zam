@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../theme_context.dart';
 
-const double _kWidthOfScrollItem = 67.2;
+const double _kWidthOfScrollItem = 66;
 
 class ThemeSelector extends StatefulWidget {
   const ThemeSelector({Key? key, required this.schemeIndex, required this.onChange}) : super(key: key);
@@ -47,7 +47,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
   Widget build(BuildContext context) {
     final bool isLight = context.theme.brightness == Brightness.light;
     return SizedBox(
-      height: 76,
+      height: 66,
       child: Row(
         children: <Widget>[
           Expanded(
@@ -62,12 +62,12 @@ class _ThemeSelectorState extends State<ThemeSelector> {
                   optionButtonBorderRadius: 12,
                   height: 30,
                   width: 30,
-                  padding: const EdgeInsets.all(0.3),
+                  padding: EdgeInsets.zero,
                   optionButtonMargin: EdgeInsets.zero,
                   borderRadius: 0,
                   unselectedBorder: BorderSide.none,
                   selectedBorder: BorderSide(
-                    color: context.theme.primaryColorLight,
+                    color: context.onSurfaceColor,
                     width: 4,
                   ),
                   onSelect: () {
@@ -77,7 +77,7 @@ class _ThemeSelectorState extends State<ThemeSelector> {
                     widget.onChange(index);
                   },
                   selected: schemeIndex == index,
-                  backgroundColor: context.theme.colorScheme.surface,
+                  backgroundColor: Colors.transparent, //context.theme.colorScheme.surface,
                   flexSchemeColor: isLight ? FlexColor.schemesList[index].light : FlexColor.schemesList[index].dark,
                 );
               },

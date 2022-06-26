@@ -88,8 +88,9 @@ class _ReorderToggleState extends State<ReorderToggle> with FlareController, Tic
     });
 
     Widget child = SizedBox(
-      width: 50,
+      width: 40,
       child: IconButton(
+        padding: const EdgeInsets.all(4),
         icon: ShaderMask(
           blendMode: BlendMode.srcIn,
           shaderCallback: (Rect bounds) {

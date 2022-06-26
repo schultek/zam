@@ -3,7 +3,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../core/widgets/template_preview_switcher.dart';
+import '../../core/editing/widgets/ju_logo.dart';
 import '../../modules/announcement/announcement.module.dart';
 import '../../widgets/ju_layout.dart';
 
@@ -16,6 +16,7 @@ class CreateGroupScreen extends StatefulWidget {
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
   String? groupName;
+  var theme = ThemeModel(schemeIndex: FlexScheme.blue.index);
 
   Future<void> createNewGroup() async {
     if (groupName == null) return;
@@ -25,7 +26,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       name: groupName!,
       users: {context.read(userIdProvider)!: GroupUser(role: UserRoles.organizer)},
       template: SwipeTemplateModel(),
-      theme: ThemeModel(schemeIndex: FlexScheme.blue.index),
+      theme: theme,
       moduleBlacklist: ['music', 'polls'],
     );
     var doc = await FirebaseFirestore.instance.collection('groups').add(group.toMap());
@@ -36,7 +37,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   @override
   Widget build(BuildContext context) {
     return JuLayout(
-      height: 450,
+      height: 360,
       header: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -51,43 +52,93 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         ],
       ),
       body: GroupTheme(
-        theme: GroupThemeData(FlexScheme.blue, true),
+        theme: GroupThemeData.fromModel(theme),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-              ),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: context.tr.enter_group_name,
-                      border: InputBorder.none,
-                      hintStyle: const TextStyle(color: Colors.black45),
-                      fillColor: Colors.transparent,
-                    ),
-                    style: const TextStyle(color: Colors.black),
-                    onChanged: (text) {
-                      setState(() => groupName = text);
-                    },
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: JuLogo(
+                    size: 68,
+                    theme: theme,
+                    name: groupName,
                   ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: context.tr.enter_group_name,
+                            border: InputBorder.none,
+                            hintStyle: const TextStyle(color: Colors.black45),
+                            fillColor: Colors.transparent,
+                          ),
+                          style: const TextStyle(color: Colors.black),
+                          onChanged: (text) {
+                            setState(() => groupName = text);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
+            // const SizedBox(height: 20),
+            // ClipRRect(
+            //   borderRadius: const BorderRadius.all(Radius.circular(20)),
+            //   child: TemplateSwitcher(
+            //     style: SwitcherStyle.card,
+            //     showName: false,
+            //     height: 160,
+            //     onTemplateChanged: (template) {},
+            //   ),
+            // ),
             const SizedBox(height: 20),
             ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(20)),
-              child: TemplateSwitcher(
-                style: SwitcherStyle.card,
-                onTemplateChanged: (template) {},
-              ),
+              child: Builder(builder: (context) {
+                return Material(
+                  color: context.onSurfaceColor.withOpacity(0.3),
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 4),
+                    child: Column(
+                      children: [
+                        // Container(
+                        //   padding: const EdgeInsets.only(bottom: 10),
+                        //   child: Text(
+                        //     context.tr.theme,
+                        //     style: TextStyle(fontWeight: FontWeight.bold, color: context.surfaceColor),
+                        //     textAlign: TextAlign.center,
+                        //   ),
+                        // ),
+                        ThemeSelector(
+                          schemeIndex: theme.schemeIndex,
+                          onChange: (index) {
+                            setState(() {
+                              theme = theme.copyWith(schemeIndex: index);
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 40),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 primary: Colors.white,
