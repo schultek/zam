@@ -38,7 +38,7 @@ class GameContentElement with ElementBuilder<ContentElement> {
         module: module,
         builder: (context) => SimpleCard(title: context.tr.new_game, icon: Icons.casino),
         settings: SetupActionElementSettings(
-            hint: 'Create new game',
+            hint: module.context.tr.select_a_game,
             action: (context) async {
               var gameId = await Navigator.of(context).push(SelectGamePage.route());
               if (gameId != null) {

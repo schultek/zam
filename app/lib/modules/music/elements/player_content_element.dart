@@ -74,7 +74,7 @@ class PlayerContentElement with ElementBuilder<ContentElement> {
           icon: Icons.music_note,
         ),
         settings: SetupActionElementSettings(
-          hint: 'Login to Spotify',
+          hint: module.context.tr.login_spotify,
           action: signInToSpotify,
         ),
       );

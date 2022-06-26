@@ -42,7 +42,7 @@ class GamesListContentElement with ElementBuilder<ContentElement> {
         ],
         spacing: 10,
         settings: SetupActionElementSettings(
-          hint: 'Create a first game',
+          hint: module.context.tr.create_a_game,
           action: (context) {},
         ),
       );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../helpers/extensions.dart';
 import '../../core.dart';
 import 'config_sheet.dart';
 
@@ -33,7 +34,7 @@ class ConfigTabsPainter extends StatelessWidget {
             width: d + r,
             leftShape: TabShape.corner,
             rightShape: activeTab == ConfigTab.layout ? TabShape.middle : TabShape.invCorner,
-            label: 'SETTINGS',
+            label: context.tr.settings,
             color: context.surfaceColor,
             textColor: context.onSurfaceColor,
             onPressed: () {
@@ -47,7 +48,7 @@ class ConfigTabsPainter extends StatelessWidget {
             width: d + r,
             leftShape: activeTab == ConfigTab.settings ? TabShape.middle : TabShape.corner,
             rightShape: activeTab == ConfigTab.settings ? TabShape.corner : TabShape.middle,
-            label: 'LAYOUT',
+            label: context.tr.layout,
             color: context.surfaceColor,
             textColor: context.onSurfaceColor,
             onPressed: () {
@@ -61,7 +62,7 @@ class ConfigTabsPainter extends StatelessWidget {
             width: d + r,
             leftShape: activeTab == ConfigTab.settings ? TabShape.invCorner : TabShape.middle,
             rightShape: TabShape.corner,
-            label: 'WIDGETS',
+            label: context.tr.widgets,
             color: area?.context.surfaceColor ??
                 Color.alphaBlend(context.onSurfaceColor.withOpacity(0.04), context.surfaceColor),
             textColor: area?.context.onSurfaceColor.withOpacity(0.5) ??
@@ -150,12 +151,13 @@ class ConfigTabsPainter extends StatelessWidget {
             onTap: onPressed,
             child: Center(
               child: Text(
-                label,
+                label.toUpperCase(),
                 style: context.theme.textTheme.caption!.copyWith(
                   color: textColor,
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
+                overflow: TextOverflow.fade,
               ),
             ),
           ),

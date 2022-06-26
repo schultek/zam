@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
+import '../../../helpers/extensions.dart';
 import '../../../providers/groups/selected_group_provider.dart';
 import '../../core.dart';
 import '../../reorderable/drag_item.dart';
@@ -89,7 +90,7 @@ class _NeedsSetupCardState extends State<NeedsSetupCard> {
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  'Einrichtung nötig. ${widget.setupHint!}',
+                                  '${context.tr.setup_needed}: ${widget.setupHint!}.',
                                   style: context.theme.textTheme.caption!
                                       .copyWith(color: context.onSurfaceColor.withOpacity(0.8)),
                                   maxLines: 2,

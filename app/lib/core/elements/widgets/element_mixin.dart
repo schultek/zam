@@ -7,6 +7,7 @@ import '../../../providers/groups/selected_group_provider.dart';
 import '../../areas/area.dart';
 import '../../editing/editing_providers.dart';
 import '../../editing/selected_area_provider.dart';
+import '../../editing/widgets/needs_setup_card.dart';
 import '../../editing/widgets/widget_selector.dart';
 import '../../reorderable/reorderable_item.dart';
 import '../../reorderable/reorderable_listener.dart';
@@ -17,7 +18,6 @@ import '../decorators/element_decorator.dart';
 import '../module_element.dart';
 import 'element_icon_button.dart';
 import 'element_settings_button.dart';
-import 'needs_setup_card.dart';
 
 mixin ElementMixin<T extends ModuleElement> on ModuleElement {
   ElementDecorator<T> _decorator(BuildContext context) => Area.of<T>(context)!.elementDecorator;

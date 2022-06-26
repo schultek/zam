@@ -73,7 +73,7 @@ class AnnouncementContentElement with ElementBuilder<ContentElement> {
             ),
           ),
           settings: SetupActionElementSettings(
-              hint: 'Create an announcement',
+              hint: module.context.tr.create_an_announcement,
               action: (context) async {
                 await Navigator.of(context).push(
                   MaterialPageRoute(

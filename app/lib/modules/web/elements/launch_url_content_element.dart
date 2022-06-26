@@ -39,7 +39,7 @@ class LaunchUrlContentElement with ElementBuilder<ContentElement> {
         module: module,
         builder: (context) => UrlShortcutCard(params),
         settings: SetupDialogElementSettings(
-          hint: 'Add a URL',
+          hint: module.context.tr.set_a_url,
           builder: LaunchUrlSettingsBuilder(params, module),
         ),
       );

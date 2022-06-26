@@ -18,11 +18,6 @@ class BalanceContentElement with ElementBuilder<ContentElement> {
 
   @override
   FutureOr<ContentElement?> build(ModuleContext module) async {
-    var split = await module.context.read(splitProvider.future);
-    if (split == null) {
-      return null;
-    }
-
     var params = module.hasParams ? module.getParams<BalanceFocusParams>() : BalanceFocusParams();
 
     var source = params.getSource(module.context);
@@ -64,29 +59,46 @@ class BalanceContentElement with ElementBuilder<ContentElement> {
         ),
       ),
       onNavigate: (context) => const SplitPage(),
-      settings: DialogElementSettings(
-          builder: (context) => [
-                SwitchListTile(
-                  title: Text(context.tr.current_user),
-                  value: params.currentUser,
-                  onChanged: (value) {
-                    module.updateParams(params.copyWith(currentUser: value));
-                  },
-                ),
-                ListTile(
-                  enabled: !params.currentUser,
-                  title: Text(context.tr.from),
-                  subtitle: Text(params.source != null
-                      ? module.context.read(splitSourceLabelProvider(params.source!))
-                      : context.tr.tap_to_add),
-                  onTap: () async {
-                    var source = await SelectSourceDialog.show(context, params.source);
-                    if (source != null) {
-                      module.updateParams(params.copyWith(source: source));
-                    }
-                  },
-                )
-              ]),
+      settings: source != null
+          ? DialogElementSettings(
+              builder: BalanceSettingsBuilder(params, module),
+            )
+          : SetupDialogElementSettings(
+              hint: module.context.tr.select_a_balance,
+              builder: BalanceSettingsBuilder(params, module),
+            ),
     );
+  }
+}
+
+class BalanceSettingsBuilder {
+  final BalanceFocusParams params;
+  final ModuleContext module;
+
+  BalanceSettingsBuilder(this.params, this.module);
+
+  List<Widget> call(BuildContext context) {
+    return [
+      SwitchListTile(
+        title: Text(context.tr.current_user),
+        value: params.currentUser,
+        onChanged: (value) {
+          module.updateParams(params.copyWith(currentUser: value));
+        },
+      ),
+      ListTile(
+        enabled: !params.currentUser,
+        title: Text(context.tr.from),
+        subtitle: Text(params.source != null
+            ? module.context.read(splitSourceLabelProvider(params.source!))
+            : context.tr.tap_to_add),
+        onTap: () async {
+          var source = await SelectSourceDialog.show(context, params.source);
+          if (source != null) {
+            module.updateParams(params.copyWith(source: source));
+          }
+        },
+      )
+    ];
   }
 }

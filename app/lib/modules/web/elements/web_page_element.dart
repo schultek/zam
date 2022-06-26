@@ -46,7 +46,7 @@ class WebPageElement with ElementBuilder<PageElement> {
         module: module,
         builder: (context) => SimpleCard(title: context.tr.website, icon: Icons.language),
         settings: SetupDialogElementSettings(
-          hint: 'Add a url',
+          hint: module.context.tr.set_a_url,
           builder: WebPageSettingsBuilder(params, module, webViewKey),
         ),
       );

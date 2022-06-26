@@ -80,6 +80,7 @@
   "logout": "Log out",
   "feedback": "Feedback",
   "join_the_group" : "Join the group",
+  "group": "Group",
 
   "@CONFIGURATION": {},
 
@@ -94,6 +95,7 @@
   "template": "Template",
   "settings": "Settings",
   "theme": "Theme",
+  "widgets": "Widgets",
   "dark_mode": "Dark Mode",
   "danger_zone": "Danger Zone",
   "do_want_to_leave": "Do you want to leave",
@@ -108,6 +110,7 @@
   "primary_background": "Primary Background",
   "confirm_delete_section": "Do you want to delete this section?",
   "invert_header_color": "Invert header color",
+  "setup_needed": "Setup needed",
 
   "@@================== MODULES ==================@@": {},
 
@@ -161,6 +164,8 @@
   "show_add_tile": "Show Add Tile",
   "open_notes": "Open Notes",
   "saved": "Saved",
+  "create_a_note": "Create a note",
+  "select_a_note": "Select a note",
   "notes_subtitle": "Opens a new note",
   "notes_text": "The notes module can be used to note down everything necessary during a trip!\n\nNotes can be written and changed, also additional features such as checkboxes can be used.\n\nFor each note it is possible to see who can edit the note over the button 'i', additionally it can be deleted there. A note can be part of a folder.",
   "note": "note",
@@ -188,6 +193,7 @@
   "text_color": "Text Color",
   "background_color": "Background Color",
   "new_announcement": "New Announcement",
+  "create_an_announcement": "Create an announcement",
   "resend_notification": "Resend Notification",
   "resend_notification_desc": "Send a push notification to all members",
   "confirm_resend": "Do you want to send a push notification to all members?",
@@ -222,6 +228,8 @@
 
   "split": "Split",
   "open_split": "Open Split",
+  "add_an_expense": "Add an expense",
+  "select_a_balance": "Select a balance",
   "balances": "Balances",
   "expenses": "Expenses",
   "billing": "Billing",
@@ -286,7 +294,7 @@
   "allow_navigation": "Allow Navigation",
   "website": "Website",
   "custom_image": "Custom Image",
-  
+  "set_a_url": "Enter a URL",
 
   "@MUSIC": {},
 
@@ -357,5 +365,7 @@
   "allow_loops": "Allow loops",
   "create_game": "Create Game",
   "how_to_play": "How to play",
-  "game_instructions": "'Eliminate' your target by the agreed way in real live. Then add the elimination to the list and receive a new target, until only one player is left."
+  "game_instructions": "'Eliminate' your target by the agreed way in real live. Then add the elimination to the list and receive a new target, until only one player is left.",
+  "select_a_game": "Select a game",
+  "create_a_game": "Create a game"
 }

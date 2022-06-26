@@ -62,7 +62,7 @@ class NotesListContentElement with ElementBuilder<ContentElement> {
           ),
         ),
         settings: SetupActionElementSettings(
-          hint: 'Create a first note',
+          hint: module.context.tr.create_a_note,
           action: (context) {
             var note = context.read(notesLogicProvider).createEmptyNote(folder: params.folder);
             Navigator.of(context).push(EditNotePage.route(note));

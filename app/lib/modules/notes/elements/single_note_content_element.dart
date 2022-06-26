@@ -73,7 +73,7 @@ class SingleNoteContentElement with ElementBuilder<ContentElement> {
             icon: Icons.note_add,
           ),
           settings: SetupActionElementSettings(
-              hint: 'Wähle eine Notiz aus.',
+              hint: module.context.tr.select_a_note,
               action: (context) async {
                 var id = await Navigator.of(context).push<String>(
                   MaterialPageRoute(builder: (context) => const SelectNotePage()),

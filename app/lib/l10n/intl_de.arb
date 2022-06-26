@@ -86,6 +86,7 @@
   "logout": "Abmelden",
   "feedback": "Feedback",
   "join_the_group" : "Der Gruppe beitreten",
+  "group": "Gruppe",
 
   "@CONFIGURATION": {},
 
@@ -99,6 +100,7 @@
   "layout": "Layout",
   "settings": "Einstellungen",
   "template": "Template",
+  "widgets": "Widgets",
   "theme": "Farbschema",
   "dark_mode": "Dunkler Modus",
   "danger_zone": "Sperrzone",
@@ -114,6 +116,7 @@
   "primary_background": "Primärer Hintergrund",
   "confirm_delete_section": "Möchtest du diesen Abschnitt löschen?",
   "invert_header_color": "Header Farbe invertieren",
+  "setup_needed": "Einrichtung nötig",
 
   "@@================== MODULES ==================@@": {},
 
@@ -175,6 +178,8 @@
   "show_add_tile": "Plus-Kachel anzeigen",
   "open_notes": "Notizen öffnen",
   "saved": "Gespeichert",
+  "create_a_note": "Erstelle eine Notiz",
+  "select_a_note": "Wähle eine Notiz aus",
   "notes_subtitle": "Öffnet die Notizen",
   "notes_text": "Dieses Modul dient dazu, alles zu notieren, was wichtig ist. \n\nEs können verschiedene Notizen erstellt werden, der Text darin bearbeitet werden und Funktionen wie z.B. Checkboxen hinzugefügt werden. \n\nIn den Einstellungen einer Notiz kannst du einsehen, wer die Notiz bearbeiten darf oder kannst sie löschen. Eine Notiz kann Teil eines Ordners sein.",
   "note": "Notiz",
@@ -201,6 +206,7 @@
   "text_color": "Textfarbe",
   "background_color": "Hintergrundfarbe",
   "new_announcement": "Neue Mitteilung",
+  "create_an_announcement": "Erstelle eine Mitteilung",
   "resend_notification": "Erneut benachrichtigen",
   "resend_notification_desc": "Sendet eine erneute Benachrichtigung/nan alle Teilnehmer*innen",
   "confirm_resend": "Möchtest du alle Teilnehmer*innen erneut benachrichtigen?",
@@ -232,6 +238,8 @@
 
   "split": "Split",
   "open_split": "Split öffnen",
+  "add_an_expense": "Füge eine Ausgabe hinzu",
+  "select_a_balance": "Wähle eine Bilanz aus",
   "balances": "Bilanzen",
   "expenses": "Ausgaben",
   "billing": "Abrechnung",
@@ -295,6 +303,7 @@
   "allow_navigation": "Navigation erlauben",
   "website": "Webseite",
   "custom_image": "Individuelles Bild",
+  "set_a_url": "Gebe eine URL ein",
   "launch_url_subtitle": "Öffnet eine eingegebene Website",
   "launch_url_text": "Beim Klick auf das Modul 'URL öffnen' können Nutzer*innen eine zuvor festgelegte Website, z.B. von einem Kochrezept, öffnen.\n\nDas Modul ist erst für Nutzer*innen sichtbar, wenn eine URL unter den Einstellungen festgelegt wurde. Zudem können dort Texte, Icons oder Bilder zum Anzeigefeld des Moduls hinzugefügt werden.",
   "web_page": "Webpage",
@@ -364,8 +373,10 @@
   "games": "Spiele",
   "new_game": "Neues Spiel",
   "select_game": "Spiel auswählen",
+  "select_a_game": "Wähle ein Spiel aus",
   "open_games": "Spiele öffnen",
   "eliminate": "Eliminiere",
+  "create_a_game": "Erstelle ein Spiel",
   "hold_to_reveal": "Halte zum Aufdecken",
   "immortal": "Unsterblich",
   "alive": "Lebendig",
