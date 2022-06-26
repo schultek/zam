@@ -122,6 +122,9 @@ flutter:
           style: italic
         - asset: assets/fonts/Cousine-Bold.ttf
           weight: 700
+    - family: BiffBamBoom
+      fonts:
+        - asset: assets/fonts/CCBiffBamBoom.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

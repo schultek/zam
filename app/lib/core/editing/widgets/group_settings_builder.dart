@@ -3,16 +3,17 @@ import 'package:cropperx/cropperx.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../helpers/extensions.dart';
-import '../../modules/modules.dart';
-import '../../providers/auth/claims_provider.dart';
-import '../../providers/groups/logic_provider.dart';
-import '../../providers/groups/selected_group_provider.dart';
-import '../core.dart';
-import '../widgets/input_list_tile.dart';
-import '../widgets/layout_preview.dart';
-import '../widgets/select_image_list_tile.dart';
-import '../widgets/template_preview_switcher.dart';
+import '../../../helpers/extensions.dart';
+import '../../../modules/modules.dart';
+import '../../../providers/auth/claims_provider.dart';
+import '../../../providers/groups/logic_provider.dart';
+import '../../../providers/groups/selected_group_provider.dart';
+import '../../core.dart';
+import '../../widgets/input_list_tile.dart';
+import '../../widgets/layout_preview.dart';
+import '../../widgets/select_image_list_tile.dart';
+import '../../widgets/template_preview_switcher.dart';
+import 'ju_logo.dart';
 
 class GroupSettingsBuilder {
   List<Widget> build(BuildContext context) {
@@ -28,39 +29,43 @@ class GroupSettingsBuilder {
           value: group.name,
           onChanged: (value) {
             context.read(groupsLogicProvider).updateGroup({'name': value});
+            context.read(groupsLogicProvider).updateLogo(group.copyWith(name: value));
           },
         ),
         SelectImageListTile(
           label: 'Logo',
-          hasImage: group.pictureUrl != null,
+          hasImage: true,
           leading: SizedBox(
             height: 40,
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: group.pictureUrl != null
-                    ? CachedNetworkImage(
-                        imageUrl: group.pictureUrl!,
-                        fit: BoxFit.cover,
-                        width: 40,
-                        height: 40,
-                      )
-                    : ThemedSurface(
-                        builder: (context, color) => Container(
-                          color: color,
-                          child: Center(
-                            child: Icon(Icons.add, size: 28, color: context.onSurfaceHighlightColor),
-                          ),
-                        ),
-                      ),
-              ),
+            width: 40,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: group.pictureUrl != null
+                  ? CachedNetworkImage(
+                      imageUrl: group.pictureUrl!,
+                      fit: BoxFit.cover,
+                      width: 40,
+                      height: 40,
+                    )
+                  : JuLogo(
+                      size: 40,
+                      name: group.name,
+                      theme: group.theme,
+                    ),
             ),
           ),
-          onImageSelected: (bytes) {
-            context.read(groupsLogicProvider).setGroupPicture(bytes);
+          onImageSelected: (bytes) async {
+            var link = await context.read(groupsLogicProvider).setGroupPicture(bytes);
+            context.read(groupsLogicProvider).updateLogo(group.copyWith(pictureUrl: link));
           },
+          onDelete: group.pictureUrl != null
+              ? () {
+                  context.read(groupsLogicProvider).deleteGroupPicture();
+                  context.read(groupsLogicProvider).updateLogo(group.copyWith(pictureUrl: null));
+                }
+              : null,
           crop: OverlayType.rectangle,
+          maxWidth: 100,
         ),
       ]),
       SettingsSection(
@@ -94,6 +99,7 @@ class GroupSettingsBuilder {
           schemeIndex: group.theme.schemeIndex,
           onChange: (index) {
             context.read(groupsLogicProvider).updateGroup({'theme': group.theme.copyWith(schemeIndex: index).toMap()});
+            context.read(groupsLogicProvider).updateLogo(group.copyWith.theme(schemeIndex: index));
           },
         ),
         SwitchListTile(
@@ -101,6 +107,7 @@ class GroupSettingsBuilder {
           value: group.theme.dark,
           onChanged: (value) {
             context.read(groupsLogicProvider).updateGroup({'theme': group.theme.copyWith(dark: value).toMap()});
+            context.read(groupsLogicProvider).updateLogo(group.copyWith.theme(dark: value));
           },
         ),
       ]),

@@ -9,6 +9,7 @@ class Group with Mappable {
   final String name;
   final String id;
   final String? pictureUrl;
+  final String? logoUrl;
   final TemplateModel template;
   final ThemeModel theme;
   final Map<String, GroupUser> users;
@@ -19,6 +20,7 @@ class Group with Mappable {
     required this.id,
     required this.name,
     this.pictureUrl,
+    this.logoUrl,
     required this.template,
     required this.theme,
     this.users = const {},

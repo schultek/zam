@@ -227,6 +227,7 @@ class GroupMapper extends BaseMapper<Group> {
       id: Mapper.i.$get(map, 'id'),
       name: Mapper.i.$get(map, 'name'),
       pictureUrl: Mapper.i.$getOpt(map, 'pictureUrl'),
+      logoUrl: Mapper.i.$getOpt(map, 'logoUrl'),
       template: Mapper.i.$get(map, 'template'),
       theme: Mapper.i.$get(map, 'theme'),
       users: Mapper.i.$getOpt(map, 'users') ?? const {},
@@ -240,6 +241,7 @@ class GroupMapper extends BaseMapper<Group> {
         'id': Mapper.i.$enc(g.id, 'id'),
         'name': Mapper.i.$enc(g.name, 'name'),
         'pictureUrl': Mapper.i.$enc(g.pictureUrl, 'pictureUrl'),
+        'logoUrl': Mapper.i.$enc(g.logoUrl, 'logoUrl'),
         'template': Mapper.i.$enc(g.template, 'template'),
         'theme': Mapper.i.$enc(g.theme, 'theme'),
         'users': Mapper.i.$enc(g.users, 'users'),
@@ -249,12 +251,13 @@ class GroupMapper extends BaseMapper<Group> {
 
   @override
   String stringify(Group self) =>
-      'Group(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, template: ${Mapper.asString(self.template)}, theme: ${Mapper.asString(self.theme)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)}, moduleBlacklist: ${Mapper.asString(self.moduleBlacklist)})';
+      'Group(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, logoUrl: ${Mapper.asString(self.logoUrl)}, template: ${Mapper.asString(self.template)}, theme: ${Mapper.asString(self.theme)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)}, moduleBlacklist: ${Mapper.asString(self.moduleBlacklist)})';
   @override
   int hash(Group self) =>
       Mapper.hash(self.name) ^
       Mapper.hash(self.id) ^
       Mapper.hash(self.pictureUrl) ^
+      Mapper.hash(self.logoUrl) ^
       Mapper.hash(self.template) ^
       Mapper.hash(self.theme) ^
       Mapper.hash(self.users) ^
@@ -265,6 +268,7 @@ class GroupMapper extends BaseMapper<Group> {
       Mapper.isEqual(self.name, other.name) &&
       Mapper.isEqual(self.id, other.id) &&
       Mapper.isEqual(self.pictureUrl, other.pictureUrl) &&
+      Mapper.isEqual(self.logoUrl, other.logoUrl) &&
       Mapper.isEqual(self.template, other.template) &&
       Mapper.isEqual(self.theme, other.theme) &&
       Mapper.isEqual(self.users, other.users) &&
@@ -289,6 +293,7 @@ abstract class GroupCopyWith<$R> {
       {String? id,
       String? name,
       String? pictureUrl,
+      String? logoUrl,
       TemplateModel? template,
       ThemeModel? theme,
       Map<String, GroupUser>? users,
@@ -310,6 +315,7 @@ class _GroupCopyWithImpl<$R> extends BaseCopyWith<Group, $R> implements GroupCop
           {String? id,
           String? name,
           Object? pictureUrl = $none,
+          Object? logoUrl = $none,
           TemplateModel? template,
           ThemeModel? theme,
           Map<String, GroupUser>? users,
@@ -319,6 +325,7 @@ class _GroupCopyWithImpl<$R> extends BaseCopyWith<Group, $R> implements GroupCop
           id: id ?? $value.id,
           name: name ?? $value.name,
           pictureUrl: or(pictureUrl, $value.pictureUrl),
+          logoUrl: or(logoUrl, $value.logoUrl),
           template: template ?? $value.template,
           theme: theme ?? $value.theme,
           users: users ?? $value.users,

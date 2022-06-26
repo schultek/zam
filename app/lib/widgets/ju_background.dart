@@ -3,14 +3,23 @@ import 'package:flutter/material.dart';
 import '../helpers/theme.dart';
 
 class JuBackground extends StatelessWidget {
-  final Widget child;
+  const JuBackground({
+    Key? key,
+    this.child,
+    this.transform = 1,
+    this.colorA = juOrange,
+    this.colorB = juGreen,
+    this.colorC = juBlue,
+  }) : super(key: key);
+
+  final Widget? child;
   final double transform;
-  const JuBackground({Key? key, required this.child, this.transform = 1}) : super(key: key);
+  final Color colorA, colorB, colorC;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: JuBackgroundPainter(transform),
+      painter: JuBackgroundPainter(transform, colorA: colorA, colorB: colorB, colorC: colorC),
       child: child,
     );
   }
@@ -18,8 +27,14 @@ class JuBackground extends StatelessWidget {
 
 class JuBackgroundPainter extends CustomPainter {
   final double transform;
+  final Color colorA, colorB, colorC;
 
-  JuBackgroundPainter(this.transform);
+  JuBackgroundPainter(
+    this.transform, {
+    this.colorA = juOrange,
+    this.colorB = juGreen,
+    this.colorC = juBlue,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -41,10 +56,10 @@ class JuBackgroundPainter extends CustomPainter {
     bottomPath.lineTo(0, h(1));
     bottomPath.close();
 
-    canvas.drawRect(Rect.fromLTWH(0, 0, w(1), h(1)), Paint()..color = juGreen);
+    canvas.drawRect(Rect.fromLTWH(0, 0, w(1), h(1)), Paint()..color = colorB);
 
-    canvas.drawPath(topPath, Paint()..color = juOrange);
-    canvas.drawPath(bottomPath, Paint()..color = juBlue);
+    canvas.drawPath(topPath, Paint()..color = colorA);
+    canvas.drawPath(bottomPath, Paint()..color = colorC);
   }
 
   @override

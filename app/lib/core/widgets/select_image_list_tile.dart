@@ -16,6 +16,7 @@ class SelectImageListTile extends StatefulWidget {
     this.onDelete,
     this.crop,
     this.leading,
+    this.maxWidth,
     Key? key,
   }) : super(key: key);
 
@@ -25,6 +26,7 @@ class SelectImageListTile extends StatefulWidget {
   final VoidCallback? onDelete;
   final OverlayType? crop;
   final Widget? leading;
+  final double? maxWidth;
 
   @override
   State<SelectImageListTile> createState() => _SelectImageListTileState();
@@ -56,8 +58,12 @@ class _SelectImageListTileState extends State<SelectImageListTile> {
       onTap: () async {
         setState(() => isLoading = true);
         try {
-          var pngBytes = await ImageSelector.open(context,
-              crop: widget.crop != null, cropOverlayType: widget.crop ?? OverlayType.none);
+          var pngBytes = await ImageSelector.open(
+            context,
+            crop: widget.crop != null,
+            cropOverlayType: widget.crop ?? OverlayType.none,
+            maxWidth: widget.maxWidth,
+          );
           if (pngBytes != null) {
             await widget.onImageSelected(pngBytes);
           }

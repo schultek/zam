@@ -3,11 +3,8 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
-import '../../core/core.dart';
 import '../../core/widgets/template_preview_switcher.dart';
-import '../../helpers/extensions.dart';
-import '../../providers/auth/user_provider.dart';
-import '../../providers/groups/selected_group_provider.dart';
+import '../../modules/announcement/announcement.module.dart';
 import '../../widgets/ju_layout.dart';
 
 class CreateGroupScreen extends StatefulWidget {
@@ -20,16 +17,20 @@ class CreateGroupScreen extends StatefulWidget {
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
   String? groupName;
 
-  static Future<DocumentReference> createNewGroup(String groupName, String userId) {
+  Future<void> createNewGroup() async {
+    if (groupName == null) return;
+
     var group = Group(
       id: '',
-      name: groupName,
-      users: {userId: GroupUser(role: UserRoles.organizer)},
+      name: groupName!,
+      users: {context.read(userIdProvider)!: GroupUser(role: UserRoles.organizer)},
       template: SwipeTemplateModel(),
       theme: ThemeModel(schemeIndex: FlexScheme.blue.index),
       moduleBlacklist: ['music', 'polls'],
     );
-    return FirebaseFirestore.instance.collection('groups').add(group.toMap());
+    var doc = await FirebaseFirestore.instance.collection('groups').add(group.toMap());
+    context.read(selectedGroupIdProvider.notifier).state = doc.id;
+    context.read(groupsLogicProvider).updateLogo(group.copyWith(id: doc.id));
   }
 
   @override
@@ -98,11 +99,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 context.tr.create_group,
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
               ),
-              onPressed: () async {
-                if (groupName == null) return;
-                DocumentReference doc = await createNewGroup(groupName!, context.read(userIdProvider)!);
-                context.read(selectedGroupIdProvider.notifier).state = doc.id;
-              },
+              onPressed: createNewGroup,
             ),
           ],
         ),

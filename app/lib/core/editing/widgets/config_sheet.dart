@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_context/riverpod_context.dart';
 
 import '../../core.dart';
-import '../../pages/group_settings_builder.dart';
 import '../editing_providers.dart';
 import '../selected_area_provider.dart';
 import 'config_tabs_painter.dart';
+import 'group_settings_builder.dart';
 
 class ConfigSheet<T extends TemplateModel> extends StatefulWidget {
   const ConfigSheet({Key? key}) : super(key: key);

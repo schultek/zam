@@ -183,7 +183,7 @@ class LinkLogic {
       meta: SocialMetaTagParameters(
         title: '${group.name}${role == UserRoles.organizer ? ' - ${context.tr.become_organizer}' : ''}',
         description: context.tr.join_the_group,
-        imageUrl: Uri.parse(group.pictureUrl ?? _appLogoUrl),
+        imageUrl: Uri.parse(group.logoUrl ?? group.pictureUrl ?? _appLogoUrl),
       ),
     );
   }
