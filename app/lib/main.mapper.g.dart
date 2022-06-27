@@ -76,6 +76,8 @@ var _mappers = <BaseMapper>{
   BalanceFocusParamsMapper._(),
   SplitStateMapper._(),
   BillingStatsMapper._(),
+  SplitSpendingsMapper._(),
+  SplitSpendingMapper._(),
   BillingRatesMapper._(),
   SplitTemplateMapper._(),
   BalanceEntryMapper._(),
@@ -2531,7 +2533,8 @@ extension BillingStatsMapperExtension on BillingStats {
 
 abstract class BillingStatsCopyWith<$R> {
   factory BillingStatsCopyWith(BillingStats value, Then<BillingStats, $R> then) = _BillingStatsCopyWithImpl<$R>;
-  $R call({SplitBalance? totalSpendings, Map<String, SplitBalance>? userSpendings});
+  MapCopyWith<$R, String, SplitSpendings, SplitSpendingsCopyWith<$R>> get userSpendings;
+  $R call({SplitBalance? totalSpendings, Map<String, SplitSpendings>? userSpendings});
   $R apply(BillingStats Function(BillingStats) transform);
 }
 
@@ -2539,8 +2542,118 @@ class _BillingStatsCopyWithImpl<$R> extends BaseCopyWith<BillingStats, $R> imple
   _BillingStatsCopyWithImpl(BillingStats value, Then<BillingStats, $R> then) : super(value, then);
 
   @override
-  $R call({SplitBalance? totalSpendings, Map<String, SplitBalance>? userSpendings}) =>
+  MapCopyWith<$R, String, SplitSpendings, SplitSpendingsCopyWith<$R>> get userSpendings =>
+      MapCopyWith($value.userSpendings, (v, t) => SplitSpendingsCopyWith(v, t), (v) => call(userSpendings: v));
+  @override
+  $R call({SplitBalance? totalSpendings, Map<String, SplitSpendings>? userSpendings}) =>
       $then(BillingStats(totalSpendings ?? $value.totalSpendings, userSpendings ?? $value.userSpendings));
+}
+
+class SplitSpendingsMapper extends BaseMapper<SplitSpendings> {
+  SplitSpendingsMapper._();
+
+  @override
+  Function get decoder => decode;
+  SplitSpendings decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SplitSpendings fromMap(Map<String, dynamic> map) =>
+      SplitSpendings(Mapper.i.$get(map, 'totalAmounts'), Mapper.i.$get(map, 'spendings'));
+
+  @override
+  Function get encoder => (SplitSpendings v) => encode(v);
+  dynamic encode(SplitSpendings v) => toMap(v);
+  Map<String, dynamic> toMap(SplitSpendings s) => {
+        'totalAmounts': Mapper.i.$enc(s.totalAmounts, 'totalAmounts'),
+        'spendings': Mapper.i.$enc(s.spendings, 'spendings')
+      };
+
+  @override
+  String stringify(SplitSpendings self) =>
+      'SplitSpendings(totalAmounts: ${Mapper.asString(self.totalAmounts)}, spendings: ${Mapper.asString(self.spendings)})';
+  @override
+  int hash(SplitSpendings self) => Mapper.hash(self.totalAmounts) ^ Mapper.hash(self.spendings);
+  @override
+  bool equals(SplitSpendings self, SplitSpendings other) =>
+      Mapper.isEqual(self.totalAmounts, other.totalAmounts) && Mapper.isEqual(self.spendings, other.spendings);
+
+  @override
+  Function get typeFactory => (f) => f<SplitSpendings>();
+}
+
+extension SplitSpendingsMapperExtension on SplitSpendings {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SplitSpendingsCopyWith<SplitSpendings> get copyWith => SplitSpendingsCopyWith(this, $identity);
+}
+
+abstract class SplitSpendingsCopyWith<$R> {
+  factory SplitSpendingsCopyWith(SplitSpendings value, Then<SplitSpendings, $R> then) = _SplitSpendingsCopyWithImpl<$R>;
+  ListCopyWith<$R, SplitSpending, SplitSpendingCopyWith<$R>> get spendings;
+  $R call({Map<Currency, double>? totalAmounts, List<SplitSpending>? spendings});
+  $R apply(SplitSpendings Function(SplitSpendings) transform);
+}
+
+class _SplitSpendingsCopyWithImpl<$R> extends BaseCopyWith<SplitSpendings, $R> implements SplitSpendingsCopyWith<$R> {
+  _SplitSpendingsCopyWithImpl(SplitSpendings value, Then<SplitSpendings, $R> then) : super(value, then);
+
+  @override
+  ListCopyWith<$R, SplitSpending, SplitSpendingCopyWith<$R>> get spendings =>
+      ListCopyWith($value.spendings, (v, t) => SplitSpendingCopyWith(v, t), (v) => call(spendings: v));
+  @override
+  $R call({Map<Currency, double>? totalAmounts, List<SplitSpending>? spendings}) =>
+      $then(SplitSpendings(totalAmounts ?? $value.totalAmounts, spendings ?? $value.spendings));
+}
+
+class SplitSpendingMapper extends BaseMapper<SplitSpending> {
+  SplitSpendingMapper._();
+
+  @override
+  Function get decoder => decode;
+  SplitSpending decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  SplitSpending fromMap(Map<String, dynamic> map) =>
+      SplitSpending(Mapper.i.$get(map, 'title'), Mapper.i.$get(map, 'currency'), Mapper.i.$get(map, 'amount'));
+
+  @override
+  Function get encoder => (SplitSpending v) => encode(v);
+  dynamic encode(SplitSpending v) => toMap(v);
+  Map<String, dynamic> toMap(SplitSpending s) => {
+        'title': Mapper.i.$enc(s.title, 'title'),
+        'currency': Mapper.i.$enc(s.currency, 'currency'),
+        'amount': Mapper.i.$enc(s.amount, 'amount')
+      };
+
+  @override
+  String stringify(SplitSpending self) =>
+      'SplitSpending(title: ${Mapper.asString(self.title)}, currency: ${Mapper.asString(self.currency)}, amount: ${Mapper.asString(self.amount)})';
+  @override
+  int hash(SplitSpending self) => Mapper.hash(self.title) ^ Mapper.hash(self.currency) ^ Mapper.hash(self.amount);
+  @override
+  bool equals(SplitSpending self, SplitSpending other) =>
+      Mapper.isEqual(self.title, other.title) &&
+      Mapper.isEqual(self.currency, other.currency) &&
+      Mapper.isEqual(self.amount, other.amount);
+
+  @override
+  Function get typeFactory => (f) => f<SplitSpending>();
+}
+
+extension SplitSpendingMapperExtension on SplitSpending {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  SplitSpendingCopyWith<SplitSpending> get copyWith => SplitSpendingCopyWith(this, $identity);
+}
+
+abstract class SplitSpendingCopyWith<$R> {
+  factory SplitSpendingCopyWith(SplitSpending value, Then<SplitSpending, $R> then) = _SplitSpendingCopyWithImpl<$R>;
+  $R call({String? title, Currency? currency, double? amount});
+  $R apply(SplitSpending Function(SplitSpending) transform);
+}
+
+class _SplitSpendingCopyWithImpl<$R> extends BaseCopyWith<SplitSpending, $R> implements SplitSpendingCopyWith<$R> {
+  _SplitSpendingCopyWithImpl(SplitSpending value, Then<SplitSpending, $R> then) : super(value, then);
+
+  @override
+  $R call({String? title, Currency? currency, double? amount}) =>
+      $then(SplitSpending(title ?? $value.title, currency ?? $value.currency, amount ?? $value.amount));
 }
 
 class BillingRatesMapper extends BaseMapper<BillingRates> {
