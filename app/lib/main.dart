@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +25,18 @@ import 'screens/signin/signin_screen.dart';
 import 'widgets/nested_will_pop_scope.dart';
 
 void main() {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   runZonedGuarded<Future<void>>(() async {
+    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
     runApp(const ProviderScope(child: InheritedConsumer(child: JufaApp())));
-  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
+  }, (error, stack) async {
+    try {
+      Firebase.app();
+    } catch (_) {
+      await Firebase.initializeApp();
+    }
+    FirebaseCrashlytics.instance.recordError(error, stack);
+  });
 }
 
 class JufaApp extends StatefulWidget {

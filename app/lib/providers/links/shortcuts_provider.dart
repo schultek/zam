@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:flutter/cupertino.dart';
@@ -41,9 +42,11 @@ class ShortcutsLogic {
   }
 
   Future<void> checkIsLaunchedFromShortcut() async {
-    var value = await channel.invokeMethod<String>('isLaunchedFromShortcut');
-    if (value is String) {
-      await onShortcutLaunched(value);
+    if (Platform.isAndroid) {
+      var value = await channel.invokeMethod<String>('isLaunchedFromShortcut');
+      if (value is String) {
+        await onShortcutLaunched(value);
+      }
     }
     FlutterNativeSplash.remove();
   }
