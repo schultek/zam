@@ -3,10 +3,6 @@
     "rules": "config/firestore.rules",
     "indexes": "config/firestore.indexes.json"
   },
-  "functions": {
-    "runtime": "nodejs10",
-    "source": "functions"
-  },
   "storage": {
     "rules": "config/storage.rules"
   },
@@ -16,7 +12,14 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ]
+    ],
+    "rewrites": [ {
+      "source": "/*",
+      "run": {
+        "serviceId": "group-service",
+        "region": "europe-west1"
+      }
+    } ]
   },
   "emulators": {
     "firestore": {

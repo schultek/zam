@@ -26,6 +26,10 @@ FunctionTarget? _nameToFunctionTarget(String name) {
       return FunctionTarget.http(
         function_library.apiService,
       );
+    case 'groupService':
+      return FunctionTarget.http(
+        function_library.groupService,
+      );
     default:
       return null;
   }
