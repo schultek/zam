@@ -2,8 +2,9 @@
 
 Jugend-Freizeit-App
 
-- Google Play
-- Appstore
+[![Google Play](/assets/GooglePlayButton.png)](https://play.google.com/store/apps/details?id=de.schultek.jufa&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
+
+[![App Store](/assets/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg)](https://apps.apple.com/us/app/jufa/id1623842177)
 
 ## Core functionalities
 
@@ -11,7 +12,15 @@ Jugend-Freizeit-App
 - Sharing the group with other participants of the group
 - Flexible usage of different modules
 
-# Existing Modules
+![Screenshot](/assets/Screenshot.png)
+
+## About
+
+Jufa makes it possible to individually plan your next trip, journey, workshop or event with your friends or collegues. 
+You can decide who is invited and how the group should look like. When everything is set up, you can write shared notes, collect photos, create playlists, upload materials or play minigames. 
+The app is individually adaptable for each trip. This offers you the perfect assistance to every event, makes preparation and planning easy and gives you more time to enjoy your event!
+
+## Existing Modules
 
 - ### Announcement 📢
   - Create an announcement visible for all users
