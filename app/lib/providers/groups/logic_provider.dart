@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dart_mappable/dart_mappable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -133,6 +134,25 @@ class GroupsLogic {
       await FirebaseFirestore.instance.collection('groups').doc(_groupId).update({
         'logoUrl': group.pictureUrl,
       });
+    }
+  }
+
+  Future<LandingPageConfig> createLandingPage(Group group) async {
+    var slug = Uri.encodeComponent(CaseStyle.snakeCase //
+        .transform(group.name)
+        .replaceAll('ä', 'ae')
+        .replaceAll('ö', 'oe')
+        .replaceAll('ü', 'ue'));
+
+    var prefix = '';
+    while (true) {
+      var doc = FirebaseFirestore.instance.collection('pages').doc(slug + prefix);
+      if ((await doc.get()).exists) {
+        prefix = '_${generateRandomId(4)}';
+      } else {
+        await doc.set({'group': group.id});
+        return LandingPageConfig(slug: slug + prefix);
+      }
     }
   }
 }

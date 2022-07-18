@@ -17,6 +17,7 @@ FROM scratch
 
 COPY --from=build /runtime/ /
 COPY --from=build /app/bin/server /app/bin/
+COPY --from=build /app/bin/web/ /app/bin/web
 COPY serviceAccountKey.json /
 
 ARG TARGET

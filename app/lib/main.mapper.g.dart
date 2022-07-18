@@ -44,6 +44,7 @@ var _mappers = <BaseMapper>{
   ThemeModelMapper._(),
   GroupMapper._(),
   GroupUserMapper._(),
+  LandingPageConfigMapper._(),
   SwipeTemplateModelMapper._(),
   TemplateModelMapper._(),
   SwipeTemplatePageMapper._(),
@@ -333,7 +334,8 @@ class GroupMapper extends BaseMapper<Group> {
       theme: Mapper.i.$get(map, 'theme'),
       users: Mapper.i.$getOpt(map, 'users') ?? const {},
       modules: Mapper.i.$getOpt(map, 'modules') ?? const {},
-      moduleBlacklist: Mapper.i.$getOpt(map, 'moduleBlacklist') ?? const []);
+      moduleBlacklist: Mapper.i.$getOpt(map, 'moduleBlacklist') ?? const [],
+      landingPage: Mapper.i.$getOpt(map, 'landingPage'));
 
   @override
   Function get encoder => (Group v) => encode(v);
@@ -347,12 +349,13 @@ class GroupMapper extends BaseMapper<Group> {
         'theme': Mapper.i.$enc(g.theme, 'theme'),
         'users': Mapper.i.$enc(g.users, 'users'),
         'modules': Mapper.i.$enc(g.modules, 'modules'),
-        'moduleBlacklist': Mapper.i.$enc(g.moduleBlacklist, 'moduleBlacklist')
+        'moduleBlacklist': Mapper.i.$enc(g.moduleBlacklist, 'moduleBlacklist'),
+        'landingPage': Mapper.i.$enc(g.landingPage, 'landingPage')
       };
 
   @override
   String stringify(Group self) =>
-      'Group(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, logoUrl: ${Mapper.asString(self.logoUrl)}, template: ${Mapper.asString(self.template)}, theme: ${Mapper.asString(self.theme)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)}, moduleBlacklist: ${Mapper.asString(self.moduleBlacklist)})';
+      'Group(name: ${Mapper.asString(self.name)}, id: ${Mapper.asString(self.id)}, pictureUrl: ${Mapper.asString(self.pictureUrl)}, logoUrl: ${Mapper.asString(self.logoUrl)}, template: ${Mapper.asString(self.template)}, theme: ${Mapper.asString(self.theme)}, users: ${Mapper.asString(self.users)}, modules: ${Mapper.asString(self.modules)}, moduleBlacklist: ${Mapper.asString(self.moduleBlacklist)}, landingPage: ${Mapper.asString(self.landingPage)})';
   @override
   int hash(Group self) =>
       Mapper.hash(self.name) ^
@@ -363,7 +366,8 @@ class GroupMapper extends BaseMapper<Group> {
       Mapper.hash(self.theme) ^
       Mapper.hash(self.users) ^
       Mapper.hash(self.modules) ^
-      Mapper.hash(self.moduleBlacklist);
+      Mapper.hash(self.moduleBlacklist) ^
+      Mapper.hash(self.landingPage);
   @override
   bool equals(Group self, Group other) =>
       Mapper.isEqual(self.name, other.name) &&
@@ -374,7 +378,8 @@ class GroupMapper extends BaseMapper<Group> {
       Mapper.isEqual(self.theme, other.theme) &&
       Mapper.isEqual(self.users, other.users) &&
       Mapper.isEqual(self.modules, other.modules) &&
-      Mapper.isEqual(self.moduleBlacklist, other.moduleBlacklist);
+      Mapper.isEqual(self.moduleBlacklist, other.moduleBlacklist) &&
+      Mapper.isEqual(self.landingPage, other.landingPage);
 
   @override
   Function get typeFactory => (f) => f<Group>();
@@ -390,6 +395,7 @@ abstract class GroupCopyWith<$R> {
   factory GroupCopyWith(Group value, Then<Group, $R> then) = _GroupCopyWithImpl<$R>;
   ThemeModelCopyWith<$R> get theme;
   MapCopyWith<$R, String, GroupUser, GroupUserCopyWith<$R>> get users;
+  LandingPageConfigCopyWith<$R>? get landingPage;
   $R call(
       {String? id,
       String? name,
@@ -399,7 +405,8 @@ abstract class GroupCopyWith<$R> {
       ThemeModel? theme,
       Map<String, GroupUser>? users,
       Map<String, List<String>>? modules,
-      List<String>? moduleBlacklist});
+      List<String>? moduleBlacklist,
+      LandingPageConfig? landingPage});
   $R apply(Group Function(Group) transform);
 }
 
@@ -412,6 +419,9 @@ class _GroupCopyWithImpl<$R> extends BaseCopyWith<Group, $R> implements GroupCop
   MapCopyWith<$R, String, GroupUser, GroupUserCopyWith<$R>> get users =>
       MapCopyWith($value.users, (v, t) => GroupUserCopyWith(v, t), (v) => call(users: v));
   @override
+  LandingPageConfigCopyWith<$R>? get landingPage =>
+      $value.landingPage != null ? LandingPageConfigCopyWith($value.landingPage!, (v) => call(landingPage: v)) : null;
+  @override
   $R call(
           {String? id,
           String? name,
@@ -421,7 +431,8 @@ class _GroupCopyWithImpl<$R> extends BaseCopyWith<Group, $R> implements GroupCop
           ThemeModel? theme,
           Map<String, GroupUser>? users,
           Map<String, List<String>>? modules,
-          List<String>? moduleBlacklist}) =>
+          List<String>? moduleBlacklist,
+          Object? landingPage = $none}) =>
       $then(Group(
           id: id ?? $value.id,
           name: name ?? $value.name,
@@ -431,7 +442,8 @@ class _GroupCopyWithImpl<$R> extends BaseCopyWith<Group, $R> implements GroupCop
           theme: theme ?? $value.theme,
           users: users ?? $value.users,
           modules: modules ?? $value.modules,
-          moduleBlacklist: moduleBlacklist ?? $value.moduleBlacklist));
+          moduleBlacklist: moduleBlacklist ?? $value.moduleBlacklist,
+          landingPage: or(landingPage, $value.landingPage)));
 }
 
 class GroupUserMapper extends BaseMapper<GroupUser> {
@@ -489,6 +501,63 @@ class _GroupUserCopyWithImpl<$R> extends BaseCopyWith<GroupUser, $R> implements 
       role: role ?? $value.role,
       nickname: or(nickname, $value.nickname),
       profileUrl: or(profileUrl, $value.profileUrl)));
+}
+
+class LandingPageConfigMapper extends BaseMapper<LandingPageConfig> {
+  LandingPageConfigMapper._();
+
+  @override
+  Function get decoder => decode;
+  LandingPageConfig decode(dynamic v) => checked(v, (Map<String, dynamic> map) => fromMap(map));
+  LandingPageConfig fromMap(Map<String, dynamic> map) => LandingPageConfig(
+      enabled: Mapper.i.$getOpt(map, 'enabled') ?? true,
+      slug: Mapper.i.$get(map, 'slug'),
+      link: Mapper.i.$getOpt(map, 'link'));
+
+  @override
+  Function get encoder => (LandingPageConfig v) => encode(v);
+  dynamic encode(LandingPageConfig v) => toMap(v);
+  Map<String, dynamic> toMap(LandingPageConfig l) => {
+        'enabled': Mapper.i.$enc(l.enabled, 'enabled'),
+        'slug': Mapper.i.$enc(l.slug, 'slug'),
+        'link': Mapper.i.$enc(l.link, 'link')
+      };
+
+  @override
+  String stringify(LandingPageConfig self) =>
+      'LandingPageConfig(enabled: ${Mapper.asString(self.enabled)}, slug: ${Mapper.asString(self.slug)}, link: ${Mapper.asString(self.link)})';
+  @override
+  int hash(LandingPageConfig self) => Mapper.hash(self.enabled) ^ Mapper.hash(self.slug) ^ Mapper.hash(self.link);
+  @override
+  bool equals(LandingPageConfig self, LandingPageConfig other) =>
+      Mapper.isEqual(self.enabled, other.enabled) &&
+      Mapper.isEqual(self.slug, other.slug) &&
+      Mapper.isEqual(self.link, other.link);
+
+  @override
+  Function get typeFactory => (f) => f<LandingPageConfig>();
+}
+
+extension LandingPageConfigMapperExtension on LandingPageConfig {
+  String toJson() => Mapper.toJson(this);
+  Map<String, dynamic> toMap() => Mapper.toMap(this);
+  LandingPageConfigCopyWith<LandingPageConfig> get copyWith => LandingPageConfigCopyWith(this, $identity);
+}
+
+abstract class LandingPageConfigCopyWith<$R> {
+  factory LandingPageConfigCopyWith(LandingPageConfig value, Then<LandingPageConfig, $R> then) =
+      _LandingPageConfigCopyWithImpl<$R>;
+  $R call({bool? enabled, String? slug, String? link});
+  $R apply(LandingPageConfig Function(LandingPageConfig) transform);
+}
+
+class _LandingPageConfigCopyWithImpl<$R> extends BaseCopyWith<LandingPageConfig, $R>
+    implements LandingPageConfigCopyWith<$R> {
+  _LandingPageConfigCopyWithImpl(LandingPageConfig value, Then<LandingPageConfig, $R> then) : super(value, then);
+
+  @override
+  $R call({bool? enabled, String? slug, Object? link = $none}) => $then(
+      LandingPageConfig(enabled: enabled ?? $value.enabled, slug: slug ?? $value.slug, link: or(link, $value.link)));
 }
 
 class SwipeTemplateModelMapper extends BaseMapper<SwipeTemplateModel> {

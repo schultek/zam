@@ -32,15 +32,19 @@ class FirebaseMiddleware extends ApiMiddleware {
 
   @override
   FutureOr<dynamic> apply(ShelfApiRequest request, FutureOr<dynamic> Function(ApiRequest) next) async {
-    App app;
-    try {
-      app = FirebaseAdmin.instance.app()!;
-    } catch (_) {
-      app = FirebaseAdmin.instance.initializeApp(AppOptions(
-        credential: FirebaseAdmin.instance.certFromPath('./serviceAccountKey.json'),
-        projectId: 'jufa20',
-      ));
-    }
-    return next(request.change(context: {'firebase_app': app}));
+    return next(request.change(context: {'firebase_app': getFirebaseApp()}));
   }
+}
+
+App getFirebaseApp() {
+  App app;
+  try {
+    app = FirebaseAdmin.instance.app()!;
+  } catch (_) {
+    app = FirebaseAdmin.instance.initializeApp(AppOptions(
+      credential: FirebaseAdmin.instance.certFromPath('./serviceAccountKey.json'),
+      projectId: 'jufa20',
+    ));
+  }
+  return app;
 }

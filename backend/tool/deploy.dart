@@ -4,10 +4,11 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_writer/yaml_writer.dart';
 
-void main() async {
+void main(List<String> args) async {
   await buildPackage();
   await run('dart pub get');
   await run('dart run build_runner build');
+  await run('dart run webdev build --output=web:bin/web');
 
   var functionsJsonPath = 'build/.dart_tool/build/generated/backend/lib/functions.json';
   var functionsJson = await File(functionsJsonPath).readAsString();
@@ -19,6 +20,10 @@ void main() async {
     var target = functionConfig['target'];
     var service = functionConfig['service'];
     var trigger = functionConfig['trigger'] as Map<String, dynamic>?;
+
+    if (args.isNotEmpty && !args.contains(service)) {
+      continue;
+    }
 
     var signatureType = trigger != null ? 'cloudevent' : 'http';
 

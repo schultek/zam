@@ -15,8 +15,9 @@ class Group with Mappable {
   final Map<String, GroupUser> users;
   final Map<String, List<String>> modules;
   final List<String> moduleBlacklist;
+  final LandingPageConfig? landingPage;
 
-  Group({
+  const Group({
     required this.id,
     required this.name,
     this.pictureUrl,
@@ -26,6 +27,7 @@ class Group with Mappable {
     this.users = const {},
     this.modules = const {},
     this.moduleBlacklist = const [],
+    this.landingPage,
   });
 }
 
@@ -43,4 +45,13 @@ class GroupUser with Mappable {
 class UserRoles {
   static const organizer = 'organizer';
   static const participant = 'participant';
+}
+
+@MappableClass()
+class LandingPageConfig with Mappable {
+  final bool enabled;
+  final String slug;
+  final String? link;
+
+  const LandingPageConfig({this.enabled = true, required this.slug, this.link});
 }

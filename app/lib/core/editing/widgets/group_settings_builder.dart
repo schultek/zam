@@ -2,12 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cropperx/cropperx.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_context/riverpod_context.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../../helpers/extensions.dart';
 import '../../../modules/modules.dart';
 import '../../../providers/auth/claims_provider.dart';
 import '../../../providers/groups/logic_provider.dart';
 import '../../../providers/groups/selected_group_provider.dart';
+import '../../../providers/links/links_provider.dart';
 import '../../core.dart';
 import '../../widgets/input_list_tile.dart';
 import '../../widgets/select_image_list_tile.dart';
@@ -109,6 +111,7 @@ class GroupSettingsBuilder {
           },
         ),
       ]),
+      _landingPageSection(group),
       for (var settings in moduleSettings)
         SettingsSection(
           title: settings.key,
@@ -148,6 +151,76 @@ class GroupSettingsBuilder {
           ),
       ]),
     ];
+  }
+
+  Widget _landingPageSection(Group group) {
+    var isLoading = false;
+    return SettingsSection(
+      title: 'Landing Page',
+      children: [
+        StatefulBuilder(builder: (context, setState) {
+          if (isLoading) {
+            return ListTile(
+              title: const Text('Activate custom landing page'),
+              subtitle: group.landingPage != null ? Text('jufa.app/${group.landingPage!.slug}') : null,
+              trailing: Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation(context.theme.colorScheme.secondary),
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return SwitchListTile(
+              title: const Text('Activate custom landing page'),
+              subtitle: group.landingPage != null ? Text('jufa.app/${group.landingPage!.slug}') : null,
+              value: group.landingPage?.enabled ?? false,
+              onChanged: (value) async {
+                setState(() => isLoading = true);
+                try {
+                  if (!value) {
+                    await context
+                        .read(groupsLogicProvider)
+                        .updateGroup({'landingPage': group.landingPage?.copyWith(enabled: false).toMap()});
+                  } else {
+                    if (group.landingPage == null) {
+                      var landingPage = await context.read(groupsLogicProvider).createLandingPage(group);
+
+                      String link = await context
+                          .read(linkLogicProvider)
+                          .createGroupInvitationLink(context: context, group: group);
+                      landingPage = landingPage.copyWith(link: link);
+                      await context.read(groupsLogicProvider).updateGroup({'landingPage': landingPage.toMap()});
+                    } else {
+                      await context
+                          .read(groupsLogicProvider)
+                          .updateGroup({'landingPage': group.landingPage!.copyWith(enabled: true).toMap()});
+                    }
+                  }
+                } finally {
+                  setState(() => isLoading = false);
+                }
+              },
+            );
+          }
+        }),
+        if (group.landingPage?.enabled ?? false) ...[
+          ListTile(
+            title: const Text('Visit live page'),
+            subtitle: Text('jufa.app/${group.landingPage!.slug}'),
+            onTap: () {
+              launchUrlString('https://jufa.app/${group.landingPage!.slug}', mode: LaunchMode.externalApplication);
+            },
+            trailing: const Icon(Icons.open_in_new),
+          ),
+        ],
+      ],
+    );
   }
 
   void showConfirmDialog(BuildContext context, String title, String content, String action, Function() onConfirmed) {
