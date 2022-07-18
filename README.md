@@ -4,9 +4,11 @@
 
 Jugend-Freizeit-App
 
-[![Google Play](/assets/GooglePlayButton.png)](https://play.google.com/store/apps/details?id=de.schultek.jufa&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
-
-[![App Store](/assets/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg)](https://apps.apple.com/us/app/jufa/id1623842177)
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=de.schultek.jufa"><img src="/assets/GooglePlayButton.png" height="50"/></a>
+  <span>&nbsp;&nbsp;</span>
+  <a href="https://apps.apple.com/us/app/jufa/id1623842177"><img src="/assets/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" height="50"/></a>
+</p>
 
 ## Core functionalities
 
