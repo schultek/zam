@@ -1,168 +1,50 @@
-# Jufa
+### Jufa
 
 Jugend-Freizeit-App
 
-# TODOs
+- Google Play
+- Appstore
 
-- Game Entry Error?
+## Core functionalities
 
-# Roadmap
+- Creation of groups fitting to a trip / an activity
+- Sharing the group with other participants of the group
+- Flexible usage of different modules
 
-## Modules
+## Existing Modules
 
-### Existing Modules
-
-- Chat
-  - Local Chat Notifications
-  - Chat Page Card
-  - Channel Management (Delete, Rename, etc)
-  - More Attachments
-  - Custom chat ui
-  - Smart Attachments (Notes, Games, Music, Announcement, Poll)
-- [x] Elimination Game
-  - Create Game Page (Name, Allow Loops)
-  - Games List Page, Game Summary
-- [x] The Button Game
-  - Ranks instead of points
-  - Rank Leaderboard
-  - Level in Avatars
-- [x] Camera
-  - Remove
-- [x] Profile
-  - Better Picture selector + cropper
-  - Save Button
-- [x] Notes
-  - // Visibility settings for notes / folders
-  - More Attachment options
-- Music
-  - Better connection persistence?
-  - Queue-Only mode
-  - Volume Control
-  - Song voting
-  - Better Music Browser (Song, Album, Artist, Playlist)
-- Announcement
-  - Scheduled Announcement
-  - Custom Notification Sound
-    - select, upload or youtube mp3 url
-    - (usable as Alarm)
-  - User specific
-
-### New Modules
-
-- [x] Photos
-  - Simple Shortcut to Photos album
-- Polls
-  - Fixed Options vs Open Options
-  - Single Choice vs Multi Choice
-  - Check vs Rating
-- FAQ (App)
-  - How to use?
-- Photo of the day
-  - Upload Photo
-  - Vote Photos
-  - See Winning Photo
-- Team Games
-  - Story, one line per person at a time
-  - Picture Story, continuing per person
-  - 2 True, 1 Lie
-  - Real life among us?
-      - Innocent, Traitor
-      - Tasks
-        - SchereSteinPapier Duell
-        - Selfie mit anderem Spieler
-        - 5 Liegestützen (an bestimmtem Ort)
-        - Tausche eine Socket mit Spieler
-        - Trinke ein Glas Wasser
-        - Neues Oberteil anziehen
-        - ...
-      - Death
-        - Gegenstand übergeben
-        - Antippen
-  - 1000 white cards (Random rules for a random game)
-  - Random Facts, guess the participant
-  - Great minds think alike (Same answer to a question)
-  - Win/Loose Turnament
-  - Game Assistant
-    - Custom Scoreboard
-    - Random Number picker
-    - Random Player Picker
-    - Random Option Picker
-- Calendar
-  - Activities, etc
-  - Upcoming Activity
-- Recipes, Ingredients
-- Duties
-  - Assign to player
-  - Player sees card with assigned duty 
-- Trophies
-  - Custom trophies, assignable to player
-  - Automatic trophies (games, etc)
-- Documents / Content / Education
-  - Shared Google Drive folder?
-  - View docs, images, pdfs
-- Screentime Tree
-  - Data Notification and Pong
-- [x] Money Split
-- Map
-  - Add Markers / Routes
-  - Share Live Location
-  - Link Event / Note
+- # Announcement 📢
+  - Create an announcement visible for all users
+  - The announcement is send to the users as a push up notification
+- # Chat 💬
+  - Chat with participants from your group
+  - Create different channels for different topics
+- # Elimination Game 🎯
+  - A group game: The goal is to eliminate your target
+  - Each participant gets one 'target' (another participant)
+  - By fulfilling a task (e.g. handing an object to the person) the target is eliminated
+  - The participant gets the target of the eliminated player until only one player is left
+- # Money Split 💸
+  - Enter new payments or exchanges
+  - Have an easy overview over all your groups finances
+- # Music 💃🏻
+  - Connect Jufa to Spotify to share your music
+  - Other users can now easily add new songs to the query or change the current song
+- # Notes 📒
+  - Note down everything you need for the trip
+  - Notes can be styled with various styling options
+- # Photos 📸
+  - Insert a simple shortcut to your Google photos album
+- # Profile 👱🏿
+  - Each user can create an individual profile with a picture and a nickname
+- # The Button Game 🔴
+  - A social game: Keep the button alive!
+  - By clicking on the button, you can restore its health and get a new level
+  - Be fast, or another player might restore the health earlier!
+- # Users 🧑🏽‍🦱
+  - The users module shows a list of all users in a group
+- # Website 💻
+  - Share a website url with the whole group, so everyone can access it quickly over JUFA
 
 
-
-## Case Studies
-
-### Ü18 Freizeit
-
-- Planung und Übersicht Aktivitäten
-- Planung und Übersicht Essen
-- Organisation Einkaufen
-- Kommunikation
-- Spiele
-
-### Segel Trip
-
-- Planen & Verfolgen der Segelroute
-- Kommunikation bei Landgängen
-- Bordkasse und Ausgaben managen
-- Essen und Einkaufen planen
-
-### Klassenfahrt
-
-- Agenda / Zeitpläne erstellen und einsehen
-- Kommunikation, Absprachen machen
-- Mitteilungen / Ankündigungen schreiben
-
-### Jugend Freizeit
-
-- Essen Planen
-- Abstimmungen, Feedback geben
-- Packliste, Planungen
-- Bildungs-Material verwalten und ansehen
-
-### Ski-Gruppenurlaub
-
-- Ausgaben managen
-- Fotos / Videos teilen
-- Chatten
-- Karte vom Skigebiet hochladen
-- Website vom Skigebiet verlinken
-
-### Company Teamevent
-
-- Planung
-- Chatten
-- Spiele
-
-### Klausur-Tagung
-
-- Notizen
-- Material hochladen und bearbeiten
-- Workshops erstellen, Slides hochladen & teilen
-- Chatten
-
-### Abifahrt
-
-### Gruppen-Trip auf Festival
-
-### Verein Orga
+## Roadmap
