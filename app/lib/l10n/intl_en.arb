@@ -295,6 +295,12 @@
   "website": "Website",
   "custom_image": "Custom Image",
   "set_a_url": "Enter a URL",
+  "launch_url_subtitle": "Opens a selected webpage",
+  "launch_url_text": "By clicking on 'Open URL', users can open a definded webpage in Jufa, for example a recipe.\n\nThe module is only visible for users after an URL was defined under settings by the organizer. Additionally, it is possible to add icons, images or text to the module card.",
+  "web_page": "Webpage",
+  "web_page_subtitle": "Shows a selected webpage",
+  "web_page_text": "Organizers can select a webpage that always shows up when users click on the module, for example a cooking recipe.\n\nUnder settings it can be defined whether users are only able to view the page or also able to navigate on it.",
+
 
   "@MUSIC": {},
 
@@ -318,6 +324,10 @@
   "allow_control_playback": "Allow users to control playback",
   "show_playlist_controls": "Show Playlist Controls",
   "allow_modify_playlist": "Allow users to modify the shared playlist",
+  "player": "Player",
+  "player_subtitle": "Connects Jufa to Spotify",
+  "player_text": "With the spotify module, users in the group can sign in to Spotify within the group.\n\nEvery other user can now control the music over their device. Users can skip or change the song or add new songs to the queue.",
+
 
   "@POLLS": {},
 
@@ -327,9 +337,13 @@
   "poll": "Poll",
   "new_poll_create": "New Poll\n(Tap to create)",
 
+
   "@COUNTER": {},
 
   "counter": "Counter",
+  "counter_subtitle": "Counts from 1 to wherever you like by clicking on it",
+  "counter_text": "With the counter module, it is easy to count everything. You can count how many hours you spend chilling in the sun or how many pieces of cake you enjoyed today.",
+
 
   "@THEBUTTON": {},
 
@@ -342,6 +356,7 @@
   "leaderboard": "Leaderboard",
   "alive_period": "Alive Period",
   "the_button_description": "The main goal is to never let the button die. The button will slowly loose health until it's dead. You can heal the button anytime while it is still alive by tapping on it for two seconds. But once it's dead, it can never be brought back, so stay alert.\n\nThe buttons health is synchronized across all players, so it is a group efford to keep it alive.\n\nWhen you save the button from its demise, you will get it's level. The lower the buttons health is the higher is level you get. But don't wait too long, someone else might just come along and save the button before you have the chance.",
+
 
   "@ELIMINATION": {},
 
@@ -367,5 +382,12 @@
   "how_to_play": "How to play",
   "game_instructions": "'Eliminate' your target by the agreed way in real live. Then add the elimination to the list and receive a new target, until only one player is left.",
   "select_a_game": "Select a game",
-  "create_a_game": "Create a game"
+  "create_a_game": "Create a game",
+  "games_subtitle": "Shows all running and finished elimination games",
+  "games_text": "The game 'Elimination' is a group game. At the beginning, each user gets assigned a name of another player within the group. The user now has the task to 'eliminate' their target player.\n\nHow someone can be eliminated is discussed in advance, it could for example count to be together in a room with the other person but no other players (but you can be creative!).\n\nAfter a player is eliminated, they lost and the person who eliminated them gets assigend their target. The winner is who is the only player left in the end!", 
+  "new_game_subtitle": "Shows a running elimination game",
+  "new_game_text": "With this module, a new elimination game can be started and is then visible for all users.\n\nThe game is only visible for users after it was started by the organizer.",
+  "games_list": "Games list",
+  "games_list_subtitle": "Shows a list of all running and finished elimination games",
+  "games_list_text": "The games list is another form of the elimination module.\n\nBy clicking on one of the games, the user sees the status of the game and whether they were already eliminated."
 }
