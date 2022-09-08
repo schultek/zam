@@ -1,6 +1,6 @@
 ![Logo](/assets/JufaLogo.png)
 
-# Jufa
+# Project Müritz
 
 Jugend-Freizeit-App
 
