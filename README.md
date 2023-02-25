@@ -1,8 +1,8 @@
-![Logo](/assets/JufaLogo.png)
+![Logo](/assets/ZamLogo.png)
 
-# Project Müritz
+# ZAM
 
-Jugend-Freizeit-App
+Doing stuff together.
 
 <p align="center">
   <a href="https://play.google.com/store/apps/details?id=de.schultek.jufa"><img src="/assets/GooglePlayButton.png" height="50"/></a>
@@ -20,7 +20,7 @@ Jugend-Freizeit-App
 
 ## About
 
-Jufa makes it possible to individually plan your next trip, journey, workshop or event with your friends or collegues. 
+ZAM makes it possible to individually plan your next trip, journey, workshop or event with your friends or collegues. 
 You can decide who is invited and how the group should look like. When everything is set up, you can write shared notes, collect photos, create playlists, upload materials or play minigames. 
 The app is individually adaptable for each trip. This offers you the perfect assistance to every event, makes preparation and planning easy and gives you more time to enjoy your event!
 
@@ -41,7 +41,7 @@ The app is individually adaptable for each trip. This offers you the perfect ass
   - Enter new payments or exchanges
   - Have an easy overview over all your groups finances
 - ### Music 💃🏻
-  - Connect Jufa to Spotify to share your music
+  - Connect Zam to Spotify to share your music
   - Other users can now easily add new songs to the query or change the current song
 - ### Notes 📒
   - Note down everything you need for the trip
